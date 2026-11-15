@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Base images pinned by digest (Dependabot proposes updates).
-FROM clojure:temurin-26-tools-deps@sha256:6e3f73ffb83c090b84b575a77c60f95d18ee201f67bc741e18065c1a1520f255 AS build
+FROM clojure:temurin-27-tools-deps@sha256:2ee1c2fa687fe84cfde31beaf39f3a47f7502aa675b2cc98a5ab8a091f227f0d AS build
 WORKDIR /src
 COPY deps.edn build.clj ./
 RUN clojure -P && clojure -T:build clean
