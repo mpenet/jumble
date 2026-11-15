@@ -102,9 +102,9 @@ sudo podman run --rm --env-file /etc/jumble/jumble.env -v jumble-data:/data -v "
 
 Run again, it adds only the listings missing.
 
-To open it to anyone and reset it every night, as demo.jumbl.ing is, set
-`JUMBLE_ALLOWED_EMAILS=*` and `JUMBLE_NOTICE_FILE=/data/notice.md` in the
-instance's `jumble.env`, deploy, then:
+To reset it every night, as demo.jumbl.ing is, set
+`JUMBLE_NOTICE_FILE=/data/notice.md` in the instance's `jumble.env`,
+deploy, then:
 
 ```sh
 HOST=jumble-admin@<server> DOMAIN=<domain> deploy/demo/install.sh
