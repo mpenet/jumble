@@ -2831,18 +2831,23 @@ textarea {
   margin: 0;
 }
 
-/* The community's part, then Jumble's under it. */
+/* The community's part, then Jumble's, on one line, wrapping when narrow. */
 .site-footer .footer-inner {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+.site-footer .footer-community,
+.site-footer .footer-jumble {
+  display: contents;
 }
 
 .site-footer .footer-links {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-4);
-  margin-top: var(--space-2);
 }
 
 /* Quiet links, as the rest of the footer; underlined when pointed at. */
