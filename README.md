@@ -18,6 +18,14 @@ A demo runs at [demo.jumbl.ing](https://demo.jumbl.ing).
 
 Jumble is young and changing quickly.
 
+<p>
+  <img src="doc/images/board.png" alt="The board: listings with their photos, filtered by type and category" width="620">
+  <img src="doc/images/phone-dark.png" alt="The board on a phone, in the dark theme" width="170">
+</p>
+<p>
+  <img src="doc/images/listing.png" alt="A listing: photos, price, category, where to pick it up, and a button to message its owner" width="620">
+</p>
+
 ## What it does
 
 - **Post** something to sell, give away or lend, or what you are looking
