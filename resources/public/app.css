@@ -2831,12 +2831,11 @@ textarea {
   margin: 0;
 }
 
-/* The community's part and Jumble's, side by side, stacked when narrow. */
+/* The community's part, then Jumble's under it. */
 .site-footer .footer-inner {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-5) var(--space-7);
+  flex-direction: column;
+  gap: var(--space-5);
 }
 
 .site-footer .footer-links {
