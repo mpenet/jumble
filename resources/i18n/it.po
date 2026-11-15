@@ -1238,7 +1238,7 @@ msgstr "Locandina"
 msgid "Manage"
 msgstr "Gestisci"
 
-#: src/s_exp/jumble/moderation/view.clj
+#: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
 msgstr "Avviso"
 

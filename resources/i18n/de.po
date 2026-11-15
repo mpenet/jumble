@@ -1238,7 +1238,7 @@ msgstr "Plakat"
 msgid "Manage"
 msgstr "Verwalten"
 
-#: src/s_exp/jumble/moderation/view.clj
+#: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
 msgstr "Hinweis"
 

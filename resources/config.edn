@@ -50,6 +50,9 @@
  ;; Where Litestream serves its own metrics, added to Jumble's: set by the
  ;; image, which runs both; unset (none added) elsewhere.
  :litestream-metrics-url #env JUMBLE_LITESTREAM_METRICS_URL
+ ;; A Markdown file shown to everyone at the top of every page while it
+ ;; exists: a notice such as planned maintenance, or that this is a demo.
+ :notice #env JUMBLE_NOTICE_FILE
  ;; A Markdown file shown to moderators on their pages while it exists.
  :moderator-notice #env JUMBLE_MODERATOR_NOTICE_FILE
  ;; Where members find the source of the Jumble they use, in the footer:

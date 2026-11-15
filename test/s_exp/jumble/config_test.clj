@@ -220,6 +220,9 @@
     (is (nil? (:metrics-token (config/normalize (assoc valid :metrics-token "")))))
     (is (= [:metrics-token] (invalid-path (assoc valid :metrics-token "secret"))))
     (is (= (apply str (repeat 32 "a")) (:metrics-token (config/normalize (assoc valid :metrics-token (apply str (repeat 32 "a"))))))))
+  (testing "the notice to everyone is a file, which may come and go"
+    (is (nil? (:notice (config/normalize (assoc valid :notice "")))))
+    (is (= "/etc/jumble/demo.md" (:notice (config/normalize (assoc valid :notice "/etc/jumble/demo.md"))))))
   (testing "the moderator notice is a file, which may come and go"
     (is (nil? (:moderator-notice (config/normalize (assoc valid :moderator-notice "")))))
     (is (= "/etc/jumble/notice.md" (:moderator-notice (config/normalize (assoc valid :moderator-notice "/etc/jumble/notice.md"))))))
@@ -288,6 +291,7 @@
                       [[:language] 1]
                       [[:contact] 1]
                       [[:moderator-notice] 1]
+                      [[:notice] 1]
                       [[:logo] 1]
                       [[:privacy] 1]
                       [[:hosted-by :name] 1]

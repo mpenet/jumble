@@ -1,16 +1,27 @@
 (ns s-exp.jumble.view.layout
   "The page shell every page shares, header and footer, message pages, and
   helpers for forms."
-  (:require [dev.onionpancakes.chassis.core :as h]
+  (:require [clojure.java.io :as io]
+            [dev.onionpancakes.chassis.core :as h]
             [s-exp.jumble.page.assets :as assets]
             [s-exp.jumble.page.branding :as branding]
             [s-exp.jumble.view.avatar :as avatar]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.view.icons :as icons]
+            [s-exp.jumble.view.markdown :as markdown]
             [s-exp.jumble.web.response :as response]
             [s-exp.jumble.page.theme :as theme]))
 
 (set! *warn-on-reflection* true)
+
+(defn file-notice
+  "The text of the Markdown notice file at `path`, read each time, nil while
+  there is none: whoever runs the instance changes it without a restart."
+  [path]
+  (when path
+    (let [f (io/file path)]
+      (when (.isFile f)
+        (markdown/render (slurp f))))))
 
 (def once
   "Attributes of a form sent once: a second click on its submit buttons
@@ -148,7 +159,10 @@
        ;; shows the page the current URL leads to: login, not found, error.
        [:body {:data-on:datastar-fetch "evt.detail.type === 'error' && location.reload()"}
         (header request user uri)
-        [:main.container content]
+        [:main.container
+         (when-let [text (file-notice (get-in ctx [:settings :notice]))]
+           [:aside.site-notice {:aria-label (i18n/t "Notice")} text])
+         content]
         [:footer.site-footer
          [:div.container
           [:p (i18n/t "{app-name} — sell, give away, lend and find things within your community." {:app-name app-name})]

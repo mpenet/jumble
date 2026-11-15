@@ -147,3 +147,14 @@
         (is (str/includes? (hosted {:name "Jumble" :url "https://jumbl.ing"})
                            "Hosted by <a href=\"https://jumbl.ing\">Jumble</a>"))
         (is (str/includes? (hosted {:name "Club IT"}) "Hosted by Club IT"))))))
+
+(deftest notice-test
+  (let [f (doto (java.io.File/createTempFile "notice" ".md") (.deleteOnExit))
+        page #(layout/page (merge {:csp-nonce "n" :ctx {:settings {:app-name "Jumble" :notice (str f)}}} %) {} [:p "x"])]
+    (spit f "This is a **demo**: anything posted is erased every night.")
+    (testing "the notice file's text, on every page, signed in or not, read when shown"
+      (is (str/includes? (page {:user {:name "Al"}}) "This is a <strong>demo</strong>"))
+      (is (str/includes? (page {}) "This is a <strong>demo</strong>")))
+    (testing "and gone with the file"
+      (.delete f)
+      (is (not (str/includes? (page {}) "site-notice"))))))

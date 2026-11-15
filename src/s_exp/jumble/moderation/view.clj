@@ -1,15 +1,13 @@
 (ns s-exp.jumble.moderation.view
   "Pages of moderation: reports, removing a listing, who may sign in and
   removing a member, categories and places, the community's palette."
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [s-exp.jumble.view.dates :as dates]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.page.assets :as assets]
             [s-exp.jumble.view.icons :as icons]
             [s-exp.jumble.view.layout :as layout]
             [s-exp.jumble.listing.choices :as choices]
-            [s-exp.jumble.view.markdown :as markdown]
             [s-exp.jumble.page.palette :as palette]
             [s-exp.jumble.view.qr :as qr]))
 
@@ -24,15 +22,6 @@
    ["/manage/appearance" (i18n/t "Appearance")]
    ["/manage/poster" (i18n/t "Poster")]])
 
-(defn- notice
-  "The text of the moderator notice file, read each time, nil while there
-  is none: whoever runs the instance changes it without a restart."
-  [request]
-  (when-let [path (get-in request [:ctx :settings :moderator-notice])]
-    (let [f (io/file path)]
-      (when (.isFile f)
-        (markdown/render (slurp f))))))
-
 (defn- moderation-nav
   "Links between the moderators' pages, `current` marked, and the notice
   for moderators if there is one."
@@ -41,7 +30,7 @@
    [:nav.moderation-nav {:aria-label (i18n/t "Manage")}
     (for [[href label] (sections)]
       [:a (cond-> {:href href} (= href current) (assoc :aria-current "page")) label])]
-   (when-let [text (notice request)]
+   (when-let [text (layout/file-notice (get-in request [:ctx :settings :moderator-notice]))]
      [:aside.moderator-notice {:aria-label (i18n/t "Notice")} text])))
 
 (defn reports

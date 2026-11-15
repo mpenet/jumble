@@ -377,6 +377,7 @@
                 (update :litestream-metrics-url #(some-> (text % [:litestream-metrics-url])
                                                          (check-secure-url [:litestream-metrics-url] allow-insecure)))
                 (update :moderator-notice text [:moderator-notice])
+                (update :notice text [:notice])
                 (update :hosted-by check-hosted-by)
                 (update :source-url #(check-secure-url (or (text % [:source-url]) upstream-source) [:source-url] allow-insecure))
                 (update :listing-reminder-days #(check-listing-reminder-days (if (nil? %) 60 %)))

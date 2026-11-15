@@ -2733,6 +2733,7 @@ textarea {
   font-weight: 600;
 }
 
+.site-notice,
 .moderator-notice {
   margin-bottom: var(--space-3);
   padding: var(--space-2) var(--space-3);
@@ -2741,10 +2742,12 @@ textarea {
   background: var(--pop-soft);
 }
 
+.site-notice .markdown > :first-child,
 .moderator-notice .markdown > :first-child {
   margin-top: 0;
 }
 
+.site-notice .markdown > :last-child,
 .moderator-notice .markdown > :last-child {
   margin-bottom: 0;
 }
