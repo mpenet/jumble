@@ -102,6 +102,19 @@ sudo podman run --rm --env-file /etc/jumble/jumble.env -v jumble-data:/data -v "
 
 Run again, it adds only the listings missing.
 
+To open it to anyone and reset it every night, as demo.jumbl.ing is, set
+`JUMBLE_ALLOWED_EMAILS=*` and `JUMBLE_NOTICE_FILE=/data/notice.md` in the
+instance's `jumble.env`, deploy, then:
+
+```sh
+HOST=jumble-admin@<server> DOMAIN=<domain> deploy/demo/install.sh
+```
+
+A timer then runs [`dev/demo_reset.clj`](../dev/demo_reset.clj) at 04:00:
+it deletes every account but the demo members' and the moderators', with
+what they left on the others' side, and seeds again what is missing. The
+[notice](../deploy/demo/notice.md) at the top of every page says so.
+
 To remove it all, the photos and backups with it:
 
 ```sh

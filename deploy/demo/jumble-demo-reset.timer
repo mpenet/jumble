@@ -1,0 +1,11 @@
+# Starts jumble-demo-reset.service every night at 04:00, the server's time,
+# or at boot when the server was off then.
+[Unit]
+Description=Nightly Jumble demo reset
+
+[Timer]
+OnCalendar=*-*-* 04:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

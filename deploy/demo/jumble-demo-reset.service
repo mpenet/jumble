@@ -1,0 +1,19 @@
+# Resets the demo every night (jumble-demo-reset.timer): deletes visitors'
+# accounts and seeds again what the demo members lost, with dev/demo_reset.clj.
+# deploy/demo/install.sh installs it, and the files it runs in /opt/jumble-demo.
+[Unit]
+Description=Jumble demo reset
+Requires=jumble.service
+After=jumble.service
+
+[Service]
+Type=oneshot
+# The demo members' domain, as JUMBLE_DEMO_DOMAIN.
+EnvironmentFile=/opt/jumble-demo/demo.env
+# With the image the app runs, against its database and storage.
+ExecStart=/bin/sh -c 'exec podman run --rm --env-file /etc/jumble/jumble.env -v jumble-data:/data \
+  -v /opt/jumble-demo:/seed:ro --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m --cap-drop all \
+  --security-opt no-new-privileges --entrypoint java "$$(sed -n "s/^Image=//p" /etc/containers/systemd/jumble.container)" \
+  --enable-native-access=ALL-UNNAMED -Djumble.demo=true -cp /app/jumble.jar:/seed \
+  clojure.main -m demo-reset /seed/demo/listings.edn "$${JUMBLE_DEMO_DOMAIN}"'
+TimeoutStartSec=30min
