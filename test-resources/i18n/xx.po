@@ -1,0 +1,30 @@
+# A test catalog, in French so the plural rule is French.
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Listings"
+msgstr "Annonces"
+
+msgid "Posted by {name}"
+msgstr "Publiée par {name}"
+
+msgid "Say \"hi\"\n"
+"on two lines"
+msgstr "Dis \"salut\"\n"
+"sur deux lignes"
+
+msgid "{n} listing"
+msgid_plural "{n} listings"
+msgstr[0] "{n} annonce"
+msgstr[1] "{n} annonces"
+
+#, fuzzy
+msgid "Unsure"
+msgstr "Pas sûr"
+
+msgid "Untranslated"
+msgstr ""

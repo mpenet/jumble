@@ -1,0 +1,138 @@
+;; Demo content for a Jumble: members and listings, with photos from
+;; Openverse, each public domain or CC0. Loaded by dev/demo_seed.clj.
+{:members [
+  {:name "Lena Brunner" :handle "lena.brunner"}
+  {:name "Marco Bianchi" :handle "marco.bianchi"}
+  {:name "Sophie Dubois" :handle "sophie.dubois"}
+  {:name "Jonas Meier" :handle "jonas.meier"}
+  {:name "Aisha Rahman" :handle "aisha.rahman"}
+  {:name "Tom Keller" :handle "tom.keller"}
+  {:name "Nina Kovač" :handle "nina.kovac"}
+  {:name "Luca Ferrari" :handle "luca.ferrari"}
+  {:name "Camille Rochat" :handle "camille.rochat"}
+  {:name "Yusuf Demir" :handle "yusuf.demir"}
+ ]
+ :listings [
+  {:owner 0 :kind "sale" :title "Steel road bike, 56 cm" :price "380" :category "sports" :city "Zurich" :status nil :age-days 19
+   :description "Light steel frame, Shimano 105, carbon fork. New tyres and brake pads in April, serviced last month. Fits riders around 175 to 183 cm. I've moved closer to the office and it mostly sits in the basement now."
+   :photos [{:url "https://live.staticflickr.com/2900/32575103713_30a15c9d76_b.jpg" :source "https://www.flickr.com/photos/45835554@N00/32575103713" :license "cc0"}
+            {:url "https://live.staticflickr.com/578/32575105403_21f31bfbc6_b.jpg" :source "https://www.flickr.com/photos/45835554@N00/32575105403" :license "cc0"}
+            {:url "https://live.staticflickr.com/777/33261474231_39072209eb_b.jpg" :source "https://www.flickr.com/photos/45835554@N00/33261474231" :license "cc0"}]}
+  {:owner 1 :kind "sale" :title "Bean-to-cup coffee machine" :price "140" :category "home" :city "Winterthur" :status nil :age-days 3
+   :description "Grinds, tamps and brews with one button, two cups at once. Descaled two weeks ago, new water filter. Selling because we got a manual one as a wedding gift."
+   :photos [{:url "https://cdn.stocksnap.io/img-thumbs/960w/T0I4B840UM.jpg" :source "https://stocksnap.io/photo/espresso-machine-T0I4B840UM" :license "cc0"}]}
+  {:owner 2 :kind "lend" :title "Cordless drill and bit set" :price nil :category "home" :city "Zurich" :status nil :age-days 12
+   :description "18 V drill with two batteries, plus a box of wood, metal and screwdriver bits. Happy to lend it for a weekend: shelves, flat-pack furniture, curtain rails."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/0/0c/Cordless_electric_%28screw%29_drill.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=59305765" :license "cc0"}
+            {:url "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2ZyYml0X2RyaWxsX2Fra3VzY2hyYXViZXJfNjI4NTk2LWltYWdlLWt5YmU1dTFjLmpwZw.jpg" :source "https://www.rawpixel.com/image/6040807/photo-image-public-domain-free-work" :license "cc0"}]}
+  {:owner 3 :kind "sale" :title "Acoustic guitar, full size" :price "120" :category "other" :city "Zurich" :status nil :age-days 8
+   :description "Yamaha folk guitar with a warm sound, strings changed in September. A small dent near the bottom, nothing that affects playing. Comes with a soft case and a few picks."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/0/0e/Yamaha_Acoustic_Guitar_FG-331v2.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=57538241" :license "cc0"}]}
+  {:owner 4 :kind "free" :title "Monstera in a ceramic pot" :price nil :category "home" :city "Baden" :status nil :age-days 2
+   :description "About 80 cm tall and healthy, but it's outgrowing our flat. Free to someone with a bright corner; the pot comes with it."
+   :photos [{:url "https://pd.w.org/2025/09/63668db8ede30f9c0.25637626-1536x2048.jpg" :source "https://wordpress.org/photos/photo/63668db8ed/" :license "cc0"}]}
+  {:owner 5 :kind "sale" :title "Yashica twin-lens reflex camera" :price "160" :category "electronics" :city "Zurich" :status nil :age-days 15
+   :description "Medium format, takes 120 film. The shutter fires at all speeds and the light meter works roughly. The viewfinder is a little dusty but bright. A great first medium format camera."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/d/df/Yashica_Mat_124G_Film_Camera.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=100050615" :license "cc0"}]}
+  {:owner 6 :kind "sale" :title "35 mm SLR with 50 mm f/1.7 lens" :price "95" :category "electronics" :city "Zug" :status nil :age-days 6
+   :description "Manual focus SLR, everything works, light seals replaced last year. I shot two rolls on it this summer and can show you the scans."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvLWEwMTAtbWFya3Vzcy0wNTAyLmpwZw.jpg" :source "https://www.rawpixel.com/image/432233/free-photo-image-film-retro-camera" :license "cc0"}]}
+  {:owner 7 :kind "lend" :title "Three-person dome tent" :price nil :category "sports" :city "Zurich" :status nil :age-days 17
+   :description "Freestanding, pitches in ten minutes. Used on a handful of trips, clean and dry. Borrow it for a weekend or a week, just bring it back dry."
+   :photos [{:url "https://cdn.stocksnap.io/img-thumbs/960w/PTERNSNX0F.jpg" :source "https://stocksnap.io/photo/camp-tent-PTERNSNX0F" :license "cc0"}
+            {:url "https://cdn.stocksnap.io/img-thumbs/960w/177F2EBDDC.jpg" :source "https://stocksnap.io/photo/camping-tent-177F2EBDDC" :license "cc0"}]}
+  {:owner 8 :kind "sale" :title "Cross-country ski boots, EU 43" :price "45" :category "sports" :city "Zurich" :status "reserved" :age-days 10
+   :description "Salomon combi boots for skate and classic, size 43 (27.5 cm). Worn one season, soles in great shape."
+   :photos [{:url "https://live.staticflickr.com/4476/26392453589_e82d4095ec_b.jpg" :source "https://www.flickr.com/photos/35034347371@N01/26392453589" :license "cc0"}
+            {:url "https://live.staticflickr.com/4466/38169633271_7ac00e06dc_b.jpg" :source "https://www.flickr.com/photos/35034347371@N01/38169633271" :license "cc0"}
+            {:url "https://live.staticflickr.com/4556/37458930144_e4640bae61_b.jpg" :source "https://www.flickr.com/photos/35034347371@N01/37458930144" :license "cc0"}]}
+  {:owner 9 :kind "sale" :title "Cross-country skis, 186 cm" :price "70" :category "sports" :city "Zurich" :status nil :age-days 10
+   :description "Fischer classic skis with NNN bindings and waxless scales. They go well with my boots (separate listing): a discount if you take both."
+   :photos [{:url "https://live.staticflickr.com/4576/37458892374_3cb249bb58_b.jpg" :source "https://www.flickr.com/photos/35034347371@N01/37458892374" :license "cc0"}
+            {:url "https://live.staticflickr.com/4509/37458889564_803b4f16f0_b.jpg" :source "https://www.flickr.com/photos/35034347371@N01/37458889564" :license "cc0"}]}
+  {:owner 0 :kind "free" :title "Moving boxes, about 20" :price nil :category "other" :city "Zurich" :status nil :age-days 1
+   :description "Sturdy boxes in two sizes, used once for our move. Flat-packed, plus a roll of tape. Come and get them before the recycling does."
+   :photos [{:url "https://live.staticflickr.com/65535/54644603692_41b02c1168_b.jpg" :source "https://www.flickr.com/photos/200770778@N04/54644603692" :license "cc0"}]}
+  {:owner 1 :kind "sale" :title "Desk lamp, brushed steel" :price "20" :category "home" :city "Winterthur" :status nil :age-days 5
+   :description "Adjustable arm, E27 socket, warm LED bulb included. Too tall for my new shelf."
+   :photos [{:url "https://live.staticflickr.com/1747/42381074432_33733f4667_b.jpg" :source "https://www.flickr.com/photos/135396164@N05/42381074432" :license "cc0"}]}
+  {:owner 2 :kind "lend" :title "Vintage sewing machine" :price nil :category "home" :city "Zurich" :status nil :age-days 14
+   :description "My grandmother's, serviced and running smoothly. Straight stitch only, but it goes through denim. Lend it for hems and small projects; I can show you how to thread it."
+   :photos [{:url "https://live.staticflickr.com/869/27000742647_3fc34732b6_b.jpg" :source "https://www.flickr.com/photos/96780967@N06/27000742647" :license "pdm"}]}
+  {:owner 3 :kind "sale" :title "Catan with the Seafarers expansion" :price "35" :category "books-media" :city "Zurich" :status nil :age-days 9
+   :description "Complete, all pieces counted. Box corners a bit worn. We play online these days, so it's looking for a new table."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/b/bf/Castles_of_Burgundy_%28Board_Game%29.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=99767598" :license "cc0"}]}
+  {:owner 4 :kind "free" :title "Mint seedlings" :price nil :category "home" :city "Zurich" :status nil :age-days 4
+   :description "Peppermint grown from cuttings, in small pots. Grows like crazy on a balcony. Take one or three, we have plenty."
+   :photos [{:url "https://live.staticflickr.com/4088/5090072103_b68a2d097c_b.jpg" :source "https://www.flickr.com/photos/56823778@N00/5090072103" :license "cc0"}]}
+  {:owner 5 :kind "free" :title "Sci-fi and fantasy paperbacks" :price nil :category "books-media" :city "Zurich" :status nil :age-days 7
+   :description "Two shelves' worth: Le Guin, Pratchett, Banks, Jemisin and more, most read once. Free, ideally as a lot."
+   :photos [{:url "https://live.staticflickr.com/969/41151852664_5609787e16_b.jpg" :source "https://www.flickr.com/photos/96780967@N06/41151852664" :license "pdm"}
+            {:url "https://live.staticflickr.com/827/41151850254_46f00b57fd_b.jpg" :source "https://www.flickr.com/photos/96780967@N06/41151850254" :license "pdm"}]}
+  {:owner 6 :kind "free" :title "Bag of novels in English" :price nil :category "books-media" :city "Baden" :status nil :age-days 11
+   :description "About 15 paperbacks, mostly crime and literary fiction. They've been taking up space since I switched to an e-reader."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4NTQxMjY0LWltYWdlLWt6MmU5ZW03LmpwZw.jpg" :source "https://www.rawpixel.com/image/6113312/photo-image-public-domain-vintage-person" :license "cc0"}]}
+  {:owner 7 :kind "sale" :title "Leather derby shoes, EU 43" :price "55" :category "clothing" :city "Zurich" :status nil :age-days 13
+   :description "Brown leather, worn to two weddings and resoled in spring. Half a size too small for me."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdXB3azYxODQzODQ0LXdpa2ltZWRpYS1pbWFnZS1rb3didzRwNi1rb3djb2txbC5qcGc.jpg" :source "https://www.rawpixel.com/image/3284270/free-photo-image-shoe-man-apparel-beauty" :license "cc0"}]}
+  {:owner 8 :kind "sale" :title "Leather work boots, EU 42" :price "60" :category "clothing" :city "Winterthur" :status nil :age-days 16
+   :description "Lace-up boots, waterproofed this autumn. Very comfortable once broken in, and these are."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvaXMxMjQzMy1pbWFnZS1rd3Z5ZnFkMS5qcGc.jpg" :source "https://www.rawpixel.com/image/5927180/photo-image-public-domain-person-free" :license "cc0"}]}
+  {:owner 9 :kind "lend" :title "Sit-on-top kayak with paddle" :price nil :category "sports" :city "Zug" :status nil :age-days 18
+   :description "Stable and easy to paddle, good for the lake. Fits on a roof rack, straps included. Lend it for a day or a weekend."
+   :photos [{:url "https://live.staticflickr.com/4078/35610360831_5f7ff1fd7f_b.jpg" :source "https://www.flickr.com/photos/80223459@N05/35610360831" :license "pdm"}]}
+  {:owner 0 :kind "sale" :title "Bentwood chairs, set of two" :price "60" :category "home" :city "Zurich" :status nil :age-days 6
+   :description "Classic bistro chairs, solid and not wobbly. A few marks on the seats, nothing structural. 30 each or 60 for both."
+   :photos [{:url "https://cdn.stocksnap.io/img-thumbs/960w/0DH6S6OU6Q.jpg" :source "https://stocksnap.io/photo/wooden-chair-0DH6S6OU6Q" :license "cc0"}]}
+  {:owner 1 :kind "sale" :title "Rossignol snowboard, 156 cm" :price "110" :category "sports" :city "Zurich" :status nil :age-days 12
+   :description "All-mountain board, waxed and edges sharpened in January. Bindings not included."
+   :photos [{:url "https://live.staticflickr.com/8494/8258496064_16e9d3e7d5_b.jpg" :source "https://www.flickr.com/photos/21051491@N02/8258496064" :license "cc0"}]}
+  {:owner 2 :kind "sale" :title "Snowboard boots, EU 42" :price "40" :category "sports" :city "Zurich" :status nil :age-days 12
+   :description "Black lace-up boots, soft flex. Clean liners."
+   :photos [{:url "https://live.staticflickr.com/8487/8258772050_974774455e_b.jpg" :source "https://www.flickr.com/photos/21051491@N02/8258772050" :license "cc0"}]}
+  {:owner 3 :kind "sale" :title "Wool cardigan, size M" :price "25" :category "clothing" :city "Zurich" :status nil :age-days 3
+   :description "Dark navy knit with a varsity letter. Vintage, warm and in good shape; I just never wear it."
+   :photos [{:url "https://ids.si.edu/ids/deliveryService?id=NMAAHC-2016_92_1_002" :source "https://nmaahc.si.edu/object/nmaahc_2016.92.1" :license "cc0"}
+            {:url "https://ids.si.edu/ids/deliveryService?id=NMAAHC-2016_92_1_003" :source "https://nmaahc.si.edu/object/nmaahc_2016.92.1" :license "cc0"}]}
+  {:owner 4 :kind "sale" :title "Jazz records, about 30 LPs" :price "90" :category "books-media" :city "Zurich" :status "reserved" :age-days 20
+   :description "Mostly 60s and 70s, reissues plus a few originals. They play clean. List on request."
+   :photos [{:url "https://cdn.stocksnap.io/img-thumbs/960w/OTOSZLA6WF.jpg" :source "https://stocksnap.io/photo/vinyl-record-OTOSZLA6WF" :license "cc0"}]}
+  {:owner 5 :kind "sale" :title "Suitcase record player" :price "45" :category "electronics" :city "Baden" :status nil :age-days 8
+   :description "Plays 33, 45 and 78, built-in speakers and a line out. Needle replaced this year."
+   :photos [{:url "https://cdn.stocksnap.io/img-thumbs/960w/DILOPNOHDI.jpg" :source "https://stocksnap.io/photo/vinyl-record-DILOPNOHDI" :license "cc0"}]}
+  {:owner 6 :kind "sale" :title "LEGO, about 3 kg of loose bricks" :price "50" :category "kids" :city "Zurich" :status nil :age-days 5
+   :description "Mixed bricks from several sets, all genuine LEGO, washed. Lots of basic bricks and plates, some Technic."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3NrMzUwOS1pbWFnZS1rd3Z1bWdkby5qcGc.jpg" :source "https://www.rawpixel.com/image/5903090/lego-bricks-free-public-domain-cc0-photo" :license "cc0"}
+            {:url "https://live.staticflickr.com/4318/35874089481_37c3b6e9e9_b.jpg" :source "https://www.flickr.com/photos/140641142@N05/35874089481" :license "cc0"}]}
+  {:owner 7 :kind "free" :title "Handmade wooden truck" :price nil :category "kids" :city "Winterthur" :status nil :age-days 9
+   :description "Made by my father, solid and smooth, unpainted. Our kids are past it and it deserves another round."
+   :photos [{:url "https://live.staticflickr.com/7732/18268837765_9fd560e846_b.jpg" :source "https://www.flickr.com/photos/96780967@N06/18268837765" :license "pdm"}]}
+  {:owner 8 :kind "sale" :title "Wooden train set" :price "30" :category "kids" :city "Zurich" :status nil :age-days 2
+   :description "About 40 pieces of track, bridges and a few trains, compatible with the usual brands. Kept in its box."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvYTAxMC1tYXJrdXNzLTExMTEuanBn.jpg" :source "https://www.rawpixel.com/image/432769/free-photo-image-wooden-toys-train-toy" :license "cc0"}
+            {:url "https://upload.wikimedia.org/wikipedia/commons/f/f2/Wooden_toy_train_%E2%80%A2_tracks_and_bridge.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=46315235" :license "cc0"}]}
+  {:owner 9 :kind "sale" :title "Koss Porta Pro headphones" :price "25" :category "electronics" :city "Zurich" :status nil :age-days 4
+   :description "The classic. Work perfectly, new ear pads."
+   :photos [{:url "https://live.staticflickr.com/65535/52459692877_015fdf1c3a_b.jpg" :source "https://www.flickr.com/photos/57866029@N00/52459692877" :license "cc0"}]}
+  {:owner 0 :kind "free" :title "Old netbook, works" :price nil :category "electronics" :city "Zurich" :status nil :age-days 13
+   :description "10-inch netbook with Linux installed, the battery holds an hour. Fine as a kid's first computer or a recipe screen in the kitchen."
+   :photos [{:url "https://live.staticflickr.com/2307/2193891309_516400c479_b.jpg" :source "https://www.flickr.com/photos/37996646802@N01/2193891309" :license "cc0"}]}
+  {:owner 1 :kind "sale" :title "MacBook Air 13\", 2017" :price "260" :category "electronics" :city "Zurich" :status "reserved" :age-days 11
+   :description "8 GB, 128 GB, battery at 86%. Wiped and on the latest macOS it supports. Charger included."
+   :photos [{:url "https://live.staticflickr.com/8802/17652700524_53616d0344_b.jpg" :source "https://www.flickr.com/photos/132795455@N08/17652700524" :license "cc0"}]}
+  {:owner 2 :kind "sale" :title "Mechanical keyboard with RGB lighting" :price "45" :category "electronics" :city "Zug" :status nil :age-days 1
+   :description "Full size, tactile switches, per-key lighting. I moved to a smaller one for my desk."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/4/4e/Computer_Keyboard_Simultaneous_Keys_Above.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=151014536" :license "cc0"}]}
+  {:owner 3 :kind "sale" :title "Single-speed commuter bike" :price "180" :category "sports" :city "Zurich" :status nil :age-days 7
+   :description "Steel frame, green rims, flip-flop hub. Light and fast in the city. Lock included."
+   :photos [{:url "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdXB3azYxNzM1NDM4LXdpa2ltZWRpYS1pbWFnZS1rcDZhOTRvdS5qcGc.jpg" :source "https://www.rawpixel.com/image/3337440/free-photo-image-bicycle-bike-blur-background" :license "cc0"}]}
+  {:owner 4 :kind "sale" :title "Tube combo guitar amp" :price "220" :category "other" :city "Zurich" :status nil :age-days 14
+   :description "Tube amp with reverb, loud enough for band practice, recently retubed. Pick-up only: it's heavy."
+   :photos [{:url "https://live.staticflickr.com/7034/26952584686_c27238779f_b.jpg" :source "https://www.flickr.com/photos/135396164@N05/26952584686" :license "cc0"}]}
+  {:owner 5 :kind "sale" :title "Concert tickets, two seats" :price "80" :category "tickets" :city "Zurich" :status nil :age-days 2
+   :description "Two seated tickets for Saturday 13 December, 19:30, row 12. I can't make it anymore; selling at face value."
+   :photos []}
+  {:owner 6 :kind "sale" :title "Climbing gym card, 7 entries left" :price "110" :category "tickets" :city "Zurich" :status nil :age-days 6
+   :description "Ten-entry card valid until June, 7 entries left. Moving to Basel."
+   :photos []}
+ ]}

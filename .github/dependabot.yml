@@ -1,0 +1,18 @@
+# Keeps pinned versions current: base images in the Dockerfile, the
+# development services in the Compose file next to it, and the GitHub
+# Actions used by the workflows and their local actions, all pinned by
+# digest or commit.
+version: 2
+updates:
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directories: ["/", "/.github/actions/*"]
+    schedule:
+      interval: weekly

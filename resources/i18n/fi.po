@@ -1,0 +1,1673 @@
+msgid ""
+msgstr ""
+"Language: fi\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign in again"
+msgstr "Kirjaudu uudelleen"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in unavailable"
+msgstr "Kirjautuminen ei ole käytettävissä"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service cannot be reached right now. Please try again shortly."
+msgstr "Kirjautumispalveluun ei saada juuri nyt yhteyttä. Yritä hetken päästä uudelleen."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Try again"
+msgstr "Yritä uudelleen"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Too many sign-ins"
+msgstr "Liikaa kirjautumisia"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Too many sign-ins were started from here. Please try again in a few minutes."
+msgstr "Täältä on aloitettu liian monta kirjautumista. Yritä uudelleen muutaman minuutin päästä."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Account not allowed"
+msgstr "Tilillä ei ole pääsyä"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Only members of this community can sign in here."
+msgstr "Vain tämän yhteisön jäsenet voivat kirjautua tänne."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This community is full"
+msgstr "Yhteisö on täynnä"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "It has as many members as it can have. Ask its moderators to make room."
+msgstr "Siinä on jo niin monta jäsentä kuin mahtuu. Pyydä moderaattoreita tekemään tilaa."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Anna sähköpostiosoitteesi."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "“{email}” is not an email address."
+msgstr "”{email}” ei ole sähköpostiosoite."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Link expired"
+msgstr "Linkki on vanhentunut"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This sign-in link has expired or was already used."
+msgstr "Tämä kirjautumislinkki on vanhentunut tai jo käytetty."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Get a new link"
+msgstr "Tilaa uusi linkki"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in expired"
+msgstr "Kirjautuminen vanhentui"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This sign-in is invalid or has expired."
+msgstr "Tämä kirjautuminen on virheellinen tai vanhentunut."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in refused"
+msgstr "Kirjautuminen hylättiin"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service refused the request."
+msgstr "Kirjautumispalvelu hylkäsi pyynnön."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Email not verified"
+msgstr "Sähköpostiosoitetta ei ole vahvistettu"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service has not verified your email address."
+msgstr "Kirjautumispalvelu ei ole vahvistanut sähköpostiosoitettasi."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in failed"
+msgstr "Kirjautuminen epäonnistui"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Something went wrong while signing you in."
+msgstr "Kirjautumisessa meni jokin vikaan."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your account was deleted"
+msgstr "Tilisi on poistettu"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your listings, photos and favorites are gone. Messages you sent stay with the people you wrote to, from \"A former member\"."
+msgstr "Ilmoituksesi, kuvasi ja suosikkisi on poistettu. Lähettämäsi viestit jäävät vastaanottajille nimellä ”Entinen jäsen”."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Done"
+msgstr "Valmis"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Sign in to {app-name}"
+msgstr "Kirjaudu palveluun {app-name}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Use this link to sign in to {app-name}:"
+msgstr "Kirjaudu palveluun {app-name} tällä linkillä:"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "It works once, within {n} minute. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
+msgid_plural "It works once, within {n} minutes. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
+msgstr[0] "Linkki toimii kerran, {n} minuutin ajan. Jos et pyytänyt sitä, voit\njättää tämän viestin huomiotta: kukaan ei voi kirjautua ilman linkkiä."
+msgstr[1] "Linkki toimii kerran, {n} minuutin ajan. Jos et pyytänyt sitä, voit\njättää tämän viestin huomiotta: kukaan ei voi kirjautua ilman linkkiä."
+
+#: src/s_exp/jumble/account/email.clj
+msgid "You are invited to {app-name}"
+msgstr "Sinut on kutsuttu palveluun {app-name}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "{inviter} invited you to {app-name}, where members sell, give away and lend things to each other."
+msgstr "{inviter} kutsui sinut palveluun {app-name}, jossa jäsenet myyvät, antavat ja lainaavat tavaroita toisilleen."
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Sign in with this address: {url}"
+msgstr "Kirjaudu tällä osoitteella: {url}"
+
+#: src/s_exp/jumble/account/membership.clj
+msgid "Not an email pattern: {pattern} (use *, name@domain, *@domain or *@*.domain)"
+msgstr "Ei kelvollinen osoitemalli: {pattern} (käytä muotoa *, nimi@verkkotunnus, *@verkkotunnus tai *@*.verkkotunnus)"
+
+#: src/s_exp/jumble/account/model.clj
+msgid "Enter your name."
+msgstr "Anna nimesi."
+
+#: src/s_exp/jumble/account/model.clj
+msgid "Keep your name to 80 characters or fewer."
+msgstr "Nimessä voi olla enintään 80 merkkiä."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notifications on this device"
+msgstr "Push-ilmoitukset tällä laitteella"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Get a notification here as soon as someone writes to you, even with {app-name} closed."
+msgstr "Saat tänne push-ilmoituksen heti, kun joku kirjoittaa sinulle, vaikka palvelu {app-name} olisi suljettuna."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notify me on this device"
+msgstr "Ilmoita minulle tällä laitteella"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Stop on this device"
+msgstr "Lopeta tällä laitteella"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "This browser cannot show notifications."
+msgstr "Tämä selain ei voi näyttää push-ilmoituksia."
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/error/view.clj
+msgid "Something went wrong"
+msgstr "Jokin meni vikaan"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notifications are blocked for this site: allow them in the browser's settings, then try again."
+msgstr "Push-ilmoitukset on estetty tällä sivustolla: salli ne selaimen asetuksista ja yritä sitten uudelleen."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "On iPhone and iPad, add {app-name} to your home screen first, then turn notifications on from there."
+msgstr "Lisää iPhonessa ja iPadissa palvelu {app-name} ensin Koti-valikkoon ja ota push-ilmoitukset käyttöön sieltä."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Devices notified"
+msgstr "Push-ilmoituksia saavat laitteet"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Added {date}"
+msgstr "Lisätty {date}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "This device"
+msgstr "Tämä laite"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj
+msgid "Remove"
+msgstr "Poista"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Settings"
+msgstr "Asetukset"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Signed in as {email}"
+msgstr "Kirjautuneena: {email}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Name"
+msgstr "Nimi"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Shown to other members on your listings and messages."
+msgstr "Näkyy muille jäsenille ilmoituksissasi ja viesteissäsi."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Language"
+msgstr "Kieli"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "The community's ({language})"
+msgstr "Yhteisön kieli ({language})"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email"
+msgstr "Sähköposti"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me when a message stays unread for a few minutes"
+msgstr "Lähetä minulle sähköposti, kun viesti on ollut lukematta muutaman minuutin"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me once a week what is new on the board"
+msgstr "Lähetä minulle kerran viikossa sähköposti ilmoitustaulun uutuuksista"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Saved."
+msgstr "Tallennettu."
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Save"
+msgstr "Tallenna"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Your data"
+msgstr "Tietosi"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{download-link} — your account, listings, favorites, conversations and reports, as a JSON file."
+msgstr "{download-link} – tilisi, ilmoituksesi, suosikkisi, keskustelusi ja raporttisi JSON-tiedostona."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Download your data"
+msgstr "Lataa tietosi"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete your account"
+msgstr "Poista tilisi"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete your account?"
+msgstr "Poistetaanko tilisi?"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Your listings and their photos, your favorites and your settings will be deleted, and you will be signed out. Messages you sent stay with the people you wrote to, from \"A former member\". This cannot be undone."
+msgstr "Ilmoituksesi kuvineen, suosikkisi ja asetuksesi poistetaan, ja sinut kirjataan ulos. Lähettämäsi viestit jäävät vastaanottajille nimellä ”Entinen jäsen”. Tätä ei voi perua."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{download-link} first, if you want to keep a copy."
+msgstr "{download-link} ensin, jos haluat säilyttää kopion."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete my account"
+msgstr "Poista tilini"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Keep it"
+msgstr "Älä poista"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr "Kirjaudu sisään"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr "Anna sähköpostiosoitteesi, niin lähetämme sinulle kirjautumislinkin."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email address"
+msgstr "Sähköpostiosoite"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "you@example.org"
+msgstr "nimi@example.org"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me a link"
+msgstr "Lähetä linkki"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Check your inbox"
+msgstr "Tarkista sähköpostisi"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minute."
+msgid_plural "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minutes."
+msgstr[0] "Jos tällä osoitteella voi kirjautua tänne, kirjautumislinkki on matkalla. Se toimii kerran, {n} minuutin ajan."
+msgstr[1] "Jos tällä osoitteella voi kirjautua tänne, kirjautumislinkki on matkalla. Se toimii kerran, {n} minuutin ajan."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Use another address"
+msgstr "Käytä toista osoitetta"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in as {email}?"
+msgstr "Kirjaudutaanko osoitteella {email}?"
+
+#: src/s_exp/jumble/error/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Go to the home page"
+msgstr "Siirry etusivulle"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "The problem was logged. Please try again."
+msgstr "Ongelma kirjattiin lokiin. Yritä uudelleen."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Bad request"
+msgstr "Virheellinen pyyntö"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This request could not be understood."
+msgstr "Pyyntöä ei voitu ymmärtää."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Too large"
+msgstr "Liian suuri"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "That request was larger than allowed."
+msgstr "Pyyntö oli sallittua suurempi."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not allowed"
+msgstr "Ei sallittu"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "You are not allowed to do this."
+msgstr "Sinulla ei ole oikeutta tehdä tätä."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not supported"
+msgstr "Ei tuettu"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This cannot be done here."
+msgstr "Tätä ei voi tehdä täällä."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not possible right now"
+msgstr "Ei onnistu juuri nyt"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This cannot be done as things stand. Reload the page and try again."
+msgstr "Tämä ei onnistu nykytilanteessa. Lataa sivu uudelleen ja yritä uudestaan."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Too many requests"
+msgstr "Liikaa pyyntöjä"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Please wait a moment, then try again."
+msgstr "Odota hetki ja yritä sitten uudelleen."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Busy right now"
+msgstr "Ruuhkaa juuri nyt"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Please try again in a moment."
+msgstr "Yritä hetken päästä uudelleen."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Unavailable"
+msgstr "Ei käytettävissä"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "A service this depends on is not answering. Please try again later."
+msgstr "Palvelu, jota tähän tarvitaan, ei vastaa. Yritä myöhemmin uudelleen."
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Give your things a {second-life} in your community."
+msgstr "Anna tavaroillesi {second-life} omassa yhteisössäsi."
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "second life"
+msgstr "uusi elämä"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Sell, give away or lend what you no longer need to people around you, and find what you were looking for."
+msgstr "Myy, anna tai lainaa tarpeettomat tavarasi lähelläsi asuville ja löydä se, mitä etsit."
+
+#: src/s_exp/jumble/home/view.clj
+msgid "A bike, a desk lamp, a stroller…"
+msgstr "Polkupyörä, työvalaisin, lastenrattaat…"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/listing/view.clj
+msgid "Search listings"
+msgstr "Hae ilmoituksia"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "Search"
+msgstr "Hae"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "{n} thing up for grabs right now"
+msgid_plural "{n} things up for grabs right now"
+msgstr[0] "{n} tavara tarjolla juuri nyt"
+msgstr[1] "{n} tavaraa tarjolla juuri nyt"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Post a listing"
+msgstr "Jätä ilmoitus"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "or browse all listings →"
+msgstr "tai selaa kaikkia ilmoituksia →"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "Just posted"
+msgstr "Uusimmat"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "See all →"
+msgstr "Näytä kaikki →"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Electronics"
+msgstr "Elektroniikka"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Furniture & home"
+msgstr "Huonekalut ja koti"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Kids & baby"
+msgstr "Lapset ja vauvat"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Sports & outdoors"
+msgstr "Urheilu ja ulkoilu"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Books & media"
+msgstr "Kirjat ja media"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Clothing"
+msgstr "Vaatteet"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Tickets & vouchers"
+msgstr "Liput ja lahjakortit"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Other"
+msgstr "Muut"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Give it a name."
+msgstr "Anna nimi."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Keep the name to {max} characters or fewer."
+msgstr "Nimessä voi olla enintään {max} merkkiä."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "There is already one named “{label}”."
+msgstr "Nimi ”{label}” on jo käytössä."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Keep at least one category."
+msgstr "Jätä vähintään yksi kategoria."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Nothing to save"
+msgstr "Ei tallennettavaa"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Search for something, or choose a type or a category, then save that."
+msgstr "Hae jotain tai valitse tyyppi tai kategoria ja tallenna sitten haku."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the listings"
+msgstr "Takaisin ilmoituksiin"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Too many saved searches"
+msgstr "Liikaa tallennettuja hakuja"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "You can keep up to {max} saved searches. Remove one first."
+msgstr "Voit pitää enintään {max} tallennettua hakua. Poista ensin jokin."
+
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/view.clj
+msgid "Your saved searches"
+msgstr "Tallennetut hakusi"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This member does not exist, or no longer does."
+msgstr "Tätä jäsentä ei ole olemassa tai hän ei ole enää jäsen."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This listing does not exist, or no longer does."
+msgstr "Tätä ilmoitusta ei ole olemassa tai se on poistettu."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Not on the board"
+msgstr "Ei ilmoitustaululla"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This listing is no longer on the board: put it back on the board instead."
+msgstr "Tämä ilmoitus ei ole enää ilmoitustaululla: palauta se ilmoitustaululle."
+
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/moderation/view.clj
+msgid "Back to the listing"
+msgstr "Takaisin ilmoitukseen"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Only listings on the board can be edited. Put it back on the board first."
+msgstr "Vain ilmoitustaululla olevia ilmoituksia voi muokata. Palauta se ensin ilmoitustaululle."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Upload too large"
+msgstr "Liian suuri lähetys"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
+msgstr "Ilmoituksessa voi olla enintään {max} kuvaa, kukin enintään {megabytes} Mt."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Takaisin lomakkeeseen"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Still looking for \"{title}\"?"
+msgstr "Etsitkö yhä: ”{title}”?"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Is \"{title}\" still available?"
+msgstr "Onko ”{title}” yhä saatavilla?"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "You posted \"{title}\" on {app-name} {n} day ago or more."
+msgid_plural "You posted \"{title}\" on {app-name} {n} days ago or more."
+msgstr[0] "Julkaisit ilmoituksen ”{title}” palvelussa {app-name} vähintään {n} päivä sitten."
+msgstr[1] "Julkaisit ilmoituksen ”{title}” palvelussa {app-name} vähintään {n} päivää sitten."
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Still looking for it? Say so on its page, or mark it as found:"
+msgstr "Etsitkö sitä yhä? Kerro se ilmoituksen sivulla tai merkitse se löytyneeksi:"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Is it still available? Say so on its page, or mark it as gone:"
+msgstr "Onko se yhä saatavilla? Kerro se ilmoituksen sivulla tai merkitse, ettei se ole enää saatavilla:"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Without an answer within {n} day, it leaves the board. You can put it back from My listings at any time."
+msgid_plural "Without an answer within {n} days, it leaves the board. You can put it back from My listings at any time."
+msgstr[0] "Jos et vastaa {n} päivän kuluessa, ilmoitus poistuu ilmoitustaululta. Voit palauttaa sen milloin tahansa kohdasta Omat ilmoitukset."
+msgstr[1] "Jos et vastaa {n} päivän kuluessa, ilmoitus poistuu ilmoitustaululta. Voit palauttaa sen milloin tahansa kohdasta Omat ilmoitukset."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose whether you sell, give away, lend or look for it."
+msgstr "Valitse, myytkö, annatko, lainaatko vai etsitkö sitä."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Give it a title."
+msgstr "Anna otsikko."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the title to 120 characters or fewer."
+msgstr "Otsikossa voi olla enintään 120 merkkiä."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the description to 5000 characters or fewer."
+msgstr "Kuvauksessa voi olla enintään 5 000 merkkiä."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Enter a price of at most one million, such as 25 or 12.50."
+msgstr "Anna hinta, enintään miljoona, esimerkiksi 25 tai 12,50."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose a category."
+msgstr "Valitse kategoria."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose where to pick it up."
+msgstr "Valitse noutopaikka."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Enter the city."
+msgstr "Anna paikkakunta."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the city to 80 characters or fewer."
+msgstr "Paikkakunnan nimessä voi olla enintään 80 merkkiä."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "At most {max} photos."
+msgstr "Enintään {max} kuvaa."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} is too large (over {megapixels} megapixels)."
+msgstr "Kuva {number} on liian suuri (yli {megapixels} megapikseliä)."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} took too long to process. Try a smaller one."
+msgstr "Kuvan {number} käsittely kesti liian kauan. Kokeile pienempää kuvaa."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "Juuri nyt käsitellään liian montaa kuvaa. Yritä hetken päästä uudelleen."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."
+msgstr "Kuva {number} ei ole JPEG-, PNG-, HEIC- tai AVIF-kuva."
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "“{query}”"
+msgstr "”{query}”"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "for sale"
+msgstr "myydään"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "free"
+msgstr "annetaan"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "to lend"
+msgstr "lainataan"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "wanted"
+msgstr "etsitään"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "in {category}"
+msgstr "kategoriassa {category}"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "New on {app-name}: {n} listing for your saved searches"
+msgid_plural "New on {app-name}: {n} listings for your saved searches"
+msgstr[0] "Uutta palvelussa {app-name}: {n} ilmoitus tallennettuihin hakuihisi"
+msgstr[1] "Uutta palvelussa {app-name}: {n} ilmoitusta tallennettuihin hakuihisi"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "You get this email once a day at most, when something matches your saved searches."
+msgstr "Saat tämän viestin enintään kerran päivässä, kun jokin vastaa tallennettuja hakujasi."
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "Manage them: {url}"
+msgstr "Hallitse hakujasi: {url}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Edit listing"
+msgstr "Muokkaa ilmoitusta"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "New listing"
+msgstr "Uusi ilmoitus"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "You want to"
+msgstr "Haluat"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Sell it"
+msgstr "Myydä"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Give it away"
+msgstr "Antaa pois"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Lend it"
+msgstr "Lainata"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Look for it"
+msgstr "Etsiä"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Title"
+msgstr "Otsikko"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Price ({currency})"
+msgstr "Hinta ({currency})"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Category"
+msgstr "Kategoria"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Choose a category"
+msgstr "Valitse kategoria"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Pickup"
+msgstr "Nouto"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Where"
+msgstr "Missä"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Elsewhere"
+msgstr "Muualla"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "City"
+msgstr "Paikkakunta"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Description"
+msgstr "Kuvaus"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Markdown works: **bold**, _italics_, lists, links."
+msgstr "Markdown toimii: **lihavointi**, _kursiivi_, luettelot, linkit."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photos"
+msgstr "Kuvat"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "The cover photo shows first, on the board and on the listing."
+msgstr "Kansikuva näkyy ensimmäisenä, ilmoitustaululla ja ilmoituksessa."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Cover"
+msgstr "Kansikuva"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove photo {number}"
+msgstr "Poista kuva {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Move photo {number} earlier"
+msgstr "Siirrä ylös: kuva {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Move photo {number} later"
+msgstr "Siirrä alas: kuva {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Add photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)"
+msgstr "Lisää kuvia (yhteensä enintään {max}, JPEG, PNG, HEIC tai AVIF)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)"
+msgstr "Kuvat (yhteensä enintään {max}, JPEG, PNG, HEIC tai AVIF)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Please select the photos again."
+msgstr "Valitse kuvat uudelleen."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Save changes"
+msgstr "Tallenna muutokset"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Publish listing"
+msgstr "Julkaise ilmoitus"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Free"
+msgstr "Annetaan"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "To lend"
+msgstr "Lainataan"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Wanted"
+msgstr "Etsitään"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Reserved"
+msgstr "Varattu"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Sold"
+msgstr "Myyty"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Given away"
+msgstr "Annettu"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Found"
+msgstr "Löytynyt"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Expired"
+msgstr "Vanhentunut"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as reserved"
+msgstr "Merkitse varatuksi"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as sold"
+msgstr "Merkitse myydyksi"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as given away"
+msgstr "Merkitse annetuksi"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as found"
+msgstr "Merkitse löytyneeksi"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Make available again"
+msgstr "Palauta saataville"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Put back on the board"
+msgstr "Palauta ilmoitustaululle"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Favorite {title}"
+msgstr "Suosikki: {title}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Favorite"
+msgstr "Suosikki"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "I have one"
+msgstr "Minulla on tällainen"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/message/view.clj
+msgid "Message {name}"
+msgstr "Lähetä viesti: {name}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Your listing"
+msgstr "Oma ilmoituksesi"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Still looking? Without an answer, it soon leaves the board."
+msgstr "Etsitkö yhä? Ilman vastausta ilmoitus poistuu pian ilmoitustaululta."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Still available? Without an answer, it soon leaves the board."
+msgstr "Onko yhä saatavilla? Ilman vastausta ilmoitus poistuu pian ilmoitustaululta."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Yes, keep it on the board"
+msgstr "Kyllä, pidä se ilmoitustaululla"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Edit"
+msgstr "Muokkaa"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing"
+msgstr "Poista ilmoitus"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photo {number}"
+msgstr "Kuva {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Posted by {name}"
+msgstr "Ilmoittaja: {name}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove listing (moderation)"
+msgstr "Poista ilmoitus (moderointi)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Thanks, a moderator will have a look."
+msgstr "Kiitos, moderaattori tarkistaa asian."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Report this listing"
+msgstr "Raportoi tämä ilmoitus"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "What is wrong with it? (optional)"
+msgstr "Mikä siinä on vialla? (valinnainen)"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Report"
+msgstr "Raportoi"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing?"
+msgstr "Poistetaanko ilmoitus?"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "“{title}” and its photos will be deleted. This cannot be undone."
+msgstr "”{title}” ja sen kuvat poistetaan. Tätä ei voi perua."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "clear filter"
+msgstr "poista suodatin"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "All"
+msgstr "Kaikki"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "For sale"
+msgstr "Myydään"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Changed"
+msgstr "Muuttunut"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "More results"
+msgstr "Lisää tuloksia"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Older listings"
+msgstr "Vanhemmat ilmoitukset"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Showing {n} listing"
+msgid_plural "Showing {n} listings"
+msgstr[0] "Näytetään {n} ilmoitus"
+msgstr[1] "Näytetään {n} ilmoitusta"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing to search for in “{query}”: search with letters or numbers."
+msgstr "Hakusanassa ”{query}” ei ole haettavaa: käytä kirjaimia tai numeroita."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Results for “{query}”"
+msgstr "Tulokset haulle ”{query}”"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Clear search"
+msgstr "Tyhjennä haku"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Filters"
+msgstr "Suodattimet"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Type"
+msgstr "Tyyppi"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "More categories ({count})"
+msgstr "Lisää kategorioita ({count})"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Save this search"
+msgstr "Tallenna haku"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Get an email when something new matches."
+msgstr "Saat sähköpostia, kun uusi ilmoitus vastaa hakua."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No listings match."
+msgstr "Ei osuvia ilmoituksia."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing here yet."
+msgstr "Täällä ei ole vielä mitään."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Search: {query}"
+msgstr "Haku: {query}"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Listings"
+msgstr "Ilmoitukset"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "What your community is selling, giving away, lending and looking for."
+msgstr "Mitä yhteisösi myy, antaa, lainaa ja etsii."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "My listings"
+msgstr "Omat ilmoitukset"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Everything you posted, sold and given away included."
+msgstr "Kaikki julkaisemasi ilmoitukset, myös myydyt ja annetut."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "You have not posted anything yet."
+msgstr "Et ole vielä julkaissut mitään."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Member since {date}"
+msgstr "Jäsen {date} alkaen"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing on the board right now."
+msgstr "Ilmoitustaululla ei ole juuri nyt mitään."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Favorites"
+msgstr "Suosikit"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Listings you keep an eye on. Only you see them."
+msgstr "Ilmoitukset, joita seuraat. Vain sinä näet ne."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No favorites yet."
+msgstr "Ei vielä suosikkeja."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/message/view.clj
+msgid "Browse listings"
+msgstr "Selaa ilmoituksia"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Saved searches"
+msgstr "Tallennetut haut"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Once a day at most, you get an email with what is new for them. Save one from the listings, after searching or choosing a type or a category."
+msgstr "Saat enintään kerran päivässä sähköpostin niiden uusista osumista. Tallenna haku ilmoituksista, kun olet hakenut jotain tai valinnut tyypin tai kategorian."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove {search}"
+msgstr "Poista {search}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No saved searches yet."
+msgstr "Ei vielä tallennettuja hakuja."
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "This week on {app-name}: {n} new listing"
+msgid_plural "This week on {app-name}: {n} new listings"
+msgstr[0] "Tällä viikolla palvelussa {app-name}: {n} uusi ilmoitus"
+msgstr[1] "Tällä viikolla palvelussa {app-name}: {n} uutta ilmoitusta"
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "And {n} more: {url}"
+msgstr "Ja {n} muuta: {url}"
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "You get this email once a week when something is new on {app-name}."
+msgstr "Saat tämän viestin kerran viikossa, kun palvelussa {app-name} on jotain uutta."
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "Turn it off in your settings: {url}"
+msgstr "Voit poistaa sen käytöstä asetuksissasi: {url}"
+
+#: src/s_exp/jumble/message/email.clj src/s_exp/jumble/push/delivery.clj
+msgid "New message from {name}: {subject}"
+msgid_plural "New messages from {name}: {subject}"
+msgstr[0] "Uusi viesti jäseneltä {name}: {subject}"
+msgstr[1] "Uusia viestejä jäseneltä {name}: {subject}"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "{name} sent you a message about \"{subject}\":"
+msgid_plural "{name} sent you {n} messages about \"{subject}\". The latest:"
+msgstr[0] "{name} lähetti sinulle viestin aiheesta ”{subject}”:"
+msgstr[1] "{name} lähetti sinulle {n} viestiä aiheesta ”{subject}”. Uusin:"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "Read and reply: {url}"
+msgstr "Lue ja vastaa: {url}"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "You get this email from {app-name} when a message stays unread for a few minutes."
+msgstr "{app-name} lähettää sinulle tämän viestin, kun viesti on ollut lukematta muutaman minuutin."
+
+#: src/s_exp/jumble/message/email.clj
+msgid "To stop these emails: {url}"
+msgstr "Jos et halua näitä viestejä: {url}"
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Write a message."
+msgstr "Kirjoita viesti."
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Keep the message to 2000 characters or fewer."
+msgstr "Viestissä voi olla enintään 2 000 merkkiä."
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Give it a subject of 120 characters or fewer."
+msgstr "Anna aihe, jossa on enintään 120 merkkiä."
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "A former member"
+msgstr "Entinen jäsen"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "{title} (removed)"
+msgstr "{title} (poistettu)"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "About {listing}"
+msgstr "Koskee: {listing}"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Subject"
+msgstr "Aihe"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Message"
+msgstr "Viesti"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Hi! I have one."
+msgstr "Hei! Minulla on tällainen."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Hi! Is it still available?"
+msgstr "Hei! Onko tämä vielä saatavilla?"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Send"
+msgstr "Lähetä"
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Messages"
+msgstr "Viestit"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Your conversations with people in your community about their listings and yours."
+msgstr "Keskustelusi yhteisösi jäsenten kanssa heidän ja sinun ilmoituksistasi."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "re: {title}"
+msgstr "vs: {title}"
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/view/layout.clj
+msgid "unread"
+msgid_plural "unread"
+msgstr[0] "lukematon"
+msgstr[1] "lukematonta"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "No messages yet. Write to someone about a listing that interests you."
+msgstr "Ei vielä viestejä. Kirjoita jollekulle sinua kiinnostavasta ilmoituksesta."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "With {name} · {listing}"
+msgstr "Keskustelu: {name} · {listing}"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "You"
+msgstr "Sinä"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "This member deleted their account: replies would not reach them."
+msgstr "Tämä jäsen on poistanut tilinsä: vastaukset eivät tavoittaisi häntä."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Reply"
+msgstr "Vastaa"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Reply to {name}…"
+msgstr "Vastaa: {name}…"
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "To let anyone in, use * in the configuration."
+msgstr "Jos haluat päästää kenet tahansa sisään, käytä määrityksissä merkkiä *."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator, by the configuration: remove them there."
+msgstr "{email} on moderaattori määritysten perusteella: poista hänet sieltä."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Millään jäsenellä ei ole tätä osoitetta."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Listing reported: {title}"
+msgstr "Ilmoitus raportoitu: {title}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "{reporter} reported \"{title}\"."
+msgstr "{reporter} raportoi ilmoituksen ”{title}”."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Review the reports: {url}"
+msgstr "Käy raportit läpi: {url}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "You get this email as a moderator of {app-name}, once per reported listing."
+msgstr "Saat tämän viestin palvelun {app-name} moderaattorina, kerran kutakin raportoitua ilmoitusta kohden."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Your listing was removed: {title}"
+msgstr "Ilmoituksesi poistettiin: {title}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "A moderator removed your listing \"{title}\" from {app-name}."
+msgstr "Moderaattori poisti ilmoituksesi ”{title}” palvelusta {app-name}."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "The reason given:"
+msgstr "Annettu syy:"
+
+#: src/s_exp/jumble/moderation/model.clj
+msgid "Keep it to 1000 characters or fewer."
+msgstr "Enintään 1 000 merkkiä."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Reports"
+msgstr "Raportit"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Kuka voi kirjautua"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Categories"
+msgstr "Kategoriat"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Pickup places"
+msgstr "Noutopaikat"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appearance"
+msgstr "Ulkoasu"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Poster"
+msgstr "Juliste"
+
+#: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Manage"
+msgstr "Hallinta"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Notice"
+msgstr "Tiedote"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Listings members reported, the longest waiting first."
+msgstr "Jäsenten raportoimat ilmoitukset, pisimpään odottaneet ensin."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Posted by {owner} ({email})"
+msgstr "Ilmoittaja: {owner} ({email})"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No reason given"
+msgstr "Syytä ei annettu"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Your own listing: another moderator handles its reports."
+msgstr "Oma ilmoituksesi: toinen moderaattori käsittelee sen raportit."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Reason, emailed to the owner (optional)"
+msgstr "Syy, lähetetään ilmoittajalle sähköpostitse (valinnainen)"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing {title}"
+msgstr "Poista ilmoitus {title}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Dismiss the reports on {title}"
+msgstr "Hylkää ilmoituksen {title} raportit"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Dismiss"
+msgstr "Hylkää"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No open reports."
+msgstr "Ei avoimia raportteja."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Report listing"
+msgstr "Raportoi ilmoitus"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Report “{title}”"
+msgstr "Raportoi ”{title}”"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "“{title}” by {owner} and its photos will be deleted, and {owner} emailed. This cannot be undone."
+msgstr "Jäsenen {owner} ilmoitus ”{title}” kuvineen poistetaan, ja jäsenelle {owner} lähetetään sähköposti. Tätä ei voi perua."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No listings"
+msgstr "ei ilmoituksia"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{n} listing"
+msgid_plural "{n} listings"
+msgstr[0] "{n} ilmoitus"
+msgstr[1] "{n} ilmoitusta"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Poista jäsen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "Jäsenen sähköpostiosoite"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Jäsenen tili ja ilmoitukset poistetaan pysyvästi, eikä hän voi enää koskaan kirjautua."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Poistettu."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Poista…"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove {name}?"
+msgstr "Poistetaanko jäsen {name}?"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{name} ({email}) and their account are deleted, and they can never sign in again. Their messages stay, from a former member. This cannot be undone."
+msgstr "Jäsenen {name} ({email}) tili poistetaan, eikä hän voi enää koskaan kirjautua. Hänen viestinsä jäävät nimellä entinen jäsen. Tätä ei voi perua."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{name} ({email}) and their account are deleted, with {listings} and their photos, and they can never sign in again. Their messages stay, from a former member. This cannot be undone."
+msgstr "Jäsenen {name} ({email}) tili poistetaan ilmoituksineen ja kuvineen ({listings}), eikä hän voi enää koskaan kirjautua. Hänen viestinsä jäävät nimellä entinen jäsen. Tätä ei voi perua."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove for good"
+msgstr "Poista pysyvästi"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Keep them"
+msgstr "Älä poista"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
+msgstr "Osoitteet ja mallit: {person} yhdelle henkilölle, {domain} verkkotunnukselle, {subdomains} sen aliverkkotunnuksille."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
+msgstr "Kuka tahansa voi kirjautua: määritykset päästävät kaikki sisään. Rajaa pääsyä siellä, niin voit hallita täällä, kuka voi kirjautua."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "From the configuration"
+msgstr "Määrityksistä"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Added here"
+msgstr "Lisätty täällä"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "added by {who}, {date}"
+msgstr "lisännyt {who}, {date}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "entinen jäsen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Withdraw {pattern}"
+msgstr "Poista {pattern}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Withdraw"
+msgstr "Poista"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Nobody yet."
+msgstr "Ei vielä ketään."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add addresses or patterns"
+msgstr "Lisää osoitteita tai malleja"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "One per line, or separated by commas. Withdrawing one signs out the people only it let in, at once; their accounts stay."
+msgstr "Yksi riville tai pilkuilla erotettuina. Kun poistat rivin, ne, jotka pääsivät sisään vain sen ansiosta, kirjataan heti ulos; heidän tilinsä säilyvät."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Email an invitation to the addresses"
+msgstr "Lähetä osoitteisiin kutsu sähköpostitse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Added."
+msgstr "Lisätty."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add"
+msgstr "Lisää"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "What listings are filed under, in the order members see them."
+msgstr "Kategoriat, joihin ilmoitukset luokitellaan, siinä järjestyksessä kuin jäsenet näkevät ne."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add a category"
+msgstr "Lisää kategoria"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Where members can hand things over. They can always choose Elsewhere and type a city; with no places, that is the only choice."
+msgstr "Paikat, joissa jäsenet voivat luovuttaa tavaroita. He voivat aina valita ”Muualla” ja kirjoittaa paikkakunnan; jos noutopaikkoja ei ole, se on ainoa vaihtoehto."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add a place"
+msgstr "Lisää noutopaikka"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Name of {label}"
+msgstr "Kohteen {label} nimi"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Rename {label}"
+msgstr "Nimeä uudelleen: {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Rename"
+msgstr "Nimeä uudelleen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Up"
+msgstr "Ylös"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Move {label} up"
+msgstr "Siirrä ylös: {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Down"
+msgstr "Alas"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Move {label} down"
+msgstr "Siirrä alas: {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retire"
+msgstr "Poista käytöstä"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retire {label}"
+msgstr "Poista käytöstä: {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "None offered."
+msgstr "Ei vaihtoehtoja."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retired"
+msgstr "Poistettu käytöstä"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No longer offered. Their listings keep them."
+msgstr "Ei enää tarjolla. Ilmoitukset, joissa niitä on käytetty, säilyttävät ne."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Restore"
+msgstr "Palauta"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Restore {label}"
+msgstr "Palauta: {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "The colours of every page, for everyone. Each palette has a light and a dark side: members see the one they chose, or their device's."
+msgstr "Kaikkien sivujen värit kaikille. Jokaisessa paletissa on vaalea ja tumma puoli: jäsenet näkevät valitsemansa tai laitteensa mukaisen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Palette"
+msgstr "Paletti"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Print it for a noticeboard, by the coffee machine or the lift: whoever scans it lands on {app-name}."
+msgstr "Tulosta se ilmoitustaululle, kahvinkeittimen tai hissin viereen: skannaamalla pääsee palveluun {app-name}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Print"
+msgstr "Tulosta"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to open {app-name}"
+msgstr "Skannaa ja avaa {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Point your phone's camera at the code"
+msgstr "Suuntaa puhelimen kamera koodiin"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Post what you no longer need, or find what you need"
+msgstr "Jätä ilmoitus tarpeettomista tavaroista tai löydä tarvitsemasi"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Write to each other, and meet up"
+msgstr "Viestittele ja sovi tapaaminen"
+
+#: src/s_exp/jumble/money.clj
+msgid "{currency} {amount}"
+msgstr "{amount} {currency}"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Forest"
+msgstr "Metsä"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Plum"
+msgstr "Luumu"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Ink"
+msgstr "Muste"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Slate"
+msgstr "Liuske"
+
+#: src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Privacy"
+msgstr "Tietosuoja"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "{app-name} is run by and for its community. This page says what it keeps about you, and why."
+msgstr "{app-name} on yhteisönsä ylläpitämä ja yhteisöään varten. Tällä sivulla kerrotaan, mitä sinusta säilytetään ja miksi."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "What is kept"
+msgstr "Mitä säilytetään"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Your name and email address, from signing in; what you post: listings, their photos and your messages; your favorites, saved searches and settings; and reports you make."
+msgstr "Nimesi ja sähköpostiosoitteesi kirjautumisesta; julkaisemasi sisältö: ilmoitukset, niiden kuvat ja viestisi; suosikkisi, tallennetut hakusi ja asetuksesi; sekä tekemäsi raportit."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Why"
+msgstr "Miksi"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Only to run {app-name}: to show your listings, deliver your messages and send you emails: those you asked for, and a weekly summary of what is new, which you can turn off. Nothing is sold or shared for advertising, and there is no tracking and no analytics."
+msgstr "Vain palvelun {app-name} pyörittämiseen: ilmoitustesi näyttämiseen, viestiesi välittämiseen ja sähköpostien lähettämiseen – niiden, joita olet pyytänyt, sekä viikoittaisen koosteen uutuuksista, jonka voit poistaa käytöstä. Mitään ei myydä eikä jaeta mainontaa varten, eikä seurantaa tai analytiikkaa ole."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Who sees what"
+msgstr "Kuka näkee mitä"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
+msgstr "Muut jäsenet näkevät nimesi, ilmoituksesi ja sen, mitä kirjoitat heille. Viestit ovat vain sinun ja vastaanottajan välisiä. Moderaattorit näkevät raportit ja voivat poistaa ilmoituksia."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Cookies"
+msgstr "Evästeet"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Only those {app-name} needs: one keeps you signed in, one remembers your light or dark theme, and one protects signing in. No tracking cookies."
+msgstr "Vain ne, joita {app-name} tarvitsee: yksi pitää sinut kirjautuneena, yksi muistaa vaalean tai tumman teemasi ja yksi suojaa kirjautumista. Ei seurantaevästeitä."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Services involved"
+msgstr "Käytetyt palvelut"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Photos and backups are stored with your community's storage provider, emails go through its email provider, and signing in may go through its sign-in service. Notifications you turn on go through your browser's push service (Google's, Apple's, Mozilla's or Microsoft's), encrypted: it sees only when one is sent."
+msgstr "Kuvat ja varmuuskopiot tallennetaan yhteisösi tallennuspalveluun, sähköpostit kulkevat sen sähköpostipalvelun kautta, ja kirjautuminen voi kulkea sen kirjautumispalvelun kautta. Käyttöön ottamasi push-ilmoitukset kulkevat salattuina selaimesi push-palvelun (Googlen, Applen, Mozillan tai Microsoftin) kautta: se näkee vain, milloin ilmoitus lähetetään."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "How long"
+msgstr "Kuinka kauan"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
+msgstr "Kunnes poistat ne tai poistat tilisi; sen jälkeen kirjoittamasi viestit jäävät vastaanottajille ja raporttisi moderaattoreille ilman nimeäsi. Varmuuskopioissa poistetut tiedot säilyvät jonkin aikaa, yleensä enintään kolme kuukautta."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Your choices"
+msgstr "Valintasi"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Download everything {app-name} keeps about you, or delete your account, from {settings}."
+msgstr "Voit ladata kaiken, mitä {app-name} sinusta säilyttää, tai poistaa tilisi kohdassa {settings}."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Questions"
+msgstr "Kysymykset"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Write to {contact}."
+msgstr "Ota yhteyttä: {contact}."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Ask your community's moderators."
+msgstr "Kysy yhteisösi moderaattoreilta."
+
+#: src/s_exp/jumble/page/theme.clj
+msgid "Switch between light and dark"
+msgstr "Vaihda vaalean ja tumman välillä"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMMM yyyy"
+msgstr "d. MMMM yyyy"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMM, HH:mm"
+msgstr "d. MMM 'klo' HH.mm"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMM yyyy, HH:mm"
+msgstr "d. MMM yyyy 'klo' HH.mm"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "to review"
+msgid_plural "to review"
+msgstr[0] "tarkistettava"
+msgstr[1] "tarkistettavaa"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Sign out"
+msgstr "Kirjaudu ulos"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Main"
+msgstr "Päävalikko"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "changed"
+msgid_plural "changed"
+msgstr[0] "muuttunut"
+msgstr[1] "muuttunutta"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "{app-name} — sell, give away, lend and find things within your community."
+msgstr "{app-name} – myy, anna, lainaa ja löydä tavaroita omassa yhteisössäsi."
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Source code"
+msgstr "Lähdekoodi"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Get your own Jumble"
+msgstr "Hanki oma Jumble"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Built by {maker}"
+msgstr "Tekijä: {maker}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Hosted by {host}"
+msgstr "Ylläpito: {host}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Powered by Jumble"
+msgstr "Tehty Jumblella"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "There is nothing at this address."
+msgstr "Tässä osoitteessa ei ole mitään."
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Not found"
+msgstr "Sivua ei löydy"
+
+#: src/s_exp/jumble/web/routes.clj
+msgid "Signed out"
+msgstr "Olet kirjautunut ulos"
+
+#: src/s_exp/jumble/web/routes.clj
+msgid "You were signed out, so this was not saved. Sign in, then send it again."
+msgstr "Sinut oli kirjattu ulos, joten tätä ei tallennettu. Kirjaudu sisään ja lähetä se uudelleen."

@@ -1,0 +1,4 @@
+# Jumble's data volume: the database, which Litestream copies to the backup
+# bucket, and with HTTPS served by Jumble its certificates.
+[Volume]
+VolumeName=jumble-data

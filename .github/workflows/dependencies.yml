@@ -1,0 +1,37 @@
+# Weekly report of outdated Clojure dependencies (deps.edn), which
+# Dependabot does not cover: the run's summary lists them.
+name: dependencies
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  outdated:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "25"
+      - uses: DeLaGuardo/setup-clojure@6d46099eae24853c33c0482f2bb54edf4f1a4c74 # 13.7.0
+        with:
+          cli: 1.12.5.1654
+      - name: Outdated dependencies
+        run: |
+          {
+            echo '## Outdated dependencies'
+            echo '```'
+            # antq exits 1 when something is outdated: that is the report.
+            # Anything else is antq failing.
+            status=0
+            clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}}}' -M -m antq.core || status=$?
+            if [ "$status" -gt 1 ]; then exit "$status"; fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,100 @@
+;; Profile :prod unless the jumble.profile system property says otherwise; the
+;; :dev and :test aliases set it to dev. Production values come from the
+;; environment and missing ones stop startup. A deployment file named by
+;; JUMBLE_CONFIG_FILE is deep-merged over this one (lists are replaced).
+{:http {:host #or [#env JUMBLE_HOST "127.0.0.1"]
+        :port #or [#env JUMBLE_PORT "8080"]}
+ ;; HTTPS served by Jumble itself, on for a port: a certificate for
+ ;; JUMBLE_BASE_URL's host from an ACME CA (Let's Encrypt by default), kept
+ ;; and renewed in the certificates directory. The http listener above then
+ ;; answers the CA's challenges and health checks, and redirects the rest.
+ :https {:port #env JUMBLE_HTTPS_PORT
+         :acme-directory #or [#env JUMBLE_ACME_DIRECTORY "https://acme-v02.api.letsencrypt.org/directory"]
+         ;; Optional: where the CA may write about the certificate.
+         :acme-email #env JUMBLE_ACME_EMAIL
+         :certificates #or [#env JUMBLE_CERTIFICATES_DIR "certificates"]}
+ :db {:path #or [#env JUMBLE_DB_PATH "jumble.db"]}
+ :base-url #or [#env JUMBLE_BASE_URL #profile {:dev "http://localhost:8080"}]
+ ;; Allow http for the identity provider and storage beyond localhost, for
+ ;; development against containers. Never in production.
+ :allow-insecure-urls #boolean #or [#env JUMBLE_ALLOW_INSECURE_URLS #profile {:dev "true" :default "false"}]
+ :app-name #or [#env JUMBLE_APP_NAME "Jumble"]
+ ;; The time zone dates and times are shown in, e.g. Europe/Zurich.
+ :timezone #or [#env JUMBLE_TIMEZONE "UTC"]
+ ;; The language of the pages and emails: en, fr, de, it, es, pt, sv, da, nb,
+ ;; fi or nl. Members may choose another in their settings.
+ :language #or [#env JUMBLE_LANGUAGE "en"]
+ ;; The community's logo for the header (an SVG or PNG file, at most 200 KB),
+ ;; and optionally a version for the dark theme. Jumble's own otherwise.
+ :logo #env JUMBLE_LOGO
+ :logo-dark #env JUMBLE_LOGO_DARK
+ ;; The privacy page: the community's own text (a Markdown file), else
+ ;; Jumble's, which gives this address for questions when set.
+ :privacy #env JUMBLE_PRIVACY_FILE
+ :contact #env JUMBLE_CONTACT
+ ;; The most members (accounts not deleted) the community may have: past
+ ;; it, nobody new can join. Moderators always can.
+ :member-limit #env JUMBLE_MEMBER_LIMIT
+ ;; Days a listing goes without news (posting, editing, a status change)
+ ;; before its owner is asked whether it is still available; unanswered 15
+ ;; more days, it leaves the board. 0: never asked, nothing expires.
+ ;; Listings to lend are never asked about.
+ :listing-reminder-days #or [#env JUMBLE_LISTING_REMINDER_DAYS "60"]
+ ;; Behind a reverse proxy of one's own (deploy's own-proxy mode sets it):
+ ;; each client's address is taken from the X-Forwarded-For header the proxy
+ ;; adds, so only the proxy may reach Jumble. Not with :https.
+ :behind-proxy #boolean #or [#env JUMBLE_BEHIND_PROXY "false"]
+ ;; A bearer token for GET /metrics (counts, in Prometheus' text format);
+ ;; metrics are off without one.
+ :metrics-token #env JUMBLE_METRICS_TOKEN
+ ;; Where Litestream serves its own metrics, added to Jumble's: set by the
+ ;; image, which runs both; unset (none added) elsewhere.
+ :litestream-metrics-url #env JUMBLE_LITESTREAM_METRICS_URL
+ ;; A Markdown file shown to moderators on their pages while it exists.
+ :moderator-notice #env JUMBLE_MODERATOR_NOTICE_FILE
+ ;; Where members find the source of the Jumble they use, in the footer:
+ ;; Jumble's own unless set. Running a modified Jumble, the AGPL asks you
+ ;; to offer your version's source: point this at it.
+ :source-url #env JUMBLE_SOURCE_URL
+ ;; Who hosts the instance, named in the footer with a link.
+ :hosted-by {:name #env JUMBLE_HOSTED_BY
+             :url #env JUMBLE_HOSTED_BY_URL}
+ ;; Comma separated email addresses of the people who handle reported
+ ;; listings; they can remove any listing.
+ :moderators #or [#env JUMBLE_MODERATORS #profile {:dev "alice@example.com" :default ""}]
+ ;; ISO 4217. Fixed per deployment: the first value is recorded in the
+ ;; database and startup refuses a different one later.
+ :currency #or [#env JUMBLE_CURRENCY "CHF"]
+ ;; S3-compatible object storage for photos (the docker compose Garage in
+ ;; development).
+ :storage {:endpoint #or [#env JUMBLE_S3_ENDPOINT #profile {:dev "http://127.0.0.1:3900"}]
+           :region #or [#env JUMBLE_S3_REGION #profile {:dev "garage"}]
+           :bucket #or [#env JUMBLE_S3_BUCKET #profile {:dev "jumble"}]
+           :access-key #or [#env JUMBLE_S3_ACCESS_KEY #profile {:dev "GK0123456789abcdef01234567"}]
+           :secret-key #or [#env JUMBLE_S3_SECRET_KEY
+                            #profile {:dev "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}]}
+ ;; Outgoing email, for message notifications. With Gmail: host smtp.gmail.com,
+ ;; port 587, the account as username and an app password; from must be that
+ ;; account or one of its aliases.
+ :mail {:host #or [#env JUMBLE_SMTP_HOST #profile {:dev "127.0.0.1"}]
+        :port #or [#env JUMBLE_SMTP_PORT #profile {:dev "1025" :default "587"}]
+        :starttls #boolean #or [#env JUMBLE_SMTP_STARTTLS #profile {:dev "false" :default "true"}]
+        :username #env JUMBLE_SMTP_USERNAME
+        :password #env JUMBLE_SMTP_PASSWORD
+        :from #or [#env JUMBLE_MAIL_FROM #profile {:dev "Jumble <jumble@example.com>"}]}
+ ;; Sign-in through an OpenID Connect provider (for example Google, issuer
+ ;; https://accounts.google.com); the docker compose Dex in development.
+ :auth {;; oidc (an OpenID Connect provider) or email (links sent by email).
+        :method #or [#env JUMBLE_SIGN_IN #profile {:dev "oidc"}]
+        ;; Who may sign in: * for anyone, or comma separated patterns, each an
+        ;; address (bob@example.org), a domain (*@example.org) or its
+        ;; subdomains (*@*.example.org). A list in a settings file works too.
+        :allowed-emails #or [#env JUMBLE_ALLOWED_EMAILS #profile {:dev "*@example.com"}]
+        :issuer #or [#env JUMBLE_OIDC_ISSUER #profile {:dev "http://127.0.0.1:5556/dex"}]
+        :client-id #or [#env JUMBLE_OIDC_CLIENT_ID "jumble"]
+        :client-secret #or [#env JUMBLE_OIDC_CLIENT_SECRET #profile {:dev "jumble-dev-secret"}]
+        ;; Also require the provider's hd claim to be the email's domain: the
+        ;; account is managed by the organisation of that address. Required
+        ;; with Google and patterns.
+        :require-hosted-domain #boolean #or [#env JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN "false"]
+        :session-ttl-days 7}}

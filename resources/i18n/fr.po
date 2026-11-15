@@ -1,0 +1,1673 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign in again"
+msgstr "Se reconnecter"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in unavailable"
+msgstr "Connexion indisponible"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service cannot be reached right now. Please try again shortly."
+msgstr "Le service de connexion est injoignable pour le moment. Veuillez réessayer dans un instant."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Try again"
+msgstr "Réessayer"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Too many sign-ins"
+msgstr "Trop de connexions"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Too many sign-ins were started from here. Please try again in a few minutes."
+msgstr "Trop de connexions ont été commencées depuis ici. Veuillez réessayer dans quelques minutes."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Account not allowed"
+msgstr "Compte non autorisé"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Only members of this community can sign in here."
+msgstr "Seuls les membres de cette communauté peuvent se connecter ici."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This community is full"
+msgstr "Cette communauté est complète"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "It has as many members as it can have. Ask its moderators to make room."
+msgstr "Elle compte autant de membres qu’elle peut en avoir. Demandez à ses modérateurs de faire de la place."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Saisissez votre adresse e-mail."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "“{email}” is not an email address."
+msgstr "« {email} » n'est pas une adresse e-mail."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Link expired"
+msgstr "Lien expiré"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This sign-in link has expired or was already used."
+msgstr "Ce lien de connexion a expiré ou a déjà été utilisé."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Get a new link"
+msgstr "Recevoir un nouveau lien"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in expired"
+msgstr "Connexion expirée"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This sign-in is invalid or has expired."
+msgstr "Cette connexion n'est pas valide ou a expiré."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in refused"
+msgstr "Connexion refusée"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service refused the request."
+msgstr "Le service de connexion a refusé la demande."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Email not verified"
+msgstr "Adresse e-mail non vérifiée"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service has not verified your email address."
+msgstr "Le service de connexion n'a pas vérifié votre adresse e-mail."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in failed"
+msgstr "Échec de la connexion"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Something went wrong while signing you in."
+msgstr "Un problème est survenu pendant la connexion."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your account was deleted"
+msgstr "Votre compte a été supprimé"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your listings, photos and favorites are gone. Messages you sent stay with the people you wrote to, from \"A former member\"."
+msgstr "Vos annonces, photos et favoris ont été supprimés. Les messages que vous avez envoyés restent chez leurs destinataires, signés « Un ancien membre »."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Done"
+msgstr "Terminé"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Sign in to {app-name}"
+msgstr "Connexion à {app-name}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Use this link to sign in to {app-name}:"
+msgstr "Utilisez ce lien pour vous connecter à {app-name} :"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "It works once, within {n} minute. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
+msgid_plural "It works once, within {n} minutes. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
+msgstr[0] "Il ne fonctionne qu'une fois, dans un délai de {n} minute. Si vous ne l'avez pas demandé, vous pouvez\nignorer cet e-mail : personne ne peut se connecter sans ce lien."
+msgstr[1] "Il ne fonctionne qu'une fois, dans un délai de {n} minutes. Si vous ne l'avez pas demandé, vous pouvez\nignorer cet e-mail : personne ne peut se connecter sans ce lien."
+
+#: src/s_exp/jumble/account/email.clj
+msgid "You are invited to {app-name}"
+msgstr "Une invitation à rejoindre {app-name}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "{inviter} invited you to {app-name}, where members sell, give away and lend things to each other."
+msgstr "{inviter} vous invite à rejoindre {app-name}, où les membres se vendent, se donnent et se prêtent des objets."
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Sign in with this address: {url}"
+msgstr "Connectez-vous avec cette adresse e-mail ici : {url}"
+
+#: src/s_exp/jumble/account/membership.clj
+msgid "Not an email pattern: {pattern} (use *, name@domain, *@domain or *@*.domain)"
+msgstr "Motif d'adresse e-mail non valide : {pattern} (utilisez *, nom@domaine, *@domaine ou *@*.domaine)"
+
+#: src/s_exp/jumble/account/model.clj
+msgid "Enter your name."
+msgstr "Saisissez votre nom."
+
+#: src/s_exp/jumble/account/model.clj
+msgid "Keep your name to 80 characters or fewer."
+msgstr "Votre nom ne doit pas dépasser 80 caractères."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notifications on this device"
+msgstr "Notifications sur cet appareil"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Get a notification here as soon as someone writes to you, even with {app-name} closed."
+msgstr "Recevez une notification ici dès que quelqu'un vous écrit, même quand {app-name} est fermé."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notify me on this device"
+msgstr "M'avertir sur cet appareil"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Stop on this device"
+msgstr "Arrêter sur cet appareil"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "This browser cannot show notifications."
+msgstr "Ce navigateur ne peut pas afficher de notifications."
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/error/view.clj
+msgid "Something went wrong"
+msgstr "Un problème est survenu"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notifications are blocked for this site: allow them in the browser's settings, then try again."
+msgstr "Les notifications sont bloquées pour ce site : autorisez-les dans les paramètres du navigateur, puis réessayez."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "On iPhone and iPad, add {app-name} to your home screen first, then turn notifications on from there."
+msgstr "Sur iPhone et iPad, ajoutez d'abord {app-name} à votre écran d'accueil, puis activez les notifications à partir de là."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Devices notified"
+msgstr "Appareils avertis"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Added {date}"
+msgstr "Ajouté le {date}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "This device"
+msgstr "Cet appareil"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj
+msgid "Remove"
+msgstr "Supprimer"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Signed in as {email}"
+msgstr "Adresse de connexion : {email}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Name"
+msgstr "Nom"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Shown to other members on your listings and messages."
+msgstr "Visible des autres membres sur vos annonces et vos messages."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Language"
+msgstr "Langue"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "The community's ({language})"
+msgstr "Celle de la communauté ({language})"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email"
+msgstr "E-mail"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me when a message stays unread for a few minutes"
+msgstr "M'envoyer un e-mail quand un message reste non lu quelques minutes"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me once a week what is new on the board"
+msgstr "M'envoyer chaque semaine les nouveautés du tableau"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Saved."
+msgstr "Enregistré."
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Save"
+msgstr "Enregistrer"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Your data"
+msgstr "Vos données"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{download-link} — your account, listings, favorites, conversations and reports, as a JSON file."
+msgstr "{download-link} — votre compte, vos annonces, favoris, conversations et signalements, dans un fichier JSON."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Download your data"
+msgstr "Télécharger vos données"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete your account"
+msgstr "Supprimer votre compte"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete your account?"
+msgstr "Supprimer votre compte ?"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Your listings and their photos, your favorites and your settings will be deleted, and you will be signed out. Messages you sent stay with the people you wrote to, from \"A former member\". This cannot be undone."
+msgstr "Vos annonces et leurs photos, vos favoris et vos paramètres seront supprimés, et votre session sera fermée. Les messages que vous avez envoyés restent chez leurs destinataires, signés « Un ancien membre ». Cette action est irréversible."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{download-link} first, if you want to keep a copy."
+msgstr "{download-link} d'abord, si vous souhaitez en garder une copie."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete my account"
+msgstr "Supprimer mon compte"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Keep it"
+msgstr "Conserver"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr "Saisissez votre adresse e-mail et nous vous enverrons un lien de connexion."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email address"
+msgstr "Adresse e-mail"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "you@example.org"
+msgstr "vous@exemple.org"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me a link"
+msgstr "M'envoyer un lien"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Check your inbox"
+msgstr "Consultez votre boîte de réception"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minute."
+msgid_plural "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minutes."
+msgstr[0] "Si cette adresse est autorisée ici, un lien de connexion est en route. Il ne fonctionne qu'une fois, dans un délai de {n} minute."
+msgstr[1] "Si cette adresse est autorisée ici, un lien de connexion est en route. Il ne fonctionne qu'une fois, dans un délai de {n} minutes."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Use another address"
+msgstr "Utiliser une autre adresse"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in as {email}?"
+msgstr "Se connecter avec {email} ?"
+
+#: src/s_exp/jumble/error/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Go to the home page"
+msgstr "Aller à l'accueil"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "The problem was logged. Please try again."
+msgstr "Le problème a été enregistré. Veuillez réessayer."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Bad request"
+msgstr "Requête invalide"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This request could not be understood."
+msgstr "Cette requête n'a pas pu être comprise."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Too large"
+msgstr "Trop volumineux"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "That request was larger than allowed."
+msgstr "Cette requête dépasse la taille autorisée."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not allowed"
+msgstr "Non autorisé"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "You are not allowed to do this."
+msgstr "Vous n'êtes pas autorisé à faire cela."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not supported"
+msgstr "Non pris en charge"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This cannot be done here."
+msgstr "Ce n'est pas possible ici."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not possible right now"
+msgstr "Impossible pour le moment"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This cannot be done as things stand. Reload the page and try again."
+msgstr "Ce n'est pas possible en l'état. Rechargez la page et réessayez."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Too many requests"
+msgstr "Trop de requêtes"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Please wait a moment, then try again."
+msgstr "Veuillez patienter un instant, puis réessayer."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Busy right now"
+msgstr "Service surchargé"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Please try again in a moment."
+msgstr "Veuillez réessayer dans un instant."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Unavailable"
+msgstr "Indisponible"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "A service this depends on is not answering. Please try again later."
+msgstr "Un service nécessaire ne répond pas. Veuillez réessayer plus tard."
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Give your things a {second-life} in your community."
+msgstr "Offrez une {second-life} à vos objets au sein de votre communauté."
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "second life"
+msgstr "seconde vie"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Sell, give away or lend what you no longer need to people around you, and find what you were looking for."
+msgstr "Vendez, donnez ou prêtez ce dont vous n'avez plus besoin aux personnes autour de vous, et trouvez ce que vous cherchiez."
+
+#: src/s_exp/jumble/home/view.clj
+msgid "A bike, a desk lamp, a stroller…"
+msgstr "Un vélo, une lampe de bureau, une poussette…"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/listing/view.clj
+msgid "Search listings"
+msgstr "Rechercher des annonces"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "Search"
+msgstr "Rechercher"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "{n} thing up for grabs right now"
+msgid_plural "{n} things up for grabs right now"
+msgstr[0] "{n} objet à saisir en ce moment"
+msgstr[1] "{n} objets à saisir en ce moment"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Post a listing"
+msgstr "Publier une annonce"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "or browse all listings →"
+msgstr "ou parcourir toutes les annonces →"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "Just posted"
+msgstr "Dernières annonces"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "See all →"
+msgstr "Tout voir →"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Electronics"
+msgstr "Électronique"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Furniture & home"
+msgstr "Meubles et maison"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Kids & baby"
+msgstr "Enfants et bébés"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Sports & outdoors"
+msgstr "Sport et plein air"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Books & media"
+msgstr "Livres et médias"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Clothing"
+msgstr "Vêtements"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Tickets & vouchers"
+msgstr "Billets et bons"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Other"
+msgstr "Autres"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Give it a name."
+msgstr "Donnez-lui un nom."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Keep the name to {max} characters or fewer."
+msgstr "Le nom ne doit pas dépasser {max} caractères."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "There is already one named “{label}”."
+msgstr "Ce nom existe déjà : « {label} »."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Keep at least one category."
+msgstr "Gardez au moins une catégorie."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Nothing to save"
+msgstr "Rien à enregistrer"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Search for something, or choose a type or a category, then save that."
+msgstr "Lancez une recherche ou choisissez un type ou une catégorie, puis enregistrez-la."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the listings"
+msgstr "Retour aux annonces"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Too many saved searches"
+msgstr "Trop de recherches enregistrées"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "You can keep up to {max} saved searches. Remove one first."
+msgstr "Vous pouvez garder jusqu'à {max} recherches enregistrées. Supprimez-en une d'abord."
+
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/view.clj
+msgid "Your saved searches"
+msgstr "Vos recherches enregistrées"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This member does not exist, or no longer does."
+msgstr "Ce membre n’existe pas, ou plus."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This listing does not exist, or no longer does."
+msgstr "Cette annonce n'existe pas ou plus."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Not on the board"
+msgstr "Annonce hors ligne"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This listing is no longer on the board: put it back on the board instead."
+msgstr "Cette annonce n'est plus en ligne : remettez-la plutôt en ligne."
+
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/moderation/view.clj
+msgid "Back to the listing"
+msgstr "Retour à l'annonce"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Only listings on the board can be edited. Put it back on the board first."
+msgstr "Seules les annonces en ligne peuvent être modifiées. Remettez-la d'abord en ligne."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Upload too large"
+msgstr "Envoi trop volumineux"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
+msgstr "Une annonce peut contenir jusqu'à {max} photos de {megabytes} Mo maximum chacune."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Retour au formulaire"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Still looking for \"{title}\"?"
+msgstr "Toujours à la recherche de « {title} » ?"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Is \"{title}\" still available?"
+msgstr "« {title} » : toujours disponible ?"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "You posted \"{title}\" on {app-name} {n} day ago or more."
+msgid_plural "You posted \"{title}\" on {app-name} {n} days ago or more."
+msgstr[0] "Vous avez publié « {title} » sur {app-name} il y a {n} jour ou plus."
+msgstr[1] "Vous avez publié « {title} » sur {app-name} il y a {n} jours ou plus."
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Still looking for it? Say so on its page, or mark it as found:"
+msgstr "Toujours à sa recherche ? Dites-le sur sa page, ou indiquez que vous l'avez trouvé :"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Is it still available? Say so on its page, or mark it as gone:"
+msgstr "Est-ce toujours disponible ? Indiquez-le sur la page de l'annonce, ou signalez que ce n'est plus le cas :"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Without an answer within {n} day, it leaves the board. You can put it back from My listings at any time."
+msgid_plural "Without an answer within {n} days, it leaves the board. You can put it back from My listings at any time."
+msgstr[0] "Sans réponse sous {n} jour, l'annonce ne sera plus en ligne. Vous pourrez la remettre en ligne à tout moment depuis Mes annonces."
+msgstr[1] "Sans réponse sous {n} jours, l'annonce ne sera plus en ligne. Vous pourrez la remettre en ligne à tout moment depuis Mes annonces."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose whether you sell, give away, lend or look for it."
+msgstr "Choisissez si vous le vendez, le donnez, le prêtez ou le cherchez."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Give it a title."
+msgstr "Donnez-lui un titre."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the title to 120 characters or fewer."
+msgstr "Le titre ne doit pas dépasser 120 caractères."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the description to 5000 characters or fewer."
+msgstr "La description ne doit pas dépasser 5 000 caractères."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Enter a price of at most one million, such as 25 or 12.50."
+msgstr "Indiquez un prix d'un million au plus, par exemple 25 ou 12,50."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose a category."
+msgstr "Choisissez une catégorie."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose where to pick it up."
+msgstr "Choisissez le lieu de retrait."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Enter the city."
+msgstr "Saisissez la ville."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the city to 80 characters or fewer."
+msgstr "La ville ne doit pas dépasser 80 caractères."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "At most {max} photos."
+msgstr "{max} photos au maximum."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} is too large (over {megapixels} megapixels)."
+msgstr "La photo {number} est trop grande (plus de {megapixels} mégapixels)."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} took too long to process. Try a smaller one."
+msgstr "La photo {number} a pris trop de temps à traiter. Essayez-en une plus petite."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "Trop de photos sont en cours de traitement. Veuillez réessayer dans un instant."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."
+msgstr "La photo {number} n'est pas une image JPEG, PNG, HEIC ou AVIF."
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "“{query}”"
+msgstr "« {query} »"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "for sale"
+msgstr "à vendre"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "free"
+msgstr "gratuit"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "to lend"
+msgstr "à prêter"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "wanted"
+msgstr "recherché"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "in {category}"
+msgstr "dans {category}"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "New on {app-name}: {n} listing for your saved searches"
+msgid_plural "New on {app-name}: {n} listings for your saved searches"
+msgstr[0] "Nouveau sur {app-name} : {n} annonce pour vos recherches enregistrées"
+msgstr[1] "Nouveau sur {app-name} : {n} annonces pour vos recherches enregistrées"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "You get this email once a day at most, when something matches your saved searches."
+msgstr "Vous recevez cet e-mail au plus une fois par jour, quand une annonce correspond à vos recherches enregistrées."
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "Manage them: {url}"
+msgstr "Pour les gérer : {url}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Edit listing"
+msgstr "Modifier l'annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "New listing"
+msgstr "Nouvelle annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "You want to"
+msgstr "Vous souhaitez"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Sell it"
+msgstr "Vendre"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Give it away"
+msgstr "Donner"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Lend it"
+msgstr "Prêter"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Look for it"
+msgstr "Le chercher"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Title"
+msgstr "Titre"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Price ({currency})"
+msgstr "Prix ({currency})"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Category"
+msgstr "Catégorie"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Choose a category"
+msgstr "Choisissez une catégorie"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Pickup"
+msgstr "Retrait"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Where"
+msgstr "Où"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Elsewhere"
+msgstr "Ailleurs"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "City"
+msgstr "Ville"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Description"
+msgstr "Description"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Markdown works: **bold**, _italics_, lists, links."
+msgstr "Markdown accepté : **gras**, _italique_, listes, liens."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photos"
+msgstr "Photos"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "The cover photo shows first, on the board and on the listing."
+msgstr "La photo de couverture s'affiche en premier, sur le tableau et dans l'annonce."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Cover"
+msgstr "Couverture"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove photo {number}"
+msgstr "Retirer la photo {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Move photo {number} earlier"
+msgstr "Monter la photo {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Move photo {number} later"
+msgstr "Descendre la photo {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Add photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)"
+msgstr "Ajouter des photos (jusqu'à {max} au total, JPEG, PNG, HEIC ou AVIF)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)"
+msgstr "Photos (jusqu'à {max} au total, JPEG, PNG, HEIC ou AVIF)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Please select the photos again."
+msgstr "Veuillez sélectionner à nouveau les photos."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Save changes"
+msgstr "Enregistrer les modifications"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Publish listing"
+msgstr "Publier l'annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Free"
+msgstr "Gratuit"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "To lend"
+msgstr "À prêter"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Wanted"
+msgstr "Recherché"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Reserved"
+msgstr "Réservée"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Sold"
+msgstr "Vendue"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Given away"
+msgstr "Donnée"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Found"
+msgstr "Trouvé"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Expired"
+msgstr "Expirée"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as reserved"
+msgstr "Marquer comme réservée"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as sold"
+msgstr "Marquer comme vendue"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as given away"
+msgstr "Marquer comme donnée"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as found"
+msgstr "Marquer comme trouvé"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Make available again"
+msgstr "Rendre à nouveau disponible"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Put back on the board"
+msgstr "Remettre en ligne"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Favorite {title}"
+msgstr "Favori : {title}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Favorite"
+msgstr "Favori"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "I have one"
+msgstr "J'en ai un"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/message/view.clj
+msgid "Message {name}"
+msgstr "Écrire à {name}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Your listing"
+msgstr "Votre annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Still looking? Without an answer, it soon leaves the board."
+msgstr "Toujours à sa recherche ? Sans réponse, l'annonce quitte bientôt le tableau."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Still available? Without an answer, it soon leaves the board."
+msgstr "Toujours disponible ? Sans réponse, l'annonce ne sera bientôt plus en ligne."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Yes, keep it on the board"
+msgstr "Oui, la garder en ligne"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Edit"
+msgstr "Modifier"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing"
+msgstr "Supprimer l'annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photo {number}"
+msgstr "Photo {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Posted by {name}"
+msgstr "Publiée par {name}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove listing (moderation)"
+msgstr "Supprimer l'annonce (modération)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Thanks, a moderator will have a look."
+msgstr "Merci, l'équipe de modération va y jeter un œil."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Report this listing"
+msgstr "Signaler cette annonce"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "What is wrong with it? (optional)"
+msgstr "Quel est le problème ? (facultatif)"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Report"
+msgstr "Signaler"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing?"
+msgstr "Supprimer l'annonce ?"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "“{title}” and its photos will be deleted. This cannot be undone."
+msgstr "L'annonce « {title} » et ses photos seront supprimées. Cette action est irréversible."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "clear filter"
+msgstr "retirer le filtre"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "All"
+msgstr "Toutes"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "For sale"
+msgstr "À vendre"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Changed"
+msgstr "Modifiée"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "More results"
+msgstr "Plus de résultats"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Older listings"
+msgstr "Annonces plus anciennes"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Showing {n} listing"
+msgid_plural "Showing {n} listings"
+msgstr[0] "{n} annonce affichée"
+msgstr[1] "{n} annonces affichées"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing to search for in “{query}”: search with letters or numbers."
+msgstr "Rien à rechercher dans « {query} » : utilisez des lettres ou des chiffres."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Results for “{query}”"
+msgstr "Résultats pour « {query} »"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Clear search"
+msgstr "Effacer la recherche"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Filters"
+msgstr "Filtres"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Type"
+msgstr "Type"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "More categories ({count})"
+msgstr "Autres catégories ({count})"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Save this search"
+msgstr "Enregistrer cette recherche"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Get an email when something new matches."
+msgstr "Recevez un e-mail quand une nouvelle annonce correspond."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No listings match."
+msgstr "Aucune annonce ne correspond."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing here yet."
+msgstr "Rien pour l'instant."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Search: {query}"
+msgstr "Recherche : {query}"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Listings"
+msgstr "Annonces"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "What your community is selling, giving away, lending and looking for."
+msgstr "Ce que votre communauté vend, donne, prête et recherche."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "My listings"
+msgstr "Mes annonces"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Everything you posted, sold and given away included."
+msgstr "Tout ce que vous avez publié, y compris ce qui est vendu ou donné."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "You have not posted anything yet."
+msgstr "Vous n'avez encore rien publié."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Member since {date}"
+msgstr "Membre depuis le {date}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing on the board right now."
+msgstr "Rien en ligne pour le moment."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Favorites"
+msgstr "Favoris"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Listings you keep an eye on. Only you see them."
+msgstr "Les annonces que vous suivez. Elles ne sont visibles que par vous."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No favorites yet."
+msgstr "Aucun favori pour l'instant."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/message/view.clj
+msgid "Browse listings"
+msgstr "Parcourir les annonces"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Saved searches"
+msgstr "Recherches enregistrées"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Once a day at most, you get an email with what is new for them. Save one from the listings, after searching or choosing a type or a category."
+msgstr "Au plus une fois par jour, vous recevez un e-mail avec leurs nouveautés. Enregistrez-en une depuis les annonces, après une recherche ou le choix d'un type ou d'une catégorie."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove {search}"
+msgstr "Supprimer {search}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No saved searches yet."
+msgstr "Aucune recherche enregistrée pour l'instant."
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "This week on {app-name}: {n} new listing"
+msgid_plural "This week on {app-name}: {n} new listings"
+msgstr[0] "Cette semaine sur {app-name} : {n} nouvelle annonce"
+msgstr[1] "Cette semaine sur {app-name} : {n} nouvelles annonces"
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "And {n} more: {url}"
+msgstr "Et {n} autres : {url}"
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "You get this email once a week when something is new on {app-name}."
+msgstr "Vous recevez cet e-mail une fois par semaine quand il y a du nouveau sur {app-name}."
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "Turn it off in your settings: {url}"
+msgstr "Désactivez-le dans vos paramètres : {url}"
+
+#: src/s_exp/jumble/message/email.clj src/s_exp/jumble/push/delivery.clj
+msgid "New message from {name}: {subject}"
+msgid_plural "New messages from {name}: {subject}"
+msgstr[0] "Nouveau message de {name} : {subject}"
+msgstr[1] "Nouveaux messages de {name} : {subject}"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "{name} sent you a message about \"{subject}\":"
+msgid_plural "{name} sent you {n} messages about \"{subject}\". The latest:"
+msgstr[0] "{name} vous a envoyé un message à propos de « {subject} » :"
+msgstr[1] "{name} vous a envoyé {n} messages à propos de « {subject} ». Le dernier :"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "Read and reply: {url}"
+msgstr "Lire et répondre : {url}"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "You get this email from {app-name} when a message stays unread for a few minutes."
+msgstr "{app-name} vous envoie cet e-mail quand un message reste non lu quelques minutes."
+
+#: src/s_exp/jumble/message/email.clj
+msgid "To stop these emails: {url}"
+msgstr "Pour ne plus recevoir ces e-mails : {url}"
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Write a message."
+msgstr "Écrivez un message."
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Keep the message to 2000 characters or fewer."
+msgstr "Le message ne doit pas dépasser 2 000 caractères."
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Give it a subject of 120 characters or fewer."
+msgstr "Donnez-lui un objet de 120 caractères au plus."
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "A former member"
+msgstr "Un ancien membre"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "{title} (removed)"
+msgstr "{title} (supprimée)"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "About {listing}"
+msgstr "À propos de {listing}"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Subject"
+msgstr "Objet"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Message"
+msgstr "Message"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Hi! I have one."
+msgstr "Bonjour ! J'en ai un."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Hi! Is it still available?"
+msgstr "Bonjour ! Est-ce toujours disponible ?"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Send"
+msgstr "Envoyer"
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Messages"
+msgstr "Messages"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Your conversations with people in your community about their listings and yours."
+msgstr "Vos conversations avec les membres de votre communauté au sujet de leurs annonces et des vôtres."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "re: {title}"
+msgstr "re : {title}"
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/view/layout.clj
+msgid "unread"
+msgid_plural "unread"
+msgstr[0] "non lu"
+msgstr[1] "non lus"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "No messages yet. Write to someone about a listing that interests you."
+msgstr "Aucun message pour l'instant. Écrivez à quelqu'un au sujet d'une annonce qui vous intéresse."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "With {name} · {listing}"
+msgstr "Avec {name} · {listing}"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "You"
+msgstr "Vous"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "This member deleted their account: replies would not reach them."
+msgstr "Ce membre a supprimé son compte : vos réponses ne lui parviendraient pas."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Reply"
+msgstr "Répondre"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Reply to {name}…"
+msgstr "Répondre à {name}…"
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "To let anyone in, use * in the configuration."
+msgstr "Pour ouvrir l'accès à tout le monde, utilisez * dans la configuration."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator, by the configuration: remove them there."
+msgstr "{email} fait partie de la modération par la configuration : retirez l’adresse de la configuration."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Aucun membre n'a cette adresse."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Listing reported: {title}"
+msgstr "Annonce signalée : {title}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "{reporter} reported \"{title}\"."
+msgstr "{reporter} a signalé « {title} »."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Review the reports: {url}"
+msgstr "Examiner les signalements : {url}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "You get this email as a moderator of {app-name}, once per reported listing."
+msgstr "Vous recevez cet e-mail car vous modérez {app-name}, une fois par annonce signalée."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Your listing was removed: {title}"
+msgstr "Votre annonce a été supprimée : {title}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "A moderator removed your listing \"{title}\" from {app-name}."
+msgstr "La modération a supprimé votre annonce « {title} » de {app-name}."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "The reason given:"
+msgstr "Motif indiqué :"
+
+#: src/s_exp/jumble/moderation/model.clj
+msgid "Keep it to 1000 characters or fewer."
+msgstr "Pas plus de 1 000 caractères, s'il vous plaît."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Reports"
+msgstr "Signalements"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Qui peut se connecter"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Categories"
+msgstr "Catégories"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Pickup places"
+msgstr "Lieux de retrait"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appearance"
+msgstr "Apparence"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Poster"
+msgstr "Affiche"
+
+#: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Manage"
+msgstr "Gérer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Notice"
+msgstr "Avis"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Listings members reported, the longest waiting first."
+msgstr "Les annonces signalées par les membres, les plus anciens signalements en premier."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Posted by {owner} ({email})"
+msgstr "Publiée par {owner} ({email})"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No reason given"
+msgstr "Aucun motif indiqué"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Your own listing: another moderator handles its reports."
+msgstr "Votre propre annonce : une autre personne de la modération traite ses signalements."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Reason, emailed to the owner (optional)"
+msgstr "Motif, envoyé par e-mail à l'auteur de l'annonce (facultatif)"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing {title}"
+msgstr "Supprimer l'annonce {title}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Dismiss the reports on {title}"
+msgstr "Classer sans suite les signalements sur {title}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Dismiss"
+msgstr "Classer sans suite"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No open reports."
+msgstr "Aucun signalement en attente."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Report listing"
+msgstr "Signaler une annonce"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Report “{title}”"
+msgstr "Signaler « {title} »"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "“{title}” by {owner} and its photos will be deleted, and {owner} emailed. This cannot be undone."
+msgstr "« {title} » de {owner} et ses photos seront supprimées, et {owner} recevra un e-mail. Cette action est irréversible."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No listings"
+msgstr "Aucune annonce"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{n} listing"
+msgid_plural "{n} listings"
+msgstr[0] "{n} annonce"
+msgstr[1] "{n} annonces"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Retirer un membre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "Son adresse e-mail"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Son compte et ses annonces sont supprimés définitivement, et cette personne ne pourra plus jamais se connecter."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Retiré."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Retirer…"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove {name}?"
+msgstr "Retirer {name} ?"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{name} ({email}) and their account are deleted, and they can never sign in again. Their messages stay, from a former member. This cannot be undone."
+msgstr "Le compte de {name} ({email}) est supprimé, et cette personne ne pourra plus jamais se connecter. Ses messages restent, signés d'un ancien membre. Cette action est irréversible."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{name} ({email}) and their account are deleted, with {listings} and their photos, and they can never sign in again. Their messages stay, from a former member. This cannot be undone."
+msgstr "Le compte de {name} ({email}) est supprimé, avec {listings} et leurs photos, et cette personne ne pourra plus jamais se connecter. Ses messages restent, signés d'un ancien membre. Cette action est irréversible."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove for good"
+msgstr "Retirer définitivement"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Keep them"
+msgstr "Garder ce membre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
+msgstr "Adresses et motifs : {person} pour une personne, {domain} pour un domaine, {subdomains} pour ses sous-domaines."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
+msgstr "Tout le monde peut se connecter : la configuration laisse entrer chacun. Restreignez-la pour gérer ici qui peut se connecter."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "From the configuration"
+msgstr "Dans la configuration"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Added here"
+msgstr "Ajoutés ici"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "added by {who}, {date}"
+msgstr "ajouté par {who}, le {date}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "un ancien membre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Withdraw {pattern}"
+msgstr "Retirer {pattern}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Withdraw"
+msgstr "Retirer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Nobody yet."
+msgstr "Personne pour l'instant."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add addresses or patterns"
+msgstr "Ajouter des adresses ou des motifs"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "One per line, or separated by commas. Withdrawing one signs out the people only it let in, at once; their accounts stay."
+msgstr "Une par ligne, ou séparées par des virgules. En retirer une déconnecte aussitôt les personnes qu'elle seule laissait entrer ; leurs comptes restent."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Email an invitation to the addresses"
+msgstr "Envoyer une invitation par e-mail aux adresses"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Added."
+msgstr "Ajouté."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add"
+msgstr "Ajouter"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "What listings are filed under, in the order members see them."
+msgstr "Les rubriques où sont classées les annonces, dans l'ordre où les membres les voient."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add a category"
+msgstr "Ajouter une catégorie"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Where members can hand things over. They can always choose Elsewhere and type a city; with no places, that is the only choice."
+msgstr "Les lieux où les membres peuvent se remettre les objets. Ils peuvent toujours choisir « Ailleurs » et indiquer une ville ; sans lieu défini, c'est le seul choix."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add a place"
+msgstr "Ajouter un lieu"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Name of {label}"
+msgstr "Nom de {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Rename {label}"
+msgstr "Renommer {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Rename"
+msgstr "Renommer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Up"
+msgstr "Monter"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Move {label} up"
+msgstr "Monter {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Down"
+msgstr "Descendre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Move {label} down"
+msgstr "Descendre {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retire"
+msgstr "Ne plus proposer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retire {label}"
+msgstr "Ne plus proposer {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "None offered."
+msgstr "Aucun choix proposé."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retired"
+msgstr "Plus proposés"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No longer offered. Their listings keep them."
+msgstr "Plus proposés. Les annonces qui les utilisent les conservent."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Restore"
+msgstr "Rétablir"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Restore {label}"
+msgstr "Rétablir {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "The colours of every page, for everyone. Each palette has a light and a dark side: members see the one they chose, or their device's."
+msgstr "Les couleurs de toutes les pages, pour tout le monde. Chaque palette a un côté clair et un côté sombre : les membres voient celui qu’ils ont choisi, ou celui de leur appareil."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Palette"
+msgstr "Palette"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Print it for a noticeboard, by the coffee machine or the lift: whoever scans it lands on {app-name}."
+msgstr "Imprimez-la pour un tableau d’affichage, près de la machine à café ou de l’ascenseur : qui la scanne arrive sur {app-name}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Print"
+msgstr "Imprimer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to open {app-name}"
+msgstr "Scanner pour ouvrir {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Point your phone's camera at the code"
+msgstr "Pointez l'appareil photo de votre téléphone vers le code"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Post what you no longer need, or find what you need"
+msgstr "Publiez ce dont vous n'avez plus besoin, ou trouvez ce qu'il vous faut"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Write to each other, and meet up"
+msgstr "Écrivez-vous, puis retrouvez-vous"
+
+#: src/s_exp/jumble/money.clj
+msgid "{currency} {amount}"
+msgstr "{amount} {currency}"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Forest"
+msgstr "Forêt"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Plum"
+msgstr "Prune"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Ink"
+msgstr "Encre"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Slate"
+msgstr "Ardoise"
+
+#: src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Privacy"
+msgstr "Confidentialité"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "{app-name} is run by and for its community. This page says what it keeps about you, and why."
+msgstr "{app-name} est géré par et pour sa communauté. Cette page indique ce qui est conservé à votre sujet, et pourquoi."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "What is kept"
+msgstr "Ce qui est conservé"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Your name and email address, from signing in; what you post: listings, their photos and your messages; your favorites, saved searches and settings; and reports you make."
+msgstr "Votre nom et votre adresse e-mail, issus de la connexion ; ce que vous publiez : annonces, leurs photos et vos messages ; vos favoris, recherches enregistrées et paramètres ; et les signalements que vous faites."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Why"
+msgstr "Pourquoi"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Only to run {app-name}: to show your listings, deliver your messages and send you emails: those you asked for, and a weekly summary of what is new, which you can turn off. Nothing is sold or shared for advertising, and there is no tracking and no analytics."
+msgstr "Uniquement pour faire fonctionner {app-name} : afficher vos annonces, transmettre vos messages et vous envoyer des e-mails : ceux que vous avez demandés, et un résumé hebdomadaire des nouveautés, que vous pouvez désactiver. Rien n'est vendu ni partagé à des fins publicitaires, et il n'y a ni pistage ni mesure d'audience."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Who sees what"
+msgstr "Qui voit quoi"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
+msgstr "Les autres membres voient votre nom, vos annonces et ce que vous leur écrivez. Les messages restent entre vous et la personne à qui vous écrivez. L'équipe de modération voit les signalements et peut retirer des annonces."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Cookies"
+msgstr "Cookies"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Only those {app-name} needs: one keeps you signed in, one remembers your light or dark theme, and one protects signing in. No tracking cookies."
+msgstr "Uniquement ceux dont {app-name} a besoin : l'un maintient votre session, un autre retient votre thème clair ou sombre, et un dernier protège la connexion. Aucun cookie de pistage."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Services involved"
+msgstr "Services utilisés"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Photos and backups are stored with your community's storage provider, emails go through its email provider, and signing in may go through its sign-in service. Notifications you turn on go through your browser's push service (Google's, Apple's, Mozilla's or Microsoft's), encrypted: it sees only when one is sent."
+msgstr "Les photos et les sauvegardes sont stockées chez le fournisseur de stockage de votre communauté, les e-mails passent par son fournisseur d'e-mail, et la connexion peut passer par son service de connexion. Les notifications que vous activez passent, chiffrées, par le service push de votre navigateur (celui de Google, d'Apple, de Mozilla ou de Microsoft) : il voit seulement quand une notification est envoyée."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "How long"
+msgstr "Combien de temps"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
+msgstr "Jusqu'à ce que vous le retiriez, ou que vous supprimiez votre compte ; les messages que vous avez écrits restent alors à leurs destinataires, et vos signalements aux modérateurs, sans votre nom. Les sauvegardes conservent les données supprimées quelque temps, en général jusqu'à trois mois."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Your choices"
+msgstr "Vos choix"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Download everything {app-name} keeps about you, or delete your account, from {settings}."
+msgstr "Téléchargez tout ce que {app-name} conserve à votre sujet, ou supprimez votre compte, depuis les {settings}."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Questions"
+msgstr "Questions"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Write to {contact}."
+msgstr "Écrivez à {contact}."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Ask your community's moderators."
+msgstr "Adressez-vous à l'équipe de modération de votre communauté."
+
+#: src/s_exp/jumble/page/theme.clj
+msgid "Switch between light and dark"
+msgstr "Basculer entre mode clair et mode sombre"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMMM yyyy"
+msgstr "d MMMM yyyy"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMM, HH:mm"
+msgstr "d MMM, HH:mm"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMM yyyy, HH:mm"
+msgstr "d MMM yyyy, HH:mm"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "to review"
+msgid_plural "to review"
+msgstr[0] "à traiter"
+msgstr[1] "à traiter"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Sign out"
+msgstr "Se déconnecter"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Main"
+msgstr "Menu principal"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "changed"
+msgid_plural "changed"
+msgstr[0] "modifié"
+msgstr[1] "modifiés"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "{app-name} — sell, give away, lend and find things within your community."
+msgstr "{app-name} — vendre, donner, prêter et trouver des objets au sein de votre communauté."
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Source code"
+msgstr "Code source"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Get your own Jumble"
+msgstr "Créer son propre Jumble"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Built by {maker}"
+msgstr "Conçu par {maker}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Hosted by {host}"
+msgstr "Hébergé par {host}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Powered by Jumble"
+msgstr "Propulsé par Jumble"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "There is nothing at this address."
+msgstr "Il n'y a rien à cette adresse."
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Not found"
+msgstr "Page introuvable"
+
+#: src/s_exp/jumble/web/routes.clj
+msgid "Signed out"
+msgstr "Session fermée"
+
+#: src/s_exp/jumble/web/routes.clj
+msgid "You were signed out, so this was not saved. Sign in, then send it again."
+msgstr "Votre session a été fermée : rien n'a été enregistré. Connectez-vous, puis renvoyez le formulaire."

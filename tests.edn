@@ -1,0 +1,12 @@
+#kaocha/v1
+{:tests [{:id :unit
+          :source-paths ["src"]
+          :test-paths ["test"]
+          :skip-meta [:integration]}
+         ;; Needs the docker compose services (dev/s3-init.sh run once):
+         ;; clojure -M:test:integration
+         {:id :integration
+          :source-paths ["src"]
+          :test-paths ["test"]
+          :focus-meta [:integration]}]
+ :reporter [kaocha.report/documentation]}

@@ -1,0 +1,15 @@
+# Local S3-compatible storage for development, standing in for the one used in production.
+# Single node, no replication. Run dev/s3-init.sh once after first start.
+metadata_dir = "/var/lib/garage/meta"
+data_dir = "/var/lib/garage/data"
+db_engine = "sqlite"
+replication_factor = 1
+
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "127.0.0.1:3901"
+rpc_secret = "8a4f2c6e1b3d5f7092a4c6e8f0b2d4f6a8c0e2f4b6d8f0a2c4e6f8b0d2f4a6c8"
+
+[s3_api]
+s3_region = "garage"
+api_bind_addr = "[::]:3900"
+root_domain = ".s3.garage.localhost"

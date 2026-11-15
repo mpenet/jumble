@@ -1,0 +1,23 @@
+# What the test jobs need to run Jumble's code: Java, the Clojure CLI with
+# its dependencies cached, and libvips for images.
+name: setup
+description: Java, Clojure with cached dependencies, and libvips
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+      with:
+        distribution: temurin
+        java-version: "25"
+    - uses: DeLaGuardo/setup-clojure@6d46099eae24853c33c0482f2bb54edf4f1a4c74 # 13.7.0
+      with:
+        cli: 1.12.5.1654
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.gitlibs
+        key: deps-${{ runner.os }}-${{ hashFiles('deps.edn') }}-kondo-2026.10.26
+    - name: libvips
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips-tools libheif-plugin-libde265

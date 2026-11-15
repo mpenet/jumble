@@ -1,0 +1,45 @@
+# Development services: a local Dex for sign-in, Garage for S3 storage,
+# Mailpit catching outgoing email (read it at http://localhost:8025) and
+# Pebble, a test ACME CA, issuing certificates without checking challenges.
+# Start with `docker compose up -d`, run `dev/s3-init.sh` once, then run the
+# app with `clojure -M:dev:run`.
+# Fixed project name: container, network and volume names do not depend on
+# the checkout's directory (dev/backup-restore-check.sh joins jumble_default).
+name: jumble
+
+services:
+  dex:
+    image: ghcr.io/dexidp/dex:v2.46.1
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+    ports:
+      - "127.0.0.1:5556:5556"
+    volumes:
+      - ./dev/dex.yaml:/etc/dex/config.yaml:ro
+
+  garage:
+    image: dxflrs/garage:v2.5.0
+    ports:
+      - "127.0.0.1:3900:3900"
+    volumes:
+      - ./dev/garage.toml:/etc/garage.toml:ro
+      - garage-data:/var/lib/garage
+
+  mailpit:
+    image: axllent/mailpit:v1.33.1
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+
+  pebble:
+    image: ghcr.io/letsencrypt/pebble:2.10.3@sha256:0c81f05db371f436c97fb894bd6d2ab8fc9c8e2ce40f8bef8a8e15941bcd75ef
+    environment:
+      # Every challenge passes, so tests need no route from Pebble to them.
+      PEBBLE_VA_ALWAYS_VALID: "1"
+      PEBBLE_VA_NOSLEEP: "1"
+    ports:
+      # The ACME directory, and the management API with the issuing root.
+      - "127.0.0.1:14000:14000"
+      - "127.0.0.1:15000:15000"
+
+volumes:
+  garage-data:

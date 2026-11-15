@@ -1,0 +1,16 @@
+.git
+.cpcache
+.clj-kondo
+.lsp
+.agent-shell
+target
+test
+test-resources
+dev
+doc
+*.db
+*.db-wal
+*.db-shm
+assets
+deploy
+.github

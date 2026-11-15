@@ -1,0 +1,1673 @@
+msgid ""
+msgstr ""
+"Language: da\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign in again"
+msgstr "Log ind igen"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in unavailable"
+msgstr "Login er ikke tilgængeligt"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service cannot be reached right now. Please try again shortly."
+msgstr "Login-tjenesten kan ikke nås lige nu. Prøv igen om lidt."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Try again"
+msgstr "Prøv igen"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Too many sign-ins"
+msgstr "For mange login-forsøg"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Too many sign-ins were started from here. Please try again in a few minutes."
+msgstr "Der er startet for mange login-forsøg herfra. Prøv igen om et par minutter."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Account not allowed"
+msgstr "Kontoen har ikke adgang"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Only members of this community can sign in here."
+msgstr "Kun medlemmer af dette fællesskab kan logge ind her."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This community is full"
+msgstr "Fællesskabet er fuldt"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "It has as many members as it can have. Ask its moderators to make room."
+msgstr "Der er ikke plads til flere medlemmer. Bed moderatorerne om at gøre plads."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Skriv din e-mailadresse."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "“{email}” is not an email address."
+msgstr "»{email}« er ikke en e-mailadresse."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Link expired"
+msgstr "Linket er udløbet"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This sign-in link has expired or was already used."
+msgstr "Dette login-link er udløbet eller allerede brugt."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Get a new link"
+msgstr "Få et nyt link"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in expired"
+msgstr "Login udløbet"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "This sign-in is invalid or has expired."
+msgstr "Dette login er ugyldigt eller udløbet."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in refused"
+msgstr "Login afvist"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service refused the request."
+msgstr "Login-tjenesten afviste anmodningen."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Email not verified"
+msgstr "E-mailadressen er ikke bekræftet"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "The sign-in service has not verified your email address."
+msgstr "Login-tjenesten har ikke bekræftet din e-mailadresse."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Sign-in failed"
+msgstr "Login mislykkedes"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Something went wrong while signing you in."
+msgstr "Noget gik galt, da du skulle logges ind."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your account was deleted"
+msgstr "Din konto er slettet"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your listings, photos and favorites are gone. Messages you sent stay with the people you wrote to, from \"A former member\"."
+msgstr "Dine annoncer, billeder og favoritter er væk. Beskeder, du har sendt, bliver hos modtagerne, fra »Et tidligere medlem«."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Done"
+msgstr "Færdig"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Sign in to {app-name}"
+msgstr "Log ind på {app-name}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Use this link to sign in to {app-name}:"
+msgstr "Brug dette link til at logge ind på {app-name}:"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "It works once, within {n} minute. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
+msgid_plural "It works once, within {n} minutes. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
+msgstr[0] "Det virker én gang, inden for {n} minut. Hvis du ikke har bedt om det, kan du\nse bort fra denne e-mail: ingen kan logge ind uden linket."
+msgstr[1] "Det virker én gang, inden for {n} minutter. Hvis du ikke har bedt om det, kan du\nse bort fra denne e-mail: ingen kan logge ind uden linket."
+
+#: src/s_exp/jumble/account/email.clj
+msgid "You are invited to {app-name}"
+msgstr "Du er inviteret til {app-name}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "{inviter} invited you to {app-name}, where members sell, give away and lend things to each other."
+msgstr "{inviter} har inviteret dig til {app-name}, hvor medlemmerne sælger, giver væk og låner ting ud til hinanden."
+
+#: src/s_exp/jumble/account/email.clj
+msgid "Sign in with this address: {url}"
+msgstr "Log ind med denne e-mailadresse: {url}"
+
+#: src/s_exp/jumble/account/membership.clj
+msgid "Not an email pattern: {pattern} (use *, name@domain, *@domain or *@*.domain)"
+msgstr "Ikke et gyldigt e-mailmønster: {pattern} (brug *, navn@domæne, *@domæne eller *@*.domæne)"
+
+#: src/s_exp/jumble/account/model.clj
+msgid "Enter your name."
+msgstr "Skriv dit navn."
+
+#: src/s_exp/jumble/account/model.clj
+msgid "Keep your name to 80 characters or fewer."
+msgstr "Dit navn må højst være på 80 tegn."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notifications on this device"
+msgstr "Notifikationer på denne enhed"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Get a notification here as soon as someone writes to you, even with {app-name} closed."
+msgstr "Få en notifikation her, så snart nogen skriver til dig, også når {app-name} er lukket."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notify me on this device"
+msgstr "Send notifikationer til denne enhed"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Stop on this device"
+msgstr "Stop på denne enhed"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "This browser cannot show notifications."
+msgstr "Denne browser kan ikke vise notifikationer."
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/error/view.clj
+msgid "Something went wrong"
+msgstr "Noget gik galt"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Notifications are blocked for this site: allow them in the browser's settings, then try again."
+msgstr "Notifikationer er blokeret for dette websted: tillad dem i browserens indstillinger, og prøv så igen."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "On iPhone and iPad, add {app-name} to your home screen first, then turn notifications on from there."
+msgstr "På iPhone og iPad skal du først føje {app-name} til din hjemmeskærm og derefter slå notifikationer til derfra."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Devices notified"
+msgstr "Enheder med notifikationer"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Added {date}"
+msgstr "Tilføjet {date}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "This device"
+msgstr "Denne enhed"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj
+msgid "Remove"
+msgstr "Fjern"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Settings"
+msgstr "Indstillinger"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Signed in as {email}"
+msgstr "Logget ind som {email}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Name"
+msgstr "Navn"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Shown to other members on your listings and messages."
+msgstr "Vises for andre medlemmer på dine annoncer og beskeder."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Language"
+msgstr "Sprog"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "The community's ({language})"
+msgstr "Fællesskabets ({language})"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email"
+msgstr "E-mail"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me when a message stays unread for a few minutes"
+msgstr "Send mig en e-mail, når en besked har været ulæst i et par minutter"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me once a week what is new on the board"
+msgstr "Send mig en e-mail en gang om ugen med nye annoncer"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Saved."
+msgstr "Gemt."
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Save"
+msgstr "Gem"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Your data"
+msgstr "Dine data"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{download-link} — your account, listings, favorites, conversations and reports, as a JSON file."
+msgstr "{download-link} — din konto, dine annoncer, favoritter, samtaler og anmeldelser som en JSON-fil."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Download your data"
+msgstr "Download dine data"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete your account"
+msgstr "Slet din konto"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete your account?"
+msgstr "Slet din konto?"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Your listings and their photos, your favorites and your settings will be deleted, and you will be signed out. Messages you sent stay with the people you wrote to, from \"A former member\". This cannot be undone."
+msgstr "Dine annoncer og deres billeder, dine favoritter og dine indstillinger bliver slettet, og du bliver logget ud. Beskeder, du har sendt, bliver hos modtagerne, fra »Et tidligere medlem«. Det kan ikke fortrydes."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{download-link} first, if you want to keep a copy."
+msgstr "{download-link} først, hvis du vil beholde en kopi."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Delete my account"
+msgstr "Slet min konto"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Keep it"
+msgstr "Behold den"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr "Log ind"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr "Skriv din e-mailadresse, så sender vi dig et link, du kan logge ind med."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email address"
+msgstr "E-mailadresse"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "you@example.org"
+msgstr "dig@eksempel.dk"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email me a link"
+msgstr "Send mig et link"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Check your inbox"
+msgstr "Tjek din indbakke"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minute."
+msgid_plural "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minutes."
+msgstr[0] "Hvis den adresse kan logge ind her, er et login-link på vej. Det virker én gang, inden for {n} minut."
+msgstr[1] "Hvis den adresse kan logge ind her, er et login-link på vej. Det virker én gang, inden for {n} minutter."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Use another address"
+msgstr "Brug en anden adresse"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in as {email}?"
+msgstr "Log ind som {email}?"
+
+#: src/s_exp/jumble/error/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Go to the home page"
+msgstr "Gå til forsiden"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "The problem was logged. Please try again."
+msgstr "Problemet er registreret. Prøv igen."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Bad request"
+msgstr "Ugyldig anmodning"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This request could not be understood."
+msgstr "Anmodningen kunne ikke forstås."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Too large"
+msgstr "For stor"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "That request was larger than allowed."
+msgstr "Anmodningen var større end tilladt."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not allowed"
+msgstr "Ikke tilladt"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "You are not allowed to do this."
+msgstr "Det har du ikke tilladelse til."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not supported"
+msgstr "Ikke understøttet"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This cannot be done here."
+msgstr "Det kan ikke lade sig gøre her."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Not possible right now"
+msgstr "Ikke muligt lige nu"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "This cannot be done as things stand. Reload the page and try again."
+msgstr "Det kan ikke lade sig gøre, som tingene står nu. Genindlæs siden, og prøv igen."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Too many requests"
+msgstr "For mange anmodninger"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Please wait a moment, then try again."
+msgstr "Vent et øjeblik, og prøv så igen."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Busy right now"
+msgstr "Travlt lige nu"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Please try again in a moment."
+msgstr "Prøv igen om et øjeblik."
+
+#: src/s_exp/jumble/error/view.clj
+msgid "Unavailable"
+msgstr "Ikke tilgængelig"
+
+#: src/s_exp/jumble/error/view.clj
+msgid "A service this depends on is not answering. Please try again later."
+msgstr "En tjeneste, som det afhænger af, svarer ikke. Prøv igen senere."
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Give your things a {second-life} in your community."
+msgstr "Giv dine ting et {second-life} i dit fællesskab."
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "second life"
+msgstr "nyt liv"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Sell, give away or lend what you no longer need to people around you, and find what you were looking for."
+msgstr "Sælg, giv væk eller lån det ud, du ikke længere har brug for, til folk omkring dig – og find det, du ledte efter."
+
+#: src/s_exp/jumble/home/view.clj
+msgid "A bike, a desk lamp, a stroller…"
+msgstr "En cykel, en skrivebordslampe, en klapvogn…"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/listing/view.clj
+msgid "Search listings"
+msgstr "Søg i annoncer"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "Search"
+msgstr "Søg"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "{n} thing up for grabs right now"
+msgid_plural "{n} things up for grabs right now"
+msgstr[0] "{n} ting venter på en ny ejer lige nu"
+msgstr[1] "{n} ting venter på en ny ejer lige nu"
+
+#: src/s_exp/jumble/home/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Post a listing"
+msgstr "Opret en annonce"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "or browse all listings →"
+msgstr "eller se alle annoncer →"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "Just posted"
+msgstr "Nyeste annoncer"
+
+#: src/s_exp/jumble/home/view.clj
+msgid "See all →"
+msgstr "Se alle →"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Electronics"
+msgstr "Elektronik"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Furniture & home"
+msgstr "Møbler og bolig"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Kids & baby"
+msgstr "Børn og baby"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Sports & outdoors"
+msgstr "Sport og friluftsliv"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Books & media"
+msgstr "Bøger og medier"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Clothing"
+msgstr "Tøj"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Tickets & vouchers"
+msgstr "Billetter og gavekort"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Other"
+msgstr "Andet"
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Give it a name."
+msgstr "Giv den et navn."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Keep the name to {max} characters or fewer."
+msgstr "Navnet må højst være på {max} tegn."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "There is already one named “{label}”."
+msgstr "Der findes allerede en, der hedder »{label}«."
+
+#: src/s_exp/jumble/listing/choices.clj
+msgid "Keep at least one category."
+msgstr "Behold mindst én kategori."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Nothing to save"
+msgstr "Intet at gemme"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Search for something, or choose a type or a category, then save that."
+msgstr "Søg efter noget, eller vælg en type eller en kategori, og gem så søgningen."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the listings"
+msgstr "Tilbage til annoncerne"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Too many saved searches"
+msgstr "For mange gemte søgninger"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "You can keep up to {max} saved searches. Remove one first."
+msgstr "Du kan have op til {max} gemte søgninger. Fjern en først."
+
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/view.clj
+msgid "Your saved searches"
+msgstr "Dine gemte søgninger"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This member does not exist, or no longer does."
+msgstr "Dette medlem findes ikke eller findes ikke længere."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This listing does not exist, or no longer does."
+msgstr "Denne annonce findes ikke eller findes ikke længere."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Not on the board"
+msgstr "Ikke online"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "This listing is no longer on the board: put it back on the board instead."
+msgstr "Annoncen er ikke længere online: sæt den online igen i stedet."
+
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/moderation/view.clj
+msgid "Back to the listing"
+msgstr "Tilbage til annoncen"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Only listings on the board can be edited. Put it back on the board first."
+msgstr "Kun annoncer, der er online, kan redigeres. Sæt den online igen først."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Upload too large"
+msgstr "Uploaden er for stor"
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
+msgstr "En annonce kan have op til {max} billeder på højst {megabytes} MB hver."
+
+#: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Tilbage til formularen"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Still looking for \"{title}\"?"
+msgstr "Leder du stadig efter »{title}«?"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Is \"{title}\" still available?"
+msgstr "Er »{title}« stadig tilgængelig?"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "You posted \"{title}\" on {app-name} {n} day ago or more."
+msgid_plural "You posted \"{title}\" on {app-name} {n} days ago or more."
+msgstr[0] "Du oprettede »{title}« på {app-name} for mindst {n} dag siden."
+msgstr[1] "Du oprettede »{title}« på {app-name} for mindst {n} dage siden."
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Still looking for it? Say so on its page, or mark it as found:"
+msgstr "Leder du stadig efter den? Sig det på annoncens side, eller markér den som fundet:"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Is it still available? Say so on its page, or mark it as gone:"
+msgstr "Er den stadig tilgængelig? Sig det på annoncens side, eller markér, at den er væk:"
+
+#: src/s_exp/jumble/listing/freshness.clj
+msgid "Without an answer within {n} day, it leaves the board. You can put it back from My listings at any time."
+msgid_plural "Without an answer within {n} days, it leaves the board. You can put it back from My listings at any time."
+msgstr[0] "Uden svar inden for {n} dag bliver den taget offline. Du kan altid sætte den online igen fra Mine annoncer."
+msgstr[1] "Uden svar inden for {n} dage bliver den taget offline. Du kan altid sætte den online igen fra Mine annoncer."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose whether you sell, give away, lend or look for it."
+msgstr "Vælg, om du vil sælge den, give den væk, låne den ud eller lede efter den."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Give it a title."
+msgstr "Giv den en titel."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the title to 120 characters or fewer."
+msgstr "Titlen må højst være på 120 tegn."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the description to 5000 characters or fewer."
+msgstr "Beskrivelsen må højst være på 5.000 tegn."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Enter a price of at most one million, such as 25 or 12.50."
+msgstr "Skriv en pris på højst en million, f.eks. 25 eller 12,50."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose a category."
+msgstr "Vælg en kategori."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Choose where to pick it up."
+msgstr "Vælg, hvor den kan hentes."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Enter the city."
+msgstr "Skriv byen."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Keep the city to 80 characters or fewer."
+msgstr "Byen må højst være på 80 tegn."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "At most {max} photos."
+msgstr "Højst {max} billeder."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} is too large (over {megapixels} megapixels)."
+msgstr "Billede {number} er for stort (over {megapixels} megapixel)."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} took too long to process. Try a smaller one."
+msgstr "Det tog for lang tid at behandle billede {number}. Prøv med et mindre."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "Der behandles for mange billeder lige nu. Prøv igen om et øjeblik."
+
+#: src/s_exp/jumble/listing/model.clj
+msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."
+msgstr "Billede {number} er ikke et JPEG-, PNG-, HEIC- eller AVIF-billede."
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "“{query}”"
+msgstr "»{query}«"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "for sale"
+msgstr "til salg"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "free"
+msgstr "gratis"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "to lend"
+msgstr "til udlån"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "wanted"
+msgstr "søges"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "in {category}"
+msgstr "i {category}"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "New on {app-name}: {n} listing for your saved searches"
+msgid_plural "New on {app-name}: {n} listings for your saved searches"
+msgstr[0] "Nyt på {app-name}: {n} annonce til dine gemte søgninger"
+msgstr[1] "Nyt på {app-name}: {n} annoncer til dine gemte søgninger"
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "You get this email once a day at most, when something matches your saved searches."
+msgstr "Du får denne e-mail højst en gang om dagen, når noget matcher dine gemte søgninger."
+
+#: src/s_exp/jumble/listing/saved_searches.clj
+msgid "Manage them: {url}"
+msgstr "Administrer dem: {url}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Edit listing"
+msgstr "Rediger annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "New listing"
+msgstr "Ny annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "You want to"
+msgstr "Du vil"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Sell it"
+msgstr "Sælge den"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Give it away"
+msgstr "Give den væk"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Lend it"
+msgstr "Låne den ud"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Look for it"
+msgstr "Lede efter den"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Title"
+msgstr "Titel"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Price ({currency})"
+msgstr "Pris ({currency})"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Category"
+msgstr "Kategori"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Choose a category"
+msgstr "Vælg en kategori"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Pickup"
+msgstr "Afhentning"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Where"
+msgstr "Hvor"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Elsewhere"
+msgstr "Andetsteds"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "City"
+msgstr "By"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Markdown works: **bold**, _italics_, lists, links."
+msgstr "Markdown virker: **fed**, _kursiv_, lister, links."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photos"
+msgstr "Billeder"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "The cover photo shows first, on the board and on the listing."
+msgstr "Forsidebilledet vises først, i annonceoversigten og i annoncen."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Cover"
+msgstr "Forsidebillede"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove photo {number}"
+msgstr "Fjern billede {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Move photo {number} earlier"
+msgstr "Flyt billede {number} op"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Move photo {number} later"
+msgstr "Flyt billede {number} ned"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Add photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)"
+msgstr "Tilføj billeder (op til {max} i alt, JPEG, PNG, HEIC eller AVIF)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)"
+msgstr "Billeder (op til {max} i alt, JPEG, PNG, HEIC eller AVIF)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Please select the photos again."
+msgstr "Vælg billederne igen."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Save changes"
+msgstr "Gem ændringer"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Publish listing"
+msgstr "Udgiv annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Free"
+msgstr "Gratis"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "To lend"
+msgstr "Til udlån"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Wanted"
+msgstr "Søges"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Reserved"
+msgstr "Reserveret"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Sold"
+msgstr "Solgt"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Given away"
+msgstr "Givet væk"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Found"
+msgstr "Fundet"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Expired"
+msgstr "Udløbet"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as reserved"
+msgstr "Markér som reserveret"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as sold"
+msgstr "Markér som solgt"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as given away"
+msgstr "Markér som givet væk"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Mark as found"
+msgstr "Markér som fundet"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Make available again"
+msgstr "Gør tilgængelig igen"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Put back on the board"
+msgstr "Sæt online igen"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Favorite {title}"
+msgstr "Favorit: {title}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Favorite"
+msgstr "Favorit"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "I have one"
+msgstr "Jeg har sådan en"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/message/view.clj
+msgid "Message {name}"
+msgstr "Skriv til {name}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Your listing"
+msgstr "Din annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Still looking? Without an answer, it soon leaves the board."
+msgstr "Leder du stadig? Uden svar bliver den snart taget offline."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Still available? Without an answer, it soon leaves the board."
+msgstr "Stadig tilgængelig? Uden svar bliver den snart taget offline."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Yes, keep it on the board"
+msgstr "Ja, behold den online"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Edit"
+msgstr "Rediger"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing"
+msgstr "Fjern annonce"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Photo {number}"
+msgstr "Billede {number}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Posted by {name}"
+msgstr "Oprettet af {name}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove listing (moderation)"
+msgstr "Fjern annonce (moderering)"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Thanks, a moderator will have a look."
+msgstr "Tak, en moderator kigger på det."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Report this listing"
+msgstr "Anmeld denne annonce"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "What is wrong with it? (optional)"
+msgstr "Hvad er der galt? (valgfrit)"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Report"
+msgstr "Anmeld"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing?"
+msgstr "Fjern annoncen?"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "“{title}” and its photos will be deleted. This cannot be undone."
+msgstr "»{title}« og billederne bliver slettet. Det kan ikke fortrydes."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "clear filter"
+msgstr "ryd filter"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "All"
+msgstr "Alle"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "For sale"
+msgstr "Til salg"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Changed"
+msgstr "Ændret"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "More results"
+msgstr "Flere resultater"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Older listings"
+msgstr "Ældre annoncer"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Showing {n} listing"
+msgid_plural "Showing {n} listings"
+msgstr[0] "Viser {n} annonce"
+msgstr[1] "Viser {n} annoncer"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing to search for in “{query}”: search with letters or numbers."
+msgstr "Intet at søge efter i »{query}«: søg med bogstaver eller tal."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Results for “{query}”"
+msgstr "Resultater for »{query}«"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Clear search"
+msgstr "Ryd søgning"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Filters"
+msgstr "Filtre"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Type"
+msgstr "Type"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "More categories ({count})"
+msgstr "Flere kategorier ({count})"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Save this search"
+msgstr "Gem denne søgning"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Get an email when something new matches."
+msgstr "Få en e-mail, når noget nyt matcher."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No listings match."
+msgstr "Ingen annoncer matcher."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing here yet."
+msgstr "Her er ikke noget endnu."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Search: {query}"
+msgstr "Søgning: {query}"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Listings"
+msgstr "Annoncer"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "What your community is selling, giving away, lending and looking for."
+msgstr "Det, dit fællesskab sælger, giver væk, låner ud og leder efter."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "My listings"
+msgstr "Mine annoncer"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Everything you posted, sold and given away included."
+msgstr "Alt, hvad du har oprettet, også det solgte og det bortgivne."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "You have not posted anything yet."
+msgstr "Du har ikke oprettet noget endnu."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Member since {date}"
+msgstr "Medlem siden {date}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Nothing on the board right now."
+msgstr "Intet online lige nu."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Favorites"
+msgstr "Favoritter"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Listings you keep an eye on. Only you see them."
+msgstr "Annoncer, du holder øje med. Kun du kan se dem."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No favorites yet."
+msgstr "Ingen favoritter endnu."
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/message/view.clj
+msgid "Browse listings"
+msgstr "Se annoncer"
+
+#: src/s_exp/jumble/listing/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Saved searches"
+msgstr "Gemte søgninger"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Once a day at most, you get an email with what is new for them. Save one from the listings, after searching or choosing a type or a category."
+msgstr "Højst en gang om dagen får du en e-mail med det nye, der matcher dem. Gem en fra annoncerne, efter at du har søgt eller valgt en type eller en kategori."
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "Remove {search}"
+msgstr "Fjern {search}"
+
+#: src/s_exp/jumble/listing/view.clj
+msgid "No saved searches yet."
+msgstr "Ingen gemte søgninger endnu."
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "This week on {app-name}: {n} new listing"
+msgid_plural "This week on {app-name}: {n} new listings"
+msgstr[0] "Denne uge på {app-name}: {n} ny annonce"
+msgstr[1] "Denne uge på {app-name}: {n} nye annoncer"
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "And {n} more: {url}"
+msgstr "Og {n} til: {url}"
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "You get this email once a week when something is new on {app-name}."
+msgstr "Du får denne e-mail en gang om ugen, når der er nyt på {app-name}."
+
+#: src/s_exp/jumble/listing/weekly.clj
+msgid "Turn it off in your settings: {url}"
+msgstr "Slå den fra i dine indstillinger: {url}"
+
+#: src/s_exp/jumble/message/email.clj src/s_exp/jumble/push/delivery.clj
+msgid "New message from {name}: {subject}"
+msgid_plural "New messages from {name}: {subject}"
+msgstr[0] "Ny besked fra {name}: {subject}"
+msgstr[1] "Nye beskeder fra {name}: {subject}"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "{name} sent you a message about \"{subject}\":"
+msgid_plural "{name} sent you {n} messages about \"{subject}\". The latest:"
+msgstr[0] "{name} har sendt dig en besked om »{subject}«:"
+msgstr[1] "{name} har sendt dig {n} beskeder om »{subject}«. Den seneste:"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "Read and reply: {url}"
+msgstr "Læs og svar: {url}"
+
+#: src/s_exp/jumble/message/email.clj
+msgid "You get this email from {app-name} when a message stays unread for a few minutes."
+msgstr "Du får denne e-mail fra {app-name}, når en besked har været ulæst i et par minutter."
+
+#: src/s_exp/jumble/message/email.clj
+msgid "To stop these emails: {url}"
+msgstr "Sådan stopper du disse e-mails: {url}"
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Write a message."
+msgstr "Skriv en besked."
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Keep the message to 2000 characters or fewer."
+msgstr "Beskeden må højst være på 2.000 tegn."
+
+#: src/s_exp/jumble/message/model.clj
+msgid "Give it a subject of 120 characters or fewer."
+msgstr "Giv den et emne på højst 120 tegn."
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/moderation/view.clj
+msgid "A former member"
+msgstr "Et tidligere medlem"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "{title} (removed)"
+msgstr "{title} (fjernet)"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "About {listing}"
+msgstr "Om {listing}"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Subject"
+msgstr "Emne"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Message"
+msgstr "Besked"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Hi! I have one."
+msgstr "Hej! Jeg har sådan en."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Hi! Is it still available?"
+msgstr "Hej! Er den stadig tilgængelig?"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Send"
+msgstr "Send"
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Messages"
+msgstr "Beskeder"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Your conversations with people in your community about their listings and yours."
+msgstr "Dine samtaler med folk i dit fællesskab om deres annoncer og dine."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "re: {title}"
+msgstr "ang. {title}"
+
+#: src/s_exp/jumble/message/view.clj src/s_exp/jumble/view/layout.clj
+msgid "unread"
+msgid_plural "unread"
+msgstr[0] "ulæst"
+msgstr[1] "ulæste"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "No messages yet. Write to someone about a listing that interests you."
+msgstr "Ingen beskeder endnu. Skriv til nogen om en annonce, der interesserer dig."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "With {name} · {listing}"
+msgstr "Med {name} · {listing}"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "You"
+msgstr "Dig"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "This member deleted their account: replies would not reach them."
+msgstr "Dette medlem har slettet sin konto: svar vil ikke nå frem."
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Reply"
+msgstr "Svar"
+
+#: src/s_exp/jumble/message/view.clj
+msgid "Reply to {name}…"
+msgstr "Svar {name}…"
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "To let anyone in, use * in the configuration."
+msgstr "Brug * i konfigurationen for at give alle adgang."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator, by the configuration: remove them there."
+msgstr "{email} er moderator via konfigurationen: fjern vedkommende dér."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Intet medlem har denne adresse."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Listing reported: {title}"
+msgstr "Annonce anmeldt: {title}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "{reporter} reported \"{title}\"."
+msgstr "{reporter} har anmeldt »{title}«."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Review the reports: {url}"
+msgstr "Gennemgå anmeldelserne: {url}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "You get this email as a moderator of {app-name}, once per reported listing."
+msgstr "Du får denne e-mail som moderator på {app-name}, én gang pr. anmeldt annonce."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "Your listing was removed: {title}"
+msgstr "Din annonce er fjernet: {title}"
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "A moderator removed your listing \"{title}\" from {app-name}."
+msgstr "En moderator har fjernet din annonce »{title}« fra {app-name}."
+
+#: src/s_exp/jumble/moderation/email.clj
+msgid "The reason given:"
+msgstr "Begrundelse:"
+
+#: src/s_exp/jumble/moderation/model.clj
+msgid "Keep it to 1000 characters or fewer."
+msgstr "Højst 1.000 tegn."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Reports"
+msgstr "Anmeldelser"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Hvem kan logge ind"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Categories"
+msgstr "Kategorier"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Pickup places"
+msgstr "Afhentningssteder"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appearance"
+msgstr "Udseende"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Poster"
+msgstr "Plakat"
+
+#: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
+msgid "Manage"
+msgstr "Administrer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Notice"
+msgstr "Meddelelse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Listings members reported, the longest waiting first."
+msgstr "Annoncer, som medlemmer har anmeldt – dem, der har ventet længst, først."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Posted by {owner} ({email})"
+msgstr "Oprettet af {owner} ({email})"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No reason given"
+msgstr "Ingen begrundelse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Your own listing: another moderator handles its reports."
+msgstr "Din egen annonce: en anden moderator behandler anmeldelserne af den."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Reason, emailed to the owner (optional)"
+msgstr "Begrundelse, sendes på e-mail til ejeren (valgfrit)"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove listing {title}"
+msgstr "Fjern annoncen {title}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Dismiss the reports on {title}"
+msgstr "Afvis anmeldelserne af {title}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Dismiss"
+msgstr "Afvis"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No open reports."
+msgstr "Ingen åbne anmeldelser."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Report listing"
+msgstr "Anmeld annonce"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Report “{title}”"
+msgstr "Anmeld »{title}«"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "“{title}” by {owner} and its photos will be deleted, and {owner} emailed. This cannot be undone."
+msgstr "»{title}« fra {owner} og billederne bliver slettet, og {owner} får besked på e-mail. Det kan ikke fortrydes."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No listings"
+msgstr "Ingen annoncer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{n} listing"
+msgid_plural "{n} listings"
+msgstr[0] "{n} annonce"
+msgstr[1] "{n} annoncer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Fjern et medlem"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "Medlemmets e-mailadresse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Kontoen og annoncerne slettes for altid, og vedkommende kan aldrig logge ind igen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Fjernet."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Fjern…"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove {name}?"
+msgstr "Fjern {name}?"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{name} ({email}) and their account are deleted, and they can never sign in again. Their messages stay, from a former member. This cannot be undone."
+msgstr "Kontoen for {name} ({email}) slettes, og vedkommende kan aldrig logge ind igen. Beskederne bliver liggende, nu fra et tidligere medlem. Det kan ikke fortrydes."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "{name} ({email}) and their account are deleted, with {listings} and their photos, and they can never sign in again. Their messages stay, from a former member. This cannot be undone."
+msgstr "Kontoen for {name} ({email}) slettes sammen med {listings} og billederne, og vedkommende kan aldrig logge ind igen. Beskederne bliver liggende, nu fra et tidligere medlem. Det kan ikke fortrydes."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove for good"
+msgstr "Fjern for altid"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Keep them"
+msgstr "Behold medlemmet"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
+msgstr "Adresser og mønstre: {person} for én person, {domain} for et domæne, {subdomains} for dets underdomæner."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
+msgstr "Alle kan logge ind: konfigurationen giver alle adgang. Begræns den dér for at styre, hvem der kan logge ind her."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "From the configuration"
+msgstr "Fra konfigurationen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Added here"
+msgstr "Tilføjet her"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "added by {who}, {date}"
+msgstr "tilføjet af {who}, {date}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "et tidligere medlem"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Withdraw {pattern}"
+msgstr "Tilbagekald {pattern}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Withdraw"
+msgstr "Tilbagekald"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Nobody yet."
+msgstr "Ingen endnu."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add addresses or patterns"
+msgstr "Tilføj adresser eller mønstre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "One per line, or separated by commas. Withdrawing one signs out the people only it let in, at once; their accounts stay."
+msgstr "Én pr. linje eller adskilt med kommaer. Tilbagekalder du en, bliver de, der kun havde adgang gennem den, logget ud med det samme; deres konti bliver."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Email an invitation to the addresses"
+msgstr "Send en invitation på e-mail til adresserne"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Added."
+msgstr "Tilføjet."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add"
+msgstr "Tilføj"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "What listings are filed under, in the order members see them."
+msgstr "Kategorierne, annoncer placeres i, i den rækkefølge medlemmerne ser dem."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add a category"
+msgstr "Tilføj en kategori"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Where members can hand things over. They can always choose Elsewhere and type a city; with no places, that is the only choice."
+msgstr "Steder, hvor medlemmerne kan overlevere ting. De kan altid vælge Andetsteds og skrive en by; uden steder er det det eneste valg."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Add a place"
+msgstr "Tilføj et sted"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Name of {label}"
+msgstr "Navn på {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Rename {label}"
+msgstr "Omdøb {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Rename"
+msgstr "Omdøb"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Up"
+msgstr "Op"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Move {label} up"
+msgstr "Flyt {label} op"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Down"
+msgstr "Ned"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Move {label} down"
+msgstr "Flyt {label} ned"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retire"
+msgstr "Udfas"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retire {label}"
+msgstr "Udfas {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "None offered."
+msgstr "Ingen valgmuligheder."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Retired"
+msgstr "Udfasede"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "No longer offered. Their listings keep them."
+msgstr "Tilbydes ikke længere. Eksisterende annoncer beholder dem."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Restore"
+msgstr "Gendan"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Restore {label}"
+msgstr "Gendan {label}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "The colours of every page, for everyone. Each palette has a light and a dark side: members see the one they chose, or their device's."
+msgstr "Farverne på alle sider, for alle. Hver palet har en lys og en mørk side: medlemmerne ser den, de har valgt, eller den, deres enhed bruger."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Palette"
+msgstr "Palet"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Print it for a noticeboard, by the coffee machine or the lift: whoever scans it lands on {app-name}."
+msgstr "Print den til en opslagstavle, ved kaffemaskinen eller elevatoren: den, der scanner den, lander på {app-name}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Print"
+msgstr "Print"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to open {app-name}"
+msgstr "Scan for at åbne {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Point your phone's camera at the code"
+msgstr "Ret mobilens kamera mod koden"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Post what you no longer need, or find what you need"
+msgstr "Annoncér det, du ikke længere har brug for, eller find det, du mangler"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Write to each other, and meet up"
+msgstr "Skriv sammen, og mød hinanden"
+
+#: src/s_exp/jumble/money.clj
+msgid "{currency} {amount}"
+msgstr "{amount} {currency}"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Forest"
+msgstr "Skov"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Plum"
+msgstr "Blomme"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Ink"
+msgstr "Blæk"
+
+#: src/s_exp/jumble/page/palette.clj
+msgid "Slate"
+msgstr "Skifer"
+
+#: src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Privacy"
+msgstr "Privatliv"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "{app-name} is run by and for its community. This page says what it keeps about you, and why."
+msgstr "{app-name} drives af og for sit fællesskab. Denne side fortæller, hvad der gemmes om dig, og hvorfor."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "What is kept"
+msgstr "Hvad der gemmes"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Your name and email address, from signing in; what you post: listings, their photos and your messages; your favorites, saved searches and settings; and reports you make."
+msgstr "Dit navn og din e-mailadresse fra login; det, du opretter: annoncer, deres billeder og dine beskeder; dine favoritter, gemte søgninger og indstillinger; og de anmeldelser, du laver."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Why"
+msgstr "Hvorfor"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Only to run {app-name}: to show your listings, deliver your messages and send you emails: those you asked for, and a weekly summary of what is new, which you can turn off. Nothing is sold or shared for advertising, and there is no tracking and no analytics."
+msgstr "Kun for at drive {app-name}: for at vise dine annoncer, levere dine beskeder og sende dig e-mails – dem, du har bedt om, og en ugentlig oversigt over nyt, som du kan slå fra. Intet sælges eller deles til annoncering, og der er hverken sporing eller statistik."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Who sees what"
+msgstr "Hvem ser hvad"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
+msgstr "Andre medlemmer ser dit navn, dine annoncer og det, du skriver til dem. Beskeder er mellem dig og den, du skriver til. Moderatorer ser anmeldelser og kan fjerne annoncer."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Cookies"
+msgstr "Cookies"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Only those {app-name} needs: one keeps you signed in, one remembers your light or dark theme, and one protects signing in. No tracking cookies."
+msgstr "Kun dem, {app-name} har brug for: én holder dig logget ind, én husker dit lyse eller mørke tema, og én beskytter login. Ingen sporingscookies."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Services involved"
+msgstr "Involverede tjenester"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Photos and backups are stored with your community's storage provider, emails go through its email provider, and signing in may go through its sign-in service. Notifications you turn on go through your browser's push service (Google's, Apple's, Mozilla's or Microsoft's), encrypted: it sees only when one is sent."
+msgstr "Billeder og backups opbevares hos dit fællesskabs lagerudbyder, e-mails sendes via dets e-mailudbyder, og login kan gå via dets login-tjeneste. Notifikationer, du slår til, går krypteret via din browsers push-tjeneste (Googles, Apples, Mozillas eller Microsofts): den kan kun se, hvornår en notifikation bliver sendt."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "How long"
+msgstr "Hvor længe"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
+msgstr "Indtil du fjerner det eller sletter din konto; så bliver de beskeder, du har skrevet, hos modtagerne, og dine anmeldelser hos moderatorerne, uden dit navn. Backups beholder slettede data et stykke tid, som regel op til tre måneder."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Your choices"
+msgstr "Dine valg"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Download everything {app-name} keeps about you, or delete your account, from {settings}."
+msgstr "Download alt, hvad {app-name} gemmer om dig, eller slet din konto under {settings}."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Questions"
+msgstr "Spørgsmål"
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Write to {contact}."
+msgstr "Skriv til {contact}."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Ask your community's moderators."
+msgstr "Spørg dit fællesskabs moderatorer."
+
+#: src/s_exp/jumble/page/theme.clj
+msgid "Switch between light and dark"
+msgstr "Skift mellem lyst og mørkt"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMMM yyyy"
+msgstr "d. MMMM yyyy"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMM, HH:mm"
+msgstr "d. MMM 'kl.' HH:mm"
+
+#: src/s_exp/jumble/view/dates.clj
+msgid "d MMM yyyy, HH:mm"
+msgstr "d. MMM yyyy 'kl.' HH:mm"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "to review"
+msgid_plural "to review"
+msgstr[0] "at gennemgå"
+msgstr[1] "at gennemgå"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Sign out"
+msgstr "Log ud"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Main"
+msgstr "Hovedmenu"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "changed"
+msgid_plural "changed"
+msgstr[0] "ændret"
+msgstr[1] "ændrede"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "{app-name} — sell, give away, lend and find things within your community."
+msgstr "{app-name} — sælg, giv væk, lån ud og find ting i dit fællesskab."
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Source code"
+msgstr "Kildekode"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Get your own Jumble"
+msgstr "Få dit eget Jumble"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Built by {maker}"
+msgstr "Lavet af {maker}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Hosted by {host}"
+msgstr "Hostet af {host}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Powered by Jumble"
+msgstr "Drevet af Jumble"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "There is nothing at this address."
+msgstr "Der er intet på denne adresse."
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Not found"
+msgstr "Siden blev ikke fundet"
+
+#: src/s_exp/jumble/web/routes.clj
+msgid "Signed out"
+msgstr "Logget ud"
+
+#: src/s_exp/jumble/web/routes.clj
+msgid "You were signed out, so this was not saved. Sign in, then send it again."
+msgstr "Du blev logget ud, så dette blev ikke gemt. Log ind, og send det igen."

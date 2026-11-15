@@ -1,0 +1,49 @@
+# The Jumble container as the systemd service jumble, through Podman's
+# Quadlet: the app, with Litestream inside replicating the database to the
+# backup bucket. deploy.sh installs it as /etc/containers/systemd/jumble.container
+# with the mode's settings appended, HTTPS served by Jumble (https.conf) or
+# behind a proxy of your own (own-proxy.conf), and the image by digest.
+[Unit]
+Description=Jumble
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=jumble
+EnvironmentFile=/etc/jumble/jumble.env
+Volume=jumble-data.volume:/data
+# The image is on the server already: shipped, or pulled by deploy.sh.
+Pull=never
+# Nothing written outside the data volume and memory. /tmp allows running
+# code: the JDBC driver and the HTTP/3 shim unpack their native libraries
+# there.
+ReadOnly=true
+Tmpfs=/tmp:rw,exec,nosuid,size=256m
+DropCapability=all
+NoNewPrivileges=true
+# On the plain http port, JUMBLE_PORT, which answers health checks in both
+# modes ($$ keeps the variable for the container's shell).
+HealthCmd=/bin/bash -c "exec 3<>/dev/tcp/127.0.0.1/$${JUMBLE_PORT} && printf 'GET /healthz HTTP/1.0\r\n\r\n' >&3 && head -n 1 <&3 | grep -q ' 200 '"
+HealthInterval=30s
+HealthStartPeriod=5m
+HealthTimeout=5s
+HealthRetries=3
+# Unhealthy is killed, and systemd starts it again (Restart=always): a
+# process that hangs rather than exits does not stay down.
+HealthOnFailure=kill
+LogDriver=journald
+# Delivery finishes the email at hand within 30 s, Litestream syncs last.
+# (StopTimeout= in Podman 5.)
+PodmanArgs=--stop-timeout=45
+
+[Service]
+# Started once the app answers its health check: a first start restoring the
+# database from its backup can take minutes. Past the timeout the start
+# fails and the container is stopped.
+ExecStartPost=/bin/sh -c 'until podman healthcheck run jumble >/dev/null 2>&1; do sleep 2; done'
+TimeoutStartSec=420
+TimeoutStopSec=60
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+{:lint-as {s-exp.jumble.store.db/with-write-tx next.jdbc/with-transaction
+           s-exp.ex/try+ clojure.core/try}
+ ;; try+ binds the exception a type's clause catches to &ex.
+ :linters {:unresolved-symbol {:exclude [(s-exp.ex/try+ [&ex])]}}}

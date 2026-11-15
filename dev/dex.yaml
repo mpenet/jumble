@@ -1,0 +1,32 @@
+# Local OpenID provider for development, matching the :dev profile in
+# resources/config.edn. Both users sign in with the password "password";
+# mallory is not in the allowed emails and must be refused.
+issuer: http://127.0.0.1:5556/dex
+
+storage:
+  type: memory
+
+web:
+  http: 0.0.0.0:5556
+
+oauth2:
+  skipApprovalScreen: true
+
+staticClients:
+  - id: jumble
+    name: Jumble
+    secret: jumble-dev-secret
+    redirectURIs:
+      - http://localhost:8080/auth/callback
+
+enablePasswordDB: true
+
+staticPasswords:
+  - email: alice@example.com
+    hash: "$2a$10$x4N.pAZXrvox8BIiZG7vK.fe6oGGPYCin5fFepwvi9ppFD/LmsvTm"
+    username: alice
+    userID: 0b8f3d3e-6c1a-4f4e-9a57-3f0f5d7c1a01
+  - email: mallory@other.example.org
+    hash: "$2a$10$x4N.pAZXrvox8BIiZG7vK.fe6oGGPYCin5fFepwvi9ppFD/LmsvTm"
+    username: mallory
+    userID: 0b8f3d3e-6c1a-4f4e-9a57-3f0f5d7c1a02

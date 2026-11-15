@@ -1,0 +1,28 @@
+# Continuous replication of the SQLite database to S3-compatible storage
+# (Garage in development), with a key of its own
+# limited to the backup bucket. The container entrypoint restores from it when
+# the volume has no database.
+dbs:
+  - path: ${JUMBLE_DB_PATH}
+    replica:
+      type: s3
+      endpoint: ${JUMBLE_S3_ENDPOINT}
+      region: ${JUMBLE_S3_REGION}
+      bucket: ${JUMBLE_BACKUP_BUCKET}
+      path: ${JUMBLE_BACKUP_PATH}
+      force-path-style: true
+      access-key-id: ${JUMBLE_BACKUP_ACCESS_KEY}
+      secret-access-key: ${JUMBLE_BACKUP_SECRET_KEY}
+
+# Its metrics, for Jumble's GET /metrics to add to its own: on the
+# container's loopback only, never published.
+addr: "127.0.0.1:9090"
+
+# Pinged every few minutes while changes reach the replica, none when they do
+# not: a monitor expecting it alerts when backups stop. Off when unset.
+heartbeat-url: ${JUMBLE_BACKUP_HEARTBEAT_URL}
+
+# Point-in-time history: a daily snapshot, a week of them kept.
+snapshot:
+  interval: 24h
+  retention: 168h
