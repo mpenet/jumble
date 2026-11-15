@@ -122,10 +122,7 @@
         (is (str/includes? html "<img class=\"community-logo only-light\" src=\"/brand/logo.0123456789.svg\" alt=\"Swap Shop\">"))
         (is (str/includes? html "<img class=\"community-logo only-dark\" src=\"/brand/logo-dark.abcdef0123.svg\" alt=\"Swap Shop\">"))))
     (testing "an instance of its own credits Jumble in the footer"
-      (is (str/includes? (page {:logo logo}) "Powered by Jumble"))
-      (is (str/includes? (page {}) "Powered by Jumble") "a name of its own is enough")
-      (is (not (str/includes? (layout/page {:csp-nonce "n" :ctx {:settings {:app-name "Jumble"}}} {} [:p "x"])
-                              "Powered by Jumble"))))))
+      (is (str/includes? (page {:logo logo}) "Powered by Jumble")))))
 
 (deftest palette-test
   (testing "the page carries the community's palette, for the stylesheet"
@@ -135,12 +132,20 @@
 (deftest footer-test
   (let [html (layout/page {:csp-nonce "n" :ctx {:settings {:app-name "Jumble" :source-url "https://git.example.org/our-jumble"}}}
                           {:title "x"} [:p "body"])]
+    (testing "the footer has the community's part, then Jumble's"
+      (is (re-find #"(?s)<div class=\"footer-community\">.*Privacy.*<div class=\"footer-jumble\">.*Powered by Jumble.*Source code"
+                   html)))
     (testing "the footer links to the privacy page, the source this instance runs and its makers"
       (is (str/includes? html "<a href=\"/privacy\">Privacy</a>"))
       (is (str/includes? html "<a href=\"https://git.example.org/our-jumble\">Source code</a>"))
       (is (str/includes? html "Built by <a href=\"https://s-exp.com\">s-exp.com</a>")))
     (testing "and to Jumble's own site, for a community of one's own"
       (is (str/includes? html "<a href=\"https://jumbl.ing\">Get your own Jumble</a>")))
+    (testing "and to the community's contact address when set"
+      (is (not (str/includes? html "mailto:")))
+      (is (str/includes? (layout/page {:csp-nonce "n" :ctx {:settings {:app-name "Jumble" :contact "help@example.org"}}}
+                                      {:title "x"} [:p "body"])
+                         "<a href=\"mailto:help@example.org\">Contact</a>")))
     (testing "and says who hosts the instance when set"
       (is (not (str/includes? html "Hosted by")))
       (let [hosted #(layout/page {:csp-nonce "n" :ctx {:settings {:app-name "Jumble" :hosted-by %}}} {:title "x"} [:p "body"])]

@@ -2831,6 +2831,14 @@ textarea {
   margin: 0;
 }
 
+/* The community's part and Jumble's, side by side, stacked when narrow. */
+.site-footer .footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-5) var(--space-7);
+}
+
 .site-footer .footer-links {
   display: flex;
   flex-wrap: wrap;
@@ -2838,12 +2846,23 @@ textarea {
   margin-top: var(--space-2);
 }
 
+/* Quiet links, as the rest of the footer; underlined when pointed at. */
+.site-footer a {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
 .site-footer .powered-by {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-2);
-  font-size: var(--text-xs);
+  color: var(--fg);
+  font-weight: 600;
 }
 
 /* A form on its way (see layout/once): its button shows it. */
