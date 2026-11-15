@@ -2831,42 +2831,19 @@ textarea {
   margin: 0;
 }
 
-/* The community's part, then Jumble's, on one line, wrapping when narrow. */
-.site-footer .footer-inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) var(--space-4);
-}
-
-.site-footer .footer-community,
-.site-footer .footer-jumble {
-  display: contents;
-}
-
 .site-footer .footer-links {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-4);
-}
-
-/* Quiet links, as the rest of the footer; underlined when pointed at. */
-.site-footer a {
-  color: var(--fg);
-  text-decoration: none;
-}
-
-.site-footer a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
+  margin-top: var(--space-2);
 }
 
 .site-footer .powered-by {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--fg);
-  font-weight: 600;
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
 }
 
 /* A form on its way (see layout/once): its button shows it. */

@@ -1636,18 +1636,6 @@ msgid "{app-name} — sell, give away, lend and find things within your communit
 msgstr ""
 
 #: src/s_exp/jumble/view/layout.clj
-msgid "Contact"
-msgstr ""
-
-#: src/s_exp/jumble/view/layout.clj
-msgid "Hosted by {host}"
-msgstr ""
-
-#: src/s_exp/jumble/view/layout.clj
-msgid "Powered by Jumble"
-msgstr ""
-
-#: src/s_exp/jumble/view/layout.clj
 msgid "Source code"
 msgstr ""
 
@@ -1657,6 +1645,14 @@ msgstr ""
 
 #: src/s_exp/jumble/view/layout.clj
 msgid "Built by {maker}"
+msgstr ""
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Hosted by {host}"
+msgstr ""
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Powered by Jumble"
 msgstr ""
 
 #: src/s_exp/jumble/view/layout.clj

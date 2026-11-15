@@ -1637,18 +1637,6 @@ msgid "{app-name} — sell, give away, lend and find things within your communit
 msgstr "{app-name} — vendre, donner, prêter et trouver des objets au sein de votre communauté."
 
 #: src/s_exp/jumble/view/layout.clj
-msgid "Contact"
-msgstr "Contact"
-
-#: src/s_exp/jumble/view/layout.clj
-msgid "Hosted by {host}"
-msgstr "Hébergé par {host}"
-
-#: src/s_exp/jumble/view/layout.clj
-msgid "Powered by Jumble"
-msgstr "Propulsé par Jumble"
-
-#: src/s_exp/jumble/view/layout.clj
 msgid "Source code"
 msgstr "Code source"
 
@@ -1659,6 +1647,14 @@ msgstr "Créer son propre Jumble"
 #: src/s_exp/jumble/view/layout.clj
 msgid "Built by {maker}"
 msgstr "Conçu par {maker}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Hosted by {host}"
+msgstr "Hébergé par {host}"
+
+#: src/s_exp/jumble/view/layout.clj
+msgid "Powered by Jumble"
+msgstr "Propulsé par Jumble"
 
 #: src/s_exp/jumble/view/layout.clj
 msgid "There is nothing at this address."

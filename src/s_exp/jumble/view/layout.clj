@@ -65,6 +65,11 @@
           [:img (merge {:class (str class " only-dark") :src dark} attrs)])
     [:img (merge {:class class :src light} attrs)]))
 
+(defn- own-brand?
+  "Whether the instance shows a name or logo of its own rather than Jumble's."
+  [{:keys [app-name logo]}]
+  (or (some? logo) (not= "Jumble" app-name)))
+
 (defn community-mark
   "The community's logo, else Jumble's wordmark, else the Jumble mark beside
   the community's name."
@@ -158,24 +163,19 @@
          (when-let [text (file-notice (get-in ctx [:settings :notice]))]
            [:aside.site-notice {:aria-label (i18n/t "Notice")} text])
          content]
-        ;; The community's part, then the software's.
         [:footer.site-footer
-         [:div.container.footer-inner
-          [:div.footer-community
-           [:p (i18n/t "{app-name} — sell, give away, lend and find things within your community." {:app-name app-name})]
-           [:p.footer-links
-            (when-let [contact (get-in ctx [:settings :contact])]
-              [:a {:href (str "mailto:" contact)} (i18n/t "Contact")])
-            [:a {:href "/privacy"} (i18n/t "Privacy")]
-            (when-let [{:keys [name url]} (get-in ctx [:settings :hosted-by])]
-              [:span (i18n/t "Hosted by {host}" {:host (if url [:a {:href url} name] name)})])]]
-          [:div.footer-jumble
-           [:p.powered-by [:img {:src (assets/url "mark.png") :alt "" :width 21 :height 16}] (i18n/t "Powered by Jumble")]
-           [:p.footer-links
-            (when-let [url (get-in ctx [:settings :source-url])]
-              [:a {:href url} (i18n/t "Source code")])
-            [:a {:href "https://jumbl.ing"} (i18n/t "Get your own Jumble")]
-            [:span (i18n/t "Built by {maker}" {:maker [:a {:href "https://s-exp.com"} "s-exp.com"]})]]]]]]]])))
+         [:div.container
+          [:p (i18n/t "{app-name} — sell, give away, lend and find things within your community." {:app-name app-name})]
+          [:p.footer-links
+           [:a {:href "/privacy"} (i18n/t "Privacy")]
+           (when-let [url (get-in ctx [:settings :source-url])]
+             [:a {:href url} (i18n/t "Source code")])
+           [:a {:href "https://jumbl.ing"} (i18n/t "Get your own Jumble")]
+           [:span (i18n/t "Built by {maker}" {:maker [:a {:href "https://s-exp.com"} "s-exp.com"]})]
+           (when-let [{:keys [name url]} (get-in ctx [:settings :hosted-by])]
+             [:span (i18n/t "Hosted by {host}" {:host (if url [:a {:href url} name] name)})])]
+          (when (own-brand? (:settings ctx))
+            [:p.powered-by [:img {:src (assets/url "mark.png") :alt "" :width 21 :height 16}] (i18n/t "Powered by Jumble")])]]]]])))
 
 (defn message
   "Response with a page holding just a heading, an explanation, and `actions`."
