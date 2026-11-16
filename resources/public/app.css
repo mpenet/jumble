@@ -31,17 +31,17 @@
   --radius-lg: 12px;
   --radius-control: 8px;
 
-  --bg: light-dark(#f6f8fa, #0d1117);
+  --bg: light-dark(#f7f5f1, #0d1117);
   --surface: light-dark(#ffffff, #161b22);
-  --surface-sunken: light-dark(#f6f8fa, #0d1117);
+  --surface-sunken: light-dark(#efece6, #21262d);
   --fg: light-dark(#1f1d1a, #ecebe8);
   --muted: light-dark(#6c675f, #aeaaa2);
   --line: light-dark(#e4e0d8, #30363d);
   --field-border: light-dark(#bdb6a9, #3d444d);
 
-  --accent: light-dark(#00805a, #4fc394);
-  --accent-hover: light-dark(#006a4a, #74d4ad);
-  --accent-soft: light-dark(#eaf8f1, #12322a);
+  --accent: light-dark(#2f5d50, #4fc394);
+  --accent-hover: light-dark(#264d42, #74d4ad);
+  --accent-soft: light-dark(#e2ece8, #12322a);
   --accent-fg: light-dark(#ffffff, #0b1712);
 
   --pop: light-dark(#c2510c, #ff8a3d);
@@ -70,7 +70,7 @@
   --raised: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / 0.07), 0 8px 24px light-dark(rgb(31 29 26 / 0.11), rgb(0 0 0 / 0.42)), var(--edge);
   --raised-hover: 0 0 0 1px var(--line), 0 18px 40px light-dark(rgb(31 29 26 / 0.18), rgb(0 0 0 / 0.52)), var(--edge);
   --hollow: inset 0 2px 3px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.36));
-  --focus: 0 0 0 3px light-dark(rgb(0 128 90 / 0.35), rgb(79 195 148 / 0.4));
+  --focus: 0 0 0 3px light-dark(rgb(47 93 80 / 0.35), rgb(79 195 148 / 0.4));
 
   --container: 72rem;
 
