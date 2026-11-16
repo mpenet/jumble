@@ -62,6 +62,26 @@ every few minutes. Over HTTPS it also catches a certificate that failed to
 renew, once the old one expires. Backups need a monitor of their own (see
 below): the site keeps working when they stop.
 
+
+### Logs in Axiom
+
+To search the logs from [Axiom](https://axiom.co) (its free plan is plenty),
+create a dataset for the instance and an API token that may only ingest into
+it, and put them in `deploy/instances/<name>/axiom.env`:
+
+```
+AXIOM_DATASET=jumble-community
+AXIOM_TOKEN=xaat-...
+```
+
+(`AXIOM_HOST` too for an organisation outside the US.) The next
+`deploy.sh` runs Fluent Bit next to Jumble, as the service `jumble-logs`:
+it reads the app's lines from the journal and sends them, with their unit,
+host and level. It keeps at most 64 MB of memory. The logs hold email
+domains and ids, never addresses nor messages; if your privacy text names
+the services involved, add Axiom. To stop, remove `axiom.env`, then on the
+server `systemctl disable --now jumble-logs` and delete
+`/etc/containers/systemd/jumble-logs.container`.
 ## Metrics
 
 With `JUMBLE_METRICS_TOKEN` set, `GET /metrics` answers the token's bearer

@@ -144,3 +144,15 @@ else
   exit 1
 fi
 EOF
+
+# Logs to Axiom, when the instance has an axiom.env (AXIOM_DATASET,
+# AXIOM_TOKEN, AXIOM_HOST for an organisation outside the US): Fluent Bit,
+# as the service jumble-logs (see podman/jumble-logs.container).
+if [ -n "${INSTANCE:-}" ] && [ -f "$INSTANCE/axiom.env" ]; then
+  echo "deploy: sending logs to Axiom"
+  { grep -q '^AXIOM_HOST=' "$INSTANCE/axiom.env" || echo "AXIOM_HOST=api.axiom.co"; cat "$INSTANCE/axiom.env"; } |
+    ssh "$HOST" "sudo sh -c 'umask 077 && mkdir -p /etc/jumble && cat >/etc/jumble/axiom.env.next && mv /etc/jumble/axiom.env.next /etc/jumble/axiom.env'"
+  ssh "$HOST" "sudo tee /etc/jumble/fluent-bit.yaml >/dev/null" <"$here/podman/fluent-bit.yaml"
+  ssh "$HOST" "sudo tee /etc/containers/systemd/jumble-logs.container >/dev/null" <"$here/podman/jumble-logs.container"
+  ssh "$HOST" "sudo sh -c 'systemctl daemon-reload && systemctl restart jumble-logs'"
+fi

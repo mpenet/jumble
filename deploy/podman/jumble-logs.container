@@ -1,0 +1,31 @@
+# Sends Jumble's logs to Axiom with Fluent Bit (fluent-bit.yaml), as the
+# systemd service jumble-logs: deploy.sh installs it when the instance has
+# an axiom.env, as /etc/containers/systemd/jumble-logs.container.
+[Unit]
+Description=Jumble logs to Axiom
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=jumble-logs
+# Fluent Bit 5.2.0, by digest.
+Image=docker.io/fluent/fluent-bit@sha256:a48190bf67679495a332fd61025421a46e7e4d168380185a8e16da2e9acc3126
+EnvironmentFile=/etc/jumble/axiom.env
+Volume=/etc/jumble/fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml:ro
+# The journal, read only; the machine id names the journal's directory.
+Volume=/var/log/journal:/var/log/journal:ro
+Volume=/etc/machine-id:/etc/machine-id:ro
+Volume=jumble-logs-state:/state
+Exec=-c /fluent-bit/etc/fluent-bit.yaml
+ReadOnly=true
+DropCapability=all
+NoNewPrivileges=true
+LogDriver=journald
+# Never in Jumble's way: at most 64 MB.
+PodmanArgs=--memory=64m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -36,4 +36,15 @@ EOF
   fi
   "$runtime" run --rm -v "$root:/src:ro" -w /src "$image" bash -c "$shell_checks"
 fi
+# Fluent Bit's own check of the log shipping configuration, with the image
+# the unit runs.
+echo "check: log shipping configuration"
+runtime=$(command -v docker || command -v podman) ||
+  { echo "check: Docker or Podman needed, for Fluent Bit's configuration check" >&2; exit 1; }
+if ! out=$("$runtime" run --rm --platform linux/amd64 -e AXIOM_HOST=api.axiom.co -e AXIOM_DATASET=check \
+  -e AXIOM_TOKEN=check -v "$root/deploy/podman/fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml:ro" \
+  "$(sed -n 's/^Image=//p' deploy/podman/jumble-logs.container)" -c /fluent-bit/etc/fluent-bit.yaml --dry-run 2>&1); then
+  echo "$out" >&2
+  exit 1
+fi
 echo "check: all passed"

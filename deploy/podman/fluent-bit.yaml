@@ -1,0 +1,48 @@
+# Fluent Bit's configuration for jumble-logs.container: Jumble's lines from
+# the journal, sent to an Axiom dataset (AXIOM_HOST, AXIOM_DATASET and
+# AXIOM_TOKEN, from /etc/jumble/axiom.env).
+service:
+  flush: 5
+  log_level: warn
+
+pipeline:
+  inputs:
+    # The app's and the demo reset's lines; where it stopped reading is kept
+    # in /state, so a restart neither sends lines again nor skips any.
+    - name: systemd
+      tag: jumble
+      path: /var/log/journal
+      systemd_filter:
+        - _SYSTEMD_UNIT=jumble.service
+        - _SYSTEMD_UNIT=jumble-demo-reset.service
+      systemd_filter_type: or
+      db: /state/journal.db
+      read_from_tail: on
+      strip_underscores: on
+      lowercase: on
+
+  filters:
+    # What a line is: its text, unit, host and level; none of the journal's
+    # other fields.
+    - name: record_modifier
+      match: "*"
+      allowlist_key:
+        - message
+        - systemd_unit
+        - hostname
+        - priority
+
+  outputs:
+    - name: http
+      match: "*"
+      host: ${AXIOM_HOST}
+      port: 443
+      uri: /v1/datasets/${AXIOM_DATASET}/ingest
+      header: Authorization Bearer ${AXIOM_TOKEN}
+      format: json
+      json_date_key: _time
+      json_date_format: iso8601
+      compress: gzip
+      tls: on
+      tls.verify: on
+      retry_limit: 10
