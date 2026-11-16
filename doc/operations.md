@@ -72,9 +72,11 @@ it, and put them in `deploy/instances/<name>/axiom.env`:
 ```
 AXIOM_DATASET=jumble-community
 AXIOM_TOKEN=xaat-...
+AXIOM_HOST=eu-central-1.aws.edge.axiom.co
 ```
 
-(`AXIOM_HOST` too for an organisation outside the US.) The next
+`AXIOM_HOST` is the organisation's region: `eu-central-1.aws.edge.axiom.co`
+in the EU, `us-east-1.aws.edge.axiom.co` in the US, the default. The next
 `deploy.sh` runs Fluent Bit next to Jumble, as the service `jumble-logs`:
 it reads the app's lines from the journal and sends them, with their unit,
 host and level. It keeps at most 64 MB of memory. The logs hold email

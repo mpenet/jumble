@@ -1,6 +1,6 @@
 # Fluent Bit's configuration for jumble-logs.container: Jumble's lines from
-# the journal, sent to an Axiom dataset (AXIOM_HOST, AXIOM_DATASET and
-# AXIOM_TOKEN, from /etc/jumble/axiom.env).
+# the journal, sent to an Axiom dataset (AXIOM_HOST, the organisation's
+# regional edge, AXIOM_DATASET and AXIOM_TOKEN, from /etc/jumble/axiom.env).
 service:
   flush: 5
   log_level: warn
@@ -37,7 +37,7 @@ pipeline:
       match: "*"
       host: ${AXIOM_HOST}
       port: 443
-      uri: /v1/datasets/${AXIOM_DATASET}/ingest
+      uri: /v1/ingest/${AXIOM_DATASET}
       header: Authorization Bearer ${AXIOM_TOKEN}
       format: json
       json_date_key: _time
