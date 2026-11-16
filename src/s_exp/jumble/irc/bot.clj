@@ -32,6 +32,8 @@
    ;; A write taking longer, the server no longer reading, ends the
    ;; connection: it must not hold up the delivery loop saying something.
    :write-timeout-ms 10000
+   ;; A connection lasting this long resets the waits between attempts.
+   :stable-after-ms (* 60 1000)
    ;; Waits between connection attempts, the last repeated.
    :reconnect-delays-ms [1000 2000 5000 15000 30000 60000 120000 300000]})
 
@@ -97,27 +99,43 @@
        (locking state
          (let [wait (- (+ (:said-at @state 0) (:line-interval-ms options)) (System/currentTimeMillis))]
            (when (pos? wait) (Thread/sleep (long wait)))
-           (let [written (write! bot (irc/line "PRIVMSG" (:channel config) (irc/safe-text text)))]
-             (swap! state assoc :said-at (System/currentTimeMillis))
-             written)))))
+           ;; Still in, after waiting its turn: kicked meanwhile, it would
+           ;; say it to nobody.
+           (and (joined? bot)
+                (let [written (write! bot (irc/line "PRIVMSG" (:channel config) (irc/safe-text text)))]
+                  (swap! state assoc :said-at (System/currentTimeMillis))
+                  written))))))
 
 (defn- join!
-  [{:keys [config] :as bot}]
+  "Joins the channel, and tries again in a while unless the server says it
+  did: however it refuses, if it says anything."
+  [{:keys [config state options] :as bot}]
   (let [{:keys [channel key]} config]
+    (swap! state assoc :rejoin-at (+ (System/currentTimeMillis) (:rejoin-after-ms options)))
     (write! bot (if key (irc/line "JOIN" channel key) (irc/line "JOIN" channel)))))
 
 (defn- own-nick?
   [{:keys [state]} source]
   (= (:nick @state) (first (str/split (or source "") #"!" 2))))
 
+(defn- own-channel?
+  [{:keys [config]} channel]
+  (and channel (= (str/lower-case (:channel config)) (str/lower-case channel))))
+
+(def ^:private max-nick-tries
+  "Nicks tried, each with one more _, before giving up the connection."
+  3)
+
 (defn- handle!
   "Acts on one line from the server."
   [{:keys [state config options] :as bot} {:keys [source command params]}]
-  (let [{:keys [nick password channel]} config
-        now (System/currentTimeMillis)]
+  (let [{:keys [nick password]} config
+        now (System/currentTimeMillis)
+        out! #(do (log/warn %)
+                  (swap! state assoc :joined false :rejoin-at (+ now (:rejoin-after-ms options))))]
     (case command
       "PING" (write! bot (apply irc/line "PONG" params))
-      "CAP" (when (= "sasl" (str/trim (last params)))
+      "CAP" (when (= "sasl" (some-> (last params) str/trim))
               (case (second params)
                 "ACK" (write! bot "AUTHENTICATE PLAIN")
                 "NAK" (do (log/warn "IRC server does not offer SASL; going on without signing in")
@@ -128,20 +146,28 @@
       "903" (write! bot "CAP END")
       ("902" "904" "905" "906") (do (log/warn "IRC SASL sign-in failed, going on without" {:numeric command})
                                     (write! bot "CAP END"))
-      "001" (do (swap! state assoc :registered true :attempt 0)
+      ;; The nick the server gave, cut to its length maybe, is the bot's.
+      "001" (do (swap! state assoc :registered true :nick (or (first params) (:nick @state)))
                 (join! bot))
+      "NICK" (when (and (own-nick? bot source) (first params))
+               (swap! state assoc :nick (first params)))
       "433" (when-not (:registered @state)
-              (let [taken (swap! state update :nick str "_")]
-                (write! bot (irc/line "NICK" (:nick taken)))))
-      "JOIN" (when (and (own-nick? bot source) (= (str/lower-case channel) (str/lower-case (first params))))
+              (let [taken (swap! state update :nick-tries (fnil inc 0))]
+                (when (> (:nick-tries taken) max-nick-tries)
+                  (throw (java.io.IOException. "The bot's nicks are all taken")))
+                (write! bot (irc/line "NICK" (:nick (swap! state update :nick str "_"))))))
+      "432" (throw (java.io.IOException. "The IRC server refuses the bot's nick"))
+      "JOIN" (when (and (own-nick? bot source) (own-channel? bot (first params)))
                (log/info "IRC bot joined its channel")
                (swap! state assoc :joined true :rejoin-at nil))
-      "KICK" (when (= (:nick @state) (second params))
-               (log/warn "IRC bot kicked from its channel; joining again in a while")
-               (swap! state assoc :joined false :rejoin-at (+ now (:rejoin-after-ms options))))
-      ;; Banned, invite only, full, wrong key: tried again in a while.
-      ("471" "473" "474" "475") (do (log/warn "IRC bot could not join its channel" {:numeric command})
-                                    (swap! state assoc :rejoin-at (+ now (:rejoin-after-ms options))))
+      "KICK" (when (and (own-channel? bot (first params)) (= (:nick @state) (second params)))
+               (out! "IRC bot kicked from its channel; joining again in a while"))
+      "PART" (when (and (own-nick? bot source) (own-channel? bot (first params)))
+               (out! "IRC bot made to leave its channel; joining again in a while"))
+      ;; No such channel, too many, full, invite only, banned, wrong key,
+      ;; registered nicks only...: tried again in a while (see join!).
+      ("403" "405" "471" "473" "474" "475" "477" "489" "520")
+      (log/warn "IRC bot could not join its channel" {:numeric command})
       "ERROR" (throw (java.io.IOException. "The IRC server closed the connection"))
       nil)))
 
@@ -149,15 +175,14 @@
   "Between lines: pings a silent server, gives up on a dead connection,
   joins again when due."
   [{:keys [state options] :as bot}]
-  (let [{:keys [heard-at pinged rejoin-at]} @state
+  (let [{:keys [heard-at pinged rejoin-at joined]} @state
         now (System/currentTimeMillis)
         silent (- now heard-at)]
     (cond
       (>= silent (:dead-after-ms options)) (throw (java.io.IOException. "The IRC server stopped answering"))
       (and (>= silent (:ping-after-ms options)) (not pinged)) (do (write! bot (irc/line "PING" "jumble"))
                                                                   (swap! state assoc :pinged true))
-      (and rejoin-at (>= now rejoin-at)) (do (swap! state assoc :rejoin-at nil)
-                                             (join! bot)))))
+      (and rejoin-at (not joined) (>= now rejoin-at)) (join! bot))))
 
 (def ^:private max-line-bytes
   "A longer line from the server is dropped: IRC's are 512 bytes, with
@@ -195,8 +220,9 @@
           pending (ByteArrayOutputStream.)
           out (OutputStreamWriter. (.getOutputStream socket) StandardCharsets/UTF_8)
           {:keys [nick password]} config]
-      (swap! state assoc :out out :socket socket :nick nick :registered false :joined false
-             :heard-at (System/currentTimeMillis) :pinged false :rejoin-at nil)
+      (swap! state assoc :out out :socket socket :nick nick :nick-tries 0 :registered false :joined false
+             :connected-at (System/currentTimeMillis) :heard-at (System/currentTimeMillis) :pinged false
+             :rejoin-at nil)
       (when password (write! bot "CAP REQ :sasl"))
       (write! bot (irc/line "NICK" nick))
       (write! bot (irc/line "USER" nick "0" "*" "Jumble"))
@@ -220,6 +246,10 @@
         (when (:running @state)
           (log/warn "IRC connection lost" {:reason (.getMessage e)}))))
     (swap! state assoc :out nil :socket nil :joined false)
+    ;; A connection that lasted starts the waits over; one dropped soon
+    ;; after the welcome, as some servers do, does not.
+    (when (>= (- (System/currentTimeMillis) (:connected-at @state 0)) (:stable-after-ms options))
+      (swap! state assoc :attempt 0))
     (when (:running @state)
       (let [delays (:reconnect-delays-ms options)
             attempt (:attempt (swap! state update :attempt (fnil inc 0)))]

@@ -247,3 +247,94 @@
           (is (not (.isAlive ^Thread (:thread b))))))
       (finally
         (.close ^ServerSocket (:listener srv))))))
+
+(deftest server-nick-test
+  (let [srv (server)
+        b (start srv)]
+    (try
+      (let [socket (connection srv)]
+        (said-until srv #"^USER ")
+        (testing "the nick the server gives, cut to its length, is the bot's"
+          (tell! socket ":irc.test 001 jumbl :Welcome")
+          (said-until srv #"^JOIN ")
+          (tell! socket ":jumbl!j@host JOIN #swap")
+          (is (eventually #(bot/joined? b))))
+        (testing "and a change of it is followed: a kick of the new nick is the bot's"
+          (tell! socket ":jumbl!j@host NICK :Guest42")
+          (Thread/sleep 100)
+          (tell! socket ":op!o@host KICK #swap Guest42 :out")
+          (is (eventually #(not (bot/joined? b))))))
+      (finally
+        (bot/stop b)
+        (.close ^ServerSocket (:listener srv))))))
+
+(deftest refused-join-test
+  (let [srv (server)
+        b (start srv)]
+    (try
+      (let [socket (connection srv)]
+        (said-until srv #"^USER ")
+        (tell! socket ":irc.test 001 jumble :Welcome")
+        (is (= "JOIN #swap" (said-until srv #"^JOIN ")))
+        (testing "a join the server refuses, however it says so, or not at all, is tried again"
+          (tell! socket ":irc.test 477 jumble #swap :You need a registered nick")
+          (is (= "JOIN #swap" (said-until srv #"^JOIN ")))))
+      (finally
+        (bot/stop b)
+        (.close ^ServerSocket (:listener srv))))))
+
+(deftest parted-test
+  (let [srv (server)
+        b (start srv)]
+    (try
+      (let [socket (connection srv)]
+        (joined! srv socket)
+        (eventually #(bot/joined? b))
+        (testing "a kick from another channel is not the bot's"
+          (tell! socket ":op!o@host KICK #other jumble :out")
+          (Thread/sleep 100)
+          (is (bot/joined? b)))
+        (testing "made to leave its channel, it is out, and joins again"
+          (tell! socket ":jumble!j@host PART #swap :removed")
+          (is (eventually #(not (bot/joined? b))))
+          (is (= "JOIN #swap" (said-until srv #"^JOIN ")))))
+      (finally
+        (bot/stop b)
+        (.close ^ServerSocket (:listener srv))))))
+
+(deftest kicked-while-waiting-test
+  (let [srv (server)
+        b (bot/start {:host "127.0.0.1" :port (.getLocalPort ^ServerSocket (:listener srv)) :tls false
+                      :nick "jumble" :channel "#swap"}
+                     {:tick-ms 50 :line-interval-ms 500 :rejoin-after-ms 5000 :reconnect-delays-ms [50]})]
+    (try
+      (let [socket (connection srv)]
+        (joined! srv socket)
+        (eventually #(bot/joined? b))
+        (bot/say! b "first")
+        (testing "kicked while waiting its turn to speak, it says nothing"
+          (let [said (future (bot/say! b "second"))]
+            (Thread/sleep 100)
+            (tell! socket ":op!o@host KICK #swap jumble :out")
+            (is (false? (deref said 2000 ::stuck))))))
+      (finally
+        (bot/stop b)
+        (.close ^ServerSocket (:listener srv))))))
+
+(deftest odd-lines-test
+  (let [srv (server)
+        b (start srv)]
+    (try
+      (let [socket (connection srv)]
+        (joined! srv socket)
+        (eventually #(bot/joined? b))
+        (testing "lines missing their parameters are ignored, the connection kept"
+          (tell! socket "CAP")
+          (tell! socket ":x!x@host JOIN")
+          (tell! socket ":op!o@host KICK")
+          (tell! socket "PING :still")
+          (is (= "PONG still" (said-until srv #"^PONG ")))
+          (is (bot/joined? b))))
+      (finally
+        (bot/stop b)
+        (.close ^ServerSocket (:listener srv))))))
