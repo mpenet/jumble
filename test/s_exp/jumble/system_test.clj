@@ -54,6 +54,10 @@
                 :irc {:host "irc.example.org" :port 6697 :tls true :nick "jumble" :channel "#swap"}}
           settings (get-in (jumble/system (merge (config "unused.db") chat)) [:delivery :settings])]
       (is (= (assoc chat :currency "CHF") (select-keys settings [:chat-webhook-url :irc :currency])))
+      (testing "the web server knows only that there are channels, for the privacy page, not their secrets"
+        (let [web (get-in (jumble/system (merge (config "unused.db") chat)) [:server :settings])]
+          (is (true? (:chat-announced web)))
+          (is (not-any? #(contains? web %) [:chat-webhook-url :irc]))))
       (testing "and the bot, which the loop says them with, is part of the system"
         (let [system (jumble/system (merge (config "unused.db") chat))]
           (is (= (:irc chat) (get-in system [:irc :config])))

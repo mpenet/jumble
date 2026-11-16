@@ -59,9 +59,9 @@
                                                   :litestream-metrics-url litestream-metrics-url
                                                   :moderator-notice moderator-notice
                                                   :notice notice
-                                                  :chat-webhook-url chat-webhook-url
-                                                  ;; Named on the privacy page.
-                                                  :irc irc
+                                                  ;; Whether new posts are announced, for the privacy
+                                                  ;; page; the channels' secrets stay with the loop.
+                                                  :chat-announced (boolean (or chat-webhook-url irc))
                                                   :hosted-by hosted-by
                                                   :source-url source-url
                                                   :image-origin (:endpoint storage)}
