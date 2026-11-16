@@ -68,7 +68,8 @@
           (finally
             (swap! state dissoc :writing-since))))
       true
-      (catch java.io.IOException _ false))
+      (catch java.io.IOException _
+        false))
     false))
 
 (defn- watch!
@@ -142,10 +143,12 @@
                           (write! bot "CAP END"))
                 nil))
       "AUTHENTICATE" (when (= ["+"] params)
-                       (doseq [line (irc/sasl-plain nick password)] (write! bot line)))
+                       (doseq [line (irc/sasl-plain nick password)]
+                         (write! bot line)))
       "903" (write! bot "CAP END")
-      ("902" "904" "905" "906") (do (log/warn "IRC SASL sign-in failed, going on without" {:numeric command})
-                                    (write! bot "CAP END"))
+      ("902" "904" "905" "906")
+      (do (log/warn "IRC SASL sign-in failed, going on without" {:numeric command})
+          (write! bot "CAP END"))
       ;; The nick the server gave, cut to its length maybe, is the bot's.
       "001" (do (swap! state assoc :registered true :nick (or (first params) (:nick @state)))
                 (join! bot))
@@ -179,10 +182,15 @@
         now (System/currentTimeMillis)
         silent (- now heard-at)]
     (cond
-      (>= silent (:dead-after-ms options)) (throw (java.io.IOException. "The IRC server stopped answering"))
-      (and (>= silent (:ping-after-ms options)) (not pinged)) (do (write! bot (irc/line "PING" "jumble"))
-                                                                  (swap! state assoc :pinged true))
-      (and rejoin-at (not joined) (>= now rejoin-at)) (join! bot))))
+      (>= silent (:dead-after-ms options))
+      (throw (java.io.IOException. "The IRC server stopped answering"))
+
+      (and (>= silent (:ping-after-ms options)) (not pinged))
+      (do (write! bot (irc/line "PING" "jumble"))
+          (swap! state assoc :pinged true))
+
+      (and rejoin-at (not joined) (>= now rejoin-at))
+      (join! bot))))
 
 (def ^:private max-line-bytes
   "A longer line from the server is dropped: IRC's are 512 bytes, with
@@ -196,20 +204,33 @@
   connection."
   [^InputStream in ^ByteArrayOutputStream pending]
   (loop []
-    (let [b (try (.read in) (catch SocketTimeoutException _ ::quiet))]
+    (let [b (try
+              (.read in)
+              (catch SocketTimeoutException _
+                ::quiet))]
       (cond
         (= ::quiet b) ::quiet
         (= -1 b) nil
-        (= 10 b) (let [line (.toString pending StandardCharsets/UTF_8)]
-                   (.reset pending)
-                   (if (str/ends-with? line "\r") (subs line 0 (dec (count line))) line))
-        (< (.size pending) max-line-bytes) (do (.write pending (int b)) (recur))
+
+        (= 10 b)
+        (let [line (.toString pending StandardCharsets/UTF_8)]
+          (.reset pending)
+          (if (str/ends-with? line "\r")
+            (subs line 0 (dec (count line)))
+            line))
+
+        (< (.size pending) max-line-bytes)
+        (do (.write pending (int b))
+            (recur))
+
         ;; Too long: skipped to its end, none of it read as a line.
-        :else (do (.reset pending)
-                  (loop []
-                    (let [b (.read in)]
-                      (when-not (#{10 -1} b) (recur))))
-                  (recur))))))
+        :else
+        (do (.reset pending)
+            (loop []
+              (let [b (.read in)]
+                (when-not (#{10 -1} b)
+                  (recur))))
+            (recur))))))
 
 (defn- session!
   "One connection, from signing in until it ends."
@@ -220,8 +241,17 @@
           pending (ByteArrayOutputStream.)
           out (OutputStreamWriter. (.getOutputStream socket) StandardCharsets/UTF_8)
           {:keys [nick password]} config]
-      (swap! state assoc :out out :socket socket :nick nick :nick-tries 0 :registered false :joined false
-             :connected-at (System/currentTimeMillis) :heard-at (System/currentTimeMillis) :pinged false
+      (swap! state
+             assoc
+             :out out
+             :socket socket
+             :nick nick
+             :nick-tries 0
+             :registered false
+             :joined false
+             :connected-at (System/currentTimeMillis)
+             :heard-at (System/currentTimeMillis)
+             :pinged false
              :rejoin-at nil)
       (when password (write! bot "CAP REQ :sasl"))
       (write! bot (irc/line "NICK" nick))
@@ -230,11 +260,16 @@
         (when (:running @state)
           (let [line (read-line! in pending)]
             (cond
-              (nil? line) (throw (java.io.IOException. "The IRC server closed the connection"))
-              (= ::quiet line) (tick! bot)
-              :else (do (swap! state assoc :heard-at (System/currentTimeMillis) :pinged false)
-                        (some->> (irc/parse line) (handle! bot))
-                        (tick! bot))))
+              (nil? line)
+              (throw (java.io.IOException. "The IRC server closed the connection"))
+
+              (= ::quiet line)
+              (tick! bot)
+
+              :else
+              (do (swap! state assoc :heard-at (System/currentTimeMillis) :pinged false)
+                  (some->> (irc/parse line) (handle! bot))
+                  (tick! bot))))
           (recur))))))
 
 (defn- keep-connected!
@@ -266,9 +301,11 @@
    (let [state (atom {:running true :attempt 0})
          bot {:config config :options (merge defaults options) :state state}]
      (metrics/set-gauge! joined-gauge {} 0)
-     (add-watch state ::joined (fn [_ _ before after]
-                                 (when (not= (boolean (:joined before)) (boolean (:joined after)))
-                                   (metrics/set-gauge! joined-gauge {} (if (:joined after) 1 0)))))
+     (add-watch state
+                ::joined
+                (fn [_ _ before after]
+                  (when (not= (boolean (:joined before)) (boolean (:joined after)))
+                    (metrics/set-gauge! joined-gauge {} (if (:joined after) 1 0)))))
      (assoc bot
             :thread (Thread/startVirtualThread #(keep-connected! bot))
             :watchdog (Thread/startVirtualThread #(watch! bot))))))

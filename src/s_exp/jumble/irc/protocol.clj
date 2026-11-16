@@ -32,11 +32,15 @@
   trailing parameter when it may hold spaces."
   [command & params]
   (let [[middle last-param] [(butlast params) (last params)]]
-    (str/join " " (concat [command] middle
-                          (when last-param
-                            [(if (or (str/includes? last-param " ") (str/starts-with? last-param ":") (empty? last-param))
-                               (str ":" last-param)
-                               last-param)])))))
+    (str/join " "
+              (concat [command]
+                      middle
+                      (when last-param
+                        [(if (or (str/includes? last-param " ")
+                                 (str/starts-with? last-param ":")
+                                 (empty? last-param))
+                           (str ":" last-param)
+                           last-param)])))))
 
 (defn- byte-count
   [^String s]

@@ -16,7 +16,8 @@
 (set! *warn-on-reflection* true)
 
 (def ^:private announced
-  (metrics/counter "jumble_chat_total" "New posts handled for the chat channels, by channel and result: sent, failed or dropped."
+  (metrics/counter "jumble_chat_total"
+                   "New posts handled for the chat channels, by channel and result: sent, failed or dropped."
                    (for [channel chat/channels
                          result ["sent" "failed" "dropped"]]
                      {:channel channel :result result})))
@@ -35,16 +36,21 @@
   when its post is off the board, its owner's account deleted, or the post
   older than [[max-age]]."
   [db channel now limit]
-  (jdbc/execute! db [(str "SELECT a.id, a.attempts, l.id AS listing_id, l.title, l.kind, l.price_minor,
-                                  l.category, l.pickup_place, l.pickup_city,
-                                  (l.status NOT IN " listing/on-board-sql " OR u.deleted_at IS NOT NULL
-                                   OR l.created_at < ?) AS needless
-                           FROM chat_announcement a
-                           JOIN listing l ON l.id = a.listing_id
-                           JOIN user u ON u.id = l.user_id
-                           WHERE a.channel = ? AND a.due_at <= ?
-                           ORDER BY a.due_at, a.id LIMIT ?")
-                     (- now max-age) channel now limit]
+  (jdbc/execute! db
+                 [(str "SELECT a.id, a.attempts, l.id AS listing_id, l.title, l.kind, l.price_minor,
+                               l.category, l.pickup_place, l.pickup_city,
+                               (l.status NOT IN "
+                       listing/on-board-sql
+                       " OR u.deleted_at IS NOT NULL OR l.created_at < ?) AS needless
+                        FROM chat_announcement a
+                        JOIN listing l ON l.id = a.listing_id
+                        JOIN user u ON u.id = l.user_id
+                        WHERE a.channel = ? AND a.due_at <= ?
+                        ORDER BY a.due_at, a.id LIMIT ?")
+                  (- now max-age)
+                  channel
+                  now
+                  limit]
                  db/opts))
 
 (defn- done!
@@ -61,8 +67,11 @@
     (db/with-write-tx [tx db]
       (if last-try
         (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE id = ?" id])
-        (jdbc/execute-one! tx ["UPDATE chat_announcement SET attempts = ?, due_at = ? WHERE id = ?"
-                               attempts (outbox/retry-at attempts now) id])))
+        (jdbc/execute-one! tx
+                           ["UPDATE chat_announcement SET attempts = ?, due_at = ? WHERE id = ?"
+                            attempts
+                            (outbox/retry-at attempts now)
+                            id])))
     last-try))
 
 (defn- deliver!
@@ -99,7 +108,9 @@
                        (let [outcome (announce settings post)]
                          (when (= :failed outcome) (vreset! failed true))
                          outcome))]
-        (outbox/deliver-each pending #(and (running) (not @failed)) #(deliver! db channel announce settings % now)
+        (outbox/deliver-each pending
+                             #(and (running) (not @failed))
+                             #(deliver! db channel announce settings % now)
                              #(select-keys % [:id :listing-id])))
       0)))
 
@@ -108,14 +119,15 @@
   of a request to its response) to the webhook at `url`."
   [send url]
   (fn [settings {:keys [listing-id] :as post}]
-    (let [status (try (:status (send {:method :post
-                                      :url url
-                                      :headers {"content-type" "application/json"}
-                                      :body (oda/write-str {:text (message/text settings post)})}))
-                      ;; Unreachable, or anything else: tried again, then given up on.
-                      (catch Exception e
-                        (log/warn e "Chat announcement not sent" {:listing listing-id})
-                        nil))]
+    (let [status (try
+                   (:status (send {:method :post
+                                   :url url
+                                   :headers {"content-type" "application/json"}
+                                   :body (oda/write-str {:text (message/text settings post)})}))
+                   ;; Unreachable, or anything else: tried again, then given up on.
+                   (catch Exception e
+                     (log/warn e "Chat announcement not sent" {:listing listing-id})
+                     nil))]
       (cond
         (and status (<= 200 status 299)) :sent
         (or (nil? status) (= 429 status) (<= 500 status)) :failed

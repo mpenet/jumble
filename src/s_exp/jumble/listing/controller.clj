@@ -339,7 +339,9 @@
 (defn- too-large
   "Shown when the upload broke the parser's limits."
   [{:keys [uri] :as request}]
-  (layout/message request 413 (i18n/t "Upload too large")
+  (layout/message request
+                  413
+                  (i18n/t "Upload too large")
                   (i18n/t "A listing can have up to {max} photos of at most {megabytes} MB each."
                           {:max listing/max-photos :megabytes (quot max-photo-bytes (* 1024 1024))})
                   (back-to-form uri)))
@@ -347,7 +349,9 @@
 (defn- uploads-busy
   "Shown to an upload without a turn (see [[listing/with-upload-turn]])."
   [{:keys [uri] :as request}]
-  (layout/message request 503 (i18n/t "Try again")
+  (layout/message request
+                  503
+                  (i18n/t "Try again")
                   (i18n/t "Too many photos are being processed right now. Please try again in a moment.")
                   (back-to-form uri)))
 

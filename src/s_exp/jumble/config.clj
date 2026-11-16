@@ -304,14 +304,20 @@
   (when-let [url (text url [:irc-url])]
     (let [refuse #(invalid "must be ircs://nick[:password]@host[:port]/#channel" [:irc-url])
           [base fragment] (str/split url #"#" 2)
-          ^URI uri (try (URI. base) (catch URISyntaxException _ nil))
+          ^URI uri (try
+                     (URI. base)
+                     (catch URISyntaxException _
+                       nil))
           scheme (some-> uri .getScheme str/lower-case)
           [nick password] (some-> uri .getRawUserInfo (str/split #":" 2))
           [channel query] (some-> fragment (str/split #"\?" 2))
           [nick password channel key] (try
-                                        [(decode nick) (decode password) (some->> (decode channel) (str "#"))
+                                        [(decode nick)
+                                         (decode password)
+                                         (some->> (decode channel) (str "#"))
                                          (some->> query (re-find #"(?:^|&)key=([^&]*)") second decode not-empty)]
-                                        (catch IllegalArgumentException _ (refuse)))]
+                                        (catch IllegalArgumentException _
+                                          (refuse)))]
       (when-not (and uri (.getHost uri)
                      (or (= "ircs" scheme) (and allow-insecure (= "irc" scheme)))
                      nick (re-matches #"[A-Za-z\[\]\\`_^{|}][A-Za-z0-9\[\]\\`_^{|}-]*" nick)
