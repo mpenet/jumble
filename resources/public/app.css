@@ -39,8 +39,8 @@
   --line: light-dark(#e4e0d8, #42403c);
   --field-border: light-dark(#bdb6a9, #5a5752);
 
-  --accent: light-dark(#0b7552, #34d399);
-  --accent-hover: light-dark(#086143, #6ee7b7);
+  --accent: light-dark(#0b7552, #4fc394);
+  --accent-hover: light-dark(#086143, #74d4ad);
   --accent-soft: light-dark(#dcf3e9, #12322a);
   --accent-fg: light-dark(#ffffff, #0b1712);
 
@@ -70,7 +70,7 @@
   --raised: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / 0.07), 0 8px 24px light-dark(rgb(31 29 26 / 0.11), rgb(0 0 0 / 0.42)), var(--edge);
   --raised-hover: 0 0 0 1px var(--line), 0 18px 40px light-dark(rgb(31 29 26 / 0.18), rgb(0 0 0 / 0.52)), var(--edge);
   --hollow: inset 0 2px 3px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.36));
-  --focus: 0 0 0 3px light-dark(rgb(11 117 82 / 0.35), rgb(52 211 153 / 0.4));
+  --focus: 0 0 0 3px light-dark(rgb(11 117 82 / 0.35), rgb(79 195 148 / 0.4));
 
   --container: 72rem;
 
