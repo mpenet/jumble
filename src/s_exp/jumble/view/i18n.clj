@@ -120,9 +120,11 @@
   (memoize
    (fn [language]
      (when-not (= "en" language)
-       (read-catalog language (or (io/resource (str "i18n/" language ".po"))
-                                  (throw (ex/ex-info (str "No catalog for " language) ::error/no-catalog
-                                                     {:language language}))))))))
+       (read-catalog language
+                     (or (io/resource (str "i18n/" language ".po"))
+                         (throw (ex/ex-info (str "No catalog for " language)
+                                            ::error/no-catalog
+                                            {:language language}))))))))
 
 (defn catalog-of
   "The catalog a member reads in: that of `language`, theirs, or the
@@ -134,7 +136,8 @@
   "Runs `body` in a member's `language`, the community's when nil: their
   pages, and the emails written to them."
   [language & body]
-  `(binding [*catalog* (catalog-of ~language)] ~@body))
+  `(binding [*catalog* (catalog-of ~language)]
+     ~@body))
 
 ;; Lookup
 

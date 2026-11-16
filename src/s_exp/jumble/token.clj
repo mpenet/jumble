@@ -45,5 +45,7 @@
   "Whether strings `a` and `b` are equal, false when either is nil; compared
   in a time that does not tell how much of a secret was guessed right."
   [^String a ^String b]
-  (boolean (and a b (MessageDigest/isEqual (.getBytes a StandardCharsets/UTF_8)
-                                           (.getBytes b StandardCharsets/UTF_8)))))
+  (boolean (and a
+                b
+                (MessageDigest/isEqual (.getBytes a StandardCharsets/UTF_8)
+                                       (.getBytes b StandardCharsets/UTF_8)))))

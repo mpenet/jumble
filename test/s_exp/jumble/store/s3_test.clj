@@ -81,11 +81,15 @@
 
 (deftest failure-test
   (testing "a refused request is a storage failure, with the status and the server's error"
-    (http-test/with-server (atom []) (fn [_] [403 {} "<Error><Code>AccessDenied</Code></Error>"])
+    (http-test/with-server (atom [])
+      (fn [_] [403 {} "<Error><Code>AccessDenied</Code></Error>"])
       (fn [base]
         (let [client (s3/client {:endpoint base :region "r" :bucket "b" :access-key "a" :secret-key "s"})
-              e (try (s3/put! client "k" (byte-array 1) {}) nil
-                     (catch clojure.lang.ExceptionInfo e e))]
+              e (try
+                  (s3/put! client "k" (byte-array 1) {})
+                  nil
+                  (catch clojure.lang.ExceptionInfo e
+                    e))]
           (is (= ::error/storage-failed (ex/ex-type e)))
           (is (= {:operation "put" :key "k" :status 403} (select-keys (ex-data e) [:operation :key :status])))
           (is (re-find #"AccessDenied" (:error (ex-data e)))))))))

@@ -96,12 +96,15 @@
       (.drawString g (str "photo " (inc variant)) 40 (- h 50))
       (ImageIO/write img "png" out)
       (.toByteArray out)
-      (finally (.dispose g)))))
+      (finally
+        (.dispose g)))))
 
 (defn- remove-listings!
   [ds blobs]
-  (let [keys (map :object_key (jdbc/execute! ds ["SELECT object_key FROM photo"]
-                                             {:builder-fn rs/as-unqualified-maps}))]
+  (let [keys (map :object_key
+                  (jdbc/execute! ds
+                                 ["SELECT object_key FROM photo"]
+                                 {:builder-fn rs/as-unqualified-maps}))]
     (doseq [k keys size ["full" "thumb"]]
       (blob/delete! blobs (listing/photo-key k size)))
     (db/with-write-tx [tx ds]
@@ -119,19 +122,22 @@
 (defn- seed-conversations!
   "alice writes to the owners of the first `listing-ids`; each answers."
   [ds listing-ids now]
-  (when-let [{alice :id} (jdbc/execute-one! ds ["SELECT id FROM user WHERE email = 'alice@example.com'"]
+  (when-let [{alice :id} (jdbc/execute-one! ds
+                                            ["SELECT id FROM user WHERE email = 'alice@example.com'"]
                                             {:builder-fn rs/as-unqualified-maps})]
     (doseq [[listing-id [subject question answer]] (map vector listing-ids conversations)
             :let [found (listing/by-id ds listing-id)
-                  thread-id (message/start! ds {:sender-id alice :listing-id listing-id :subject subject
-                                                :body question :now (- now (* 2 60 60 1000))})]]
+                  thread-id (message/start! ds
+                                            {:sender-id alice :listing-id listing-id :subject subject
+                                             :body question :now (- now (* 2 60 60 1000))})]]
       (message/reply! ds thread-id (:user-id found) answer (- now (* 60 60 1000))))
     (println "Seeded" (count conversations) "conversations for alice@example.com.")))
 
 (defn -main
   [& args]
   (when-not (= "dev" (System/getProperty "jumble.profile"))
-    (binding [*out* *err*] (println "Refusing to seed outside the dev profile (use clojure -M:dev:seed)."))
+    (binding [*out* *err*]
+      (println "Refusing to seed outside the dev profile (use clojure -M:dev:seed)."))
     (System/exit 1))
   (let [{:keys [db storage currency] :as cfg} (config/load-config)
         ds (db/datasource (:path db))
@@ -144,8 +150,9 @@
     (when (empty? (choices/choosable (:places (choices/all ds))))
       (choices/add! ds :place "Main pickup point"))
     (let [users (mapv (fn [[name handle]]
-                        (account/upsert-user! ds {:iss "seed" :sub handle :name name
-                                                  :email (str handle "@example.com")}
+                        (account/upsert-user! ds
+                                              {:iss "seed" :sub handle :name name
+                                               :email (str handle "@example.com")}
                                               now))
                       members)
           settings (merge (select-keys cfg [:currency]) (choices/all ds))
@@ -153,15 +160,20 @@
           listing-ids
           (vec (for [[i [kind title price category city description]] (map-indexed vector listings)
                      :let [{:keys [listing errors]}
-                           (listing/validate settings {:kind kind :title title :description description :price price
-                                                       :category category
-                                                       :pickup (if (or city (nil? place)) "city" (listing/place-pickup place))
-                                                       :city (or city "Geneva")})
+                           (listing/validate settings
+                                             {:kind kind :title title :description description :price price
+                                              :category category
+                                              :pickup (if (or city (nil? place)) "city" (listing/place-pickup place))
+                                              :city (or city "Geneva")})
                            _ (when errors (throw (ex-info "Invalid seed listing" {:title title :errors errors})))
                            {:keys [photos]} (listing/prepare-photos (map #(placeholder title category %)
                                                                          (range (inc (mod i 3)))))]]
-                 (listing/create! ds blobs (:id (nth users (mod i (count users)))) listing photos
-                               ;; Spread over the last three weeks, newest last.
+                 (listing/create! ds
+                                  blobs
+                                  (:id (nth users (mod i (count users))))
+                                  listing
+                                  photos
+                                  ;; Spread over the last three weeks, newest last.
                                   (- now (* (- (count listings) i) (quot (* 21 day) (count listings)))))))]
       ;; Not news: a chat channel connected in development is not told.
       (chat/forget! ds listing-ids)

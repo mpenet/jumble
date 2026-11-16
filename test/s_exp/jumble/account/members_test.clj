@@ -24,7 +24,8 @@
 
 (defn- outbox
   []
-  (jdbc/execute! *db* ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
+  (jdbc/execute! *db*
+                 ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
                  {:builder-fn rs/as-unqualified-maps}))
 
 (deftest rule-test
@@ -53,7 +54,9 @@
         (is (str/includes? body "*@example.com"))
         (is (re-find #"<form [^>]*method=\"post\" action=\"/manage/members\"" body))))
     (testing "adding addresses and patterns, inviting the addresses"
-      (let [response (request :post "/manage/members" dave
+      (let [response (request :post
+                              "/manage/members"
+                              dave
                               :form {"patterns" "Guest@Gmail.com\n*@partner.org, other@proton.me" "invite" "on"})]
         (is (= 303 (:status response)))
         (is (= "/manage/members?added" (get-in response [:headers "location"]))))
@@ -98,15 +101,18 @@
     (testing "withdrawing it signs its owner out at once, not at their next sign-in"
       (request :post "/manage/members/withdraw" dave :form {"pattern" "guest@gmail.com"})
       (is (= 302 (:status (request :get "/listings" guest))))
-      (is (= 0 (:n (jdbc/execute-one! *db* ["SELECT count(*) AS n FROM session s JOIN user u ON u.id = s.user_id
+      (is (= 0
+             (:n (jdbc/execute-one! *db*
+                                    ["SELECT count(*) AS n FROM session s JOIN user u ON u.id = s.user_id
                                               WHERE u.email = 'guest@gmail.com'"]
-                                      {:builder-fn rs/as-unqualified-maps})))))
+                                    {:builder-fn rs/as-unqualified-maps})))))
     (testing "and configured patterns apply the same way"
       (is (= 302 (:status (request :get "/listings" (sign-in! "eve@elsewhere.org"))))))))
 
 (defn- user-row
   [id]
-  (jdbc/execute-one! *db* ["SELECT iss, email, deleted_at FROM user WHERE id = ?" id]
+  (jdbc/execute-one! *db*
+                     ["SELECT iss, email, deleted_at FROM user WHERE id = ?" id]
                      {:builder-fn rs/as-unqualified-maps}))
 
 (deftest remove-member-test

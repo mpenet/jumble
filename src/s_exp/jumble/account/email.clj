@@ -11,8 +11,12 @@
   (let [app-name (mail/one-line app-name)]
     {:to to
      :subject (i18n/t "Sign in to {app-name}" {:app-name app-name})
-     :text (str (i18n/t "Use this link to sign in to {app-name}:" {:app-name app-name}) "\n\n"
-                base-url "/login/email?token=" token "\n\n"
+     :text (str (i18n/t "Use this link to sign in to {app-name}:" {:app-name app-name})
+                "\n\n"
+                base-url
+                "/login/email?token="
+                token
+                "\n\n"
                 (i18n/tn "It works once, within {n} minute. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
                          "It works once, within {n} minutes. If you did not ask for it, you can\nignore this email: nobody can sign in without the link."
                          minutes)

@@ -73,7 +73,8 @@
 
 (defn- eventually
   [f]
-  (loop [n 100] (or (f) (when (pos? n) (Thread/sleep 30) (recur (dec n))))))
+  (loop [n 100]
+    (or (f) (when (pos? n) (Thread/sleep 30) (recur (dec n))))))
 
 (defn- joined!
   "Signs the bot in on `socket` and has it join #swap."
@@ -222,8 +223,14 @@
           (let [^Socket own (:socket @(:state b))
                 stuck (proxy [Writer] []
                         (write
-                          ([_] (while (not (.isClosed own)) (Thread/sleep 10)) (throw (java.io.IOException. "closed")))
-                          ([_ _ _] (while (not (.isClosed own)) (Thread/sleep 10)) (throw (java.io.IOException. "closed"))))
+                          ([_]
+                           (while (not (.isClosed own))
+                             (Thread/sleep 10))
+                           (throw (java.io.IOException. "closed")))
+                          ([_ _ _]
+                           (while (not (.isClosed own))
+                             (Thread/sleep 10))
+                           (throw (java.io.IOException. "closed"))))
                         (flush [])
                         (close []))]
             (swap! (:state b) assoc :out stuck)

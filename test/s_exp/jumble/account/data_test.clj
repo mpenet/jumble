@@ -37,20 +37,27 @@
   [blobs]
   (let [ann (fixtures/user! "ann")
         bob (fixtures/user! "bob")
-        lamp (listing/create! *db* blobs ann
-                              (:listing (listing/validate fixtures/settings {:kind "free" :title "Lamp" :category "home"
-                                                                             :pickup "place:hall"}))
-                              (:photos (listing/prepare-photos [(png)])) 1)
+        lamp (listing/create! *db*
+                              blobs
+                              ann
+                              (:listing (listing/validate fixtures/settings
+                                                          {:kind "free" :title "Lamp" :category "home"
+                                                           :pickup "place:hall"}))
+                              (:photos (listing/prepare-photos [(png)]))
+                              1)
         desk (:id (fixtures/listing! bob "Desk"))
         thread (message/start! *db* {:sender-id ann :listing-id desk :subject "Desk" :body "Is it solid?" :now 2})]
     (message/reply! *db* thread bob "Very." 3)
     (listing/favorite! *db* ann desk 4)
     (moderation/report! *db* {:listing-id desk :reporter-id ann :reason "Too nice" :now 5 :alerts []})
     (saved/save! *db* ann {:q "bike" :kind nil :category nil} 6)
-    (push/subscribe! *db* ann (account/create-session! *db* ann 7 fixtures/session-ttl)
+    (push/subscribe! *db*
+                     ann
+                     (account/create-session! *db* ann 7 fixtures/session-ttl)
                      {:endpoint "https://fcm.googleapis.com/fcm/send/ann"
                       :p256dh "BNcRdreALRFXTkOOUHK1EtK2wtaz5Ry4YfYCA_0QTpQtUbVlUls0VJXg7A8u-Ts1XbjhazAkj7I99e8QcYP7DkM"
-                      :auth "tBHItJI5svbpez7KI4CCXg"} 7)
+                      :auth "tBHItJI5svbpez7KI4CCXg"}
+                     7)
     {:ann ann :bob bob :lamp lamp :desk desk :thread thread}))
 
 (deftest export-test
@@ -128,8 +135,10 @@
       (is (nil? (listing/by-id *db* lamp)))
       (is (= [{:name "" :email "" :iss "deleted" :language nil :weekly-digest 0 :digest-sent-at nil
                :searches-checked-at nil :last-login-at 0}]
-             (jdbc/execute! *db* ["SELECT name, email, iss, language, weekly_digest, digest_sent_at, searches_checked_at,
-                                          last_login_at FROM user WHERE id = ?" ann]
+             (jdbc/execute! *db*
+                            ["SELECT name, email, iss, language, weekly_digest, digest_sent_at, searches_checked_at,
+                                          last_login_at FROM user WHERE id = ?"
+                             ann]
                             db/opts))))
     (testing "a finished one is left alone"
       (is (nil? (data/finish-deletions! *db* blobs (+ 20 (* 60 minute))))))))
@@ -139,10 +148,14 @@
         {:keys [ann bob]} (scene blobs)]
     (data/delete-account! *db* blobs ann 20)
     (testing "a listing sent while the account was being deleted is refused"
-      (is (nil? (listing/create! *db* blobs ann
-                                 (:listing (listing/validate fixtures/settings {:kind "free" :title "Late" :category "home"
-                                                                                :pickup "place:hall"}))
-                                 [] 21)))
+      (is (nil? (listing/create! *db*
+                                 blobs
+                                 ann
+                                 (:listing (listing/validate fixtures/settings
+                                                             {:kind "free" :title "Late" :category "home"
+                                                              :pickup "place:hall"}))
+                                 []
+                                 21)))
       (is (= [] (q "SELECT * FROM listing WHERE user_id = ?" ann))))
     (testing "nor a favorite, nor a conversation started meanwhile"
       (let [desk (:id (fixtures/listing! bob "Desk"))]

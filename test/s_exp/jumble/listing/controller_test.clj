@@ -19,7 +19,9 @@
 
 (use-fixtures :each
   db-fixture
-  (fn [t] (binding [*blobs* (blob/memory-store)] (t))))
+  (fn [t]
+    (binding [*blobs* (blob/memory-store)]
+      (t))))
 
 (defn- fixture-bytes
   ^bytes [name]
@@ -36,7 +38,13 @@
     (doseq [[k v] fields]
       (write (str "--" boundary "\r\nContent-Disposition: form-data; name=\"" k "\"\r\n\r\n" v "\r\n")))
     (doseq [[k filename ^bytes bs] files]
-      (write (str "--" boundary "\r\nContent-Disposition: form-data; name=\"" k "\"; filename=\"" filename "\"\r\n"
+      (write (str "--"
+                  boundary
+                  "\r\nContent-Disposition: form-data; name=\""
+                  k
+                  "\"; filename=\""
+                  filename
+                  "\"\r\n"
                   "Content-Type: application/octet-stream\r\n\r\n"))
       (.write out bs)
       (write "\r\n"))
@@ -61,11 +69,14 @@
   "`n` free listings named `<prefix> 0`.. in category home, one second apart."
   [user-id prefix n]
   (doseq [i (range n)]
-    (listing/create! *db* *blobs* user-id
+    (listing/create! *db*
+                     *blobs*
+                     user-id
                      (:listing (listing/validate fixtures/settings
                                                  {:kind "free" :title (str prefix " " i) :category "home"
                                                   :pickup "place:hall"}))
-                     [] (* 1000 (inc i)))))
+                     []
+                     (* 1000 (inc i)))))
 
 (def valid-fields
   {"kind" "sale" "title" "Desk lamp" "description" "Warm light." "price" "25"
@@ -91,7 +102,9 @@
 (deftest create-test
   (let [token (sign-in! "alice@example.com")
         created (fixtures/counted "jumble_listings_created_total")
-        response (request :post "/listings" token
+        response (request :post
+                          "/listings"
+                          token
                           :fields valid-fields
                           :files [["photos" "lamp.jpg" (fixture-bytes "rotated-gps.jpg")]
                                   ["photos" "" (byte-array 0)]])
@@ -109,7 +122,9 @@
 
 (deftest invalid-input-test
   (let [token (sign-in! "alice@example.com")
-        {:keys [status body]} (request :post "/listings" token
+        {:keys [status body]} (request :post
+                                       "/listings"
+                                       token
                                        :fields (assoc valid-fields "title" "<b>Lamp</b>" "price" "cheap")
                                        :files [["photos" "lamp.jpg" (fixture-bytes "rotated-gps.jpg")]])]
     (is (= 422 status))
@@ -122,7 +137,9 @@
     (is (= 0 (listing-count)))))
 
 (deftest invalid-photo-test
-  (let [{:keys [status body]} (request :post "/listings" (sign-in! "alice@example.com")
+  (let [{:keys [status body]} (request :post
+                                       "/listings"
+                                       (sign-in! "alice@example.com")
                                        :fields valid-fields
                                        :files [["photos" "a.gif" (fixture-bytes "tiny.gif")]])]
     (is (= 422 status))
@@ -130,18 +147,26 @@
     (is (= 0 (listing-count)))))
 
 (deftest signals-reflect-only-known-values-test
-  (let [{:keys [body]} (request :post "/listings" (sign-in! "alice@example.com")
+  (let [{:keys [body]} (request :post
+                                "/listings"
+                                (sign-in! "alice@example.com")
                                 :fields (assoc valid-fields "kind" "x'});alert(1);({" "pickup" "evil" "title" ""))]
     (is (str/includes? body "data-signals=\"{&quot;kind&quot;:&quot;sale&quot;,&quot;pickup&quot;:&quot;&quot;}\""))
     (is (not (str/includes? body "alert(1)")))))
 
 (deftest cross-origin-post-test
-  (is (= 403 (:status (request :post "/listings" (sign-in! "alice@example.com")
-                               :fields valid-fields :origin "https://evil.example.com")))))
+  (is (= 403 (:status (request :post
+                               "/listings"
+                               (sign-in! "alice@example.com")
+                               :fields valid-fields
+                               :origin "https://evil.example.com")))))
 
 (defn- create!
   [token fields]
-  (let [response (request :post "/listings" token :fields fields
+  (let [response (request :post
+                          "/listings"
+                          token
+                          :fields fields
                           :files [["photos" "lamp.jpg" (fixture-bytes "rotated-gps.jpg")]])]
     (parse-long (second (re-find #"/listings/(\d+)" (get-in response [:headers "location"]))))))
 
@@ -174,7 +199,10 @@
       (is (= 422 (:status (request :post "/listings" token :fields valid-fields :files (repeat 7 photo))))))
     (testing "beyond the parser's part limit, and for oversized files, the upload is refused"
       (is (= 413 (:status (request :post "/listings" token :fields valid-fields :files (repeat 25 photo)))))
-      (is (= 413 (:status (request :post "/listings" token :fields valid-fields
+      (is (= 413 (:status (request :post
+                                   "/listings"
+                                   token
+                                   :fields valid-fields
                                    :files [["photos" "big.jpg" (byte-array (* 11 1024 1024))]])))))
     (is (= 0 (listing-count)))))
 
@@ -420,7 +448,9 @@
       (is (= [] (card-titles (:body (request :get "/listings" bob)))))
       (is (str/includes? (page bob) "<span class=\"status\">Sold</span>")))
     (testing "with Datastar, only the status section comes back"
-      (let [{:keys [status body]} (post-form (str "/listings/" id "/status") alice {"status" "active"}
+      (let [{:keys [status body]} (post-form (str "/listings/" id "/status")
+                                             alice
+                                             {"status" "active"}
                                              :headers datastar)]
         (is (= 200 status))
         (is (.startsWith ^String body "<section id=\"listing-status\""))
@@ -488,7 +518,9 @@
       (is (= 404 (:status (request :get edit-path bob))))
       (is (= 404 (:status (request :post (str "/listings/" id) bob :fields valid-fields)))))
     (testing "saving applies the changes and removes ticked photos"
-      (let [response (request :post (str "/listings/" id) alice
+      (let [response (request :post
+                              (str "/listings/" id)
+                              alice
                               :fields (assoc valid-fields "title" "Floor lamp" "remove" (str photo-id)))]
         (is (= 303 (:status response)))
         (is (= (str "/listings/" id) (get-in response [:headers "location"])))
@@ -514,7 +546,10 @@
 
 (deftest gallery-test
   (let [alice (sign-in! "alice@example.com")
-        response (request :post "/listings" alice :fields valid-fields
+        response (request :post
+                          "/listings"
+                          alice
+                          :fields valid-fields
                           :files [["photos" "a.jpg" (fixture-bytes "rotated-gps.jpg")]
                                   ["photos" "b.png" (fixture-bytes "transparent.png")]])
         body (:body (request :get (get-in response [:headers "location"]) alice))
@@ -533,10 +568,12 @@
     (create! token (assoc valid-fields "title" "Chair" "kind" "free"))
     (let [body (:body (request :get "/listings?kind=free" token))
           filters (re-find #"<nav class=\"filters\".*?</nav>" body)
-          option (fn [href] (some->> (re-find (re-pattern (str "<a [^>]*href=\"" (java.util.regex.Pattern/quote href)
-                                                               "\"[^>]*>(.*?)</a>"))
-                                              filters)
-                                     second))]
+          option (fn [href]
+                   (some->> (re-find (re-pattern (str "<a [^>]*href=\""
+                                                      (java.util.regex.Pattern/quote href)
+                                                      "\"[^>]*>(.*?)</a>"))
+                                     filters)
+                            second))]
       (testing "two labelled groups: type and category"
         (is (re-find #"<div class=\"filter-row\" role=\"group\" aria-labelledby=\"filter-type\">" body))
         (is (re-find #"<div class=\"filter-row\" role=\"group\" aria-labelledby=\"filter-category\">" body)))
@@ -560,14 +597,18 @@
 
 (deftest photos-as-text-field-test
   (testing "a photos field sent as text instead of files is ignored"
-    (let [response (request :post "/listings" (sign-in! "alice@example.com")
+    (let [response (request :post
+                            "/listings"
+                            (sign-in! "alice@example.com")
                             :fields (assoc valid-fields "photos" "not a file"))]
       (is (= 303 (:status response))))))
 
 (deftest edit-upload-too-large-test
   (let [token (sign-in! "alice@example.com")
         id (create! token valid-fields)
-        {:keys [status body]} (request :post (str "/listings/" id) token
+        {:keys [status body]} (request :post
+                                       (str "/listings/" id)
+                                       token
                                        :fields valid-fields
                                        :files [["photos" "big.jpg" (byte-array (* 11 1024 1024))]])]
     (is (= 413 status))
@@ -595,7 +636,10 @@
 
 (deftest photo-controls-test
   (let [alice (sign-in! "alice@example.com")
-        response (request :post "/listings" alice :fields valid-fields
+        response (request :post
+                          "/listings"
+                          alice
+                          :fields valid-fields
                           :files [["photos" "a.png" (fixture-bytes "transparent.png")]
                                   ["photos" "b.png" (fixture-bytes "transparent.png")]])
         id (parse-long (second (re-find #"/listings/(\d+)" (get-in response [:headers "location"]))))]
@@ -647,7 +691,9 @@
         page (str "/listings/" id)
         action (str "action=\"/listings/" id "/favorite\"")
         favorite (fn [token on & {:as opts}]
-                   (fixtures/request :post (str page "/favorite") token
+                   (fixtures/request :post
+                                     (str page "/favorite")
+                                     token
                                      :form (merge {"favorite" (if on "on" "off")} (:form opts))
                                      :headers (:headers opts)))
         pressed (fn [body] (re-find #"aria-pressed=\"true\"" body))]
@@ -691,11 +737,14 @@
         owner (fixtures/user-id "alice@example.com")
         ids (mapv #(:id (choices/add! *db* :category (str "Group " %))) (range 1 13))]
     (doseq [[i id] (map-indexed vector ids)]
-      (listing/create! *db* *blobs* owner
+      (listing/create! *db*
+                       *blobs*
+                       owner
                        (:listing (listing/validate (merge fixtures/settings (choices/all *db*))
                                                    {:kind "free" :title (str "Thing " i) :category id
                                                     :pickup "place:hall"}))
-                       [] (inc i)))
+                       []
+                       (inc i)))
     (let [body (:body (request :get "/listings" token))
           [shown more] (str/split body #"<details class=\"more-categories\"" 2)]
       (testing "the first ten categories with listings show, the others behind More"
@@ -807,7 +856,9 @@
   (testing "a file sent as a photo to remove is ignored, not a failure"
     (let [alice (sign-in! "alice@example.com")
           id (create! alice valid-fields)
-          response (request :post (str "/listings/" id) alice
+          response (request :post
+                            (str "/listings/" id)
+                            alice
                             :fields (assoc valid-fields "title" "Floor lamp")
                             :files [["remove" "1" (.getBytes "1")]])]
       (is (= 303 (:status response)))
@@ -867,7 +918,10 @@
 (deftest photo-order-test
   (let [alice (sign-in! "alice@example.com")
         png (fixture-bytes "transparent.png")
-        id (let [response (request :post "/listings" alice :fields valid-fields
+        id (let [response (request :post
+                                   "/listings"
+                                   alice
+                                   :fields valid-fields
                                    :files (for [i (range 3)] ["photos" (str "p" i ".png") png]))]
              (parse-long (second (re-find #"/listings/(\d+)" (get-in response [:headers "location"])))))
         ids #(mapv :id (:photos (listing/by-id *db* id)))
@@ -893,7 +947,9 @@
         old (mapv :id (:photos (listing/by-id *db* id)))
         old-keys (set (map :object-key (:photos (listing/by-id *db* id))))]
     (testing "every photo of a full listing replaced at once, the order and cover sent along"
-      (let [response (request :post (str "/listings/" id) alice
+      (let [response (request :post
+                              (str "/listings/" id)
+                              alice
                               :fields (concat valid-fields
                                               (for [p old] ["order" p])
                                               [["cover" (first old)]]

@@ -19,7 +19,9 @@
      [:input {:type "search" :name "q" :maxlength 100
               :placeholder (i18n/t "A bike, a desk lamp, a stroller…") :aria-label (i18n/t "Search listings")}]]
     [:button {:type "submit"} (i18n/t "Search")]]
-   [:p.hero-count (i18n/tn "{n} thing up for grabs right now" "{n} things up for grabs right now" active
+   [:p.hero-count (i18n/tn "{n} thing up for grabs right now"
+                           "{n} things up for grabs right now"
+                           active
                            {:n [:strong active]})]
    [:div.hero-actions
     [:a.button.button-pop.button-large {:href "/listings/new"} icons/plus (i18n/t "Post a listing")]
@@ -36,7 +38,7 @@
 
 (defn index
   [request active latest photo-url]
-  (layout/page
-   request {}
-   (hero active)
-   (just-posted (listing-view/cards-env request photo-url "/") latest)))
+  (layout/page request
+               {}
+               (hero active)
+               (just-posted (listing-view/cards-env request photo-url "/") latest)))

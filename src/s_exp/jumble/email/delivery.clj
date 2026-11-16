@@ -50,8 +50,7 @@
 (defrecord Delivery [db irc mailer blobs settings interval-ms]
   component/Lifecycle
   (start [this]
-    (let [executor (Executors/newSingleThreadScheduledExecutor
-                    (.factory (.name (Thread/ofVirtual) "jumble-delivery")))
+    (let [executor (Executors/newSingleThreadScheduledExecutor (.factory (.name (Thread/ofVirtual) "jumble-delivery")))
           running #(not (.isShutdown executor))
           ;; Push services and the chat webhook.
           client (http/client {:connect-timeout 5000 :timeout 10000})
@@ -78,7 +77,9 @@
                                                        ["deletions" #(data/finish-deletions! ds blobs now)]]
                                              :while (running)]
                                        (run-step step f)))))
-                               (long interval-ms) (long interval-ms) TimeUnit/MILLISECONDS)
+                               (long interval-ms)
+                               (long interval-ms)
+                               TimeUnit/MILLISECONDS)
       (assoc this :executor executor)))
   (stop [this]
     ;; A run in progress finishes the email at hand and stops.

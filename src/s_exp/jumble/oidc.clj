@@ -51,11 +51,15 @@
   (let [{:keys [status body]} (try
                                 (http/request http request :string)
                                 (catch IOException e
-                                  (throw (ex/ex-info "OIDC provider unreachable" ::error/provider-unreachable
+                                  (throw (ex/ex-info "OIDC provider unreachable"
+                                                     ::error/provider-unreachable
                                                      {:url (:url request)}
                                                      e))))]
     {:status status
-     :body (try (oda/parse ^String body) (catch Exception _ nil))}))
+     :body (try
+             (oda/parse ^String body)
+             (catch Exception _
+               nil))}))
 
 (defn- jwt-processor
   [{:keys [issuer client-id]} jwks-uri]
@@ -74,7 +78,11 @@
 (defn- http-url?
   "Whether `s` is an absolute http or https URL with a host."
   [s]
-  (let [^URI uri (when (string? s) (try (URI. s) (catch URISyntaxException _ nil)))]
+  (let [^URI uri (when (string? s)
+                   (try
+                     (URI. s)
+                     (catch URISyntaxException _
+                       nil)))]
     (boolean (and uri (#{"http" "https"} (.getScheme uri)) (.getHost uri)))))
 
 (defn- discover
@@ -86,7 +94,8 @@
       (throw (ex/ex-info "OIDC discovery failed" ::error/discovery-failed {:url url :status status})))
     ;; OIDC Discovery 1.0 §4.3: the advertised issuer must be the one we asked.
     (when-not (= issuer (get body "issuer"))
-      (throw (ex/ex-info "OIDC discovery issuer mismatch" ::error/issuer-mismatch
+      (throw (ex/ex-info "OIDC discovery issuer mismatch"
+                         ::error/issuer-mismatch
                          {:expected issuer :actual (get body "issuer")})))
     (when-not (every? http-url? [authorization_endpoint token_endpoint jwks_uri])
       (throw (ex/ex-info "OIDC discovery document incomplete or malformed" ::error/discovery-failed {:url url})))
@@ -126,16 +135,18 @@
   "Exchanges an authorization `code` for the ID token (compact JWT string)."
   [{:keys [client-id client-secret redirect-uri] :as p} code code-verifier]
   (let [{:keys [token-endpoint]} (discovered p)
-        {:keys [status body]} (send! p {:method :post
-                                        :url token-endpoint
-                                        :headers {"content-type" "application/x-www-form-urlencoded"
-                                                  "authorization" (basic-auth client-id client-secret)}
-                                        :body (codec/form-encode {"grant_type" "authorization_code"
-                                                                  "code" code
-                                                                  "redirect_uri" redirect-uri
-                                                                  "code_verifier" code-verifier})})]
+        {:keys [status body]} (send! p
+                                     {:method :post
+                                      :url token-endpoint
+                                      :headers {"content-type" "application/x-www-form-urlencoded"
+                                                "authorization" (basic-auth client-id client-secret)}
+                                      :body (codec/form-encode {"grant_type" "authorization_code"
+                                                                "code" code
+                                                                "redirect_uri" redirect-uri
+                                                                "code_verifier" code-verifier})})]
     (or (when (= 200 status) (let [t (get body "id_token")] (when (string? t) t)))
-        (throw (ex/ex-info "OIDC token exchange failed" ::error/token-exchange-failed
+        (throw (ex/ex-info "OIDC token exchange failed"
+                           ::error/token-exchange-failed
                            {:status status :error (get body "error")})))))
 
 (defn- reject

@@ -14,7 +14,10 @@
   language: `title` and `text` give its words once that is known."
   [request status title text]
   (auth/in-known-language request
-                          #(layout/message % status (title) (text)
+                          #(layout/message %
+                                           status
+                                           (title)
+                                           (text)
                                            [:a.button {:href "/"} (i18n/t "Go to the home page")])))
 
 (defn- failed
@@ -41,7 +44,9 @@
   (page request 405 #(i18n/t "Not supported") #(i18n/t "This cannot be done here.")))
 
 (defmethod error/ex->response ::ex/conflict [_ request]
-  (page request 409 #(i18n/t "Not possible right now")
+  (page request
+        409
+        #(i18n/t "Not possible right now")
         #(i18n/t "This cannot be done as things stand. Reload the page and try again.")))
 
 (defmethod error/ex->response ::ex/busy [_ request]

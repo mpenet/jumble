@@ -19,7 +19,8 @@
 
 (defn- outbox
   []
-  (jdbc/execute! *db* ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
+  (jdbc/execute! *db*
+                 ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
                  {:builder-fn rs/as-unqualified-maps}))
 
 (defn- location [response] (get-in response [:headers "location"]))
@@ -47,7 +48,9 @@
         (is (str/includes? body "> Looks <b>fake</b>"))
         (is (str/includes? body "http://localhost:8080/manage"))))
     (testing "a reason too long comes back with an explanation"
-      (let [{:keys [status body]} (request :post (str page "/report") (sign-in! "carol@example.com")
+      (let [{:keys [status body]} (request :post
+                                           (str page "/report")
+                                           (sign-in! "carol@example.com")
                                            :form {"reason" (apply str (repeat 1001 "x"))})]
         (is (= 422 status))
         (is (str/includes? body "Keep it to 1000 characters or fewer."))))

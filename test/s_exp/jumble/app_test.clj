@@ -46,7 +46,8 @@
   (testing "an error page keeps the signed-in header"
     (let [token (sign-in! "alice@example.com")
           big (.getBytes ^String (apply str (repeat (* 2 1024 1024) "a")))
-          {:keys [status ^String body]} (post-form big {"content-length" (str (alength big))
-                                                        "cookie" (str "jumble_session=" token)})]
+          {:keys [status ^String body]} (post-form big
+                                                   {"content-length" (str (alength big))
+                                                    "cookie" (str "jumble_session=" token)})]
       (is (= 413 status))
       (is (.contains body "Sign out")))))

@@ -59,8 +59,9 @@
   "Lowercased names, trimmed values with inner whitespace runs collapsed,
   sorted by name."
   [headers]
-  (sort-by first (map (fn [[k v]] [(str/lower-case k) (str/replace (str/trim (str v)) #"\s+" " ")])
-                      headers)))
+  (sort-by first
+           (map (fn [[k v]] [(str/lower-case k) (str/replace (str/trim (str v)) #"\s+" " ")])
+                headers)))
 
 (defn- sign
   "Signature parts for a request: `query` is the canonical query string,
@@ -69,15 +70,19 @@
   (let [headers (canonical-headers headers)
         date (subs amz-date 0 8)
         signed-headers (str/join ";" (map first headers))
-        canonical-request (str/join "\n" [(str/upper-case (name method))
-                                          (canonical-path path)
-                                          query
-                                          (apply str (map (fn [[k v]] (str k ":" v "\n")) headers))
-                                          signed-headers
-                                          payload-hash])
+        canonical-request (str/join "\n"
+                                    [(str/upper-case (name method))
+                                     (canonical-path path)
+                                     query
+                                     (apply str (map (fn [[k v]] (str k ":" v "\n")) headers))
+                                     signed-headers
+                                     payload-hash])
         scope (str/join "/" [date region service "aws4_request"])
-        string-to-sign (str/join "\n" ["AWS4-HMAC-SHA256" amz-date scope
-                                       (token/sha256-hex (utf8 canonical-request))])
+        string-to-sign (str/join "\n"
+                                 ["AWS4-HMAC-SHA256"
+                                  amz-date
+                                  scope
+                                  (token/sha256-hex (utf8 canonical-request))])
         signing-key (-> (utf8 (str "AWS4" secret-key))
                         (hmac date)
                         (hmac region)
@@ -97,15 +102,21 @@
         (sign {:method method :path path :query "" :headers headers
                :payload-hash payload-hash :amz-date amz-date}
               credentials)]
-    (str "AWS4-HMAC-SHA256 Credential=" access-key "/" scope
-         ", SignedHeaders=" signed-headers
-         ", Signature=" signature)))
+    (str "AWS4-HMAC-SHA256 Credential="
+         access-key
+         "/"
+         scope
+         ", SignedHeaders="
+         signed-headers
+         ", Signature="
+         signature)))
 
 (defn- query-string
   "Canonical query string: RFC 3986 encoded, sorted by name."
   [params]
-  (str/join "&" (map (fn [[k v]] (str (encode-segment k) "=" (encode-segment v)))
-                     (sort-by first params))))
+  (str/join "&"
+            (map (fn [[k v]] (str (encode-segment k) "=" (encode-segment v)))
+                 (sort-by first params))))
 
 (defn presigned-query
   "Query string authorizing a GET of `path` on `host` for `expires` seconds
@@ -147,18 +158,22 @@
                  "x-amz-content-sha256" payload-hash}
         authorization (authorization {:method method :path path :headers headers :payload-hash payload-hash}
                                      credentials)]
-    (http/request http {:method method
-                        :url (str endpoint (canonical-path path))
-                        ;; The client sets Host itself, to the same value we signed.
-                        :headers (merge object-headers
-                                        (-> headers (dissoc "host") (assoc "authorization" authorization)))
-                        :body body}
+    (http/request http
+                  {:method method
+                   :url (str endpoint (canonical-path path))
+                   ;; The client sets Host itself, to the same value we signed.
+                   :headers (merge object-headers
+                                   (-> headers (dissoc "host") (assoc "authorization" authorization)))
+                   :body body}
                   :stream)))
 
 (defn- failure
   [operation key {:keys [status ^InputStream body]}]
-  (let [detail (when body (with-open [in body] (slurp in)))]
-    (ex/ex-info (str "S3 " operation " failed with " status) ::error/storage-failed
+  (let [detail (when body
+                 (with-open [in body]
+                   (slurp in)))]
+    (ex/ex-info (str "S3 " operation " failed with " status)
+                ::error/storage-failed
                 {:operation operation :key key :status status :error detail})))
 
 (defn- discard!
@@ -181,10 +196,14 @@
   [client key]
   (let [{:keys [status headers ^InputStream body] :as response} (send! client :get key nil nil)]
     (case (long status)
-      200 {:body body
-           :content-type (get headers "content-type")
-           :content-length (some-> (get headers "content-length") parse-long)}
-      404 (do (.close body) nil)
+      200
+      {:body body
+       :content-type (get headers "content-type")
+       :content-length (some-> (get headers "content-length") parse-long)}
+
+      404
+      (do (.close body) nil)
+
       (throw (failure "get" key response)))))
 
 (defn delete!
@@ -207,7 +226,9 @@
   [{:keys [endpoint host bucket credentials]} key ^Instant now]
   (let [day (.truncatedTo (.atZone now ZoneOffset/UTC) ChronoUnit/DAYS)
         path (str "/" bucket "/" key)]
-    (str endpoint (canonical-path path) "?"
+    (str endpoint
+         (canonical-path path)
+         "?"
          (presigned-query {:host host
                            :path path
                            :amz-date (.format ^DateTimeFormatter amz-date-format day)

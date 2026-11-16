@@ -57,9 +57,10 @@
            (when-let [[level message] (event-log event)]
              (log/log level message))
            (when (#{:certificate-obtained :certificate-renewed} (:type event))
-             (try (certified)
-                  (catch Throwable t
-                    (log/error t "Serving the new certificate failed"))))
+             (try
+               (certified)
+               (catch Throwable t
+                 (log/error t "Serving the new certificate failed"))))
            (when-not (#{:system-stopped :subscription-overflow :subscription-closed} (:type event))
              (recur))))))))
 
@@ -75,9 +76,13 @@
 
 (defn- pem
   [^String label ^bytes der]
-  (str "-----BEGIN " label "-----\n"
+  (str "-----BEGIN "
+       label
+       "-----\n"
        (.encodeToString (Base64/getMimeEncoder 64 (.getBytes "\n" StandardCharsets/US_ASCII)) der)
-       "\n-----END " label "-----\n"))
+       "\n-----END "
+       label
+       "-----\n"))
 
 (defn- write-atomically!
   "Writes `text` to `path` in one step, readable by its owner only: readers
@@ -103,8 +108,9 @@
   [{:keys [dir certificate key]} bundle]
   (Files/createDirectories dir (make-array FileAttribute 0))
   (doseq [[^Path path text] [[key (pem "PRIVATE KEY" (.getEncoded ^PrivateKey (:private-key bundle)))]
-                             [certificate (apply str (map #(pem "CERTIFICATE" (.getEncoded ^X509Certificate %))
-                                                          (:certificate bundle)))]]
+                             [certificate (apply str
+                                                 (map #(pem "CERTIFICATE" (.getEncoded ^X509Certificate %))
+                                                      (:certificate bundle)))]]
           :when (not (and (Files/exists path (make-array LinkOption 0))
                           (= text (Files/readString path))))]
     (write-atomically! path text)))
@@ -114,7 +120,12 @@
   first failure, the others suppressed in it."
   [{:keys [^ScheduledExecutorService checks automation tls lock plain]}]
   (let [failures (into []
-                       (keep (fn [step] (try (step) nil (catch Throwable t t))))
+                       (keep (fn [step]
+                               (try
+                                 (step)
+                                 nil
+                                 (catch Throwable t
+                                   t))))
                        [#(.shutdownNow checks)
                         #(acme/stop automation)
                         #(locking lock
@@ -157,14 +168,15 @@
                      (when-not (= ::stopped @tls)
                        (write-certificate! files bundle)
                        (when-not @tls
-                         (reset! tls (enso/run-server handler
-                                                      (assoc server-opts
-                                                             :host host
-                                                             :port port
-                                                             :ssl-cert-path (str (:certificate files))
-                                                             :ssl-key-path (str (:key files))
-                                                             :http2 true
-                                                             :http3 true)))
+                         (reset! tls
+                                 (enso/run-server handler
+                                                  (assoc server-opts
+                                                         :host host
+                                                         :port port
+                                                         :ssl-cert-path (str (:certificate files))
+                                                         :ssl-key-path (str (:key files))
+                                                         :http2 true
+                                                         :http3 true)))
                          (log/info "Serving HTTPS on port" port))))))
         check! (fn []
                  (try
@@ -184,11 +196,15 @@
       (acme/start automation)
       (acme/manage-domains automation [domain])
       (serve!)
-      (.scheduleWithFixedDelay ^ScheduledExecutorService (:checks running) ^Runnable check!
-                               (long check-interval-ms) (long check-interval-ms) TimeUnit/MILLISECONDS)
+      (.scheduleWithFixedDelay ^ScheduledExecutorService (:checks running)
+                               ^Runnable check!
+                               (long check-interval-ms)
+                               (long check-interval-ms)
+                               TimeUnit/MILLISECONDS)
       running
       (catch Throwable t
-        (try (stop running)
-             (catch Throwable failure
-               (.addSuppressed t failure)))
+        (try
+          (stop running)
+          (catch Throwable failure
+            (.addSuppressed t failure)))
         (throw t)))))

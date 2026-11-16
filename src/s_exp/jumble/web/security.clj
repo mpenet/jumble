@@ -12,16 +12,17 @@
   ;; so neither 'unsafe-eval' nor 'unsafe-inline' is needed. The settings
   ;; page registers the service worker under "jumble-push".
   [nonce image-origin]
-  (str/join "; " ["default-src 'self'"
-                  ;; Photos load straight from object storage via presigned URLs.
-                  (str "img-src 'self'" (when image-origin (str " " image-origin)))
-                  (str "script-src 'self' 'nonce-" nonce "'")
-                  "object-src 'none'"
-                  "base-uri 'none'"
-                  "frame-ancestors 'none'"
-                  "form-action 'self'"
-                  "require-trusted-types-for 'script'"
-                  "trusted-types datastar jumble-push"]))
+  (str/join "; "
+            ["default-src 'self'"
+             ;; Photos load straight from object storage via presigned URLs.
+             (str "img-src 'self'" (when image-origin (str " " image-origin)))
+             (str "script-src 'self' 'nonce-" nonce "'")
+             "object-src 'none'"
+             "base-uri 'none'"
+             "frame-ancestors 'none'"
+             "form-action 'self'"
+             "require-trusted-types-for 'script'"
+             "trusted-types datastar jumble-push"]))
 
 (defn wrap-security-headers
   "Adds browser hardening headers to every response, without overriding
@@ -33,7 +34,8 @@
     (fn [request]
       (let [n (token/generate 16)
             response (handler (assoc request :csp-nonce n))]
-        (update response :headers
+        (update response
+                :headers
                 #(merge (cond-> {"content-security-policy" (content-security-policy n image-origin)
                                  "x-content-type-options" "nosniff"
                                  "referrer-policy" "same-origin"

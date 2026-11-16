@@ -91,7 +91,8 @@
   (let [ann (fixtures/user! "ann")
         token (session! ann)]
     (testing "ten devices a member at most, the oldest making way"
-      (doseq [i (range 12)] (subscribe! ann token (str fcm i)))
+      (doseq [i (range 12)]
+        (subscribe! ann token (str fcm i)))
       (is (= 10 (count (push/devices *db* ann))))
       (is (not-any? #{(push/endpoint-key (str fcm 0)) (push/endpoint-key (str fcm 1))}
                     (map :key (push/devices *db* ann)))))))
@@ -109,8 +110,9 @@
 (defn- thread!
   "Bob writes to Ann about her lamp; returns the thread."
   [ann bob now]
-  (message/start! *db* {:sender-id bob :listing-id (:id (fixtures/listing! ann "Desk lamp")) :subject "Desk lamp"
-                        :body "Still available?" :now now}))
+  (message/start! *db*
+                  {:sender-id bob :listing-id (:id (fixtures/listing! ann "Desk lamp")) :subject "Desk lamp"
+                   :body "Still available?" :now now}))
 
 (deftest queue-test
   (let [ann (fixtures/user! "ann")
@@ -180,7 +182,8 @@
       (is (zero? (deliver! (fn [_] (throw (java.io.IOException. "down"))) (* 10 minute))))
       (is (zero? (deliver! (fn [_] (throw (IllegalStateException. "bug"))) (* 20 minute))))
       (is (= [2] (map :attempts (deliveries))))
-      (doseq [i (range 3)] (deliver! (fn [_] (throw (IllegalStateException. "bug"))) (* (+ 30 (* 30 i)) minute)))
+      (doseq [i (range 3)]
+        (deliver! (fn [_] (throw (IllegalStateException. "bug"))) (* (+ 30 (* 30 i)) minute)))
       (is (empty? (deliveries)) "given up on"))))
 
 (deftest needless-test
@@ -215,7 +218,10 @@
     (testing "nor to someone no longer let in"
       (jdbc/execute! *db* ["UPDATE session SET expires_at = ? WHERE user_id = ?" Long/MAX_VALUE ann])
       (thread! ann bob 30)
-      (is (zero? (delivery/deliver-due! *db* (sender requests 201) (assoc fixtures/settings :allowed-emails ["bob@example.com"])
-                                        40 (constantly true))))
+      (is (zero? (delivery/deliver-due! *db*
+                                        (sender requests 201)
+                                        (assoc fixtures/settings :allowed-emails ["bob@example.com"])
+                                        40
+                                        (constantly true))))
       (is (empty? @requests))
       (is (empty? (deliveries))))))

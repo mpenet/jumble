@@ -70,12 +70,14 @@
   the curve, as browsers give."
   [^bytes bs]
   (try
-    (and (= 65 (alength bs)) (= 4 (aget bs 0))
+    (and (= 65 (alength bs))
+         (= 4 (aget bs 0))
          (do (doto (KeyAgreement/getInstance "ECDH")
                (.init (.getPrivate (key-pair)))
                (.doPhase (public-key bs) true))
              true))
-    (catch Exception _ false)))
+    (catch Exception _
+      false)))
 
 (defn generate-keys
   "A new key pair for the community to sign with."
@@ -108,7 +110,8 @@
 (defn- concat-bytes
   ^bytes [& arrays]
   (let [out (ByteArrayOutputStream.)]
-    (doseq [^bytes a arrays] (.write out a))
+    (doseq [^bytes a arrays]
+      (.write out a))
     (.toByteArray out)))
 
 (defn- ascii ^bytes [^String s] (.getBytes s "US-ASCII"))

@@ -126,7 +126,8 @@
         mailer #(swap! emails conj (:to %))]
     (enqueue! "news@example.com")
     (db/with-write-tx [tx *db*]
-      (outbox/enqueue! tx {:to "link@example.com" :subject "Sign in" :text "Link" :expires-at (+ t0 (* 15 minute))}
+      (outbox/enqueue! tx
+                       {:to "link@example.com" :subject "Sign in" :text "Link" :expires-at (+ t0 (* 15 minute))}
                        (+ t0 minute)))
     (testing "an email of use for a while only goes first"
       (deliver! mailer (+ t0 (* 2 minute)))
@@ -134,7 +135,8 @@
     (testing "and is dropped, not sent, once of no use"
       (reset! emails [])
       (db/with-write-tx [tx *db*]
-        (outbox/enqueue! tx {:to "late@example.com" :subject "Sign in" :text "Link" :expires-at (+ t0 (* 15 minute))}
+        (outbox/enqueue! tx
+                         {:to "late@example.com" :subject "Sign in" :text "Link" :expires-at (+ t0 (* 15 minute))}
                          t0))
       (deliver! mailer (+ t0 (* 16 minute)))
       (is (= [] @emails))

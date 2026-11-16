@@ -50,8 +50,9 @@
                   "#,##0"
                   (str "#,##0." (apply str (repeat (fraction-digits currency) "0"))))
         symbols (DecimalFormatSymbols. (Locale/forLanguageTag (i18n/language)))]
-    (i18n/t "{currency} {amount}" {:currency currency
-                                   :amount (.format (DecimalFormat. pattern symbols) a)})))
+    (i18n/t "{currency} {amount}"
+            {:currency currency
+             :amount (.format (DecimalFormat. pattern symbols) a)})))
 
 (defn input-value
   "`minor` as typed into a price field, which [[parse]] reads back."

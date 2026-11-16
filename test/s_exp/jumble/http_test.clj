@@ -15,25 +15,33 @@
   requests seen are conj'd onto `seen` as maps."
   [seen respond f]
   (let [server (HttpServer/create (InetSocketAddress. "127.0.0.1" 0) 0)]
-    (.createContext server "/"
+    (.createContext server
+                    "/"
                     (reify HttpHandler
                       (handle [_ exchange]
                         (let [^HttpExchange exchange exchange
-                              body (with-open [in (.getRequestBody exchange)] (slurp in))]
-                          (swap! seen conj {:method (.getRequestMethod exchange)
-                                            :path (str (.getRawPath (.getRequestURI exchange)))
-                                            :headers (into {} (map (fn [[k v]] [(.toLowerCase ^String k) (first v)]))
-                                                           (.getRequestHeaders exchange))
-                                            :body body})
+                              body (with-open [in (.getRequestBody exchange)]
+                                     (slurp in))]
+                          (swap! seen
+                                 conj
+                                 {:method (.getRequestMethod exchange)
+                                  :path (str (.getRawPath (.getRequestURI exchange)))
+                                  :headers (into {}
+                                                 (map (fn [[k v]] [(.toLowerCase ^String k) (first v)]))
+                                                 (.getRequestHeaders exchange))
+                                  :body body})
                           (let [[status headers ^String out] (respond exchange)
                                 bs (.getBytes (or out "") "UTF-8")]
-                            (doseq [[k v] headers] (.add (.getResponseHeaders exchange) k v))
+                            (doseq [[k v] headers]
+                              (.add (.getResponseHeaders exchange) k v))
                             (.sendResponseHeaders exchange (int status) (if (zero? (alength bs)) -1 (alength bs)))
-                            (with-open [o (.getResponseBody exchange)] (.write o bs)))))))
+                            (with-open [o (.getResponseBody exchange)]
+                              (.write o bs)))))))
     (.start server)
     (try
       (f (str "http://127.0.0.1:" (.getPort (.getAddress server))))
-      (finally (.stop server 0)))))
+      (finally
+        (.stop server 0)))))
 
 (deftest request-test
   (let [seen (atom [])
@@ -41,9 +49,10 @@
     (with-server seen (fn [_] [201 {"Content-Type" "text/plain" "X-Thing" "a"} "made"])
       (fn [base]
         (testing "method, headers and body go out; status, headers (lowercase) and body come back"
-          (let [{:keys [status headers body]} (http/request client {:method :put :url (str base "/b/k%20y")
-                                                                    :headers {"x-amz-date" "20261030T000000Z"}
-                                                                    :body (.getBytes "photo")}
+          (let [{:keys [status headers body]} (http/request client
+                                                            {:method :put :url (str base "/b/k%20y")
+                                                             :headers {"x-amz-date" "20261030T000000Z"}
+                                                             :body (.getBytes "photo")}
                                                             :string)]
             (is (= 201 status))
             (is (= "made" body))

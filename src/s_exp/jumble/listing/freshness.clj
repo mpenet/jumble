@@ -49,13 +49,17 @@
                 (i18n/t "Is \"{title}\" still available?" {:title title}))
      :text (str (i18n/tn "You posted \"{title}\" on {app-name} {n} day ago or more."
                          "You posted \"{title}\" on {app-name} {n} days ago or more."
-                         listing-reminder-days {:title title :app-name app-name})
+                         listing-reminder-days
+                         {:title title :app-name app-name})
                 "\n\n"
                 (if wanted
                   (i18n/t "Still looking for it? Say so on its page, or mark it as found:")
                   (i18n/t "Is it still available? Say so on its page, or mark it as gone:"))
                 "\n"
-                base-url "/listings/" id "\n\n"
+                base-url
+                "/listings/"
+                id
+                "\n\n"
                 (i18n/tn "Without an answer within {n} day, it leaves the board. You can put it back from My listings at any time."
                          "Without an answer within {n} days, it leaves the board. You can put it back from My listings at any time."
                          expire-after-days)
@@ -70,27 +74,38 @@
   "Listings whose owner is due a reminder after `days` without news, the
   longest without news first, within today's allowance."
   [db now days]
-  (let [asked-today (:n (jdbc/execute-one! db ["SELECT count(*) AS n FROM listing WHERE reminded_at > ?" (- now day)]
+  (let [asked-today (:n (jdbc/execute-one! db
+                                           ["SELECT count(*) AS n FROM listing WHERE reminded_at > ?" (- now day)]
                                            db/opts))
         allowance (max 0 (- max-reminders-per-day asked-today))]
     (when (pos? allowance)
-      (jdbc/execute! db [(str "SELECT l.id, l.kind, l.title, u.email, u.language FROM listing l JOIN user u ON u.id = l.user_id
-                               WHERE l." asked-about " AND u.deleted_at IS NULL
+      (jdbc/execute! db
+                     [(str "SELECT l.id, l.kind, l.title, u.email, u.language FROM listing l JOIN user u ON u.id = l.user_id
+                               WHERE l."
+                           asked-about
+                           " AND u.deleted_at IS NULL
                                  AND l.reminded_at IS NULL AND l.fresh_at <= ?
                                ORDER BY l.fresh_at LIMIT ?")
-                         (- now (* days day)) allowance]
+                      (- now (* days day))
+                      allowance]
                      db/opts))))
 
 (defn- given-up-reminders?
   [db]
-  (some? (jdbc/execute-one! db ["SELECT 1 FROM email_outbox
+  (some? (jdbc/execute-one! db
+                            ["SELECT 1 FROM email_outbox
                                  WHERE listing_id IS NOT NULL AND given_up_at IS NOT NULL LIMIT 1"])))
 
 (defn- expiring?
   [db now]
-  (some? (jdbc/execute-one! db [(str "SELECT 1 FROM listing l WHERE " asked-about "
-                                      AND reminded_at <= ? AND NOT " unsent-reminder " LIMIT 1")
-                                (- now (* expire-after-days day))])))
+  (some? (jdbc/execute-one! db
+                            [(str "SELECT 1 FROM listing l WHERE "
+                                  asked-about
+                                  "
+                                      AND reminded_at <= ? AND NOT "
+                                  unsent-reminder
+                                  " LIMIT 1")
+                             (- now (* expire-after-days day))])))
 
 (defn sweep!
   "Asks the owners of listings due a reminder, through the outbox, and
@@ -105,10 +120,11 @@
   (when (given-up-reminders? db)
     (db/with-write-tx [tx db]
       ;; Asked again by clearing reminded_at; kept, the reminder counts as sent.
-      (jdbc/execute-one! tx ["UPDATE listing SET reminder_give_ups = reminder_give_ups + 1,
+      (jdbc/execute-one! tx
+                         ["UPDATE listing SET reminder_give_ups = reminder_give_ups + 1,
                                      reminded_at = CASE WHEN reminder_give_ups + 1 < ? THEN NULL ELSE reminded_at END
                               WHERE id IN (SELECT listing_id FROM email_outbox WHERE given_up_at IS NOT NULL)"
-                             max-give-ups])
+                          max-give-ups])
       (jdbc/execute-one! tx ["DELETE FROM email_outbox WHERE listing_id IS NOT NULL AND given_up_at IS NOT NULL"])))
   (let [due (when (pos? listing-reminder-days) (due-reminders db now listing-reminder-days))]
     (when (and (pos? listing-reminder-days) (or (seq due) (expiring? db now)))
@@ -116,16 +132,25 @@
         (let [allowed (account/allowed tx (:allowed-emails settings))]
           (doseq [{:keys [id email] :as found} due
                   ;; Unless its owner answered in the meantime.
-                  :when (jdbc/execute-one! tx [(str "UPDATE listing SET reminded_at = ?
+                  :when (jdbc/execute-one! tx
+                                           [(str "UPDATE listing SET reminded_at = ?
                                                      WHERE id = ? AND reminded_at IS NULL AND fresh_at <= ?
-                                                       AND " asked-about " RETURNING id")
-                                               now id (- now (* listing-reminder-days day))])]
+                                                       AND "
+                                                 asked-about
+                                                 " RETURNING id")
+                                            now
+                                            id
+                                            (- now (* listing-reminder-days day))])]
             (when (allowed email)
               (outbox/enqueue! tx (i18n/speaking (:language found) (reminder settings found)) now))))
-        (let [expired (::jdbc/update-count
-                       (jdbc/execute-one! tx [(str "UPDATE listing AS l SET status = 'expired', updated_at = ?
-                                                    WHERE " asked-about " AND reminded_at <= ?
-                                                      AND NOT " unsent-reminder)
-                                              now (- now (* expire-after-days day))]))]
+        (let [expired (::jdbc/update-count (jdbc/execute-one! tx
+                                                              [(str "UPDATE listing AS l SET status = 'expired', updated_at = ?
+                                                    WHERE "
+                                                                    asked-about
+                                                                    " AND reminded_at <= ?
+                                                      AND NOT "
+                                                                    unsent-reminder)
+                                                               now
+                                                               (- now (* expire-after-days day))]))]
           (when (pos? expired)
             (metrics/inc! listing/closed {:outcome "expired"} expired)))))))

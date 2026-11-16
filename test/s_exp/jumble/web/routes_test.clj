@@ -29,21 +29,28 @@
   (testing "a form sent after the session ended explains, and leads back through sign-in"
     (fixtures/db-fixture
      (fn []
-       (let [{:keys [status body]} (fixtures/request :post "/listings/1/report" nil
+       (let [{:keys [status body]} (fixtures/request :post
+                                                     "/listings/1/report"
+                                                     nil
                                                      :form {"reason" "x"}
                                                      :headers {"referer" "http://localhost:8080/listings/1"})]
          (is (= 401 status))
          (is (str/includes? body "was not saved"))
          (is (str/includes? body "href=\"/login?return_to=%2Flistings%2F1\"")))
        (testing "a Referer that is no address leads back home, not to a failure"
-         (let [{:keys [status body]} (fixtures/request :post "/listings/1/report" nil
+         (let [{:keys [status body]} (fixtures/request :post
+                                                       "/listings/1/report"
+                                                       nil
                                                        :form {"reason" "x"}
                                                        :headers {"referer" "not an address"})]
            (is (= 401 status))
            (is (str/includes? body "href=\"/login?return_to=%2F\""))))
        (testing "Datastar requests still get the bare answer the page reloads on"
          (is (= "Sign in required"
-                (:body (fixtures/request :post "/listings/1/report" nil :form {"reason" "x"}
+                (:body (fixtures/request :post
+                                         "/listings/1/report"
+                                         nil
+                                         :form {"reason" "x"}
                                          :headers {"datastar-request" "true"})))))))))
 
 (deftest error-pages-keep-the-header-test

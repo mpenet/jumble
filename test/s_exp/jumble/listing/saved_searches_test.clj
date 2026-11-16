@@ -17,15 +17,20 @@
 
 (defn- outbox
   []
-  (jdbc/execute! *db* ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
+  (jdbc/execute! *db*
+                 ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
                  {:builder-fn rs/as-unqualified-maps}))
 
 (defn- post!
   [owner title at & {:keys [kind category] :or {kind "free" category "home"}}]
-  (listing/create! *db* (blob/memory-store) owner
-                   (:listing (listing/validate fixtures/settings {:kind kind :title title :category category
-                                                                  :pickup "place:hall" :price "10"}))
-                   [] at))
+  (listing/create! *db*
+                   (blob/memory-store)
+                   owner
+                   (:listing (listing/validate fixtures/settings
+                                               {:kind kind :title title :category category
+                                                :pickup "place:hall" :price "10"}))
+                   []
+                   at))
 
 (deftest save-test
   (let [ann (fixtures/user! "ann")]
@@ -40,7 +45,8 @@
     (testing "nothing to search for is refused"
       (is (= {:error :empty} (saved/save! *db* ann {:q nil :kind nil :category nil} 0))))
     (testing "ten at most"
-      (doseq [i (range 8)] (saved/save! *db* ann {:q (str "thing" i) :kind nil :category nil} 0))
+      (doseq [i (range 8)]
+        (saved/save! *db* ann {:q (str "thing" i) :kind nil :category nil} 0))
       (is (= {:error :too-many} (saved/save! *db* ann {:q "one more" :kind nil :category nil} 0))))
     (testing "removed by their owner only"
       (let [{:keys [id]} (first (saved/by-user *db* ann))]
@@ -107,7 +113,8 @@
       (saved/send-due! *db* bob-only day)
       (is (= [] (outbox))))
     (testing "and is not due again, so does not hold up the others"
-      (is (pos? (:searches_checked_at (jdbc/execute-one! *db* ["SELECT searches_checked_at FROM user WHERE id = ?" ann]
+      (is (pos? (:searches_checked_at (jdbc/execute-one! *db*
+                                                         ["SELECT searches_checked_at FROM user WHERE id = ?" ann]
                                                          {:builder-fn rs/as-unqualified-maps})))))))
 
 (deftest member-deleted-meanwhile-test
@@ -138,5 +145,6 @@
                                       (throw (ex-info "Unreadable search" {}))
                                       (by-user db id)))]
         (is (thrown-with-msg? clojure.lang.ExceptionInfo #"failed for 1 of 2"
-                              (saved/send-due! *db* fixtures/settings day)) "the failure still told"))
+                              (saved/send-due! *db* fixtures/settings day))
+            "the failure still told"))
       (is (= ["cleo@example.com"] (map :recipient (outbox)))))))

@@ -52,7 +52,8 @@
 
 (defn- form-values
   [params]
-  (into {} (map (fn [k] [k (params/one params (name k))]))
+  (into {}
+        (map (fn [k] [k (params/one params (name k))]))
         [:kind :title :description :price :category :pickup :city]))
 
 (defn- uploads
@@ -118,9 +119,10 @@
         ;; Where on the board this page is, for forms on it to come back to.
         filters (assoc (board-filters params settings) :at {:before before :page page})
         result (-> (if (:q filters)
-                     (listing/search db (assoc filters
-                                               :page (some->> page (re-matches #"\d{1,3}") parse-long)
-                                               :limit page-size))
+                     (listing/search db
+                                     (assoc filters
+                                            :page (some->> page (re-matches #"\d{1,3}") parse-long)
+                                            :limit page-size))
                      (listing/board db (assoc filters :before before :limit page-size)))
                    (update :listings #(mark-favorites db user %)))
         photo-url (listing/photo-urls blobs (Instant/now))
@@ -138,9 +140,10 @@
 
 (defn mine
   [{:keys [ctx user] :as request}]
-  (response/html 200 (view/mine request
-                                (listing/by-owner (:db ctx) (:id user))
-                                (listing/photo-urls (:blobs ctx) (Instant/now)))))
+  (response/html 200
+                 (view/mine request
+                            (listing/by-owner (:db ctx) (:id user))
+                            (listing/photo-urls (:blobs ctx) (Instant/now)))))
 
 (defn saved-searches
   [{:keys [ctx user query-string] :as request}]
@@ -151,13 +154,21 @@
   [{:keys [ctx params user] :as request}]
   (let [{:keys [q kind category]} (board-filters params (:settings ctx))]
     (case (:error (saved/save! (:db ctx) (:id user) {:q q :kind kind :category category} (System/currentTimeMillis)))
-      :empty (layout/message request 422 (i18n/t "Nothing to save")
-                             (i18n/t "Search for something, or choose a type or a category, then save that.")
-                             [:a.button {:href "/listings"} (i18n/t "Back to the listings")])
-      :too-many (layout/message request 422 (i18n/t "Too many saved searches")
-                                (i18n/t "You can keep up to {max} saved searches. Remove one first."
-                                        {:max saved/max-per-member})
-                                [:a.button {:href "/my/searches"} (i18n/t "Your saved searches")])
+      :empty
+      (layout/message request
+                      422
+                      (i18n/t "Nothing to save")
+                      (i18n/t "Search for something, or choose a type or a category, then save that.")
+                      [:a.button {:href "/listings"} (i18n/t "Back to the listings")])
+
+      :too-many
+      (layout/message request
+                      422
+                      (i18n/t "Too many saved searches")
+                      (i18n/t "You can keep up to {max} saved searches. Remove one first."
+                              {:max saved/max-per-member})
+                      [:a.button {:href "/my/searches"} (i18n/t "Your saved searches")])
+
       nil (response/redirect "/my/searches?saved"))))
 
 (defn remove-search
@@ -181,10 +192,14 @@
   (let [{:keys [db blobs]} ctx
         found (some->> (params/id (:id path-params)) (account/member db))]
     (if found
-      (response/html 200 (view/member request found
-                                      (mark-favorites db user (filterv #(listing/on-board (:status %))
-                                                                       (listing/by-owner db (:id found))))
-                                      (listing/photo-urls blobs (Instant/now))))
+      (response/html 200
+                     (view/member request
+                                  found
+                                  (mark-favorites db
+                                                  user
+                                                  (filterv #(listing/on-board (:status %))
+                                                           (listing/by-owner db (:id found))))
+                                  (listing/photo-urls blobs (Instant/now))))
       (layout/not-found request (i18n/t "This member does not exist, or no longer does.")))))
 
 (defn show
@@ -246,8 +261,11 @@
                  (listing/favorite! db (:id user) (:id found) (System/currentTimeMillis))
                  (do (listing/unfavorite! db (:id user) (:id found)) false))]
         (if (response/datastar? request)
-          (response/html 200 (view/favorite-fragment (if (= "card" (params/one params "view")) :card :listing)
-                                                     found on return-to))
+          (response/html 200
+                         (view/favorite-fragment (if (= "card" (params/one params "view")) :card :listing)
+                                                 found
+                                                 on
+                                                 return-to))
           (response/redirect return-to))))))
 
 (defn confirm-fresh
@@ -256,7 +274,9 @@
   (if-let [{:keys [id]} (own-listing request)]
     (if (listing/confirm-fresh! (:db ctx) id (:id user) (System/currentTimeMillis))
       (response/redirect (str "/listings/" id))
-      (layout/message request 409 (i18n/t "Not on the board")
+      (layout/message request
+                      409
+                      (i18n/t "Not on the board")
                       (i18n/t "This listing is no longer on the board: put it back on the board instead.")
                       [:a.button {:href (str "/listings/" id)} (i18n/t "Back to the listing")]))
     (layout/not-found request (i18n/t "This listing does not exist, or no longer does."))))
@@ -277,7 +297,9 @@
   (if-let [found (own-listing request)]
     (if (listing/on-board (:status found))
       (f found)
-      (layout/message request 409 (i18n/t "Not on the board")
+      (layout/message request
+                      409
+                      (i18n/t "Not on the board")
                       (i18n/t "Only listings on the board can be edited. Put it back on the board first.")
                       [:a.button {:href (str "/listings/" (:id found))} (i18n/t "Back to the listing")]))
     (layout/not-found request (i18n/t "This listing does not exist, or no longer does."))))
@@ -286,9 +308,11 @@
   [{:keys [ctx] :as request}]
   (editing request
            (fn [found]
-             (response/html 200 (view/form request {:values (form-values-of (:settings ctx) found)
-                                                    :listing found
-                                                    :photo-url (listing/photo-urls (:blobs ctx) (Instant/now))})))))
+             (response/html 200
+                            (view/form request
+                                       {:values (form-values-of (:settings ctx) found)
+                                        :listing found
+                                        :photo-url (listing/photo-urls (:blobs ctx) (Instant/now))})))))
 
 (defn- photo-ids
   "Photo ids ticked for removal."
@@ -308,26 +332,32 @@
 (defn update-listing
   "Like [[create]]: fields are validated before photos are processed."
   [{:keys [ctx params user] :as request}]
-  (editing
-   request
-   (fn [found]
-     (let [{:keys [db blobs settings]} ctx
-           values (form-values params)
-           files (uploads params)
-           removing (photo-ids params)
-           form {:values values :listing found :removing removing :photo-url (listing/photo-urls blobs (Instant/now))}
-           {:keys [listing errors]} (listing/validate settings values)]
-       (if errors
-         (invalid-form request (assoc form :photos-dropped (seq files)) errors)
-         (let [{:keys [photos errors]} (listing/prepare-photos files)
-               result (when-not errors
-                        (listing/update! db blobs (:id found) (:id user) listing removing photos
-                                         (System/currentTimeMillis) {:order (photo-order params)}))]
-           (cond
-             errors (invalid-form request (assoc form :photos-dropped true) errors)
-             (:ok result) (response/redirect (str "/listings/" (:id found)))
-             (:errors result) (invalid-form request (assoc form :photos-dropped true) (:errors result))
-             :else (layout/not-found request (i18n/t "This listing does not exist, or no longer does.")))))))))
+  (editing request
+           (fn [found]
+             (let [{:keys [db blobs settings]} ctx
+                   values (form-values params)
+                   files (uploads params)
+                   removing (photo-ids params)
+                   form {:values values :listing found :removing removing :photo-url (listing/photo-urls blobs (Instant/now))}
+                   {:keys [listing errors]} (listing/validate settings values)]
+               (if errors
+                 (invalid-form request (assoc form :photos-dropped (seq files)) errors)
+                 (let [{:keys [photos errors]} (listing/prepare-photos files)
+                       result (when-not errors
+                                (listing/update! db
+                                                 blobs
+                                                 (:id found)
+                                                 (:id user)
+                                                 listing
+                                                 removing
+                                                 photos
+                                                 (System/currentTimeMillis)
+                                                 {:order (photo-order params)}))]
+                   (cond
+                     errors (invalid-form request (assoc form :photos-dropped true) errors)
+                     (:ok result) (response/redirect (str "/listings/" (:id found)))
+                     (:errors result) (invalid-form request (assoc form :photos-dropped true) (:errors result))
+                     :else (layout/not-found request (i18n/t "This listing does not exist, or no longer does.")))))))))
 
 (defn- back-to-form
   "A link back to the form an upload came from: the new listing's, or the
@@ -362,15 +392,16 @@
     (listing/with-upload-turn (:id user) #(handler request) #(uploads-busy request))))
 
 (def ^:private wrap-uploads
-  #(wrap-multipart-params % {:store (byte-array-store)
-                             :max-file-size max-photo-bytes
-                             ;; Ring counts every part, fields included: the
-                             ;; form's fields, when editing a place, a remove
-                             ;; box and the cover choice for each photo, and
-                             ;; one file more than allowed so too many photos
-                             ;; get the form's own message.
-                             :max-file-count (+ (count (form-values {})) (* 3 listing/max-photos) listing/max-photos 1)
-                             :error-handler too-large}))
+  #(wrap-multipart-params %
+                          {:store (byte-array-store)
+                           :max-file-size max-photo-bytes
+                           ;; Ring counts every part, fields included: the
+                           ;; form's fields, when editing a place, a remove
+                           ;; box and the cover choice for each photo, and
+                           ;; one file more than allowed so too many photos
+                           ;; get the form's own message.
+                           :max-file-count (+ (count (form-values {})) (* 3 listing/max-photos) listing/max-photos 1)
+                           :error-handler too-large}))
 
 (def routes
   {[:get "/listings"] (for-members #'index)

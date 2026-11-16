@@ -45,7 +45,8 @@
   "The id of the account `iss` and `sub` when its deletion is under way, or
   stopped part way (see data/delete-account!), else nil."
   [db iss sub]
-  (:id (jdbc/execute-one! db ["SELECT id FROM user WHERE iss = ? AND sub = ? AND deleted_at IS NOT NULL" iss sub]
+  (:id (jdbc/execute-one! db
+                          ["SELECT id FROM user WHERE iss = ? AND sub = ? AND deleted_at IS NOT NULL" iss sub]
                           db/opts)))
 
 (defn- signed-in
@@ -63,7 +64,8 @@
   ([db {:keys! [iss sub ^String email name]} now {:keys [member-limit]}]
    (db/with-write-tx [tx db]
      (check-room! tx iss sub member-limit)
-     (signed-in (jdbc/execute-one! tx ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
+     (signed-in (jdbc/execute-one! tx
+                                   ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
                                         VALUES (?, ?, ?, ?, ?, ?)
                                         ON CONFLICT (iss, sub) DO UPDATE
                                         SET email = excluded.email,
@@ -71,14 +73,20 @@
                                             last_login_at = excluded.last_login_at
                                         WHERE deleted_at IS NULL
                                         RETURNING id, email, name"
-                                       iss sub (str/lower-case email) name now now]
+                                    iss
+                                    sub
+                                    (str/lower-case email)
+                                    name
+                                    now
+                                    now]
                                    db/opts)))))
 
 (defn member
   "Member `id`, `{:id :name :email :created-at}`, while their account is not
   deleted; nil otherwise."
   [db id]
-  (jdbc/execute-one! db ["SELECT id, name, email, created_at FROM user WHERE id = ? AND deleted_at IS NULL" id]
+  (jdbc/execute-one! db
+                     ["SELECT id, name, email, created_at FROM user WHERE id = ? AND deleted_at IS NULL" id]
                      db/opts))
 
 (defn notify-messages
@@ -105,8 +113,9 @@
   "The language the member with `email` reads Jumble in, nil (the
   community's) when they chose none or there is no such member."
   [db email]
-  (:language (jdbc/execute-one! db ["SELECT language FROM user WHERE email = ? AND deleted_at IS NULL"
-                                    (str/lower-case email)]
+  (:language (jdbc/execute-one! db
+                                ["SELECT language FROM user WHERE email = ? AND deleted_at IS NULL"
+                                 (str/lower-case email)]
                                 db/opts)))
 
 (defn set-language!
@@ -124,12 +133,17 @@
   ([db email now {:keys [member-limit]}]
    (db/with-write-tx [tx db]
      (check-room! tx "email" email member-limit)
-     (signed-in (jdbc/execute-one! tx ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
+     (signed-in (jdbc/execute-one! tx
+                                   ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
                                         VALUES ('email', ?, ?, ?, ?, ?)
                                         ON CONFLICT (iss, sub) DO UPDATE SET last_login_at = excluded.last_login_at
                                         WHERE deleted_at IS NULL
                                         RETURNING id, email, name"
-                                       email email email now now]
+                                    email
+                                    email
+                                    email
+                                    now
+                                    now]
                                    db/opts)))))
 
 (defn validate-name
@@ -189,16 +203,19 @@
   address of the mailbox and way of signing in it was used with."
   [db email]
   (when-let [[_ local domain] (re-matches #"([^@]+)@(.+)" (mailbox email))]
-    (jdbc/execute! db ["SELECT u.id, u.name, u.email, (SELECT count(*) FROM listing l WHERE l.user_id = u.id) AS listings
+    (jdbc/execute! db
+                   ["SELECT u.id, u.name, u.email, (SELECT count(*) FROM listing l WHERE l.user_id = u.id) AS listings
                         FROM user u WHERE (u.email = ? OR u.email LIKE ? ESCAPE '\\') AND u.deleted_at IS NULL
                         ORDER BY u.id"
-                       (str local "@" domain) (str (like-escaped local) "+%@" (like-escaped domain))]
+                    (str local "@" domain)
+                    (str (like-escaped local) "+%@" (like-escaped domain))]
                    db/opts)))
 
 (defn added-emails
   "The patterns moderators added, with who added each and when."
   [db]
-  (jdbc/execute! db ["SELECT a.pattern, u.name AS added_by, a.added_at
+  (jdbc/execute! db
+                 ["SELECT a.pattern, u.name AS added_by, a.added_at
                       FROM allowed_email a LEFT JOIN user u ON u.id = a.added_by
                       ORDER BY a.pattern"]
                  db/opts))
@@ -210,9 +227,12 @@
   [db {:keys [patterns moderator-id now invite-for]}]
   (db/with-write-tx [tx db]
     (doseq [pattern patterns
-            :when (jdbc/execute-one! tx ["INSERT INTO allowed_email (pattern, added_by, added_at) VALUES (?, ?, ?)
+            :when (jdbc/execute-one! tx
+                                     ["INSERT INTO allowed_email (pattern, added_by, added_at) VALUES (?, ?, ?)
                                           ON CONFLICT (pattern) DO NOTHING RETURNING pattern"
-                                         pattern moderator-id now])
+                                      pattern
+                                      moderator-id
+                                      now])
             :let [invitation (some-> invite-for (apply [pattern]))]
             :when invitation]
       (outbox/enqueue! tx invitation now))))
@@ -227,9 +247,13 @@
   [db user-id now ttl]
   (let [t (token/generate)]
     (db/with-write-tx [tx db]
-      (jdbc/execute-one! tx ["INSERT INTO session (token_hash, user_id, created_at, expires_at)
+      (jdbc/execute-one! tx
+                         ["INSERT INTO session (token_hash, user_id, created_at, expires_at)
                               VALUES (?, ?, ?, ?)"
-                             (token/digest t) user-id now (+ now ttl)]))
+                          (token/digest t)
+                          user-id
+                          now
+                          (+ now ttl)]))
     t))
 
 (defn session-user
@@ -237,10 +261,13 @@
   for pages that merely show who is signed in."
   [db t now]
   (when (seq t)
-    (jdbc/execute-one! db ["SELECT u.id, u.email, u.name, u.language
+    (jdbc/execute-one! db
+                       ["SELECT u.id, u.email, u.name, u.language
                             FROM session s JOIN user u ON u.id = s.user_id
                             WHERE s.token_hash = ? AND s.expires_at > ? AND s.created_at > ? AND u.deleted_at IS NULL"
-                           (token/digest t) now (- now max-session-age)]
+                        (token/digest t)
+                        now
+                        (- now max-session-age)]
                        db/opts)))
 
 (defn resume-session!
@@ -251,16 +278,21 @@
   (when (seq t)
     (let [hash (token/digest t)]
       (when-let [{:keys [expires-at] :as row}
-                 (jdbc/execute-one! db ["SELECT u.id, u.email, u.name, u.language, s.expires_at
+                 (jdbc/execute-one! db
+                                    ["SELECT u.id, u.email, u.name, u.language, s.expires_at
                                          FROM session s JOIN user u ON u.id = s.user_id
                                          WHERE s.token_hash = ? AND s.expires_at > ? AND s.created_at > ? AND u.deleted_at IS NULL"
-                                        hash now (- now max-session-age)]
+                                     hash
+                                     now
+                                     (- now max-session-age)]
                                     db/opts)]
         (let [renew (< (- expires-at now) (- ttl (min renewal-interval (quot ttl 2))))]
           (when renew
             (db/with-write-tx [tx db]
-              (jdbc/execute-one! tx ["UPDATE session SET expires_at = ? WHERE token_hash = ?"
-                                     (+ now ttl) hash])))
+              (jdbc/execute-one! tx
+                                 ["UPDATE session SET expires_at = ? WHERE token_hash = ?"
+                                  (+ now ttl)
+                                  hash])))
           {:user (dissoc row :expires-at)
            :renewed renew})))))
 
@@ -296,8 +328,9 @@
     (jdbc/execute-one! tx ["DELETE FROM email_sign_in WHERE expires_at <= ?" now])
     (let [count-of #(:n (jdbc/execute-one! tx % db/opts))]
       (if (or (>= (count (filter #(= (mailbox email) (mailbox (:email %)))
-                                 (jdbc/execute! tx ["SELECT email FROM email_sign_in WHERE email LIKE ?"
-                                                    (str "%" (subs email (str/last-index-of email "@")))]
+                                 (jdbc/execute! tx
+                                                ["SELECT email FROM email_sign_in WHERE email LIKE ?"
+                                                 (str "%" (subs email (str/last-index-of email "@")))]
                                                 db/opts)))
                   links-per-address)
               (and (not (jdbc/execute-one! tx ["SELECT 1 FROM user WHERE email = ?" email]))
@@ -306,9 +339,14 @@
                        links-overall)))
         :limited
         (let [t (token/generate)]
-          (jdbc/execute-one! tx ["INSERT INTO email_sign_in (token_hash, email, return_to, created_at, expires_at)
+          (jdbc/execute-one! tx
+                             ["INSERT INTO email_sign_in (token_hash, email, return_to, created_at, expires_at)
                                   VALUES (?, ?, ?, ?, ?)"
-                                 (token/digest t) email return-to now (+ now ttl)])
+                              (token/digest t)
+                              email
+                              return-to
+                              now
+                              (+ now ttl)])
           (outbox/enqueue! tx (assoc (email-for t) :expires-at (+ now ttl)) now)
           :sent)))))
 
@@ -316,9 +354,11 @@
   "The address sign-in link `t` is for, while it is valid and unused."
   [db t now]
   (when (seq t)
-    (:email (jdbc/execute-one! db ["SELECT email FROM email_sign_in
+    (:email (jdbc/execute-one! db
+                               ["SELECT email FROM email_sign_in
                                     WHERE token_hash = ? AND used = 0 AND expires_at > ?"
-                                   (token/digest t) now]
+                                (token/digest t)
+                                now]
                                db/opts))))
 
 (defn use-email-sign-in!
@@ -327,10 +367,12 @@
   [db t now]
   (when (seq t)
     (db/with-write-tx [tx db]
-      (when-let [row (jdbc/execute-one! tx ["UPDATE email_sign_in SET used = 1
+      (when-let [row (jdbc/execute-one! tx
+                                        ["UPDATE email_sign_in SET used = 1
                                              WHERE token_hash = ? AND used = 0 AND expires_at > ?
                                              RETURNING email, return_to"
-                                            (token/digest t) now]
+                                         (token/digest t)
+                                         now]
                                         db/opts)]
         ;; One sign-in spends the address's other links too.
         (jdbc/execute-one! tx ["UPDATE email_sign_in SET used = 1 WHERE email = ?" (:email row)])
@@ -342,9 +384,14 @@
   [db state {:keys! [nonce code-verifier return-to]} now ttl]
   (db/with-write-tx [tx db]
     (jdbc/execute-one! tx ["DELETE FROM login_attempt WHERE expires_at <= ?" now])
-    (jdbc/execute-one! tx ["INSERT INTO login_attempt (state_hash, nonce, code_verifier, return_to, expires_at)
+    (jdbc/execute-one! tx
+                       ["INSERT INTO login_attempt (state_hash, nonce, code_verifier, return_to, expires_at)
                             VALUES (?, ?, ?, ?, ?)"
-                           (token/digest state) nonce code-verifier return-to (+ now ttl)])))
+                        (token/digest state)
+                        nonce
+                        code-verifier
+                        return-to
+                        (+ now ttl)])))
 
 (defn consume-login-attempt!
   "Removes the attempt for `state` and returns it if it had not expired, so
@@ -353,9 +400,10 @@
   (when (seq state)
     (when-let [{:keys [expires-at] :as row}
                (db/with-write-tx [tx db]
-                 (jdbc/execute-one! tx ["DELETE FROM login_attempt WHERE state_hash = ?
+                 (jdbc/execute-one! tx
+                                    ["DELETE FROM login_attempt WHERE state_hash = ?
                                          RETURNING nonce, code_verifier, return_to, expires_at"
-                                        (token/digest state)]
+                                     (token/digest state)]
                                     db/opts))]
       (when (> expires-at now)
         (dissoc row :expires-at)))))

@@ -23,14 +23,16 @@
 (defn- subject-to
   [email]
   (some #(when (= email (:recipient %)) (:subject %))
-        (jdbc/execute! *db* ["SELECT recipient, subject FROM email_outbox ORDER BY id"]
+        (jdbc/execute! *db*
+                       ["SELECT recipient, subject FROM email_outbox ORDER BY id"]
                        {:builder-fn rs/as-unqualified-maps})))
 
 (defn- in
   "`text` as it reads in `language`."
   ([language text] (in language text nil))
   ([language text values]
-   (binding [i18n/*catalog* (i18n/catalog language)] (i18n/t text values))))
+   (binding [i18n/*catalog* (i18n/catalog language)]
+     (i18n/t text values))))
 
 (defn- speaks!
   [email language]
@@ -56,7 +58,10 @@
   (testing "an invitation, to someone not a member yet, is in the community's language"
     (let [dave (sign-in! "dave@example.com")]
       (speaks! "dave@example.com" "fr")
-      (request :post "/manage/members" dave :form {"patterns" "zoe@gmail.com" "invite" "on"}
+      (request :post
+               "/manage/members"
+               dave
+               :form {"patterns" "zoe@gmail.com" "invite" "on"}
                :ctx {:settings {:allowed-emails ["*@example.com"]}})
       (is (= "You are invited to Jumble" (subject-to "zoe@gmail.com"))))))
 
@@ -76,17 +81,23 @@
 (deftest background-emails-test
   (let [alice (fixtures/user-id (do (sign-in! "alice@example.com") "alice@example.com"))
         bob (fixtures/user-id (do (sign-in! "bob@example.com") "bob@example.com"))
-        lamp (listing/create! *db* (blob/memory-store) alice
-                              (:listing (listing/validate fixtures/settings {:kind "free" :title "Lamp" :category "home"
-                                                                             :pickup "place:hall"}))
-                              [] 0)]
+        lamp (listing/create! *db*
+                              (blob/memory-store)
+                              alice
+                              (:listing (listing/validate fixtures/settings
+                                                          {:kind "free" :title "Lamp" :category "home"
+                                                           :pickup "place:hall"}))
+                              []
+                              0)]
     (speaks! "alice@example.com" "fr")
     (testing "message emails, sent by the background work, in the recipient's"
       (message/start! *db* {:sender-id bob :listing-id lamp :subject "Lamp" :body "Still there?" :now 0})
       (let [emails (atom [])]
         (notifier/deliver-due! *db* #(swap! emails conj %) fixtures/settings (* 60 60 1000) (constantly true))
         (is (= (binding [i18n/*catalog* (i18n/catalog "fr")]
-                 (i18n/tn "New message from {name}: {subject}" "New messages from {name}: {subject}" 1
+                 (i18n/tn "New message from {name}: {subject}"
+                          "New messages from {name}: {subject}"
+                          1
                           {:name "bob@example.com" :subject "Lamp"}))
                (:subject (first @emails))))))
     (testing "a listing's owner asked about it in theirs"
@@ -95,12 +106,18 @@
     (testing "saved searches' news in the searcher's"
       (speaks! "bob@example.com" "de")
       (saved/save! *db* bob {:q "chair" :kind nil :category nil} 0)
-      (listing/create! *db* (blob/memory-store) alice
-                       (:listing (listing/validate fixtures/settings {:kind "free" :title "Chair" :category "home"
-                                                                      :pickup "place:hall"}))
-                       [] day)
+      (listing/create! *db*
+                       (blob/memory-store)
+                       alice
+                       (:listing (listing/validate fixtures/settings
+                                                   {:kind "free" :title "Chair" :category "home"
+                                                    :pickup "place:hall"}))
+                       []
+                       day)
       (saved/send-due! *db* fixtures/settings (* 3 day))
       (is (= (binding [i18n/*catalog* (i18n/catalog "de")]
                (i18n/tn "New on {app-name}: {n} listing for your saved searches"
-                        "New on {app-name}: {n} listings for your saved searches" 1 {:app-name "Jumble"}))
+                        "New on {app-name}: {n} listings for your saved searches"
+                        1
+                        {:app-name "Jumble"}))
              (subject-to "bob@example.com"))))))

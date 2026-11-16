@@ -28,7 +28,8 @@
   (testing "picked up in a city"
     (is (str/includes? (message/text settings (assoc lamp :pickup-place nil :pickup-city "Lausanne")) "· Home · Lausanne\n")))
   (testing "in the community's language"
-    (is (str/starts-with? (binding [i18n/*catalog* (i18n/catalog "fr")] (message/text settings lamp))
+    (is (str/starts-with? (binding [i18n/*catalog* (i18n/catalog "fr")]
+                            (message/text settings lamp))
                           "Nouveau sur Swap Shop : Desk lamp"))))
 
 (deftest mentions-test
@@ -62,7 +63,10 @@
 
 (deftest irc-length-test
   (testing "however long the post in bytes, the IRC line fits and keeps its link whole"
-    (let [line (message/irc-line settings (assoc lamp :title (apply str (repeat 120 "家"))
-                                                 :pickup-place nil :pickup-city (apply str (repeat 80 "é"))))]
+    (let [line (message/irc-line settings
+                                 (assoc lamp
+                                        :title (apply str (repeat 120 "家"))
+                                        :pickup-place nil
+                                        :pickup-city (apply str (repeat 80 "é"))))]
       (is (str/ends-with? line " · https://swap.example.org/listings/42"))
       (is (<= (alength (.getBytes ^String line java.nio.charset.StandardCharsets/UTF_8)) irc/max-text-bytes)))))

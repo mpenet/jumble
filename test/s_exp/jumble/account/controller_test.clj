@@ -37,8 +37,10 @@
   (fn [t]
     (let [p (idp/start!)]
       (try
-        (binding [*idp* p *handler* (app p nil)] (t))
-        (finally (idp/stop! p))))))
+        (binding [*idp* p *handler* (app p nil)]
+          (t))
+        (finally
+          (idp/stop! p))))))
 
 (defn- request
   [method ^String url cookies & {:keys [headers]}]
@@ -68,8 +70,10 @@
 
 (defn- session-user
   [response]
-  (:user (account/resume-session! *db* (get (set-cookies response) "jumble_session")
-                                  (System/currentTimeMillis) ttl)))
+  (:user (account/resume-session! *db*
+                                  (get (set-cookies response) "jumble_session")
+                                  (System/currentTimeMillis)
+                                  ttl)))
 
 (defn- user-count []
   (:n (jdbc/execute-one! *db* ["SELECT count(*) AS n FROM user"])))
@@ -129,8 +133,10 @@
 (deftest provider-refusal-test
   (let [login (request :get "/login" nil)
         state (get (set-cookies login) "jumble_login")]
-    (is (= 403 (:status (request :get (str "/auth/callback?error=access_denied&state=" state)
-                                 (set-cookies login)))))))
+    (is (= 403
+           (:status (request :get
+                             (str "/auth/callback?error=access_denied&state=" state)
+                             (set-cookies login)))))))
 
 (deftest identity-policy-test
   (testing "addresses outside the allowed domains are refused"
@@ -149,8 +155,9 @@
     (binding [*handler* (app *idp* {:allowed-emails :anyone})]
       (is (= 303 (:status (sign-in nil {:email "bob@other.example.org"}))))))
   (testing "with hosted domains required, addresses let in one by one need no organisation"
-    (binding [*handler* (app *idp* {:require-hosted-domain true
-                                    :allowed-emails ["*@example.com" "guest@gmail.com" "bob@example.com"]})]
+    (binding [*handler* (app *idp*
+                             {:require-hosted-domain true
+                              :allowed-emails ["*@example.com" "guest@gmail.com" "bob@example.com"]})]
       (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))) "a personal account added by its address")
       (is (= 403 (:status (sign-in nil {:email "bob@example.com"})))
           "a work address also let in by its domain still needs the organisation")))

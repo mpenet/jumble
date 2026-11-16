@@ -57,6 +57,7 @@
   [places pickup]
   (cond
     (= "city" pickup) {:city true}
+
     (and (string? pickup) (str/starts-with? pickup place-prefix))
     (let [id (subs pickup (count place-prefix))]
       (when (some #(= id (:id %)) places) {:place id}))))
@@ -105,10 +106,13 @@
     ::error/too-many-pixels
     (i18n/t "Photo {number} is too large (over {megapixels} megapixels)."
             {:number number :megapixels (quot image/max-pixels 1000000)})
+
     ::error/too-slow
     (i18n/t "Photo {number} took too long to process. Try a smaller one." {:number number})
+
     ::error/images-busy
     (i18n/t "Too many photos are being processed right now. Please try again in a moment.")
+
     (i18n/t "Photo {number} is not a JPEG, PNG, HEIC or AVIF image." {:number number})))
 
 (defn prepare-photos
@@ -172,15 +176,16 @@
   Returns the object keys whose objects are all gone."
   [blobs object-keys]
   (filterv (fn [object-key]
-             (every? true? (mapv (fn [size]
-                                   (let [k (photo-key object-key size)]
-                                     (try
-                                       (blob/delete! blobs k)
-                                       true
-                                       (catch Exception e
-                                         (log/warn e "Could not delete photo object" k)
-                                         false))))
-                                 ["full" "thumb"])))
+             (every? true?
+                     (mapv (fn [size]
+                             (let [k (photo-key object-key size)]
+                               (try
+                                 (blob/delete! blobs k)
+                                 true
+                                 (catch Exception e
+                                   (log/warn e "Could not delete photo object" k)
+                                   false))))
+                           ["full" "thumb"])))
            object-keys))
 
 (def ^:private upload-grace
@@ -192,9 +197,11 @@
   "Queues the objects of `object-keys` for deletion at `due-at`, in `tx`."
   [tx object-keys due-at]
   (doseq [object-key object-keys]
-    (jdbc/execute-one! tx ["INSERT INTO object_deletion (object_key, due_at) VALUES (?, ?)
+    (jdbc/execute-one! tx
+                       ["INSERT INTO object_deletion (object_key, due_at) VALUES (?, ?)
                             ON CONFLICT (object_key) DO UPDATE SET due_at = min(due_at, excluded.due_at)"
-                           object-key due-at])))
+                        object-key
+                        due-at])))
 
 (defn- unqueue-deletions!
   "Takes the objects of `object-keys` off the deletion queue, in `tx`: kept,
@@ -226,16 +233,20 @@
   recorded. One failing is tried again later, after a delay doubling up to
   an hour (see [[outbox/retry-at]]), until it goes."
   [db blobs now]
-  (doseq [{:keys [object-key attempts]} (jdbc/execute! db ["SELECT object_key, attempts FROM object_deletion
+  (doseq [{:keys [object-key attempts]} (jdbc/execute! db
+                                                       ["SELECT object_key, attempts FROM object_deletion
                                                             WHERE due_at <= ? ORDER BY due_at LIMIT 100"
-                                                           now]
+                                                        now]
                                                        db/opts)]
     (if (seq (delete-objects-quietly! blobs [object-key]))
       (db/with-write-tx [tx db]
         (unqueue-deletions! tx [object-key]))
       (db/with-write-tx [tx db]
-        (jdbc/execute-one! tx ["UPDATE object_deletion SET attempts = ?, due_at = ? WHERE object_key = ?"
-                               (inc attempts) (outbox/retry-at (inc attempts) now) object-key])))))
+        (jdbc/execute-one! tx
+                           ["UPDATE object_deletion SET attempts = ?, due_at = ? WHERE object_key = ?"
+                            (inc attempts)
+                            (outbox/retry-at (inc attempts) now)
+                            object-key])))))
 
 (defn photo-urls
   "Function of an object key and size (\"full\" or \"thumb\") to the URL
@@ -274,21 +285,37 @@
       db blobs photos now
       (fn [object-keys]
         (db/with-write-tx [tx db]
-          (let [{:keys [id]} (or (jdbc/execute-one! tx ["INSERT INTO listing (user_id, kind, title, description, price_minor,
+          (let [{:keys [id]} (or (jdbc/execute-one! tx
+                                                    ["INSERT INTO listing (user_id, kind, title, description, price_minor,
                                                                               category, pickup_place, pickup_city,
                                                                               created_at, updated_at, fresh_at)
                                                          SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                                                          WHERE EXISTS (SELECT 1 FROM user WHERE id = ? AND deleted_at IS NULL)
                                                          RETURNING id"
-                                                        user-id kind title description price-minor
-                                                        category pickup-place pickup-city now now now user-id]
+                                                     user-id
+                                                     kind
+                                                     title
+                                                     description
+                                                     price-minor
+                                                     category
+                                                     pickup-place
+                                                     pickup-city
+                                                     now
+                                                     now
+                                                     now
+                                                     user-id]
                                                     db/opts)
                                  (throw (ex/ex-info "The owner deleted their account" ::error/owner-gone)))]
             (doseq [[position object-key] (map-indexed vector object-keys)
                     :let [{:keys [width height]} (:full (nth photos position))]]
-              (jdbc/execute-one! tx ["INSERT INTO photo (listing_id, position, object_key, width, height)
+              (jdbc/execute-one! tx
+                                 ["INSERT INTO photo (listing_id, position, object_key, width, height)
                                       VALUES (?, ?, ?, ?, ?)"
-                                     id position object-key width height]))
+                                  id
+                                  position
+                                  object-key
+                                  width
+                                  height]))
             (unqueue-deletions! tx object-keys)
             (chat/enqueue! tx id now)
             id))))
@@ -299,18 +326,22 @@
 (defn- photo-rows
   "Photos of listing `id`, in order."
   [connectable id]
-  (jdbc/execute! connectable ["SELECT id, position, object_key, width, height FROM photo
-                               WHERE listing_id = ? ORDER BY position" id]
+  (jdbc/execute! connectable
+                 ["SELECT id, position, object_key, width, height FROM photo
+                               WHERE listing_id = ? ORDER BY position"
+                  id]
                  db/opts))
 
 (defn by-id
   "The listing `id` with its owner and photos (in order), or nil."
   [db id]
-  (when-let [row (jdbc/execute-one! db ["SELECT l.id, l.user_id, l.kind, l.title, l.description, l.price_minor, l.category,
+  (when-let [row (jdbc/execute-one! db
+                                    ["SELECT l.id, l.user_id, l.kind, l.title, l.description, l.price_minor, l.category,
                                                 l.pickup_place, l.pickup_city, l.status, l.created_at, l.updated_at,
                                                 l.reminded_at, u.name AS owner_name, u.email AS owner_email
                                          FROM listing l JOIN user u ON u.id = l.user_id
-                                         WHERE l.id = ?" id]
+                                         WHERE l.id = ?"
+                                     id]
                                     db/opts)]
     (assoc row :photos (photo-rows db id))))
 
@@ -371,7 +402,8 @@
     (boolean
      (when (seq from)
        (db/with-write-tx [tx db]
-         (jdbc/execute-one! tx (into [(str "UPDATE listing SET status = ?1, updated_at = ?2, fresh_at = ?2,
+         (jdbc/execute-one! tx
+                            (into [(str "UPDATE listing SET status = ?1, updated_at = ?2, fresh_at = ?2,
                                                                  reminded_at = NULL, reminder_give_ups = 0
                                             WHERE id = ?3 AND user_id = ?4
                                               AND (?1 <> 'sold' OR kind = 'sale')
@@ -379,10 +411,13 @@
                                               AND (?1 <> 'found' OR kind = 'wanted')
                                               AND (?1 <> 'reserved' OR kind <> 'wanted')
                                               AND status IN ("
-                                           (str/join ", " (map #(str "?" (+ 5 %)) (range (count from))))
-                                           ") RETURNING id")
-                                      status now id user-id]
-                                     from)))))))
+                                        (str/join ", " (map #(str "?" (+ 5 %)) (range (count from))))
+                                        ") RETURNING id")
+                                   status
+                                   now
+                                   id
+                                   user-id]
+                                  from)))))))
 
 (defn confirm-fresh!
   "Records that listing `id` on the board, owned by `user-id`, is still
@@ -390,18 +425,25 @@
   listing."
   [db id user-id now]
   (db/with-write-tx [tx db]
-    (some? (jdbc/execute-one! tx [(str "UPDATE listing SET fresh_at = ?, reminded_at = NULL, reminder_give_ups = 0
-                                        WHERE id = ? AND user_id = ? AND status IN " on-board-sql "
+    (some? (jdbc/execute-one! tx
+                              [(str "UPDATE listing SET fresh_at = ?, reminded_at = NULL, reminder_give_ups = 0
+                                        WHERE id = ? AND user_id = ? AND status IN "
+                                    on-board-sql
+                                    "
                                         RETURNING id")
-                                  now id user-id]))))
+                               now
+                               id
+                               user-id]))))
 
 (defn- delete-in-tx!
   "Deletes listing `id` and its photo rows in `tx`, queueing their objects
   for deletion; returns the photos' object keys, for deleting once
   committed."
   [tx id]
-  (let [object-keys (mapv :object-key (jdbc/execute! tx ["SELECT object_key FROM photo WHERE listing_id = ?" id]
-                                                     db/opts))]
+  (let [object-keys (mapv :object-key
+                          (jdbc/execute! tx
+                                         ["SELECT object_key FROM photo WHERE listing_id = ?" id]
+                                         db/opts))]
     (jdbc/execute-one! tx ["DELETE FROM listing WHERE id = ?" id])
     (queue-deletions! tx object-keys 0)
     object-keys))
@@ -411,7 +453,8 @@
   those objects once committed, those storage cannot delete then left to
   [[delete-due-objects!]]: never a listing without its photos."
   [db blobs f]
-  (let [object-keys (db/with-write-tx [tx db] (f tx))]
+  (let [object-keys (db/with-write-tx [tx db]
+                      (f tx))]
     (some->> object-keys (delete-objects! db blobs))
     object-keys))
 
@@ -419,21 +462,28 @@
   "Removes listing `id` owned by `user-id`, with its photos and their stored
   objects. True when there was such a listing."
   [db blobs id user-id]
-  (some? (deleting! db blobs (fn [tx]
-                               (when (jdbc/execute-one! tx ["SELECT 1 FROM listing WHERE id = ? AND user_id = ?"
-                                                            id user-id])
-                                 (delete-in-tx! tx id))))))
+  (some? (deleting! db
+                    blobs
+                    (fn [tx]
+                      (when (jdbc/execute-one! tx
+                                               ["SELECT 1 FROM listing WHERE id = ? AND user_id = ?"
+                                                id
+                                                user-id])
+                        (delete-in-tx! tx id))))))
 
 (defn remove!
   "Removes listing `id` whoever owns it, as moderation does. `(f tx listing)`
   runs first in the same transaction, `listing` holding its `:title` and
   `:user-id`. True when there was such a listing."
   [db blobs id f]
-  (some? (deleting! db blobs (fn [tx]
-                               (when-let [listing (jdbc/execute-one! tx ["SELECT title, user_id FROM listing WHERE id = ?" id]
-                                                                     db/opts)]
-                                 (f tx listing)
-                                 (delete-in-tx! tx id))))))
+  (some? (deleting! db
+                    blobs
+                    (fn [tx]
+                      (when-let [listing (jdbc/execute-one! tx
+                                                            ["SELECT title, user_id FROM listing WHERE id = ?" id]
+                                                            db/opts)]
+                        (f tx listing)
+                        (delete-in-tx! tx id))))))
 
 (def ^:private card-select
   "Columns of a board card, with the cover photo; `l` is the listing."
@@ -461,8 +511,12 @@
 (def ^:private board-sql
   ;; The cursor bounds the index range: a missing one is the largest value,
   ;; rather than an OR, which would keep SQLite from seeking.
-  (str card-select "FROM listing l " cover-join
-       "WHERE l.status IN " on-board-sql "
+  (str card-select
+       "FROM listing l "
+       cover-join
+       "WHERE l.status IN "
+       on-board-sql
+       "
           AND (?1 IS NULL OR l.kind = ?1)
           AND (?2 IS NULL OR l.category = ?2)
           AND (l.created_at, l.id) < (coalesce(?3, 9223372036854775807), coalesce(?4, 9223372036854775807))
@@ -495,8 +549,9 @@
                      (map str/lower-case)
                      (take max-search-terms))]
       (when (seq terms)
-        (str/join " " (concat (map #(str "\"" % "\"") (butlast terms))
-                              [(str "\"" (last terms) "\"*")]))))))
+        (str/join " "
+                  (concat (map #(str "\"" % "\"") (butlast terms))
+                          [(str "\"" (last terms) "\"*")]))))))
 
 (def ^:private max-search-page
   "Ranked results page by offset; deep pages cost more and are never useful."
@@ -509,16 +564,23 @@
   [db {:keys [q kind category page limit]}]
   (if-let [match (fts-query q)]
     (let [page (max 1 (min (or page 1) max-search-page))
-          rows (jdbc/execute! db [(str card-select
-                                       "FROM listing_fts JOIN listing l ON l.id = listing_fts.rowid "
-                                       cover-join
-                                       "WHERE listing_fts MATCH ?1
-                                     AND l.status IN " on-board-sql "
+          rows (jdbc/execute! db
+                              [(str card-select
+                                    "FROM listing_fts JOIN listing l ON l.id = listing_fts.rowid "
+                                    cover-join
+                                    "WHERE listing_fts MATCH ?1
+                                     AND l.status IN "
+                                    on-board-sql
+                                    "
                                      AND (?2 IS NULL OR l.kind = ?2)
                                      AND (?3 IS NULL OR l.category = ?3)
                                    ORDER BY bm25(listing_fts, 10.0, 1.0), l.created_at DESC, l.id DESC
                                    LIMIT ?4 OFFSET ?5")
-                                  match kind category (inc limit) (* (dec page) limit)]
+                               match
+                               kind
+                               category
+                               (inc limit)
+                               (* (dec page) limit)]
                               db/opts)]
       {:listings (mapv card (take limit rows))
        :next (when (and (> (count rows) limit) (< page max-search-page)) (inc page))})
@@ -527,21 +589,28 @@
 (defn by-owner
   "All listings of `user-id`, any status, newest first."
   [db user-id]
-  (mapv card (jdbc/execute! db [(str card-select "FROM listing l " cover-join
-                                     "WHERE l.user_id = ? ORDER BY l.created_at DESC, l.id DESC")
-                                user-id]
-                            db/opts)))
+  (mapv card
+        (jdbc/execute! db
+                       [(str card-select
+                             "FROM listing l "
+                             cover-join
+                             "WHERE l.user_id = ? ORDER BY l.created_at DESC, l.id DESC")
+                        user-id]
+                       db/opts)))
 
 (defn favorite!
   "Adds listing `id` to the favorites of `user-id`, unless it is theirs or
   their account is being deleted. True when it is among them afterwards."
   [db user-id id now]
   (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx ["INSERT INTO favorite (user_id, listing_id, created_at, seen_status)
+    (jdbc/execute-one! tx
+                       ["INSERT INTO favorite (user_id, listing_id, created_at, seen_status)
                             SELECT ?1, id, ?2, status FROM listing WHERE id = ?3 AND user_id <> ?1
                               AND EXISTS (SELECT 1 FROM user WHERE id = ?1 AND deleted_at IS NULL)
                             ON CONFLICT DO NOTHING"
-                           user-id now id])
+                        user-id
+                        now
+                        id])
     (some? (jdbc/execute-one! tx ["SELECT 1 FROM favorite WHERE user_id = ? AND listing_id = ?" user-id id]))))
 
 (defn unfavorite!
@@ -556,10 +625,12 @@
     #{}
     (into #{}
           (map :listing-id)
-          (jdbc/execute! db (into [(str "SELECT listing_id FROM favorite WHERE user_id = ? AND listing_id IN ("
-                                        (str/join ", " (repeat (count ids) "?")) ")")
-                                   user-id]
-                                  ids)
+          (jdbc/execute! db
+                         (into [(str "SELECT listing_id FROM favorite WHERE user_id = ? AND listing_id IN ("
+                                     (str/join ", " (repeat (count ids) "?"))
+                                     ")")
+                                user-id]
+                               ids)
                          db/opts))))
 
 (defn favorites
@@ -568,18 +639,21 @@
   [[mark-favorites-seen!]])."
   [db user-id]
   (mapv (fn [row] (assoc (card row) :changed (not= (:status row) (:seen-status row))))
-        (jdbc/execute! db [(str card-select ", f.seen_status FROM favorite f JOIN listing l ON l.id = f.listing_id "
-                                cover-join
-                                "WHERE f.user_id = ? ORDER BY f.created_at DESC, l.id DESC")
-                           user-id]
+        (jdbc/execute! db
+                       [(str card-select
+                             ", f.seen_status FROM favorite f JOIN listing l ON l.id = f.listing_id "
+                             cover-join
+                             "WHERE f.user_id = ? ORDER BY f.created_at DESC, l.id DESC")
+                        user-id]
                        db/opts)))
 
 (defn changed-favorites
   "How many favorites of `user-id` changed status since last seen."
   [db user-id]
-  (:n (jdbc/execute-one! db ["SELECT count(*) AS n FROM favorite f JOIN listing l ON l.id = f.listing_id
+  (:n (jdbc/execute-one! db
+                         ["SELECT count(*) AS n FROM favorite f JOIN listing l ON l.id = f.listing_id
                               WHERE f.user_id = ? AND l.status <> f.seen_status"
-                             user-id]
+                          user-id]
                          db/opts)))
 
 (defn mark-favorites-seen!
@@ -588,14 +662,18 @@
   stays news; the current one without."
   ([db user-id]
    (db/with-write-tx [tx db]
-     (jdbc/execute-one! tx ["UPDATE favorite SET seen_status = (SELECT status FROM listing l WHERE l.id = favorite.listing_id)
+     (jdbc/execute-one! tx
+                        ["UPDATE favorite SET seen_status = (SELECT status FROM listing l WHERE l.id = favorite.listing_id)
                              WHERE user_id = ?"
-                            user-id])))
+                         user-id])))
   ([db user-id shown]
    (db/with-write-tx [tx db]
      (doseq [{:keys [id status]} shown]
-       (jdbc/execute-one! tx ["UPDATE favorite SET seen_status = ? WHERE user_id = ? AND listing_id = ?"
-                              status user-id id])))))
+       (jdbc/execute-one! tx
+                          ["UPDATE favorite SET seen_status = ? WHERE user_id = ? AND listing_id = ?"
+                           status
+                           user-id
+                           id])))))
 
 (defn update!
   "Edits listing `id` on the board, owned by `user-id`: new field values, removing
@@ -616,16 +694,19 @@
                      db blobs photos now
                      (fn [object-keys]
                        (db/with-write-tx [tx db]
-                       ;; Photos as of this transaction, not the read above.
+                         ;; Photos as of this transaction, not the read above.
                          (let [rows (photo-rows tx id)
                                rank (zipmap order (range))
                                kept (sort-by #(rank (:id %) (count rank)) (remove (comp removing :id) rows))
                                removed (filter (comp removing :id) rows)]
                            ;; Both checked before anything is written: a refused edit changes nothing.
                            (cond
-                             (not (jdbc/execute-one! tx [(str "SELECT 1 FROM listing
-                                                               WHERE id = ? AND user_id = ? AND status IN " on-board-sql)
-                                                         id user-id]))
+                             (not (jdbc/execute-one! tx
+                                                     [(str "SELECT 1 FROM listing
+                                                               WHERE id = ? AND user_id = ? AND status IN "
+                                                           on-board-sql)
+                                                      id
+                                                      user-id]))
                              {:not-found true :uploaded object-keys}
 
                              (> (+ (count kept) (count photos)) max-photos)
@@ -633,29 +714,48 @@
 
                              :else
                              ;; A wanted post is not reserved (see [[move-allowed?]]).
-                             (do (jdbc/execute-one! tx ["UPDATE listing
+                             (do (jdbc/execute-one! tx
+                                                    ["UPDATE listing
                                                          SET kind = ?1, title = ?2, description = ?3, price_minor = ?4,
                                                              category = ?5, pickup_place = ?6, pickup_city = ?7,
                                                              status = CASE WHEN ?1 = 'wanted' THEN 'active' ELSE status END,
                                                              updated_at = ?8, fresh_at = ?8, reminded_at = NULL, reminder_give_ups = 0
                                                          WHERE id = ?9"
-                                                        kind title description price-minor category
-                                                        pickup-place pickup-city now id])
+                                                     kind
+                                                     title
+                                                     description
+                                                     price-minor
+                                                     category
+                                                     pickup-place
+                                                     pickup-city
+                                                     now
+                                                     id])
                                  (doseq [{:keys [id]} removed]
                                    (jdbc/execute-one! tx ["DELETE FROM photo WHERE id = ?" id]))
-                               ;; Positions are unique and few: the kept photos are put back in
-                               ;; their order, each under its own id.
+                                 ;; Positions are unique and few: the kept photos are put back in
+                                 ;; their order, each under its own id.
                                  (doseq [{:keys [id]} kept]
                                    (jdbc/execute-one! tx ["DELETE FROM photo WHERE id = ?" id]))
                                  (doseq [[position {photo-id :id :keys [object-key width height]}] (map-indexed vector kept)]
-                                   (jdbc/execute-one! tx ["INSERT INTO photo (id, listing_id, position, object_key, width, height)
+                                   (jdbc/execute-one! tx
+                                                      ["INSERT INTO photo (id, listing_id, position, object_key, width, height)
                                                            VALUES (?, ?, ?, ?, ?, ?)"
-                                                          photo-id id position object-key width height]))
+                                                       photo-id
+                                                       id
+                                                       position
+                                                       object-key
+                                                       width
+                                                       height]))
                                  (doseq [[position object-key {:keys [full]}]
                                          (map vector (iterate inc (count kept)) object-keys photos)]
-                                   (jdbc/execute-one! tx ["INSERT INTO photo (listing_id, position, object_key, width, height)
+                                   (jdbc/execute-one! tx
+                                                      ["INSERT INTO photo (listing_id, position, object_key, width, height)
                                                          VALUES (?, ?, ?, ?, ?)"
-                                                          id position object-key (:width full) (:height full)]))
+                                                       id
+                                                       position
+                                                       object-key
+                                                       (:width full)
+                                                       (:height full)]))
                                  (unqueue-deletions! tx object-keys)
                                  (queue-deletions! tx (map :object-key removed) 0)
                                  {:ok true :removed (map :object-key removed)}))))))]
@@ -671,19 +771,28 @@
   within both; all within the search `q` when there is one."
   [db {:keys [q kind category]}]
   (let [match (fts-query q)
-        rows (jdbc/execute! db (if match
-                                 [(str "SELECT l.kind, l.category, count(*) AS n
+        rows (jdbc/execute! db
+                            (if match
+                              [(str "SELECT l.kind, l.category, count(*) AS n
                                         FROM listing_fts JOIN listing l ON l.id = listing_fts.rowid
-                                        WHERE listing_fts MATCH ? AND l.status IN " on-board-sql "
+                                        WHERE listing_fts MATCH ? AND l.status IN "
+                                    on-board-sql
+                                    "
                                         GROUP BY l.kind, l.category")
-                                  match]
-                                 [(str "SELECT kind, category, count(*) AS n FROM listing
-                                        WHERE status IN " on-board-sql " GROUP BY kind, category")])
+                               match]
+                              [(str "SELECT kind, category, count(*) AS n FROM listing
+                                        WHERE status IN "
+                                    on-board-sql
+                                    " GROUP BY kind, category")])
                             db/opts)
         sum-by (fn [k pred] (reduce (fn [acc row] (cond-> acc (pred row) (update (k row) (fnil + 0) (:n row))))
-                                    {} rows))]
+                                    {}
+                                    rows))]
     {:kinds (sum-by :kind #(or (nil? category) (= category (:category %))))
      :categories (sum-by :category #(or (nil? kind) (= kind (:kind %))))
-     :total (reduce + 0 (map :n (filter #(and (or (nil? kind) (= kind (:kind %)))
-                                              (or (nil? category) (= category (:category %))))
-                                        rows)))}))
+     :total (reduce +
+                    0
+                    (map :n
+                         (filter #(and (or (nil? kind) (= kind (:kind %)))
+                                       (or (nil? category) (= category (:category %))))
+                                 rows)))}))

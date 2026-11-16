@@ -17,10 +17,14 @@
 
 (defn- post!
   [user-id title category at & {:keys [kind] :or {kind "free"}}]
-  (listing/create! *db* (blob/memory-store) user-id
-                   (:listing (listing/validate fixtures/settings {:kind kind :title title :category category
-                                                                  :pickup "place:hall"}))
-                   [] at))
+  (listing/create! *db*
+                   (blob/memory-store)
+                   user-id
+                   (:listing (listing/validate fixtures/settings
+                                               {:kind kind :title title :category category
+                                                :pickup "place:hall"}))
+                   []
+                   at))
 
 (deftest home-test
   (testing "anonymous visitors are sent to sign in"

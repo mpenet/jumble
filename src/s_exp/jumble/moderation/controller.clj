@@ -55,13 +55,18 @@
       (let [page (str "/listings/" id)
             {:keys [errors reason]} (moderation/validate-reason (params/one params "reason"))]
         (if errors
-          (response/html 422 (view/report-form request found {:values {:reason (params/one params "reason")}
-                                                              :errors errors}))
-          (if (moderation/report! db {:listing-id id :reporter-id (:id user) :reason reason
-                                      :now (System/currentTimeMillis)
-                                      :alerts (email/alerts settings {:title title :reporter-name (:name user)
-                                                                      :reason reason}
-                                                            #(account/language-of db %))})
+          (response/html 422
+                         (view/report-form request
+                                           found
+                                           {:values {:reason (params/one params "reason")}
+                                            :errors errors}))
+          (if (moderation/report! db
+                                  {:listing-id id :reporter-id (:id user) :reason reason
+                                   :now (System/currentTimeMillis)
+                                   :alerts (email/alerts settings
+                                                         {:title title :reporter-name (:name user)
+                                                          :reason reason}
+                                                         #(account/language-of db %))})
             (response/redirect (str page "?reported"))
             (layout/not-found request)))))))
 
@@ -85,17 +90,27 @@
         {:keys [errors reason]} (moderation/validate-reason (params/one params "reason"))]
     (cond
       (nil? found) (layout/not-found request)
-      errors (response/html 422 (view/confirm-removal request found {:values {:reason (params/one params "reason")}
-                                                                     :errors errors}))
-      :else (do (moderation/remove-listing! db blobs {:listing-id id :moderator-id (:id user)
-                                                      :now (System/currentTimeMillis)
-                                                      :reason reason
-                                                      :notice (i18n/speaking (account/language-of db owner-email)
-                                                                (email/removal-notice settings {:owner-email owner-email
-                                                                                                :title title
-                                                                                                :reason reason}))})
-                (metrics/inc! listing/closed {:outcome "removed"})
-                (response/redirect "/manage")))))
+
+      errors
+      (response/html 422
+                     (view/confirm-removal request
+                                           found
+                                           {:values {:reason (params/one params "reason")}
+                                            :errors errors}))
+
+      :else
+      (do (moderation/remove-listing! db
+                                      blobs
+                                      {:listing-id id :moderator-id (:id user)
+                                       :now (System/currentTimeMillis)
+                                       :reason reason
+                                       :notice (i18n/speaking (account/language-of db owner-email)
+                                                 (email/removal-notice settings
+                                                                       {:owner-email owner-email
+                                                                        :title title
+                                                                        :reason reason}))})
+          (metrics/inc! listing/closed {:outcome "removed"})
+          (response/redirect "/manage")))))
 
 (defn dismiss
   "Dismisses the reports on the listing in the path, someone else's (see
@@ -112,14 +127,18 @@
   [{:keys [ctx] :as request} status form]
   (let [{:keys [db settings]} ctx
         configured (:allowed-emails settings)]
-    (response/html status (view/members request (assoc form
-                                                       :configured configured
-                                                       :added (when-not (= :anyone configured) (account/added-emails db)))))))
+    (response/html status
+                   (view/members request
+                                 (assoc form
+                                        :configured configured
+                                        :added (when-not (= :anyone configured) (account/added-emails db)))))))
 
 (defn members
   [{:keys [query-string] :as request}]
-  (members-page request 200 {:saved (= "added" query-string)
-                             :removed (= "removed" query-string)}))
+  (members-page request
+                200
+                {:saved (= "added" query-string)
+                 :removed (= "removed" query-string)}))
 
 (defn- parse-patterns
   "`{:patterns [...]}` from text typed one per line or comma separated, or
@@ -142,16 +161,23 @@
         {:keys [patterns error]} (parse-patterns (params/one params "patterns"))]
     (cond
       (= :anyone configured) (response/redirect "/manage/members")
-      error (members-page request 422 {:values {:patterns (params/one params "patterns") :invite invite}
-                                       :errors {:patterns error}})
-      :else (do (account/allow! db {:patterns patterns :moderator-id (:id user) :now (System/currentTimeMillis)
-                                    :invite-for (when invite
-                                                  (fn [address]
-                                                    ;; Not a member yet: the community's language.
-                                                    (when-not (str/includes? address "*")
-                                                      (i18n/speaking nil
-                                                        (account-email/invitation settings (:name user) address)))))})
-                (response/redirect "/manage/members?added")))))
+
+      error
+      (members-page request
+                    422
+                    {:values {:patterns (params/one params "patterns") :invite invite}
+                     :errors {:patterns error}})
+
+      :else
+      (do (account/allow! db
+                          {:patterns patterns :moderator-id (:id user) :now (System/currentTimeMillis)
+                           :invite-for (when invite
+                                         (fn [address]
+                                           ;; Not a member yet: the community's language.
+                                           (when-not (str/includes? address "*")
+                                             (i18n/speaking nil
+                                               (account-email/invitation settings (:name user) address)))))})
+          (response/redirect "/manage/members?added")))))
 
 (defn withdraw-pattern
   "No longer lets a pattern sign in: those only it let in are signed out at
@@ -174,6 +200,7 @@
                                   (cons email (map :email accounts))))
             (:moderators settings))
       {:error (i18n/t "{email} is a moderator, by the configuration: remove them there." {:email email})}
+
       (empty? accounts) {:error (i18n/t "No member has this address.")}
       :else {:email email :accounts accounts})))
 
@@ -187,9 +214,11 @@
   (let [{:keys [error email accounts]} (removal request)]
     (if error
       (removal-refused request error)
-      (response/html 200 (view/confirm-member-removal request {:email email
-                                                               :name (:name (first accounts))
-                                                               :listings (reduce + (map :listings accounts))})))))
+      (response/html 200
+                     (view/confirm-member-removal request
+                                                  {:email email
+                                                   :name (:name (first accounts))
+                                                   :listings (reduce + (map :listings accounts))})))))
 
 (defn remove-member
   "Removes a member: their account goes, as when they delete it, and they
@@ -198,8 +227,10 @@
   (let [{:keys [error email]} (removal request)]
     (if error
       (removal-refused request error)
-      (do (data/remove-member! (:db ctx) (:blobs ctx) {:email email :moderator-id (:id user)
-                                                       :now (System/currentTimeMillis)})
+      (do (data/remove-member! (:db ctx)
+                               (:blobs ctx)
+                               {:email email :moderator-id (:id user)
+                                :now (System/currentTimeMillis)})
           (response/redirect "/manage/members?removed")))))
 
 (def ^:private lists
@@ -215,10 +246,13 @@
   what is wrong with it (`:errors`), by entry id, or `:add` for the new one."
   [{:keys [ctx] :as request} which status form]
   (let [db (:db ctx)]
-    (response/html status (view/choices request which (assoc form
-                                                             :page (page-of which)
-                                                             :entries (get (choices/all db) (if (= :category which) :categories :places))
-                                                             :counts (choices/listing-counts db which))))))
+    (response/html status
+                   (view/choices request
+                                 which
+                                 (assoc form
+                                        :page (page-of which)
+                                        :entries (get (choices/all db) (if (= :category which) :categories :places))
+                                        :counts (choices/listing-counts db which))))))
 
 (defn- show-choices
   [request which]
@@ -265,8 +299,10 @@
 
 (defn appearance
   [{:keys [ctx query-string] :as request}]
-  (response/html 200 (view/appearance request {:chosen (palette/chosen (:db ctx))
-                                               :saved (= "saved" query-string)})))
+  (response/html 200
+                 (view/appearance request
+                                  {:chosen (palette/chosen (:db ctx))
+                                   :saved (= "saved" query-string)})))
 
 (defn choose-palette
   [{:keys [ctx params] :as request}]
@@ -281,8 +317,10 @@
   [{:keys [ctx params] :as request}]
   (let [url (get-in ctx [:settings :base-url])]
     (i18n/speaking (i18n/languages (params/one params "language"))
-      (response/html 200 (view/poster request {:url url
-                                               :address (-> url (str/replace #"^https?://" "") (str/replace #"/$" ""))})))))
+      (response/html 200
+                     (view/poster request
+                                  {:url url
+                                   :address (-> url (str/replace #"^https?://" "") (str/replace #"/$" ""))})))))
 
 (defn- choices-routes
   "Moderators' pages managing each list of choices."
@@ -300,18 +338,17 @@
         lists))
 
 (def routes
-  (merge
-   (choices-routes)
-   {[:post "/listings/{id}/report"] (auth/require-user #'report)
-    [:get "/manage"] (moderators-only #'reports)
-    [:get "/manage/members"] (moderators-only #'members)
-    [:post "/manage/members"] (moderators-only #'add-members)
-    [:post "/manage/members/withdraw"] (moderators-only #'withdraw-pattern)
-    [:get "/manage/members/remove"] (moderators-only #'confirm-member-removal)
-    [:post "/manage/members/remove"] (moderators-only #'remove-member)
-    [:get "/manage/listings/{id}/remove"] (moderators-only #'confirm-removal)
-    [:post "/manage/listings/{id}/remove"] (moderators-only #'remove-listing)
-    [:post "/manage/listings/{id}/dismiss"] (moderators-only #'dismiss)
-    [:get "/manage/appearance"] (moderators-only #'appearance)
-    [:get "/manage/poster"] (moderators-only #'poster)
-    [:post "/manage/appearance"] (moderators-only #'choose-palette)}))
+  (merge (choices-routes)
+         {[:post "/listings/{id}/report"] (auth/require-user #'report)
+          [:get "/manage"] (moderators-only #'reports)
+          [:get "/manage/members"] (moderators-only #'members)
+          [:post "/manage/members"] (moderators-only #'add-members)
+          [:post "/manage/members/withdraw"] (moderators-only #'withdraw-pattern)
+          [:get "/manage/members/remove"] (moderators-only #'confirm-member-removal)
+          [:post "/manage/members/remove"] (moderators-only #'remove-member)
+          [:get "/manage/listings/{id}/remove"] (moderators-only #'confirm-removal)
+          [:post "/manage/listings/{id}/remove"] (moderators-only #'remove-listing)
+          [:post "/manage/listings/{id}/dismiss"] (moderators-only #'dismiss)
+          [:get "/manage/appearance"] (moderators-only #'appearance)
+          [:get "/manage/poster"] (moderators-only #'poster)
+          [:post "/manage/appearance"] (moderators-only #'choose-palette)}))

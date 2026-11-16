@@ -29,22 +29,31 @@
       (is (= {:email "alice@example.com" :name "Alice"} (select-keys user [:email :name])))
       (is (integer? (:id user))))
     (testing "the same iss/sub updates the profile and keeps the id"
-      (let [again (account/upsert-user! *db* (assoc identity-claims :email "alice@new.example.com" :name "Al")
+      (let [again (account/upsert-user! *db*
+                                        (assoc identity-claims :email "alice@new.example.com" :name "Al")
                                         (+ t0 1000))]
         (is (= (:id user) (:id again)))
         (is (= {:email "alice@new.example.com" :name "Al"} (select-keys again [:email :name])))
-        (is (= (+ t0 1000) (:last_login_at (jdbc/execute-one! *db* ["SELECT last_login_at FROM user"]
-                                                              {:builder-fn rs/as-unqualified-maps}))))))
+        (is (= (+ t0 1000)
+               (:last_login_at (jdbc/execute-one! *db*
+                                                  ["SELECT last_login_at FROM user"]
+                                                  {:builder-fn rs/as-unqualified-maps}))))))
     (testing "another subject is another user"
       (is (not= (:id user) (:id (account/upsert-user! *db* (assoc identity-claims :sub "u2") t0)))))))
 
 (defn- refused
   "The type of error `f` was refused with, nil when it was not."
   [f]
-  (try (f) nil (catch clojure.lang.ExceptionInfo e (ex/ex-type e))))
+  (try
+    (f)
+    nil
+    (catch clojure.lang.ExceptionInfo e
+      (ex/ex-type e))))
 
 (deftest member-limit-test
-  (let [join! #(account/upsert-user! *db* (assoc identity-claims :sub % :email (str % "@example.com")) t0
+  (let [join! #(account/upsert-user! *db*
+                                     (assoc identity-claims :sub % :email (str % "@example.com"))
+                                     t0
                                      {:member-limit 2})]
     (join! "ann")
     (join! "bob")
@@ -66,8 +75,10 @@
   (let [user (account/upsert-user! *db* identity-claims t0)
         token (account/create-session! *db* (:id user) t0 ttl)]
     (testing "only the token's digest is stored"
-      (is (= 1 (:n (jdbc/execute-one! *db* ["SELECT count(*) AS n FROM session WHERE token_hash = ?"
-                                            (token/digest token)])))))
+      (is (= 1
+             (:n (jdbc/execute-one! *db*
+                                    ["SELECT count(*) AS n FROM session WHERE token_hash = ?"
+                                     (token/digest token)])))))
     (testing "a live session resolves to its user, with the language they chose (none yet)"
       (is (= (assoc user :language nil) (:user (account/resume-session! *db* token (+ t0 day) ttl)))))
     (testing "unknown, malformed and missing tokens resolve to nothing"
@@ -83,8 +94,9 @@
 
 (defn- expires-at
   [token]
-  (:expires_at (jdbc/execute-one! *db* ["SELECT expires_at FROM session WHERE token_hash = ?"
-                                        (token/digest token)]
+  (:expires_at (jdbc/execute-one! *db*
+                                  ["SELECT expires_at FROM session WHERE token_hash = ?"
+                                   (token/digest token)]
                                   {:builder-fn rs/as-unqualified-maps})))
 
 (deftest sliding-expiry-test

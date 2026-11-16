@@ -13,7 +13,9 @@
 
 (deftest manifest-test
   (testing "anyone can fetch it: browsers ask for it without the session"
-    (let [{:keys [status headers body]} (request :get "/manifest.webmanifest" nil
+    (let [{:keys [status headers body]} (request :get
+                                                 "/manifest.webmanifest"
+                                                 nil
                                                  :ctx {:settings {:app-name "Swap Shop"}})
           manifest (json/read-str body {:key-fn identity})]
       (is (= 200 status))

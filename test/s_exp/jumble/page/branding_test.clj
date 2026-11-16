@@ -22,8 +22,11 @@
 
 (defn- refusal
   [path]
-  (try (branding/read-logo path) nil
-       (catch clojure.lang.ExceptionInfo e (ex-message e))))
+  (try
+    (branding/read-logo path)
+    nil
+    (catch clojure.lang.ExceptionInfo e
+      (ex-message e))))
 
 (deftest read-logo-test
   (testing "an SVG or a PNG, by content, under 200 KB"
@@ -56,5 +59,9 @@
 
 (deftest refusal-type-test
   (testing "a refused logo is an invalid logo"
-    (is (= ::error/invalid-logo (ex/ex-type (try (branding/read-logo (file "logo.txt" "hello")) nil
-                                                 (catch clojure.lang.ExceptionInfo e e)))))))
+    (is (= ::error/invalid-logo
+           (ex/ex-type (try
+                         (branding/read-logo (file "logo.txt" "hello"))
+                         nil
+                         (catch clojure.lang.ExceptionInfo e
+                           e)))))))

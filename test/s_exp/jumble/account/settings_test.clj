@@ -109,17 +109,20 @@
           bob (fixtures/user-id "bob@example.com")]
       (is (not (str/includes? (:body (request :get "/settings" token)) "name=\"name\"")))
       (request :post "/settings" token :form {"name" "Robert"})
-      (is (= "bob@example.com" (:name (jdbc/execute-one! *db* ["SELECT name FROM user WHERE id = ?" bob]
-                                                         {:builder-fn rs/as-unqualified-maps})))))))
+      (is (= "bob@example.com"
+             (:name (jdbc/execute-one! *db*
+                                       ["SELECT name FROM user WHERE id = ?" bob]
+                                       {:builder-fn rs/as-unqualified-maps})))))))
 
 (deftest your-data-test
   (let [token (sign-in! "alice@example.com")
         bob (sign-in! "bob@example.com")
         alice (fixtures/user-id "alice@example.com")
         lamp (:id (fixtures/listing! alice "Lamp"))
-        thread (s-exp.jumble.message.model/start! *db* {:sender-id (fixtures/user-id "bob@example.com")
-                                                        :listing-id lamp :subject "Lamp" :body "Still there?"
-                                                        :now 1})]
+        thread (s-exp.jumble.message.model/start! *db*
+                                                  {:sender-id (fixtures/user-id "bob@example.com")
+                                                   :listing-id lamp :subject "Lamp" :body "Still there?"
+                                                   :now 1})]
     (testing "the settings lead to both"
       (let [body (:body (request :get "/settings" token))]
         (is (str/includes? body "href=\"/settings/export\""))

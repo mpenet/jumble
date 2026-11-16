@@ -119,7 +119,8 @@
 (deftest notification-scheduling-test
   (let [alice (user! "alice") bob (user! "bob")
         thread-id (start! bob (listing! alice "Desk lamp") "Still available?" 100)
-        pending #(jdbc/execute! *db* ["SELECT user_id, due_at, attempts FROM notification"]
+        pending #(jdbc/execute! *db*
+                                ["SELECT user_id, due_at, attempts FROM notification"]
                                 {:builder-fn rs/as-unqualified-maps})]
     (testing "a message schedules an email to the other participant only, 5 minutes later"
       (is (= [{:user_id alice :due_at 300100 :attempts 0}] (pending))))

@@ -47,8 +47,9 @@
   "Path of `file`, carrying its content hash: browsers may cache it forever,
   and a change to the file changes the URL."
   [file]
-  (str "/assets/" (:file (or (get @assets file)
-                             (throw (ex/ex-info "Unknown asset" ::error/unknown-asset {:file file}))))))
+  (str "/assets/"
+       (:file (or (get @assets file)
+                  (throw (ex/ex-info "Unknown asset" ::error/unknown-asset {:file file}))))))
 
 (defn serve
   [{:keys [path-params]}]

@@ -86,7 +86,8 @@
 
 (defn- user-id
   []
-  (:id (jdbc/execute-one! *db* ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
+  (:id (jdbc/execute-one! *db*
+                          ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
                                  VALUES ('i', 's', 'a@example.com', 'Alice', 0, 0) RETURNING id"]
                           {:builder-fn rs/as-unqualified-maps})))
 
@@ -99,8 +100,15 @@
         id (listing/create! *db* blobs owner input photos 1000)
         stored (listing/by-id *db* id)]
     (testing "the listing reads back with its owner"
-      (is (= (assoc input :id id :user-id owner :status "active" :created-at 1000 :updated-at 1000 :reminded-at nil
-                    :owner-name "Alice" :owner-email "a@example.com")
+      (is (= (assoc input
+                    :id id
+                    :user-id owner
+                    :status "active"
+                    :created-at 1000
+                    :updated-at 1000
+                    :reminded-at nil
+                    :owner-name "Alice"
+                    :owner-email "a@example.com")
              (dissoc stored :photos))))
     (testing "photos are stored in both sizes and listed in order"
       (is (= [0 1] (mapv :position (:photos stored))))
@@ -154,7 +162,9 @@
 (defn- post!
   "Creates a listing at time `at` from `valid-input` with `overrides`; returns its id."
   [owner at overrides & {:keys [photos]}]
-  (listing/create! *db* (blob/memory-store) owner
+  (listing/create! *db*
+                   (blob/memory-store)
+                   owner
                    (:listing (listing/validate settings (merge valid-input overrides)))
                    (or photos [])
                    at))
@@ -259,7 +269,8 @@
 
 (defn- other-user-id
   []
-  (:id (jdbc/execute-one! *db* ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
+  (:id (jdbc/execute-one! *db*
+                          ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
                                  VALUES ('i', 's2', 'b@example.com', 'Bob', 0, 0) RETURNING id"]
                           {:builder-fn rs/as-unqualified-maps})))
 
@@ -308,9 +319,14 @@
     (testing "a reserved listing edited into a wanted post is available again"
       (let [bike (post! owner 100 {:kind "sale" :price "10" :title "Bike"})]
         (listing/set-status! *db* bike owner "reserved" 500)
-        (is (:ok (listing/update! *db* (blob/memory-store) bike owner
+        (is (:ok (listing/update! *db*
+                                  (blob/memory-store)
+                                  bike
+                                  owner
                                   (:listing (listing/validate settings (assoc valid-input :kind "wanted")))
-                                  #{} [] 600)))
+                                  #{}
+                                  []
+                                  600)))
         (is (= "active" (status-of bike)))))))
 
 (deftest delete-test
@@ -349,8 +365,12 @@
         owner (user-id)
         other (other-user-id)
         prepared #(:photos (listing/prepare-photos (map fixture-bytes %)))
-        id (listing/create! *db* blobs owner (:listing (listing/validate settings valid-input))
-                            (prepared ["transparent.png" "rotated-gps.jpg" "transparent.png"]) 100)
+        id (listing/create! *db*
+                            blobs
+                            owner
+                            (:listing (listing/validate settings valid-input))
+                            (prepared ["transparent.png" "rotated-gps.jpg" "transparent.png"])
+                            100)
         [p0 p1 p2] (:photos (listing/by-id *db* id))
         changes (:listing (listing/validate settings (assoc valid-input :title "Floor lamp" :kind "free")))]
     (testing "fields change, removed photos go, new ones come after the kept ones"
@@ -375,8 +395,14 @@
             objects (count @(:objects blobs))]
         (with-redefs [listing/by-id (fn [_ _] (assoc before :photos []))]
           (is (= {:errors {:photos "At most 5 photos."}}
-                 (listing/update! *db* blobs id owner (assoc changes :title "Desk lamp, again") []
-                                  (prepared ["transparent.png" "transparent.png" "transparent.png"]) 350))))
+                 (listing/update! *db*
+                                  blobs
+                                  id
+                                  owner
+                                  (assoc changes :title "Desk lamp, again")
+                                  []
+                                  (prepared ["transparent.png" "transparent.png" "transparent.png"])
+                                  350))))
         (is (= "Floor lamp" (:title (listing/by-id *db* id))))
         (is (= (:updated-at before) (:updated-at (listing/by-id *db* id))))
         (is (= objects (count @(:objects blobs))) "the photos uploaded for it deleted again")))
@@ -427,13 +453,22 @@
   (let [inner (blob/memory-store)
         owner (user-id)
         prepared #(:photos (listing/prepare-photos (map fixture-bytes %)))
-        id (listing/create! *db* inner owner (:listing (listing/validate settings valid-input))
-                            (prepared ["transparent.png"]) 100)
+        id (listing/create! *db*
+                            inner
+                            owner
+                            (:listing (listing/validate settings valid-input))
+                            (prepared ["transparent.png"])
+                            100)
         old (:id (first (:photos (listing/by-id *db* id))))]
     (testing "removed photos that cannot be deleted from storage do not undo or fail the edit"
-      (is (= {:ok true} (listing/update! *db* (failing-deletes inner) id owner
+      (is (= {:ok true} (listing/update! *db*
+                                         (failing-deletes inner)
+                                         id
+                                         owner
                                          (:listing (listing/validate settings valid-input))
-                                         [old] (prepared ["rotated-gps.jpg"]) 200)))
+                                         [old]
+                                         (prepared ["rotated-gps.jpg"])
+                                         200)))
       (let [[photo :as photos] (:photos (listing/by-id *db* id))]
         (is (= 1 (count photos)))
         (testing "the new photo stays in storage"
@@ -443,8 +478,12 @@
   (let [blobs (blob/memory-store)
         owner (user-id)
         prepared #(:photos (listing/prepare-photos (map fixture-bytes %)))
-        id (listing/create! *db* blobs owner (:listing (listing/validate settings valid-input))
-                            (prepared ["transparent.png" "rotated-gps.jpg"]) 100)
+        id (listing/create! *db*
+                            blobs
+                            owner
+                            (:listing (listing/validate settings valid-input))
+                            (prepared ["transparent.png" "rotated-gps.jpg"])
+                            100)
         [a b] (:photos (listing/by-id *db* id))
         unchanged (:listing (listing/validate settings valid-input))]
     (listing/update! *db* blobs id owner unchanged [(:id a)] [] 200)
@@ -456,9 +495,11 @@
 
 (deftest board-seeks-test
   (testing "a page deep in the board is found by the index, not by scanning from the top"
-    (let [plan (mapv :detail (jdbc/execute! *db* (into [(str "EXPLAIN QUERY PLAN " @#'listing/board-sql)]
-                                                       [nil nil 1000 5 25])
-                                            {:builder-fn rs/as-unqualified-maps}))]
+    (let [plan (mapv :detail
+                     (jdbc/execute! *db*
+                                    (into [(str "EXPLAIN QUERY PLAN " @#'listing/board-sql)]
+                                          [nil nil 1000 5 25])
+                                    {:builder-fn rs/as-unqualified-maps}))]
       (is (some #(re-find #"USING INDEX listing_board \(created_at<\?\)" %) plan) (pr-str plan))
       (is (not-any? #(re-find #"TEMP B-TREE" %) plan) "no sort: the index gives the order"))))
 
@@ -506,9 +547,14 @@
       (is (= ["Bike"] (map :title (:listings (listing/search *db* {:q "bike" :page 1 :limit 10})))))
       (is (= 3 (:total (listing/facets *db* {})))))
     (testing "and can be edited"
-      (is (:ok (listing/update! *db* (blob/memory-store) sale owner
+      (is (:ok (listing/update! *db*
+                                (blob/memory-store)
+                                sale
+                                owner
                                 (:listing (listing/validate settings (assoc valid-input :title "Red bike")))
-                                #{} [] 500))))
+                                #{}
+                                []
+                                500))))
     (testing "from reserved: back to available, or sold, or given away"
       (is (= #{"active" "sold"} (set (listing/status-moves (listing/by-id *db* sale)))))
       (is (= #{"active" "given"} (set (listing/status-moves (listing/by-id *db* free)))))

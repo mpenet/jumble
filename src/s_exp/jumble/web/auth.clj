@@ -109,8 +109,10 @@
         base-url (:base-url settings)
         ;; An error page must not fail on account of this.
         user (when (and db base-url)
-               (try (account/session-user db (session-token request) (System/currentTimeMillis))
-                    (catch Exception _ nil)))]
+               (try
+                 (account/session-user db (session-token request) (System/currentTimeMillis))
+                 (catch Exception _
+                   nil)))]
     (cond-> request user (assoc :user user))))
 
 (defn in-known-language

@@ -44,32 +44,46 @@
   their devices. An email already pending keeps its time and covers this
   message too."
   [tx thread-id sender-id body now]
-  (let [{:keys [id]} (jdbc/execute-one! tx ["INSERT INTO message (thread_id, sender_id, body, created_at)
+  (let [{:keys [id]} (jdbc/execute-one! tx
+                                        ["INSERT INTO message (thread_id, sender_id, body, created_at)
                                              VALUES (?, ?, ?, ?) RETURNING id"
-                                            thread-id sender-id body now]
+                                         thread-id
+                                         sender-id
+                                         body
+                                         now]
                                         db/opts)]
     (jdbc/execute-one! tx ["UPDATE thread SET last_message_at = ? WHERE id = ?" now thread-id])
-    (jdbc/execute-one! tx ["UPDATE thread_participant SET last_read_message_id = ?
+    (jdbc/execute-one! tx
+                       ["UPDATE thread_participant SET last_read_message_id = ?
                             WHERE thread_id = ? AND user_id = ?"
-                           id thread-id sender-id])
-    (jdbc/execute-one! tx ["INSERT INTO notification (thread_id, user_id, message_id, due_at)
+                        id
+                        thread-id
+                        sender-id])
+    (jdbc/execute-one! tx
+                       ["INSERT INTO notification (thread_id, user_id, message_id, due_at)
                             SELECT thread_id, user_id, ?, ? FROM thread_participant
                             WHERE thread_id = ? AND user_id <> ?
                             ON CONFLICT (thread_id, user_id)
                             DO UPDATE SET message_id = excluded.message_id, attempts = 0"
-                           id (+ now notification/grace-period) thread-id sender-id])
+                        id
+                        (+ now notification/grace-period)
+                        thread-id
+                        sender-id])
     (push/queue! tx thread-id sender-id id now)
     id))
 
 (defn thread-about
   "Id of the thread about `listing-id` between the two users, if they have one."
   [connectable listing-id user-a user-b]
-  (:id (jdbc/execute-one! connectable ["SELECT t.id FROM thread t
+  (:id (jdbc/execute-one! connectable
+                          ["SELECT t.id FROM thread t
                                         JOIN thread_participant a ON a.thread_id = t.id AND a.user_id = ?
                                         JOIN thread_participant b ON b.thread_id = t.id AND b.user_id = ?
                                         WHERE t.listing_id = ?
                                         ORDER BY t.id LIMIT 1"
-                                       user-a user-b listing-id]
+                           user-a
+                           user-b
+                           listing-id]
                           db/opts)))
 
 (defn start!
@@ -79,35 +93,47 @@
   sender's own, or the sender's account is being deleted."
   [db {:keys [sender-id listing-id subject body now]}]
   (db/with-write-tx [tx db]
-    (let [{owner :user-id :keys [status title]} (jdbc/execute-one! tx ["SELECT user_id, status, title FROM listing WHERE id = ?"
-                                                                       listing-id]
+    (let [{owner :user-id :keys [status title]} (jdbc/execute-one! tx
+                                                                   ["SELECT user_id, status, title FROM listing WHERE id = ?"
+                                                                    listing-id]
                                                                    db/opts)]
-      (when (and (listing/on-board status) (not= sender-id owner)
+      (when (and (listing/on-board status)
+                 (not= sender-id owner)
                  (jdbc/execute-one! tx ["SELECT 1 FROM user WHERE id = ? AND deleted_at IS NULL" sender-id]))
         (let [thread-id (or (thread-about tx listing-id sender-id owner)
-                            (let [{:keys [id]} (jdbc/execute-one! tx ["INSERT INTO thread (subject, listing_id, post_title,
+                            (let [{:keys [id]} (jdbc/execute-one! tx
+                                                                  ["INSERT INTO thread (subject, listing_id, post_title,
                                                                                          created_at, last_message_at)
                                                                      VALUES (?, ?, ?, ?, ?) RETURNING id"
-                                                                      subject listing-id title now now]
+                                                                   subject
+                                                                   listing-id
+                                                                   title
+                                                                   now
+                                                                   now]
                                                                   db/opts)]
                               (doseq [user-id [sender-id owner]]
-                                (jdbc/execute-one! tx ["INSERT INTO thread_participant (thread_id, user_id) VALUES (?, ?)"
-                                                       id user-id]))
+                                (jdbc/execute-one! tx
+                                                   ["INSERT INTO thread_participant (thread_id, user_id) VALUES (?, ?)"
+                                                    id
+                                                    user-id]))
                               id))]
           (add-message! tx thread-id sender-id body now)
           thread-id)))))
 
 (defn- participant?
   [connectable thread-id user-id]
-  (some? (jdbc/execute-one! connectable ["SELECT 1 FROM thread_participant WHERE thread_id = ? AND user_id = ?"
-                                         thread-id user-id])))
+  (some? (jdbc/execute-one! connectable
+                            ["SELECT 1 FROM thread_participant WHERE thread_id = ? AND user_id = ?"
+                             thread-id
+                             user-id])))
 
 (defn- with-former-member?
   "Whether someone in thread `thread-id` deleted their account."
   [db thread-id]
-  (some? (jdbc/execute-one! db ["SELECT 1 FROM thread_participant p JOIN user u ON u.id = p.user_id
+  (some? (jdbc/execute-one! db
+                            ["SELECT 1 FROM thread_participant p JOIN user u ON u.id = p.user_id
                                  WHERE p.thread_id = ? AND u.deleted_at IS NOT NULL"
-                                thread-id])))
+                             thread-id])))
 
 (defn reply!
   "Adds a message from `user-id` to thread `thread-id`. Returns its id, or
@@ -129,22 +155,28 @@
   the messages in order; nil when the user is not in it."
   [db thread-id user-id]
   (when (participant? db thread-id user-id)
-    (let [row (jdbc/execute-one! db [(str "SELECT t.id, t.subject, t.listing_id, " post-title "
+    (let [row (jdbc/execute-one! db
+                                 [(str "SELECT t.id, t.subject, t.listing_id, "
+                                       post-title
+                                       "
                                            FROM thread t LEFT JOIN listing l ON l.id = t.listing_id
                                            WHERE t.id = ?")
-                                     thread-id]
+                                  thread-id]
                                  db/opts)
-          other (jdbc/execute-one! db ["SELECT u.id, u.name, u.email, u.deleted_at FROM thread_participant p
+          other (jdbc/execute-one! db
+                                   ["SELECT u.id, u.name, u.email, u.deleted_at FROM thread_participant p
                                         JOIN user u ON u.id = p.user_id
                                         WHERE p.thread_id = ? AND p.user_id <> ?"
-                                       thread-id user-id]
+                                    thread-id
+                                    user-id]
                                    db/opts)]
       (assoc row
              :other other
-             :messages (jdbc/execute! db ["SELECT m.id, m.sender_id, u.name AS sender_name, m.body, m.created_at
+             :messages (jdbc/execute! db
+                                      ["SELECT m.id, m.sender_id, u.name AS sender_name, m.body, m.created_at
                                           FROM message m JOIN user u ON u.id = m.sender_id
                                           WHERE m.thread_id = ? ORDER BY m.id"
-                                          thread-id]
+                                       thread-id]
                                       db/opts)))))
 
 (defn mark-read!
@@ -155,14 +187,21 @@
   (let [unread "WHERE thread_id = ? AND user_id = ? AND last_read_message_id < ?"]
     (when (jdbc/execute-one! db [(str "SELECT 1 FROM thread_participant " unread) thread-id user-id up-to])
       (db/with-write-tx [tx db]
-        (jdbc/execute-one! tx [(str "UPDATE thread_participant SET last_read_message_id = ? " unread)
-                               up-to thread-id user-id up-to])))))
+        (jdbc/execute-one! tx
+                           [(str "UPDATE thread_participant SET last_read_message_id = ? " unread)
+                            up-to
+                            thread-id
+                            user-id
+                            up-to])))))
 
 (defn inbox
   "Threads of `user-id`, latest activity first, each with the other
   participant, the last message and how many messages are unread."
   [db user-id]
-  (jdbc/execute! db [(str "SELECT t.id, t.subject, " post-title ", t.listing_id, t.last_message_at,
+  (jdbc/execute! db
+                 [(str "SELECT t.id, t.subject, "
+                       post-title
+                       ", t.listing_id, t.last_message_at,
                              o.id AS other_id, o.name AS other_name, o.email AS other_email,
                              (SELECT body FROM message m WHERE m.thread_id = t.id
                               ORDER BY m.id DESC LIMIT 1) AS last_body,
@@ -175,15 +214,16 @@
                       LEFT JOIN listing l ON l.id = t.listing_id
                       WHERE me.user_id = ?
                       ORDER BY t.last_message_at DESC, t.id DESC")
-                     user-id]
+                  user-id]
                  db/opts))
 
 (defn unread-count
   "Messages from others that `user-id` has not read yet, over all threads."
   [db user-id]
-  (:n (jdbc/execute-one! db ["SELECT count(*) AS n FROM thread_participant me
+  (:n (jdbc/execute-one! db
+                         ["SELECT count(*) AS n FROM thread_participant me
                               JOIN message m ON m.thread_id = me.thread_id
                                 AND m.id > me.last_read_message_id AND m.sender_id <> me.user_id
                               WHERE me.user_id = ?"
-                             user-id]
+                          user-id]
                          db/opts)))

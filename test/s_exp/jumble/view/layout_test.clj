@@ -34,7 +34,8 @@
   (testing "each header link has an icon before its label"
     (let [html (layout/page {:csp-nonce "n" :user {:name "Al"} :moderator true :uri "/my/favorites"
                              :ctx {:settings {:app-name "Jumble"}}}
-                            {} [:p "x"])]
+                            {}
+                            [:p "x"])]
       (doseq [[href icon label] [["/listings" "icon-grid" "Listings"] ["/my/listings" "icon-tag" "My listings"]
                                  ["/my/favorites" "icon-heart" "Favorites"] ["/messages" "icon-chat" "Messages"]
                                  ["/settings" "icon-user" "Settings"] ["/my/searches" "icon-search" "Saved searches"]
@@ -112,7 +113,8 @@
   (let [logo {:file "logo.0123456789.svg"}
         dark {:file "logo-dark.abcdef0123.svg"}
         page #(layout/page {:csp-nonce "n" :user {:name "Al"} :ctx {:settings (merge {:app-name "Swap Shop"} %)}}
-                           {} [:p "x"])]
+                           {}
+                           [:p "x"])]
     (testing "a community's logo leads home, named after it"
       (let [html (page {:logo logo})]
         (is (str/includes? html "<a class=\"brand\" href=\"/\"><img class=\"community-logo\" src=\"/brand/logo.0123456789.svg\" alt=\"Swap Shop\"></a>"))
@@ -134,7 +136,8 @@
 
 (deftest footer-test
   (let [html (layout/page {:csp-nonce "n" :ctx {:settings {:app-name "Jumble" :source-url "https://git.example.org/our-jumble"}}}
-                          {:title "x"} [:p "body"])]
+                          {:title "x"}
+                          [:p "body"])]
     (testing "the footer links to the privacy page, the source this instance runs and its makers"
       (is (str/includes? html "<a href=\"/privacy\">Privacy</a>"))
       (is (str/includes? html "<a href=\"https://git.example.org/our-jumble\">Source code</a>"))

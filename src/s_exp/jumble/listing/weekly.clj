@@ -27,12 +27,18 @@
   "The [[max-listed]] newest listings on the board, not `user-id`'s, posted
   in (`after`, `until`], each with `:total`, how many there are in all."
   [db user-id after until]
-  (jdbc/execute! db [(str "SELECT id, title, count(*) OVER () AS total FROM listing
-                           WHERE status IN " listing/on-board-sql " AND user_id <> ?
+  (jdbc/execute! db
+                 [(str "SELECT id, title, count(*) OVER () AS total FROM listing
+                           WHERE status IN "
+                       listing/on-board-sql
+                       " AND user_id <> ?
                              AND created_at > ? AND created_at <= ?
                            ORDER BY created_at DESC, id DESC
                            LIMIT ?")
-                     user-id after until max-listed]
+                  user-id
+                  after
+                  until
+                  max-listed]
                  db/opts))
 
 (defn weekly-email
@@ -40,10 +46,13 @@
   `n` new ones."
   [{:keys [base-url app-name]} to listings n]
   {:to to
-   :subject (i18n/tn "This week on {app-name}: {n} new listing" "This week on {app-name}: {n} new listings"
-                     n {:app-name app-name})
-   :text (str (str/join "\n" (for [{:keys [id title]} (take max-listed listings)]
-                               (str "- " (mail/one-line title) ": " base-url "/listings/" id)))
+   :subject (i18n/tn "This week on {app-name}: {n} new listing"
+                     "This week on {app-name}: {n} new listings"
+                     n
+                     {:app-name app-name})
+   :text (str (str/join "\n"
+                        (for [{:keys [id title]} (take max-listed listings)]
+                          (str "- " (mail/one-line title) ": " base-url "/listings/" id)))
               (when (> n max-listed)
                 (str "\n\n" (i18n/t "And {n} more: {url}" {:n (- n max-listed) :url (str base-url "/listings")})))
               "\n\n-- \n"
@@ -59,12 +68,14 @@
   someone no longer allowed in, or with nothing new, is only marked. Runs
   every delivery round; writes only for members due."
   [db settings now]
-  (when-let [due (seq (jdbc/execute! db ["SELECT id, email, language, coalesce(digest_sent_at, created_at) AS since
+  (when-let [due (seq (jdbc/execute! db
+                                     ["SELECT id, email, language, coalesce(digest_sent_at, created_at) AS since
                                           FROM user
                                           WHERE weekly_digest = 1 AND deleted_at IS NULL
                                             AND coalesce(digest_sent_at, created_at) <= ?
                                           LIMIT ?"
-                                         (- now week) batch-size]
+                                      (- now week)
+                                      batch-size]
                                      db/opts))]
     (let [allowed (account/allowed db (:allowed-emails settings))
           until (- now listing/settle-time)]
@@ -76,8 +87,10 @@
              ;; Unless they turned it off, or their account's deletion
              ;; started, meanwhile.
              (when (and (seq found)
-                        (jdbc/execute-one! tx ["SELECT 1 FROM user WHERE id = ? AND weekly_digest = 1
-                                                  AND deleted_at IS NULL" id]))
+                        (jdbc/execute-one! tx
+                                           ["SELECT 1 FROM user WHERE id = ? AND weekly_digest = 1
+                                                  AND deleted_at IS NULL"
+                                            id]))
                (outbox/enqueue! tx (i18n/speaking language (weekly-email settings email found (:total (first found)))) now))
              (jdbc/execute-one! tx ["UPDATE user SET digest_sent_at = ? WHERE id = ?" until id]))))
        #(select-keys % [:id])))))

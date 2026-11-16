@@ -18,7 +18,8 @@
   [ds]
   (into #{}
         (map :name)
-        (jdbc/execute! ds ["SELECT name FROM sqlite_schema WHERE type = 'table'"]
+        (jdbc/execute! ds
+                       ["SELECT name FROM sqlite_schema WHERE type = 'table'"]
                        {:builder-fn rs/as-unqualified-lower-maps})))
 
 (deftest migrate-test
@@ -41,8 +42,11 @@
 (deftest failed-migration-is-rolled-back-test
   (call-with-db-path (fn [path]
                        (let [ds (db/datasource path)
-                             e (try (migrate/migrate! ds [m1 broken]) nil
-                                    (catch clojure.lang.ExceptionInfo e e))]
+                             e (try
+                                 (migrate/migrate! ds [m1 broken])
+                                 nil
+                                 (catch clojure.lang.ExceptionInfo e
+                                   e))]
                          (is (= "002-broken.sql" (:migration (ex-data e))))
                          (is (= ::error/migration-failed (ex/ex-type e)))
                          (testing "earlier migrations stay applied"
@@ -62,9 +66,10 @@
   (testing "SQLite's create/copy/drop/rename rebuild does not cascade deletes"
     (call-with-db-path (fn [path]
                          (with-open [ds (db/datasource path)]
-                           (migrate/migrate! ds [parent-child
-                                                 {:name "002-rebuild-parent.sql"
-                                                  :sql "CREATE TABLE parent_new (id INTEGER PRIMARY KEY, name TEXT);
+                           (migrate/migrate! ds
+                                             [parent-child
+                                              {:name "002-rebuild-parent.sql"
+                                               :sql "CREATE TABLE parent_new (id INTEGER PRIMARY KEY, name TEXT);
                                      INSERT INTO parent_new (id) SELECT id FROM parent;
                                      DROP TABLE parent;
                                      ALTER TABLE parent_new RENAME TO parent;"}])
@@ -76,11 +81,14 @@
 (deftest migration-leaving-dangling-references-fails-test
   (call-with-db-path (fn [path]
                        (let [ds (db/datasource path)
-                             e (try (migrate/migrate! ds [parent-child
-                                                          {:name "002-orphan.sql"
-                                                           :sql "DELETE FROM parent;"}])
-                                    nil
-                                    (catch clojure.lang.ExceptionInfo e e))]
+                             e (try
+                                 (migrate/migrate! ds
+                                                   [parent-child
+                                                    {:name "002-orphan.sql"
+                                                     :sql "DELETE FROM parent;"}])
+                                 nil
+                                 (catch clojure.lang.ExceptionInfo e
+                                   e))]
                          (is (= "002-orphan.sql" (:migration (ex-data e))))
                          (is (= ::error/dangling-foreign-keys (ex/ex-type (ex-cause e))))
                          (is (= 1 (migrate/version ds)))
@@ -90,8 +98,11 @@
   (call-with-db-path (fn [path]
                        (with-open [ds (db/datasource path)]
                          (migrate/migrate! ds [m1 m2])
-                         (let [e (try (migrate/migrate! ds [m1]) nil
-                                      (catch clojure.lang.ExceptionInfo e e))]
+                         (let [e (try
+                                   (migrate/migrate! ds [m1])
+                                   nil
+                                   (catch clojure.lang.ExceptionInfo e
+                                     e))]
                            (is (re-find #"newer" (ex-message e)))
                            (is (= ::error/schema-too-new (ex/ex-type e))))))))
 
@@ -113,7 +124,8 @@
                              VALUES (1, 'free', 'Lamp', '', 'home', 'hall', 'active', 0, 0)"])
          (migrate/migrate! ds (into [m1 m2] later))
          (is (= {:pickup_place "hall" :pickup_city nil}
-                (jdbc/execute-one! ds ["SELECT pickup_place, pickup_city FROM listing"]
+                (jdbc/execute-one! ds
+                                   ["SELECT pickup_place, pickup_city FROM listing"]
                                    {:builder-fn rs/as-unqualified-lower-maps})))
          (is (thrown? Exception (jdbc/execute! ds ["UPDATE listing SET pickup_place = NULL"]))))))))
 

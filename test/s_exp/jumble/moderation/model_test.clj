@@ -16,19 +16,22 @@
 
 (defn- report!
   [reporter listing-id reason at]
-  (moderation/report! *db* {:listing-id listing-id :reporter-id reporter :reason reason :now at
-                            :alerts [alert]}))
+  (moderation/report! *db*
+                      {:listing-id listing-id :reporter-id reporter :reason reason :now at
+                       :alerts [alert]}))
 
 (defn- outbox
   []
   (mapv (juxt :recipient :subject)
-        (jdbc/execute! *db* ["SELECT recipient, subject FROM email_outbox ORDER BY id"]
+        (jdbc/execute! *db*
+                       ["SELECT recipient, subject FROM email_outbox ORDER BY id"]
                        {:builder-fn rs/as-unqualified-maps})))
 
 (defn- resolutions
   []
   (mapv (juxt :listing_title :resolution :resolved_by)
-        (jdbc/execute! *db* ["SELECT listing_title, resolution, resolved_by FROM report ORDER BY id"]
+        (jdbc/execute! *db*
+                       ["SELECT listing_title, resolution, resolved_by FROM report ORDER BY id"]
                        {:builder-fn rs/as-unqualified-maps})))
 
 (deftest validate-reason-test
@@ -64,16 +67,20 @@
         notice {:to "alice@example.com" :subject "Your listing was removed" :text "Sorry"}]
     (report! bob lamp "Spam" 100)
     (testing "a moderator removes the listing, whoever owns it"
-      (is (true? (moderation/remove-listing! *db* (blob/memory-store) {:listing-id lamp :moderator-id dave :now 200
-                                                                       :notice notice})))
+      (is (true? (moderation/remove-listing! *db*
+                                             (blob/memory-store)
+                                             {:listing-id lamp :moderator-id dave :now 200
+                                              :notice notice})))
       (is (nil? (listing/by-id *db* lamp))))
     (testing "its reports are resolved and kept, and the owner is told"
       (is (= [["Desk lamp" "removed" dave]] (resolutions)))
       (is (= [["dave@example.com" "Listing reported"] ["alice@example.com" "Your listing was removed"]] (outbox)))
       (is (= 0 (moderation/open-count *db*))))
     (testing "removing it again does nothing"
-      (is (false? (moderation/remove-listing! *db* (blob/memory-store) {:listing-id lamp :moderator-id dave :now 300
-                                                                        :notice notice})))
+      (is (false? (moderation/remove-listing! *db*
+                                              (blob/memory-store)
+                                              {:listing-id lamp :moderator-id dave :now 300
+                                               :notice notice})))
       (is (= 2 (count (outbox)))))))
 
 (deftest dismiss-test
@@ -92,11 +99,13 @@
   (testing "a moderator removing a listing nobody reported leaves a record of it, with the reason"
     (let [alice (user! "alice") dave (user! "dave")
           lamp (:id (listing! alice "Desk lamp"))]
-      (is (true? (moderation/remove-listing! *db* (blob/memory-store)
+      (is (true? (moderation/remove-listing! *db*
+                                             (blob/memory-store)
                                              {:listing-id lamp :moderator-id dave :now 200 :reason "Not allowed here"
                                               :notice {:to "alice@example.com" :subject "Removed" :text "Sorry"}})))
       (is (= [["Desk lamp" "removed" dave]] (resolutions)))
-      (is (= "Not allowed here" (:reason (jdbc/execute-one! *db* ["SELECT reason FROM report"]
+      (is (= "Not allowed here" (:reason (jdbc/execute-one! *db*
+                                                            ["SELECT reason FROM report"]
                                                             {:builder-fn rs/as-unqualified-maps}))))
       (is (= 0 (moderation/open-count *db*))))))
 

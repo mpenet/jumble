@@ -76,16 +76,20 @@
       found
       (let [size (u32 bs i)
             [header size] (cond
-                            (= 1 size) (if (and (<= (+ i 16) (long end)) (zero? (u32 bs (+ i 8))))
-                                         [16 (u32 bs (+ i 12))]
-                                         [16 -1])
+                            (= 1 size)
+                            (if (and (<= (+ i 16) (long end)) (zero? (u32 bs (+ i 8))))
+                              [16 (u32 bs (+ i 12))]
+                              [16 -1])
+
                             (zero? size) [8 (- (long end) i)]
                             :else [8 size])
             to (+ i (long size))]
         (if (or (< (long size) (long header)) (> to (long end)))
           found
-          (recur to (conj found {:type (String. bs (int (+ i 4)) 4 "ISO-8859-1")
-                                 :from (+ i (long header)) :to to})))))))
+          (recur to
+                 (conj found
+                       {:type (String. bs (int (+ i 4)) 4 "ISO-8859-1")
+                        :from (+ i (long header)) :to to})))))))
 
 (defn- children
   "The boxes inside box `b`; `full`, a full box, has its version and flags
@@ -128,8 +132,10 @@
     ;; Recognised, to be refused as such.
     (starts-with? bs 0 (map int "GIF8")) {:format "gif"}
     (and (starts-with? bs 0 (map int "RIFF")) (starts-with? bs 8 (map int "WEBP"))) {:format "webp"}
-    (starts-with? bs 4 (map int "ftyp")) (when-let [format (heif-format bs)]
-                                           (assoc (or (heif-size bs) (reject ::error/not-an-image)) :format format))))
+
+    (starts-with? bs 4 (map int "ftyp"))
+    (when-let [format (heif-format bs)]
+      (assoc (or (heif-size bs) (reject ::error/not-an-image)) :format format))))
 
 (defn- thumbnail-command
   "Reads an image on standard input and writes it as a JPEG without
@@ -149,10 +155,12 @@
                           (.redirectError java.lang.ProcessBuilder$Redirect/INHERIT)
                           ;; Only loaders safe for untrusted input.
                           (-> .environment (.put "VIPS_BLOCK_UNTRUSTED" "1"))))
-        out (future (with-open [in (.getInputStream process)] (.readAllBytes in)))]
+        out (future (with-open [in (.getInputStream process)]
+                      (.readAllBytes in)))]
     (future
       (try
-        (with-open [in (.getOutputStream process)] (.write in bs))
+        (with-open [in (.getOutputStream process)]
+          (.write in bs))
         ;; vips stops reading input it cannot decode.
         (catch IOException _)))
     (when-not (.waitFor process timeout-seconds TimeUnit/SECONDS)
@@ -177,7 +185,10 @@
 (defn- with-processing-slot
   [f]
   (if (.tryAcquire ^Semaphore processing wait-seconds TimeUnit/SECONDS)
-    (try (f) (finally (.release ^Semaphore processing)))
+    (try
+      (f)
+      (finally
+        (.release ^Semaphore processing)))
     (throw (ex/ex-info (str "No turn to process an image within " wait-seconds " seconds") ::error/images-busy))))
 
 (defn process

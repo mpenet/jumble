@@ -28,14 +28,19 @@
 
 (defn- outbox
   []
-  (jdbc/execute! *db* ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
+  (jdbc/execute! *db*
+                 ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
                  {:builder-fn rs/as-unqualified-maps}))
 
 (defn- link-token
   "The token in the sign-in link emailed last to `email`."
   [email]
-  (some->> (outbox) (filter #(= email (:recipient %))) last :body
-           (re-find #"/login/email\?token=([A-Za-z0-9_-]+)") second))
+  (some->> (outbox)
+           (filter #(= email (:recipient %)))
+           last
+           :body
+           (re-find #"/login/email\?token=([A-Za-z0-9_-]+)")
+           second))
 
 (defn- session-cookie
   [response]
@@ -47,15 +52,19 @@
 
 (deftest request-model-test
   (let [email-for (fn [token] {:to "alice@example.com" :subject "Sign in" :text (str "token " token)})
-        request! #(account/request-email-sign-in! *db* {:email "alice@example.com" :return-to "/" :now %
-                                                        :ttl ttl :email-for email-for})]
+        request! #(account/request-email-sign-in! *db*
+                                                  {:email "alice@example.com" :return-to "/" :now %
+                                                   :ttl ttl :email-for email-for})]
     (testing "a request queues the email and stores only the token's hash"
       (is (= :sent (request! 0)))
       (let [token (second (re-find #"token (\S+)" (:body (first (outbox)))))]
         (is (some? token))
         (is (empty? (jdbc/execute! *db* ["SELECT 1 FROM email_sign_in WHERE token_hash = ?" token]))))
-      (is (= [ttl] (map :expires_at (jdbc/execute! *db* ["SELECT expires_at FROM email_outbox"]
-                                                   {:builder-fn rs/as-unqualified-maps})))
+      (is (= [ttl]
+             (map :expires_at
+                  (jdbc/execute! *db*
+                                 ["SELECT expires_at FROM email_outbox"]
+                                 {:builder-fn rs/as-unqualified-maps})))
           "the email is of no use once the link expired"))
     (testing "at most three links per address in a quarter of an hour"
       (is (= [:sent :sent :limited] (mapv request! [minute (* 2 minute) (* 3 minute)])))
@@ -63,8 +72,9 @@
       (is (= :sent (request! (+ ttl minute))) "and again once the first ones expired"))))
 
 (deftest global-limit-test
-  (let [request! #(account/request-email-sign-in! *db* {:email %1 :return-to "/" :now %2 :ttl ttl
-                                                        :email-for (fn [_] {:to %1 :subject "s" :text "t"})})]
+  (let [request! #(account/request-email-sign-in! *db*
+                                                  {:email %1 :return-to "/" :now %2 :ttl ttl
+                                                   :email-for (fn [_] {:to %1 :subject "s" :text "t"})})]
     (account/email-user! *db* "alice@example.com" 0)
     (testing "at most 100 links in a quarter of an hour to addresses without an account"
       (let [results (mapv #(request! (str "user" % "@example.com") %) (range 101))]
@@ -144,8 +154,12 @@
   (request :post "/login" :form {"email" "guest@gmail.com"})
   (let [token (link-token "guest@gmail.com")]
     (testing "an address no longer allowed when the link is used is refused"
-      (is (= 403 (:status (fixtures/request :post "/login/email" nil :form {"token" token}
-                                            :ctx {:settings {:sign-in "email" :allowed-emails ["*@example.com"]}}))))
+      (is (= 403
+             (:status (fixtures/request :post
+                                        "/login/email"
+                                        nil
+                                        :form {"token" token}
+                                        :ctx {:settings {:sign-in "email" :allowed-emails ["*@example.com"]}}))))
       (is (empty? (user-emails))))
     (testing "expired links are refused"
       (db/with-write-tx [tx *db*]
@@ -208,8 +222,10 @@
           (is (= 303 (:status response)))
           (is (some? (session-cookie response))))
         (is (empty? (jdbc/execute! *db* ["SELECT 1 FROM listing WHERE id = ?" listing])))
-        (is (= "deleted" (:iss (jdbc/execute-one! *db* ["SELECT iss FROM user WHERE id = ?" alice]
-                                                  {:builder-fn rs/as-unqualified-maps}))))
+        (is (= "deleted"
+               (:iss (jdbc/execute-one! *db*
+                                        ["SELECT iss FROM user WHERE id = ?" alice]
+                                        {:builder-fn rs/as-unqualified-maps}))))
         (is (not= alice (fixtures/user-id "alice@example.com")))))))
 
 (deftest removed-member-test

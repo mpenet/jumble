@@ -48,8 +48,11 @@
 
 (defn- reason
   [bs]
-  (try (image/process bs) ::accepted
-       (catch clojure.lang.ExceptionInfo e (ex/ex-type e))))
+  (try
+    (image/process bs)
+    ::accepted
+    (catch clojure.lang.ExceptionInfo e
+      (ex/ex-type e))))
 
 (deftest orientation-and-metadata-test
   (let [{:keys [full thumb]} (image/process (fixture "rotated-gps.jpg"))

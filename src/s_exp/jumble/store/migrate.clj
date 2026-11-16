@@ -55,7 +55,8 @@
             (with-open [stmt (.createStatement tx)]
               (.executeUpdate stmt ^String sql))
             (when-let [violations (seq (jdbc/execute! tx ["PRAGMA foreign_key_check"]))]
-              (throw (ex/ex-info "Migration leaves dangling foreign keys" ::error/dangling-foreign-keys
+              (throw (ex/ex-info "Migration leaves dangling foreign keys"
+                                 ::error/dangling-foreign-keys
                                  {:violations violations})))
             (jdbc/execute! tx [(str "PRAGMA user_version = " (inc i))])))
         (finally
@@ -69,7 +70,8 @@
   [ds migrations]
   (let [current (version ds)]
     (when (> current (count migrations))
-      (throw (ex/ex-info "Database schema is newer than this code" ::error/schema-too-new
+      (throw (ex/ex-info "Database schema is newer than this code"
+                         ::error/schema-too-new
                          {:version current :known (count migrations)})))
     (doseq [[i migration] (map-indexed vector migrations)
             :when (>= i current)]

@@ -71,7 +71,8 @@
      (with-open [ds (db/datasource path)]
        (migrate/migrate! ds (migrate/migrations))
        (use-choices! ds)
-       (binding [*db* ds] (t))))))
+       (binding [*db* ds]
+         (t))))))
 
 (defn user-id
   "Id of the user with `email` in [[*db*]]."
@@ -106,10 +107,15 @@
   "Creates a listing titled `title` for `owner-id` in [[*db*]], free unless
   `kind` says otherwise. Returns it as the listing model reads it."
   [owner-id title & {:keys [kind] :or {kind "free"}}]
-  (listing/by-id *db* (listing/create! *db* (blob/memory-store) owner-id
-                                       (:listing (listing/validate settings {:kind kind :title title :price "5"
-                                                                             :category "home" :pickup "place:hall"}))
-                                       [] 0)))
+  (listing/by-id *db*
+                 (listing/create! *db*
+                                  (blob/memory-store)
+                                  owner-id
+                                  (:listing (listing/validate settings
+                                                              {:kind kind :title title :price "5"
+                                                               :category "home" :pickup "place:hall"}))
+                                  []
+                                  0)))
 
 (defn handler
   "The application handler over [[*db*]]. `ctx` overrides merge over the
@@ -132,8 +138,9 @@
   [method uri token & {:keys [form json headers ctx]}]
   (let [[path query] (str/split uri #"\?" 2)
         body (cond
-               form (.getBytes ^String (str/join "&" (map (fn [[k v]] (str k "=" (URLEncoder/encode (str v) "UTF-8")))
-                                                          form))
+               form (.getBytes ^String (str/join "&"
+                                                 (map (fn [[k v]] (str k "=" (URLEncoder/encode (str v) "UTF-8")))
+                                                      form))
                                "UTF-8")
                json (.getBytes ^String (oda/write-str json) "UTF-8"))]
     ((handler ctx) (cond-> {:request-method method

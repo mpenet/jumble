@@ -14,12 +14,13 @@
 (defn index
   [{:keys [ctx user] :as request}]
   (let [{:keys [db blobs]} ctx]
-    (response/html 200 (view/index request
-                                   ;; Things on offer: not what people are looking for.
-                                   (let [{:keys [total kinds]} (listing/facets db {})]
-                                     (- total (get kinds "wanted" 0)))
-                                   (mark-favorites db user (:listings (listing/board db {:limit latest-count})))
-                                   (listing/photo-urls blobs (Instant/now))))))
+    (response/html 200
+                   (view/index request
+                               ;; Things on offer: not what people are looking for.
+                               (let [{:keys [total kinds]} (listing/facets db {})]
+                                 (- total (get kinds "wanted" 0)))
+                               (mark-favorites db user (:listings (listing/board db {:limit latest-count})))
+                               (listing/photo-urls blobs (Instant/now))))))
 
 (def routes
   {[:get "/"] (auth/require-user (wrap-choices #'index))})

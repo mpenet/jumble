@@ -13,10 +13,14 @@
 
 (deftest queue-test
   (let [ann (fixtures/user! "ann")
-        lamp (listing/create! *db* (blob/memory-store) ann
-                              (:listing (listing/validate fixtures/settings {:kind "free" :title "Desk lamp" :category "home"
-                                                                             :pickup "place:hall"}))
-                              [] 1000)]
+        lamp (listing/create! *db*
+                              (blob/memory-store)
+                              ann
+                              (:listing (listing/validate fixtures/settings
+                                                          {:kind "free" :title "Desk lamp" :category "home"
+                                                           :pickup "place:hall"}))
+                              []
+                              1000)]
     (testing "a new post is queued for each channel, due a few minutes later, so edits made right after posting are in"
       (is (= #{{:channel "webhook" :listing-id lamp :due-at (+ 1000 chat/delay-ms) :attempts 0}
                {:channel "irc" :listing-id lamp :due-at (+ 1000 chat/delay-ms) :attempts 0}}
@@ -27,10 +31,14 @@
 
 (deftest forget-test
   (let [ann (fixtures/user! "ann")
-        post! #(listing/create! *db* (blob/memory-store) ann
-                                (:listing (listing/validate fixtures/settings {:kind "free" :title % :category "home"
-                                                                               :pickup "place:hall"}))
-                                [] 1000)
+        post! #(listing/create! *db*
+                                (blob/memory-store)
+                                ann
+                                (:listing (listing/validate fixtures/settings
+                                                            {:kind "free" :title % :category "home"
+                                                             :pickup "place:hall"}))
+                                []
+                                1000)
         lamp (post! "Desk lamp")
         chair (post! "Chair")]
     (testing "listings that are not news, a seed's, are not announced"

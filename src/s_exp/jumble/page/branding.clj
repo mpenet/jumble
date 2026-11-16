@@ -43,7 +43,8 @@
       (refuse path "not found"))
     (when (> (.length ^File f) max-bytes)
       (refuse path "must be at most 200 KB"))
-    (let [bs (with-open [in (io/input-stream f)] (.readAllBytes in))
+    (let [bs (with-open [in (io/input-stream f)]
+               (.readAllBytes in))
           [ext content-type] (cond
                                (png? bs) ["png" "image/png"]
                                (svg? bs) ["svg" "image/svg+xml"]

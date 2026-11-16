@@ -65,8 +65,13 @@
   "`s` as a URI with a scheme, a host and nothing after them but an optional
   port and slash, or nil."
   ^URI [s]
-  (let [^URI uri (try (URI. s) (catch URISyntaxException _ nil))]
-    (when (and uri (#{"http" "https"} (some-> (.getScheme uri) str/lower-case)) (.getHost uri)
+  (let [^URI uri (try
+                   (URI. s)
+                   (catch URISyntaxException _
+                     nil))]
+    (when (and uri
+               (#{"http" "https"} (some-> (.getScheme uri) str/lower-case))
+               (.getHost uri)
                (nil? (.getRawUserInfo uri))
                (contains? #{nil "" "/"} (.getRawPath uri))
                (nil? (.getRawQuery uri))
@@ -79,7 +84,9 @@
   [^URI uri]
   (let [scheme (str/lower-case (.getScheme uri))
         port (.getPort uri)]
-    (str scheme "://" (str/lower-case (.getHost uri))
+    (str scheme
+         "://"
+         (str/lower-case (.getHost uri))
          (when-not (or (neg? port) (= port ({"http" 80 "https" 443} scheme)))
            (str ":" port)))))
 
@@ -104,9 +111,13 @@
   "An absolute https URL, or http to this machine, or anywhere when
   `allow-insecure` (development with containers)."
   [url path allow-insecure]
-  (let [^URI uri (try (URI. url) (catch URISyntaxException _ nil))
+  (let [^URI uri (try
+                   (URI. url)
+                   (catch URISyntaxException _
+                     nil))
         scheme (some-> uri .getScheme)]
-    (when-not (and uri (.getHost uri)
+    (when-not (and uri
+                   (.getHost uri)
                    (or (= "https" scheme)
                        (and (= "http" scheme) (or allow-insecure (local-host? (.getHost uri))))))
       (invalid "must be an https URL" path))
@@ -121,8 +132,10 @@
   "An ISO 4217 code with a minor unit (not a pseudo-currency such as XAU)."
   [code]
   (let [^Currency currency (when (string? code)
-                             (try (Currency/getInstance ^String code)
-                                  (catch IllegalArgumentException _ nil)))]
+                             (try
+                               (Currency/getInstance ^String code)
+                               (catch IllegalArgumentException _
+                                 nil)))]
     (when-not (and currency
                    (= code (.getCurrencyCode currency))
                    (<= 0 (.getDefaultFractionDigits currency)))
@@ -133,8 +146,9 @@
   "`v` as a whole number, from a number or the text of a variable; nil when
   it is neither."
   [v]
-  (cond (int? v) v
-        (string? v) (parse-long (str/trim v))))
+  (cond
+    (int? v) v
+    (string? v) (parse-long (str/trim v))))
 
 (defn- check-port
   "A port number, 1 to 65535, from a number or the text of a variable."
@@ -199,7 +213,8 @@
   allowlist, the managing organisation must be checked too."
   [{:keys [issuer allowed-emails require-hosted-domain] :as auth}]
   (when (and (= "https://accounts.google.com" (str/replace (str issuer) #"/+$" ""))
-             (not= :anyone allowed-emails) (not require-hosted-domain))
+             (not= :anyone allowed-emails)
+             (not require-hosted-domain))
     (invalid "must be true with Google, unless anyone may sign in" [:auth :require-hosted-domain]))
   auth)
 
@@ -318,10 +333,13 @@
                                          (some->> query (re-find #"(?:^|&)key=([^&]*)") second decode not-empty)]
                                         (catch IllegalArgumentException _
                                           (refuse)))]
-      (when-not (and uri (.getHost uri)
+      (when-not (and uri
+                     (.getHost uri)
                      (or (= "ircs" scheme) (and allow-insecure (= "irc" scheme)))
-                     nick (re-matches #"[A-Za-z\[\]\\`_^{|}][A-Za-z0-9\[\]\\`_^{|}-]*" nick)
-                     channel (re-matches #"#[^\s,\x00-\x1f]+" channel)
+                     nick
+                     (re-matches #"[A-Za-z\[\]\\`_^{|}][A-Za-z0-9\[\]\\`_^{|}-]*" nick)
+                     channel
+                     (re-matches #"#[^\s,\x00-\x1f]+" channel)
                      (or (nil? key) (re-matches #"[^\s,\x00-\x1f]+" key)))
         (refuse))
       {:host (.getHost uri)
@@ -357,9 +375,10 @@
   "The zone times are shown in, UTC unless set."
   [zone]
   (if-let [zone (text zone [:timezone])]
-    (try (ZoneId/of zone)
-         (catch java.time.DateTimeException _
-           (invalid "must be a time zone such as Europe/Zurich or America/New_York" [:timezone])))
+    (try
+      (ZoneId/of zone)
+      (catch java.time.DateTimeException _
+        (invalid "must be a time zone such as Europe/Zurich or America/New_York" [:timezone])))
     (ZoneId/of "UTC")))
 
 (defn- check-language
@@ -419,12 +438,14 @@
                 (update :contact check-contact)
                 (update :member-limit check-member-limit)
                 (update :metrics-token check-metrics-token)
-                (update :litestream-metrics-url #(some-> (text % [:litestream-metrics-url])
-                                                         (check-secure-url [:litestream-metrics-url] allow-insecure)))
+                (update :litestream-metrics-url
+                        #(some-> (text % [:litestream-metrics-url])
+                                 (check-secure-url [:litestream-metrics-url] allow-insecure)))
                 (update :moderator-notice text [:moderator-notice])
                 (update :notice text [:notice])
-                (update :chat-webhook-url #(some-> (text % [:chat-webhook-url])
-                                                   (check-secure-url [:chat-webhook-url] allow-insecure)))
+                (update :chat-webhook-url
+                        #(some-> (text % [:chat-webhook-url])
+                                 (check-secure-url [:chat-webhook-url] allow-insecure)))
                 (as-> c (-> c (assoc :irc (check-irc-url (:irc-url c) allow-insecure)) (dissoc :irc-url)))
                 (update :hosted-by check-hosted-by)
                 (update :source-url #(check-secure-url (or (text % [:source-url]) upstream-source) [:source-url] allow-insecure))
@@ -435,8 +456,9 @@
                           (invalid "must be off when Jumble serves HTTPS itself" [:behind-proxy])
                           c))
                 (update :mail check-mail allow-insecure))
-      oidc (-> (update-in [:auth :issuer] check-secure-url [:auth :issuer] allow-insecure)
-               (update :auth check-hosted-domain)))))
+      oidc
+      (-> (update-in [:auth :issuer] check-secure-url [:auth :issuer] allow-insecure)
+          (update :auth check-hosted-domain)))))
 
 (defn load-config
   "Bundled config for `profile` with the deployment file at `path` (edn,

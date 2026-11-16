@@ -44,5 +44,9 @@
 
 (deftest unknown-asset-test
   (testing "a file that is not served has no URL"
-    (is (= ::error/unknown-asset (ex/ex-type (try (assets/url "nope.js") nil
-                                                  (catch clojure.lang.ExceptionInfo e e)))))))
+    (is (= ::error/unknown-asset
+           (ex/ex-type (try
+                         (assets/url "nope.js")
+                         nil
+                         (catch clojure.lang.ExceptionInfo e
+                           e)))))))

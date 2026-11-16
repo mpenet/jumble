@@ -33,56 +33,54 @@
         blobs (blob/s3-store storage)]
     (component/system-map
      :db (db/component (assoc db-config :pinned {"currency" currency}))
-     :server (component/using
-              (server/component (assoc http-config
-                                       :https https
-                                       :settings {:base-url base-url
-                                                  :session-ttl (* session-ttl-days day)
-                                                  :sign-in method
-                                                  :allowed-emails allowed-emails
-                                                  ;; Serving HTTPS itself, Jumble sees each client's address;
-                                                  ;; behind a proxy, the proxy says it.
-                                                  :behind-proxy behind-proxy
-                                                  :clients-known (or (some? https) behind-proxy)
-                                                  :require-hosted-domain (boolean (:require-hosted-domain auth-config))
-                                                  :app-name app-name
-                                                  :currency currency
-                                                  :moderators moderators
-                                                  :timezone timezone
-                                                  :catalog catalog
-                                                  :logo logo
-                                                  :logo-dark logo-dark
-                                                  :privacy privacy
-                                                  :contact contact
-                                                  :member-limit member-limit
-                                                  :metrics-token metrics-token
-                                                  :litestream-metrics-url litestream-metrics-url
-                                                  :moderator-notice moderator-notice
-                                                  :notice notice
-                                                  ;; Whether new posts are announced, for the privacy
-                                                  ;; page; the channels' secrets stay with the loop.
-                                                  :chat-announced (boolean (or chat-webhook-url irc))
-                                                  :hosted-by hosted-by
-                                                  :source-url source-url
-                                                  :image-origin (:endpoint storage)}
-                                       :blobs blobs
-                                       :oidc (when (= "oidc" method)
-                                               (oidc/provider {:issuer issuer
-                                                               :client-id client-id
-                                                               :client-secret client-secret
-                                                               :redirect-uri (str base-url "/auth/callback")}))))
-              [:db])
-     :delivery (component/using
-                (delivery/component {:mailer (mail/smtp-mailer mail-config)
-                                     :blobs blobs
-                                     :settings {:base-url base-url :app-name app-name :catalog catalog
-                                                :allowed-emails allowed-emails
-                                                :listing-reminder-days listing-reminder-days
-                                                :currency currency
-                                                :chat-webhook-url chat-webhook-url
-                                                :irc irc}
-                                     :interval-ms 30000})
-                [:db :irc])
+     :server (component/using (server/component (assoc http-config
+                                                       :https https
+                                                       :settings {:base-url base-url
+                                                                  :session-ttl (* session-ttl-days day)
+                                                                  :sign-in method
+                                                                  :allowed-emails allowed-emails
+                                                                  ;; Serving HTTPS itself, Jumble sees each client's address;
+                                                                  ;; behind a proxy, the proxy says it.
+                                                                  :behind-proxy behind-proxy
+                                                                  :clients-known (or (some? https) behind-proxy)
+                                                                  :require-hosted-domain (boolean (:require-hosted-domain auth-config))
+                                                                  :app-name app-name
+                                                                  :currency currency
+                                                                  :moderators moderators
+                                                                  :timezone timezone
+                                                                  :catalog catalog
+                                                                  :logo logo
+                                                                  :logo-dark logo-dark
+                                                                  :privacy privacy
+                                                                  :contact contact
+                                                                  :member-limit member-limit
+                                                                  :metrics-token metrics-token
+                                                                  :litestream-metrics-url litestream-metrics-url
+                                                                  :moderator-notice moderator-notice
+                                                                  :notice notice
+                                                                  ;; Whether new posts are announced, for the privacy
+                                                                  ;; page; the channels' secrets stay with the loop.
+                                                                  :chat-announced (boolean (or chat-webhook-url irc))
+                                                                  :hosted-by hosted-by
+                                                                  :source-url source-url
+                                                                  :image-origin (:endpoint storage)}
+                                                       :blobs blobs
+                                                       :oidc (when (= "oidc" method)
+                                                               (oidc/provider {:issuer issuer
+                                                                               :client-id client-id
+                                                                               :client-secret client-secret
+                                                                               :redirect-uri (str base-url "/auth/callback")}))))
+                              [:db])
+     :delivery (component/using (delivery/component {:mailer (mail/smtp-mailer mail-config)
+                                                     :blobs blobs
+                                                     :settings {:base-url base-url :app-name app-name :catalog catalog
+                                                                :allowed-emails allowed-emails
+                                                                :listing-reminder-days listing-reminder-days
+                                                                :currency currency
+                                                                :chat-webhook-url chat-webhook-url
+                                                                :irc irc}
+                                                     :interval-ms 30000})
+                                [:db :irc])
      :irc (bot/component irc))))
 
 (defn -main
@@ -115,10 +113,12 @@
                          (handle [_ _]
                            ;; Exit even when stopping fails, or the process
                            ;; would stay up until killed.
-                           (System/exit (try @stop 0
-                                             (catch Throwable t
-                                               (log/error t "Stopping failed")
-                                               1)))))))
+                           (System/exit (try
+                                          @stop
+                                          0
+                                          (catch Throwable t
+                                            (log/error t "Stopping failed")
+                                            1)))))))
       ;; Any other exit still stops the system.
       (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable (fn [] @stop))))
     (log/info "Started")

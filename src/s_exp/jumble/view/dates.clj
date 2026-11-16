@@ -41,6 +41,7 @@
    (date-time epoch-ms (System/currentTimeMillis)))
   ([epoch-ms now]
    (let [t (at epoch-ms)]
-     (element epoch-ms (if (= (.getYear t) (.getYear (at now)))
-                         (formatted (i18n/t "d MMM, HH:mm") t)
-                         (formatted (i18n/t "d MMM yyyy, HH:mm") t))))))
+     (element epoch-ms
+              (if (= (.getYear t) (.getYear (at now)))
+                (formatted (i18n/t "d MMM, HH:mm") t)
+                (formatted (i18n/t "d MMM yyyy, HH:mm") t))))))

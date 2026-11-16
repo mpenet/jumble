@@ -19,16 +19,21 @@
 
 (defn- outbox
   []
-  (jdbc/execute! *db* ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
+  (jdbc/execute! *db*
+                 ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
                  {:builder-fn rs/as-unqualified-maps}))
 
 (defn- post!
   ([owner title at] (post! owner title at "free"))
   ([owner title at kind]
-   (listing/create! *db* (blob/memory-store) owner
-                    (:listing (listing/validate fixtures/settings {:kind kind :title title :category "home"
-                                                                   :pickup "place:hall"}))
-                    [] at)))
+   (listing/create! *db*
+                    (blob/memory-store)
+                    owner
+                    (:listing (listing/validate fixtures/settings
+                                                {:kind kind :title title :category "home"
+                                                 :pickup "place:hall"}))
+                    []
+                    at)))
 
 (defn- sweep!
   [at]
@@ -94,10 +99,16 @@
         lamp (post! owner "Lamp" 0)]
     (testing "an edit counts as an answer"
       (sweep! (* 30 day))
-      (listing/update! *db* (blob/memory-store) lamp owner
-                       (:listing (listing/validate fixtures/settings {:kind "free" :title "Brass lamp" :category "home"
-                                                                      :pickup "place:hall"}))
-                       #{} [] (* 35 day))
+      (listing/update! *db*
+                       (blob/memory-store)
+                       lamp
+                       owner
+                       (:listing (listing/validate fixtures/settings
+                                                   {:kind "free" :title "Brass lamp" :category "home"
+                                                    :pickup "place:hall"}))
+                       #{}
+                       []
+                       (* 35 day))
       (sweep! (* 50 day))
       (is (= "active" (status-of lamp)))
       (is (nil? (:reminded-at (listing/by-id *db* lamp)))))
@@ -124,7 +135,8 @@
         (send-emails! (+ (* 50 day) (* m 60 1000)) failing-mailer))
       (sweep! (* 51 day))
       (is (= 1 (count (filter #(nil? (:given_up_at %))
-                              (jdbc/execute! *db* ["SELECT given_up_at FROM email_outbox"]
+                              (jdbc/execute! *db*
+                                             ["SELECT given_up_at FROM email_outbox"]
                                              {:builder-fn rs/as-unqualified-maps})))))
       (sweep! (* 52 day))
       (send-emails! (* 52 day)))
@@ -136,7 +148,8 @@
 
 (deftest daily-cap-test
   (let [owner (fixtures/user! "ann")]
-    (dotimes [i 105] (post! owner (str "Thing " i) 0))
+    (dotimes [i 105]
+      (post! owner (str "Thing " i) 0))
     (testing "at most 100 owners are asked a day: a backlog is spread out"
       (sweep! (* 30 day))
       (sweep! (+ (* 30 day) 1000))
@@ -169,8 +182,9 @@
   "The mail server refusing every reminder queued, as for an address that no
   longer exists: the outbox gives them up."
   [at]
-  (jdbc/execute! *db* ["UPDATE email_outbox SET given_up_at = ? WHERE listing_id IS NOT NULL AND given_up_at IS NULL"
-                       at]))
+  (jdbc/execute! *db*
+                 ["UPDATE email_outbox SET given_up_at = ? WHERE listing_id IS NOT NULL AND given_up_at IS NULL"
+                  at]))
 
 (deftest undeliverable-owner-test
   (let [owner (fixtures/user! "ann")

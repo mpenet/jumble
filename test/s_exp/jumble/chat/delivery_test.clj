@@ -26,10 +26,14 @@
 (defn- post!
   "Ann's free listing `title`, posted at `now`."
   [ann title now]
-  (listing/create! *db* (blob/memory-store) ann
-                   (:listing (listing/validate fixtures/settings {:kind "free" :title title :category "home"
-                                                                  :pickup "place:hall"}))
-                   [] now))
+  (listing/create! *db*
+                   (blob/memory-store)
+                   ann
+                   (:listing (listing/validate fixtures/settings
+                                               {:kind "free" :title title :category "home"
+                                                :pickup "place:hall"}))
+                   []
+                   now))
 
 (defn- channel
   "A webhook answering `status`, recording the requests."

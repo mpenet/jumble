@@ -31,7 +31,10 @@
 (defn- json-body
   "The JSON object sent, nil when it is not one."
   [{:keys [body]}]
-  (let [v (try (oda/parse body) (catch Exception _ nil))]
+  (let [v (try
+            (oda/parse body)
+            (catch Exception _
+              nil))]
     (when (map? v) v)))
 
 (defn- wrap-json
@@ -47,7 +50,9 @@
   PushSubscription.toJSON() gives it, while they stay signed in there."
   [{:keys [ctx user] :as request}]
   (if-let [{:strs [endpoint keys]} (json-body request)]
-    (if (push/subscribe! (:db ctx) (:id user) (auth/session-token request)
+    (if (push/subscribe! (:db ctx)
+                         (:id user)
+                         (auth/session-token request)
                          {:endpoint endpoint :p256dh (get keys "p256dh") :auth (get keys "auth")}
                          (System/currentTimeMillis))
       {:status 204}

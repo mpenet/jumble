@@ -18,7 +18,9 @@
 
 (defn- metrics
   [& {:keys [bearer settings]}]
-  (fixtures/request :get "/metrics" nil
+  (fixtures/request :get
+                    "/metrics"
+                    nil
                     :headers (when bearer {"authorization" (str "Bearer " bearer)})
                     :ctx {:settings (merge {:metrics-token token} settings)}))
 
@@ -34,12 +36,13 @@
                              "litestream_db_size{db=\"/data/jumble.db\"} 4096\n")
                         "UTF-8")
         server (doto (HttpServer/create (InetSocketAddress. "127.0.0.1" 0) 0)
-                 (.createContext "/metrics" (reify HttpHandler
-                                              (handle [_ exchange]
-                                                (let [^HttpExchange exchange exchange]
-                                                  (.sendResponseHeaders exchange 200 (alength body))
-                                                  (with-open [out (.getResponseBody exchange)]
-                                                    (.write out body))))))
+                 (.createContext "/metrics"
+                                 (reify HttpHandler
+                                   (handle [_ exchange]
+                                     (let [^HttpExchange exchange exchange]
+                                       (.sendResponseHeaders exchange 200 (alength body))
+                                       (with-open [out (.getResponseBody exchange)]
+                                         (.write out body))))))
                  (.start))]
     (try
       (f (str "http://127.0.0.1:" (.getPort (.getAddress server)) "/metrics"))
@@ -122,8 +125,10 @@
           (outbox/enqueue! tx {:to "c@example.com" :subject "s" :text "t"} now)
           (outbox/enqueue! tx {:to "d@example.com" :subject "s" :text "t"} now))
         (jdbc/execute! *db* ["UPDATE email_outbox SET attempts = 3 WHERE recipient = 'c@example.com'"])
-        (jdbc/execute! *db* ["UPDATE email_outbox SET attempts = 10, given_up_at = ?, due_at = ? WHERE recipient = 'd@example.com'"
-                             now (- now 999999)])
+        (jdbc/execute! *db*
+                       ["UPDATE email_outbox SET attempts = 10, given_up_at = ?, due_at = ? WHERE recipient = 'd@example.com'"
+                        now
+                        (- now 999999)])
         (jdbc/execute! *db* ["INSERT INTO object_deletion (object_key, due_at) VALUES ('photos/1', 0), ('photos/2', 0)"])
         (let [body (:body (metrics :bearer token))]
           (is (str/includes? body "\njumble_outbox_emails{state=\"waiting\"} 2\n"))

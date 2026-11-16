@@ -31,8 +31,9 @@
     (doseq [[i cert] (map-indexed vector certs)]
       (.setCertificateEntry store (str "ca" i) cert))
     (doto (SSLContext/getInstance "TLS")
-      (.init nil (.getTrustManagers (doto (TrustManagerFactory/getInstance (TrustManagerFactory/getDefaultAlgorithm))
-                                      (.init store)))
+      (.init nil
+             (.getTrustManagers (doto (TrustManagerFactory/getInstance (TrustManagerFactory/getDefaultAlgorithm))
+                                  (.init store)))
              nil))))
 
 (def ^:private pebble-api
@@ -71,7 +72,10 @@
   "What [[https-get]] gets once the certificate is in, within 60 s."
   [roots port]
   (loop [tries 120]
-    (let [result (try (https-get roots port) (catch java.io.IOException _ nil))]
+    (let [result (try
+                   (https-get roots port)
+                   (catch java.io.IOException _
+                     nil))]
       (cond
         result result
         (pos? tries) (do (Thread/sleep 500) (recur (dec tries)))
@@ -146,11 +150,12 @@
                 written (slurp file)]
             (try
               (spit file "not a certificate")
-              (is (= written (loop [tries 50]
-                               (let [now (slurp file)]
-                                 (if (and (not= written now) (pos? tries))
-                                   (do (Thread/sleep 100) (recur (dec tries)))
-                                   now)))))
+              (is (= written
+                     (loop [tries 50]
+                       (let [now (slurp file)]
+                         (if (and (not= written now) (pos? tries))
+                           (do (Thread/sleep 100) (recur (dec tries)))
+                           now)))))
               (finally
                 (https/stop server)))))
         (testing "plain HTTP sends to HTTPS"

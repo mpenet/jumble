@@ -37,7 +37,9 @@
 
 (defn- unavailable
   [request]
-  (layout/message request 503 (i18n/t "Sign-in unavailable")
+  (layout/message request
+                  503
+                  (i18n/t "Sign-in unavailable")
                   (i18n/t "The sign-in service cannot be reached right now. Please try again shortly.")
                   [:a.button {:href "/login"} (i18n/t "Try again")]))
 
@@ -111,7 +113,9 @@
         target (auth/local-path (params/one params "return_to"))]
     (if (and (:clients-known settings)
              (not (client-allowed! login-requests remote-addr (System/currentTimeMillis) login-ttl logins-per-client)))
-      (layout/message request 429 (i18n/t "Too many sign-ins")
+      (layout/message request
+                      429
+                      (i18n/t "Too many sign-ins")
                       (i18n/t "Too many sign-ins were started from here. Please try again in a few minutes.")
                       [:a.button {:href "/login"} (i18n/t "Try again")])
       (try
@@ -119,8 +123,11 @@
               ;; Built first: when the provider is unreachable this throws and
               ;; no attempt is recorded.
               url (oidc/authorization-url oidc {:state state :nonce nonce :code-verifier code-verifier})]
-          (account/create-login-attempt! db state {:nonce nonce :code-verifier code-verifier :return-to target}
-                                         (System/currentTimeMillis) login-ttl)
+          (account/create-login-attempt! db
+                                         state
+                                         {:nonce nonce :code-verifier code-verifier :return-to target}
+                                         (System/currentTimeMillis)
+                                         login-ttl)
           (-> (response/redirect 302 url)
               (assoc :cookies {(auth/cookie-name base-url login-cookie)
                                (auth/cookie base-url state (quot login-ttl 1000))})))
@@ -165,13 +172,17 @@
 
 (defn- not-allowed
   [request]
-  (layout/message request 403 (i18n/t "Account not allowed")
+  (layout/message request
+                  403
+                  (i18n/t "Account not allowed")
                   (i18n/t "Only members of this community can sign in here.")
                   (sign-in-again)))
 
 (defn- community-full
   [request]
-  (layout/message request 403 (i18n/t "This community is full")
+  (layout/message request
+                  403
+                  (i18n/t "This community is full")
                   (i18n/t "It has as many members as it can have. Ask its moderators to make room.")))
 
 (defn- room
@@ -197,7 +208,8 @@
   (let [{:keys [db oidc settings]} ctx
         {:keys [require-hosted-domain]} settings
         allowed-emails (account/allowed-emails db (:allowed-emails settings))
-        claims (oidc/verify-id-token oidc (oidc/exchange-code! oidc code (:code-verifier attempt))
+        claims (oidc/verify-id-token oidc
+                                     (oidc/exchange-code! oidc code (:code-verifier attempt))
                                      (:nonce attempt))]
     (if-not (and (allowed? allowed-emails require-hosted-domain claims)
                  (not (account/removed? db (:email claims))))
@@ -218,20 +230,25 @@
           email (some-> (params/one params "email") str/trim str/lower-case)
           target (auth/local-path (params/one params "return_to"))]
       (if-not (mail/plain-address? email)
-        (response/html 422 (view/email-sign-in request {:values {:email (params/one params "email") :return-to target}
-                                                        :errors {:email (if (empty? email)
-                                                                          (i18n/t "Enter your email address.")
-                                                                          (i18n/t "“{email}” is not an email address." {:email email}))}}))
+        (response/html 422
+                       (view/email-sign-in request
+                                           {:values {:email (params/one params "email") :return-to target}
+                                            :errors {:email (if (empty? email)
+                                                              (i18n/t "Enter your email address.")
+                                                              (i18n/t "“{email}” is not an email address." {:email email}))}}))
         (do (when ((account/allowed db (:allowed-emails settings)) email)
               (if (and (:clients-known settings)
-                       (not (client-allowed! sign-in-requests remote-addr (System/currentTimeMillis)
-                                             (* link-minutes 60 1000) links-per-client)))
+                       (not (client-allowed! sign-in-requests
+                                             remote-addr
+                                             (System/currentTimeMillis)
+                                             (* link-minutes 60 1000)
+                                             links-per-client)))
                 (log/info "Sign-in link not sent, too many asked for by one client")
-                (let [outcome (account/request-email-sign-in!
-                               db {:email email :return-to target :now (System/currentTimeMillis)
-                                   :ttl (* link-minutes 60 1000)
-                                   :email-for (let [language (account/language-of db email)]
-                                                #(i18n/speaking language (email/sign-in-link settings email % link-minutes)))})]
+                (let [outcome (account/request-email-sign-in! db
+                                                              {:email email :return-to target :now (System/currentTimeMillis)
+                                                               :ttl (* link-minutes 60 1000)
+                                                               :email-for (let [language (account/language-of db email)]
+                                                                            #(i18n/speaking language (email/sign-in-link settings email % link-minutes)))})]
                   (when (= :limited outcome)
                     (log/info "Sign-in link not sent, too many asked for:" (email-domain email))))))
             ;; Redirected, so reloading the page sends no other link.
@@ -239,7 +256,9 @@
 
 (defn- link-expired
   [request]
-  (layout/message request 400 (i18n/t "Link expired")
+  (layout/message request
+                  400
+                  (i18n/t "Link expired")
                   (i18n/t "This sign-in link has expired or was already used.")
                   [:a.button {:href "/login"} (i18n/t "Get a new link")]))
 
@@ -249,9 +268,11 @@
   (let [t (params/one params "token")]
     (cond
       (not (email-sign-in? request)) (layout/not-found request)
-      :else (if-let [email (account/email-sign-in (:db ctx) t (System/currentTimeMillis))]
-              (response/html 200 (view/confirm-email-sign-in request email t))
-              (link-expired request)))))
+
+      :else
+      (if-let [email (account/email-sign-in (:db ctx) t (System/currentTimeMillis))]
+        (response/html 200 (view/confirm-email-sign-in request email t))
+        (link-expired request)))))
 
 (defn use-link
   "Signs in with a link's token, once, if its address is still allowed."
@@ -263,7 +284,8 @@
         (if ((account/allowed db (:allowed-emails settings)) email)
           (ex/try+
             (finish-deletion! ctx "email" email)
-            (start-session request (account/email-user! db email (System/currentTimeMillis) (room settings email))
+            (start-session request
+                           (account/email-user! db email (System/currentTimeMillis) (room settings email))
                            return-to)
             (catch ::error/community-full _
               (log/info "Sign-in refused, community full:" (email-domain email))
@@ -281,35 +303,50 @@
         attempt (when (token/same? state browser-state)
                   (account/consume-login-attempt! db state (System/currentTimeMillis)))]
     ;; The attempt is spent whatever the outcome; its cookie goes with it.
-    (update
-     (cond
-       (nil? attempt)
-       (layout/message request 400 (i18n/t "Sign-in expired")
-                       (i18n/t "This sign-in is invalid or has expired.") (sign-in-again))
+    (update (cond
+              (nil? attempt)
+              (layout/message request
+                              400
+                              (i18n/t "Sign-in expired")
+                              (i18n/t "This sign-in is invalid or has expired.")
+                              (sign-in-again))
 
-       error
-       (do (log/info "Sign-in refused by the provider:" (pr-str error))
-           (layout/message request 403 (i18n/t "Sign-in refused")
-                           (i18n/t "The sign-in service refused the request.") (sign-in-again)))
+              error
+              (do (log/info "Sign-in refused by the provider:" (pr-str error))
+                  (layout/message request
+                                  403
+                                  (i18n/t "Sign-in refused")
+                                  (i18n/t "The sign-in service refused the request.")
+                                  (sign-in-again)))
 
-       :else
-       (try
-         (sign-in! request attempt code)
-         (catch clojure.lang.ExceptionInfo e
-           (let [t (ex/ex-type e)]
-             (log/warn e "Sign-in failed:" t)
-             (case t
-               ::error/community-full
-               (community-full request)
-               ::error/email-not-verified
-               (layout/message request 403 (i18n/t "Email not verified")
-                               (i18n/t "The sign-in service has not verified your email address.")
-                               (sign-in-again))
-               (::error/provider-unreachable ::error/discovery-failed ::error/keys-unavailable)
-               (unavailable request)
-               (layout/message request 400 (i18n/t "Sign-in failed")
-                               (i18n/t "Something went wrong while signing you in.") (sign-in-again)))))))
-     :cookies merge (clear-cookie (:base-url settings) login-cookie))))
+              :else
+              (try
+                (sign-in! request attempt code)
+                (catch clojure.lang.ExceptionInfo e
+                  (let [t (ex/ex-type e)]
+                    (log/warn e "Sign-in failed:" t)
+                    (case t
+                      ::error/community-full
+                      (community-full request)
+
+                      ::error/email-not-verified
+                      (layout/message request
+                                      403
+                                      (i18n/t "Email not verified")
+                                      (i18n/t "The sign-in service has not verified your email address.")
+                                      (sign-in-again))
+
+                      (::error/provider-unreachable ::error/discovery-failed ::error/keys-unavailable)
+                      (unavailable request)
+
+                      (layout/message request
+                                      400
+                                      (i18n/t "Sign-in failed")
+                                      (i18n/t "Something went wrong while signing you in.")
+                                      (sign-in-again)))))))
+            :cookies
+            merge
+            (clear-cookie (:base-url settings) login-cookie))))
 
 (defn logout
   [{:keys [ctx] :as request}]
@@ -323,14 +360,16 @@
   "Settings. People signing in by email set their name here; a sign-in
   provider supplies it otherwise."
   [{:keys [ctx user query-string] :as request}]
-  (response/html 200 (view/settings request {:devices (push/devices (:db ctx) (:id user))
-                                             :application-key (crypto/application-key (push/keys! (:db ctx)))
-                                             :notify-messages (account/notify-messages (:db ctx) (:id user))
-                                             :weekly-digest (account/weekly-digest (:db ctx) (:id user))
-                                             :language (:language user)
-                                             :name-editable (email-sign-in? request)
-                                             :values {:name (:name user)}
-                                             :saved (= "saved" query-string)})))
+  (response/html 200
+                 (view/settings request
+                                {:devices (push/devices (:db ctx) (:id user))
+                                 :application-key (crypto/application-key (push/keys! (:db ctx)))
+                                 :notify-messages (account/notify-messages (:db ctx) (:id user))
+                                 :weekly-digest (account/weekly-digest (:db ctx) (:id user))
+                                 :language (:language user)
+                                 :name-editable (email-sign-in? request)
+                                 :values {:name (:name user)}
+                                 :saved (= "saved" query-string)})))
 
 (defn save-settings
   "Saves the settings form. An unchecked box is absent from the form."
@@ -340,11 +379,13 @@
         weekly (= "on" (params/one params "weekly_digest"))
         {:keys [errors name]} (when (email-sign-in? request) (account/validate-name (params/one params "name")))]
     (if errors
-      (response/html 422 (view/settings request {:devices (push/devices db (:id user))
-                                                 :application-key (crypto/application-key (push/keys! db))
-                                                 :notify-messages notify :weekly-digest weekly :language (:language user)
-                                                 :name-editable true
-                                                 :values {:name (params/one params "name")} :errors errors}))
+      (response/html 422
+                     (view/settings request
+                                    {:devices (push/devices db (:id user))
+                                     :application-key (crypto/application-key (push/keys! db))
+                                     :notify-messages notify :weekly-digest weekly :language (:language user)
+                                     :name-editable true
+                                     :values {:name (params/one params "name")} :errors errors}))
       (do (when name
             (account/set-name! db (:id user) name))
           (account/set-notify-messages! db (:id user) notify)
@@ -373,7 +414,9 @@
   [{:keys [ctx user] :as request}]
   (let [{:keys [db blobs settings]} ctx]
     (data/delete-account! db blobs (:id user) (System/currentTimeMillis))
-    (-> (layout/message (dissoc request :user) 200 (i18n/t "Your account was deleted")
+    (-> (layout/message (dissoc request :user)
+                        200
+                        (i18n/t "Your account was deleted")
                         (i18n/t "Your listings, photos and favorites are gone. Messages you sent stay with the people you wrote to, from \"A former member\".")
                         [:a.button {:href "/"} (i18n/t "Done")])
         (assoc :cookies (clear-cookie (:base-url settings) auth/session-cookie)))))

@@ -16,7 +16,8 @@
 (def ^:private batch-size 100)
 
 (def emails
-  (metrics/counter "jumble_emails_total" "Emails handed to the mail server, by result: sent or failed."
+  (metrics/counter "jumble_emails_total"
+                   "Emails handed to the mail server, by result: sent or failed."
                    [{:result "sent"} {:result "failed"}]))
 
 (def max-attempts
@@ -44,12 +45,13 @@
   busy: unrecorded, it would be sent again."
   [f]
   (loop [attempt 1]
-    (let [outcome (try (f)
-                       ::recorded
-                       (catch clojure.lang.ExceptionInfo e
-                         (if (and (= ::error/write-lock-timeout (ex/ex-type e)) (< attempt record-attempts))
-                           ::busy
-                           (throw e))))]
+    (let [outcome (try
+                    (f)
+                    ::recorded
+                    (catch clojure.lang.ExceptionInfo e
+                      (if (and (= ::error/write-lock-timeout (ex/ex-type e)) (< attempt record-attempts))
+                        ::busy
+                        (throw e))))]
       (when (= ::busy outcome)
         (recur (inc attempt))))))
 
@@ -61,10 +63,11 @@
   (reduce (fn [sent item]
             (if-not (running)
               (reduced sent)
-              (if (try (deliver! item)
-                       (catch Exception e
-                         (log/error e "Email delivery failed" (describe item))
-                         false))
+              (if (try
+                    (deliver! item)
+                    (catch Exception e
+                      (log/error e "Email delivery failed" (describe item))
+                      false))
                 (inc sent)
                 sent)))
           0
@@ -77,11 +80,12 @@
   the work to count as failed."
   [items enqueue! describe]
   (let [failed (count (remove (fn [item]
-                                (try (enqueue! item)
-                                     true
-                                     (catch Exception e
-                                       (log/error e "Queueing emails failed" (describe item))
-                                       false)))
+                                (try
+                                  (enqueue! item)
+                                  true
+                                  (catch Exception e
+                                    (log/error e "Queueing emails failed" (describe item))
+                                    false)))
                               items))]
     (when (pos? failed)
       (throw (ex-info (str "Queueing emails failed for " failed " of " (count items)) {:failed failed})))))
@@ -91,20 +95,32 @@
   one, and `:expires-at` when it is of use until then only: it is then sent
   before the others, or dropped) in transaction `tx`, due `now`."
   [tx {:keys [to subject text listing-id expires-at]} now]
-  (jdbc/execute-one! tx ["INSERT INTO email_outbox (recipient, subject, body, due_at, listing_id, expires_at)
+  (jdbc/execute-one! tx
+                     ["INSERT INTO email_outbox (recipient, subject, body, due_at, listing_id, expires_at)
                           VALUES (?, ?, ?, ?, ?, ?)"
-                         to subject text now listing-id expires-at]))
+                      to
+                      subject
+                      text
+                      now
+                      listing-id
+                      expires-at]))
 
 (defn- failed!
   [db {:keys [id attempts]} now]
   (let [attempts (inc attempts)]
     (db/with-write-tx [tx db]
       (if (< attempts max-attempts)
-        (do (jdbc/execute-one! tx ["UPDATE email_outbox SET attempts = ?, due_at = ? WHERE id = ?"
-                                   attempts (retry-at attempts now) id])
+        (do (jdbc/execute-one! tx
+                               ["UPDATE email_outbox SET attempts = ?, due_at = ? WHERE id = ?"
+                                attempts
+                                (retry-at attempts now)
+                                id])
             :retry)
-        (do (jdbc/execute-one! tx ["UPDATE email_outbox SET attempts = ?, given_up_at = ? WHERE id = ?"
-                                   attempts now id])
+        (do (jdbc/execute-one! tx
+                               ["UPDATE email_outbox SET attempts = ?, given_up_at = ? WHERE id = ?"
+                                attempts
+                                now
+                                id])
             :give-up)))))
 
 (defn- purge-given-up!
@@ -118,9 +134,11 @@
 (defn- deliver!
   "Sends one queued email; true when it went out."
   [db mailer {:keys [id recipient subject body] :as row} now]
-  (if-let [error (try (mailer {:to recipient :subject subject :text body})
-                      nil
-                      (catch Exception e e))]
+  (if-let [error (try
+                   (mailer {:to recipient :subject subject :text body})
+                   nil
+                   (catch Exception e
+                     e))]
     (let [outcome (failed! db row now)]
       (metrics/inc! emails {:result "failed"})
       (log/warn "Email failed" (merge {:id id :outcome outcome} (mail/failure error)))
@@ -135,12 +153,15 @@
   tried and failed), those given up on, and how long the one due first has
   waited at `now`, in milliseconds, 0 when none is due."
   [db now]
-  (jdbc/execute-one! db ["SELECT
+  (jdbc/execute-one! db
+                     ["SELECT
                             count(*) FILTER (WHERE given_up_at IS NULL AND attempts = 0) AS waiting,
                             count(*) FILTER (WHERE given_up_at IS NULL AND attempts > 0) AS retrying,
                             count(*) FILTER (WHERE given_up_at IS NOT NULL) AS given_up,
                             coalesce(? - min(due_at) FILTER (WHERE given_up_at IS NULL AND due_at <= ?), 0) AS oldest_due
-                          FROM email_outbox" now now]
+                          FROM email_outbox"
+                      now
+                      now]
                      db/opts))
 
 (defn deliver-due!
@@ -152,12 +173,14 @@
   (when (jdbc/execute-one! db ["SELECT 1 FROM email_outbox WHERE expires_at <= ? LIMIT 1" now])
     (db/with-write-tx [tx db]
       (jdbc/execute-one! tx ["DELETE FROM email_outbox WHERE expires_at <= ?" now])))
-  (deliver-each (jdbc/execute! db ["SELECT id, recipient, subject, body, attempts FROM email_outbox
+  (deliver-each (jdbc/execute! db
+                               ["SELECT id, recipient, subject, body, attempts FROM email_outbox
                                     WHERE due_at <= ? AND given_up_at IS NULL
                                       -- Waiting for the deletion of their account to drop them.
                                       AND NOT EXISTS (SELECT 1 FROM user u WHERE u.email = lower(recipient) AND u.deleted_at IS NOT NULL)
                                     ORDER BY expires_at IS NULL, due_at, id LIMIT ?"
-                                   now batch-size]
+                                now
+                                batch-size]
                                db/opts)
                 running
                 #(deliver! db mailer % now)

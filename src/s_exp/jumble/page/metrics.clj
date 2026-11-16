@@ -29,7 +29,8 @@
   (merge (zipmap listing-statuses (repeat 0))
          (into {}
                (map (juxt :status :n))
-               (jdbc/execute! db ["SELECT status, count(*) AS n FROM listing GROUP BY status"]
+               (jdbc/execute! db
+                              ["SELECT status, count(*) AS n FROM listing GROUP BY status"]
                               db/opts))))
 
 (defn- sizes
@@ -69,44 +70,45 @@
              (str/join (map #(str % "\n") (filter litestream-series? (str/split-lines text)))))
            "# HELP jumble_litestream_up Whether Litestream answered for its metrics.\n"
            "# TYPE jumble_litestream_up gauge\n"
-           "jumble_litestream_up " (if text 1 0) "\n"))))
+           "jumble_litestream_up "
+           (if text 1 0)
+           "\n"))))
 
 (defn- exposition
   [db litestream-url]
   (let [{:keys [waiting retrying given-up oldest-due]} (outbox/counts db (System/currentTimeMillis))
         {:keys [main wal free total]} (sizes db)]
     (str (str/join "\n"
-                   (concat
-                    ["# HELP jumble_members Accounts not deleted."
-                     "# TYPE jumble_members gauge"
-                     (str "jumble_members " (account/member-count db))
-                     "# HELP jumble_listings Listings, by status."
-                     "# TYPE jumble_listings gauge"]
-                    (for [[status n] (sort-by key (listing-counts db))]
-                      (str "jumble_listings{status=\"" status "\"} " n))
-                    ["# HELP jumble_outbox_emails Emails in the outbox: waiting (never tried), retrying (failed before), given_up."
-                     "# TYPE jumble_outbox_emails gauge"
-                     (str "jumble_outbox_emails{state=\"waiting\"} " waiting)
-                     (str "jumble_outbox_emails{state=\"retrying\"} " retrying)
-                     (str "jumble_outbox_emails{state=\"given_up\"} " given-up)
-                     "# HELP jumble_outbox_oldest_due_seconds How long the email due first has waited, 0 when none is due."
-                     "# TYPE jumble_outbox_oldest_due_seconds gauge"
-                     (str "jumble_outbox_oldest_due_seconds " (quot oldest-due 1000))
-                     "# HELP jumble_storage_deletions_pending Photo objects queued for deletion from storage."
-                     "# TYPE jumble_storage_deletions_pending gauge"
-                     (str "jumble_storage_deletions_pending " (listing/pending-deletions db))
-                     "# HELP jumble_reports_open Reports waiting for a moderator."
-                     "# TYPE jumble_reports_open gauge"
-                     (str "jumble_reports_open " (moderation/open-count db))
-                     "# HELP jumble_database_bytes Size of the database: its file (main) and write-ahead log (wal)."
-                     "# TYPE jumble_database_bytes gauge"
-                     (str "jumble_database_bytes{file=\"main\"} " main)
-                     (str "jumble_database_bytes{file=\"wal\"} " wal)
-                     "# HELP jumble_disk_bytes Space on the disk holding the database: free (usable) and total."
-                     "# TYPE jumble_disk_bytes gauge"
-                     (str "jumble_disk_bytes{state=\"free\"} " free)
-                     (str "jumble_disk_bytes{state=\"total\"} " total)
-                     ""]))
+                   (concat ["# HELP jumble_members Accounts not deleted."
+                            "# TYPE jumble_members gauge"
+                            (str "jumble_members " (account/member-count db))
+                            "# HELP jumble_listings Listings, by status."
+                            "# TYPE jumble_listings gauge"]
+                           (for [[status n] (sort-by key (listing-counts db))]
+                             (str "jumble_listings{status=\"" status "\"} " n))
+                           ["# HELP jumble_outbox_emails Emails in the outbox: waiting (never tried), retrying (failed before), given_up."
+                            "# TYPE jumble_outbox_emails gauge"
+                            (str "jumble_outbox_emails{state=\"waiting\"} " waiting)
+                            (str "jumble_outbox_emails{state=\"retrying\"} " retrying)
+                            (str "jumble_outbox_emails{state=\"given_up\"} " given-up)
+                            "# HELP jumble_outbox_oldest_due_seconds How long the email due first has waited, 0 when none is due."
+                            "# TYPE jumble_outbox_oldest_due_seconds gauge"
+                            (str "jumble_outbox_oldest_due_seconds " (quot oldest-due 1000))
+                            "# HELP jumble_storage_deletions_pending Photo objects queued for deletion from storage."
+                            "# TYPE jumble_storage_deletions_pending gauge"
+                            (str "jumble_storage_deletions_pending " (listing/pending-deletions db))
+                            "# HELP jumble_reports_open Reports waiting for a moderator."
+                            "# TYPE jumble_reports_open gauge"
+                            (str "jumble_reports_open " (moderation/open-count db))
+                            "# HELP jumble_database_bytes Size of the database: its file (main) and write-ahead log (wal)."
+                            "# TYPE jumble_database_bytes gauge"
+                            (str "jumble_database_bytes{file=\"main\"} " main)
+                            (str "jumble_database_bytes{file=\"wal\"} " wal)
+                            "# HELP jumble_disk_bytes Space on the disk holding the database: free (usable) and total."
+                            "# TYPE jumble_disk_bytes gauge"
+                            (str "jumble_disk_bytes{state=\"free\"} " free)
+                            (str "jumble_disk_bytes{state=\"total\"} " total)
+                            ""]))
          (metrics/text)
          (metrics/jvm-text)
          (litestream litestream-url))))
@@ -121,13 +123,17 @@
   (let [token (get-in ctx [:settings :metrics-token])]
     (cond
       (nil? token) (layout/not-found request)
-      (not (bearer? request token)) {:status 401
-                                     :headers {"content-type" "text/plain; charset=utf-8"
-                                               "www-authenticate" "Bearer"}
-                                     :body "Unauthorized"}
-      :else {:status 200
-             :headers {"content-type" "text/plain; version=0.0.4; charset=utf-8"}
-             :body (exposition (:db ctx) (get-in ctx [:settings :litestream-metrics-url]))})))
+
+      (not (bearer? request token))
+      {:status 401
+       :headers {"content-type" "text/plain; charset=utf-8"
+                 "www-authenticate" "Bearer"}
+       :body "Unauthorized"}
+
+      :else
+      {:status 200
+       :headers {"content-type" "text/plain; version=0.0.4; charset=utf-8"}
+       :body (exposition (:db ctx) (get-in ctx [:settings :litestream-metrics-url]))})))
 
 (def routes
   {[:get "/metrics"] #'metrics})

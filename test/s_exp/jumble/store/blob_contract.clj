@@ -8,7 +8,8 @@
 
 (defn- read-all
   [{:keys [^java.io.InputStream body]}]
-  (with-open [in body] (.readAllBytes in)))
+  (with-open [in body]
+    (.readAllBytes in)))
 
 (defn check
   [store]

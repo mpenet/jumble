@@ -46,8 +46,9 @@
   (testing "the hosting settings reach the application"
     (let [hosting {:member-limit 20 :metrics-token "t" :moderator-notice "/n.md"
                    :hosted-by {:name "Jumble" :url "https://jumbl.ing"}}]
-      (is (= hosting (select-keys (get-in (jumble/system (merge (config "unused.db") hosting)) [:server :settings])
-                                  (keys hosting)))))))
+      (is (= hosting
+             (select-keys (get-in (jumble/system (merge (config "unused.db") hosting)) [:server :settings])
+                          (keys hosting)))))))
 
 (deftest chat-settings-test
   (testing "the chat channels reach the delivery loop that announces new posts, with what it writes prices in"
@@ -91,8 +92,9 @@
                                                               (.send client request (HttpResponse$BodyHandlers/discarding)))]
                                  (is (= 403 (.statusCode response)) "refused by the origin check, not by size")))
                              (testing "the currency is pinned on start"
-                               (is (= "CHF" (:setting/value (jdbc/execute-one! (get-in system [:db :datasource])
-                                                                               ["SELECT value FROM setting WHERE key = 'currency'"])))))
+                               (is (= "CHF"
+                                      (:setting/value (jdbc/execute-one! (get-in system [:db :datasource])
+                                                                         ["SELECT value FROM setting WHERE key = 'currency'"])))))
                              (testing "the application knows its moderators"
                                (is (= #{"dave@example.com"} (get-in system [:server :settings :moderators]))))
                              (testing "message emails are sent from the background"

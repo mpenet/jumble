@@ -34,8 +34,9 @@
           bob (user! "bob")
           emails (atom [])
           mailer #(swap! emails conj %)]
-      (message/start! *db* {:sender-id bob :listing-id (:id (listing! alice "Desk lamp")) :subject "Desk lamp"
-                            :body "Still available?" :now 0})
+      (message/start! *db*
+                      {:sender-id bob :listing-id (:id (listing! alice "Desk lamp")) :subject "Desk lamp"
+                       :body "Still available?" :now 0})
       (db/with-write-tx [tx *db*]
         (outbox/enqueue! tx {:to "carol@example.com" :subject "Hello" :text "Body"} 0))
       (let [running (component/start (assoc (delivery/component {:mailer mailer :blobs (blob/memory-store) :settings fixtures/settings

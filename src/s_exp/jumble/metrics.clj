@@ -58,12 +58,16 @@
 (defn observe!
   "Counts `seconds` in histogram `metric`'s series of `labels`."
   [metric labels seconds]
-  (swap! registry update-in [metric]
+  (swap! registry
+         update-in
+         [metric]
          (fn [{:keys [buckets] :as m}]
-           (update-in m [:series labels]
+           (update-in m
+                      [:series labels]
                       (fn [{:keys [counts sum n] :or {sum 0.0 n 0}}]
                         {:counts (mapv (fn [bound c] (cond-> (or c 0) (<= seconds bound) inc))
-                                       buckets (or counts (repeat nil)))
+                                       buckets
+                                       (or counts (repeat nil)))
                          :sum (+ sum seconds)
                          :n (inc n)}))))
   nil)
@@ -86,7 +90,8 @@
   (if (= :histogram type)
     (mapcat (fn [[labels {:keys [counts sum n]}]]
               (concat (map (fn [bound c] (str name "_bucket" (label-text labels :le bound) " " c))
-                           buckets counts)
+                           buckets
+                           counts)
                       [(str name "_bucket" (label-text labels :le "+Inf") " " n)
                        (str name "_sum" (label-text labels) " " sum)
                        (str name "_count" (label-text labels) " " n)]))
@@ -98,10 +103,11 @@
   "Every metric defined, with its series, in Prometheus' text format."
   []
   (str/join (for [[name {:keys [type help] :as m}] @registry]
-              (str/join "\n" (concat [(str "# HELP " name " " help)
-                                      (str "# TYPE " name " " (clojure.core/name type))]
-                                     (series-lines name m)
-                                     [""])))))
+              (str/join "\n"
+                        (concat [(str "# HELP " name " " help)
+                                 (str "# TYPE " name " " (clojure.core/name type))]
+                                (series-lines name m)
+                                [""])))))
 
 (defn- metric-text
   "One metric, described, with its series: `[labels value]` pairs."
@@ -118,19 +124,35 @@
         ^MemoryUsage nonheap (.getNonHeapMemoryUsage memory)
         gcs (ManagementFactory/getGarbageCollectorMXBeans)
         ^OperatingSystemMXBean os (ManagementFactory/getOperatingSystemMXBean)]
-    (str (metric-text "jvm_memory_used_bytes" "gauge" "Memory in use, by area."
+    (str (metric-text "jvm_memory_used_bytes"
+                      "gauge"
+                      "Memory in use, by area."
                       [[{:area "heap"} (.getUsed heap)] [{:area "nonheap"} (.getUsed nonheap)]])
-         (metric-text "jvm_memory_committed_bytes" "gauge" "Memory the JVM holds from the system, by area."
+         (metric-text "jvm_memory_committed_bytes"
+                      "gauge"
+                      "Memory the JVM holds from the system, by area."
                       [[{:area "heap"} (.getCommitted heap)] [{:area "nonheap"} (.getCommitted nonheap)]])
-         (metric-text "jvm_memory_max_bytes" "gauge" "The most memory the area may use, -1 when unbounded."
+         (metric-text "jvm_memory_max_bytes"
+                      "gauge"
+                      "The most memory the area may use, -1 when unbounded."
                       [[{:area "heap"} (.getMax heap)] [{:area "nonheap"} (.getMax nonheap)]])
-         (metric-text "jvm_gc_collections_total" "counter" "Garbage collections, by collector."
+         (metric-text "jvm_gc_collections_total"
+                      "counter"
+                      "Garbage collections, by collector."
                       (for [^GarbageCollectorMXBean gc gcs] [{:gc (.getName gc)} (.getCollectionCount gc)]))
-         (metric-text "jvm_gc_collection_seconds_total" "counter" "Time spent collecting garbage, by collector."
+         (metric-text "jvm_gc_collection_seconds_total"
+                      "counter"
+                      "Time spent collecting garbage, by collector."
                       (for [^GarbageCollectorMXBean gc gcs] [{:gc (.getName gc)} (/ (.getCollectionTime gc) 1000.0)]))
-         (metric-text "jvm_threads_current" "gauge" "Live threads."
+         (metric-text "jvm_threads_current"
+                      "gauge"
+                      "Live threads."
                       [[{} (.getThreadCount (ManagementFactory/getThreadMXBean))]])
-         (metric-text "process_cpu_seconds_total" "counter" "Processor time the process used."
+         (metric-text "process_cpu_seconds_total"
+                      "counter"
+                      "Processor time the process used."
                       [[{} (/ (.getProcessCpuTime os) 1e9)]])
-         (metric-text "process_start_time_seconds" "gauge" "When the process started, in seconds since the epoch."
+         (metric-text "process_start_time_seconds"
+                      "gauge"
+                      "When the process started, in seconds since the epoch."
                       [[{} (/ (.getStartTime (ManagementFactory/getRuntimeMXBean)) 1000.0)]]))))

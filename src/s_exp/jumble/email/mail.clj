@@ -33,24 +33,26 @@
 
 (defn- session
   [{:keys [host port starttls username]}]
-  (Session/getInstance
-   (doto (Properties.)
-     (.put "mail.smtp.host" host)
-     (.put "mail.smtp.port" (str port))
-     (.put "mail.smtp.auth" (str (some? username)))
-     (.put "mail.smtp.starttls.enable" (str starttls))
-     (.put "mail.smtp.starttls.required" (str starttls))
-     (.put "mail.smtp.ssl.checkserveridentity" "true")
-     (.put "mail.smtp.connectiontimeout" timeout-ms)
-     (.put "mail.smtp.timeout" timeout-ms)
-     (.put "mail.smtp.writetimeout" timeout-ms))))
+  (Session/getInstance (doto (Properties.)
+                         (.put "mail.smtp.host" host)
+                         (.put "mail.smtp.port" (str port))
+                         (.put "mail.smtp.auth" (str (some? username)))
+                         (.put "mail.smtp.starttls.enable" (str starttls))
+                         (.put "mail.smtp.starttls.required" (str starttls))
+                         (.put "mail.smtp.ssl.checkserveridentity" "true")
+                         (.put "mail.smtp.connectiontimeout" timeout-ms)
+                         (.put "mail.smtp.timeout" timeout-ms)
+                         (.put "mail.smtp.writetimeout" timeout-ms))))
 
 (defn valid-address?
   "Whether `s` is an email address, with an optional display name."
   [s]
   (and (string? s)
-       (try (InternetAddress. ^String s true) true
-            (catch AddressException _ false))))
+       (try
+         (InternetAddress. ^String s true)
+         true
+         (catch AddressException _
+           false))))
 
 (def ^:private plain-address-form
   "An address as people type it, without what mail servers could read as

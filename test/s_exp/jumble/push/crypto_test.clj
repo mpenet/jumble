@@ -26,7 +26,8 @@
 
 (defn- cat-bytes ^bytes [& arrays]
   (let [out (java.io.ByteArrayOutputStream.)]
-    (doseq [^bytes a arrays] (.write out a))
+    (doseq [^bytes a arrays]
+      (.write out a))
     (.toByteArray out)))
 
 (defn- browser
@@ -62,7 +63,8 @@
         cipher (doto (Cipher/getInstance "AES/GCM/NoPadding")
                  (.init Cipher/DECRYPT_MODE (SecretKeySpec. cek "AES") (GCMParameterSpec. 128 nonce)))
         padded (.doFinal cipher ciphertext)
-        end (int (loop [i (dec (alength padded))] (if (zero? (aget padded i)) (recur (dec i)) i)))]
+        end (int (loop [i (dec (alength padded))]
+                   (if (zero? (aget padded i)) (recur (dec i)) i)))]
     {:rs rs :idlen idlen :delimiter (aget padded end)
      :text (String. (Arrays/copyOf padded end) "UTF-8")}))
 

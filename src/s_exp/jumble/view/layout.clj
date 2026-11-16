@@ -75,11 +75,18 @@
   the community's name."
   [{:keys [app-name logo logo-dark]}]
   (cond
-    logo (themed "community-logo" (branding/url logo) (some-> logo-dark branding/url) {:alt app-name})
-    (= "Jumble" app-name) (themed "wordmark" (assets/url "logo.png") (assets/url "logo-white.png")
-                                  {:alt "Jumble" :width 109 :height 32})
-    :else (list [:img.mark {:src (assets/url "mark.png") :alt "" :width 37 :height 28}]
-                [:span app-name])))
+    logo
+    (themed "community-logo" (branding/url logo) (some-> logo-dark branding/url) {:alt app-name})
+
+    (= "Jumble" app-name)
+    (themed "wordmark"
+            (assets/url "logo.png")
+            (assets/url "logo-white.png")
+            {:alt "Jumble" :width 109 :height 32})
+
+    :else
+    (list [:img.mark {:src (assets/url "mark.png") :alt "" :width 37 :height 28}]
+          [:span app-name])))
 
 (defn- brand
   [settings]
@@ -126,9 +133,17 @@
        [:nav.site-nav {:aria-label (i18n/t "Main")}
         (nav-link uri "/listings" icons/grid (i18n/t "Listings"))
         (nav-link uri "/my/listings" icons/tag (i18n/t "My listings"))
-        (nav-link uri "/my/favorites" icons/heart (i18n/t "Favorites") (some-> (:changed-favorites request) deref)
+        (nav-link uri
+                  "/my/favorites"
+                  icons/heart
+                  (i18n/t "Favorites")
+                  (some-> (:changed-favorites request) deref)
                   #(i18n/tn "changed" "changed" %))
-        (nav-link uri "/messages" icons/chat (i18n/t "Messages") (some-> (:unread-messages request) deref)
+        (nav-link uri
+                  "/messages"
+                  icons/chat
+                  (i18n/t "Messages")
+                  (some-> (:unread-messages request) deref)
                   #(i18n/tn "unread" "unread" %))]
        [:div.account
         [:a.button.button-pop.post-button {:href "/listings/new"} icons/plus [:span (i18n/t "Post a listing")]]
@@ -180,17 +195,22 @@
 (defn message
   "Response with a page holding just a heading, an explanation, and `actions`."
   [request status title text & actions]
-  (response/html status (page request {:title title}
-                              [:section.message
-                               icons/empty-box
-                               [:h1 title]
-                               [:p text]
-                               (when (seq actions) [:div.message-actions actions])])))
+  (response/html status
+                 (page request
+                       {:title title}
+                       [:section.message
+                        icons/empty-box
+                        [:h1 title]
+                        [:p text]
+                        (when (seq actions) [:div.message-actions actions])])))
 
 (defn not-found
   "The 404 page, saying `explanation` (nothing at this address, by default)."
   ([request]
    (not-found request (i18n/t "There is nothing at this address.")))
   ([request explanation]
-   (message request 404 (i18n/t "Not found") explanation
+   (message request
+            404
+            (i18n/t "Not found")
+            explanation
             [:a.button {:href "/"} (i18n/t "Go to the home page")])))

@@ -47,8 +47,9 @@
     {:alice alice
      :bob bob
      :lamp-id (:id lamp)
-     :thread-id (message/start! *db* {:sender-id bob :listing-id (:id lamp) :subject "Desk lamp"
-                                      :body "Still available?" :now t0})}))
+     :thread-id (message/start! *db*
+                                {:sender-id bob :listing-id (:id lamp) :subject "Desk lamp"
+                                 :body "Still available?" :now t0})}))
 
 (deftest delivery-test
   (let [{:keys [alice bob thread-id]} (conversation)
@@ -144,8 +145,9 @@
           bob (user! "bob")
           emails (atom [])
           mailer #(swap! emails conj %)]
-      (message/start! *db* {:sender-id bob :listing-id (:id (listing! alice "Desk lamp"))
-                            :subject "Lamp\r\nBcc: someone@example.org" :body "Hi" :now t0})
+      (message/start! *db*
+                      {:sender-id bob :listing-id (:id (listing! alice "Desk lamp"))
+                       :subject "Lamp\r\nBcc: someone@example.org" :body "Hi" :now t0})
       (deliver! mailer 5)
       (is (= "New message from bob: Lamp Bcc: someone@example.org" (:subject (first @emails)))))))
 
@@ -189,8 +191,9 @@
         emails (atom [])
         mailer #(swap! emails conj %)
         decide notification/decide]
-    (message/start! *db* {:sender-id carol :listing-id (:id (listing! alice "Chair")) :subject "Chair"
-                          :body "Hi" :now t0})
+    (message/start! *db*
+                    {:sender-id carol :listing-id (:id (listing! alice "Chair")) :subject "Chair"
+                     :body "Hi" :now t0})
     (with-redefs [notification/decide (fn [db pending now]
                                         (if (= thread-id (:thread-id pending))
                                           (throw (ex-info "boom" {}))

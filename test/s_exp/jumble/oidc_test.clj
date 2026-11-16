@@ -15,8 +15,10 @@
   (fn [t]
     (let [p (idp/start!)]
       (try
-        (binding [*idp* p] (t))
-        (finally (idp/stop! p))))))
+        (binding [*idp* p]
+          (t))
+        (finally
+          (idp/stop! p))))))
 
 (def redirect-uri "http://jumble.test/auth/callback")
 
@@ -31,8 +33,11 @@
 (defn- rejection
   "The type of the ex-info `f` throws, or ::accepted."
   [f]
-  (try (f) ::accepted
-       (catch clojure.lang.ExceptionInfo e (ex/ex-type e))))
+  (try
+    (f)
+    ::accepted
+    (catch clojure.lang.ExceptionInfo e
+      (ex/ex-type e))))
 
 (deftest pkce-test
   (testing "S256 challenge matches RFC 7636 appendix B"
@@ -58,7 +63,8 @@
     (try
       (is (= ::error/issuer-mismatch
              (rejection #(oidc/authorization-url (provider p) {:state "s" :nonce "n" :code-verifier "v"}))))
-      (finally (idp/stop! p)))))
+      (finally
+        (idp/stop! p)))))
 
 (deftest incomplete-discovery-test
   (doseq [missing [:token_endpoint :jwks_uri :authorization_endpoint]]
@@ -67,7 +73,8 @@
         (is (= ::error/discovery-failed
                (rejection #(oidc/authorization-url (provider p) {:state "s" :nonce "n" :code-verifier "v"})))
             (name missing))
-        (finally (idp/stop! p))))))
+        (finally
+          (idp/stop! p))))))
 
 (deftest code-flow-test
   (let [p (provider)
@@ -136,18 +143,21 @@
           (is (= ::error/discovery-failed
                  (rejection #(oidc/authorization-url (provider p) {:state "s" :nonce "n" :code-verifier "v"})))
               jwks-uri)
-          (finally (idp/stop! p)))))))
+          (finally
+            (idp/stop! p)))))))
 
 (deftest malformed-token-response-test
   (testing "an ID token that is not a string is a failed exchange"
     (doseq [id-token [42 {"a" 1} nil]]
       (let [p (idp/start! {:token {:id_token id-token}})
             verifier "a-verifier-of-sufficient-length-0123456789abc"
-            code (get (idp/query-params (idp/authorize! p (oidc/authorization-url (provider p)
-                                                                                  {:state "s" :nonce "n"
-                                                                                   :code-verifier verifier})))
+            code (get (idp/query-params (idp/authorize! p
+                                                        (oidc/authorization-url (provider p)
+                                                                                {:state "s" :nonce "n"
+                                                                                 :code-verifier verifier})))
                       "code")]
         (try
           (is (= ::error/token-exchange-failed (rejection #(oidc/exchange-code! (provider p) code verifier)))
               (pr-str id-token))
-          (finally (idp/stop! p)))))))
+          (finally
+            (idp/stop! p)))))))

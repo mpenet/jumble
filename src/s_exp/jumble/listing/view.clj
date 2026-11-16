@@ -66,104 +66,110 @@
         {:keys [kind title description price category pickup city]} values
         initial-signals (signals values places)
         heading (if listing (i18n/t "Edit listing") (i18n/t "New listing"))]
-    (layout/page
-     request {:title heading}
-     [:h1 heading]
-     [:form.listing-form (merge {:method "post" :action (if listing (str "/listings/" (:id listing)) "/listings")
-                                 :enctype "multipart/form-data"
-                                 :data-signals initial-signals :novalidate true}
-                                layout/once)
-      [:fieldset.segmented
-       [:legend (i18n/t "You want to")]
-       (for [[value label] [["sale" (i18n/t "Sell it")] ["free" (i18n/t "Give it away")] ["lend" (i18n/t "Lend it")]
-                            ["wanted" (i18n/t "Look for it")]]]
-         (radio "kind" value (= value (if (listing/kinds kind) kind (:kind (listing/default-values {})))) label
-                (merge {:data-bind "kind"} (layout/invalid errors :kind))))
-       (layout/field-error errors :kind)]
+    (layout/page request
+                 {:title heading}
+                 [:h1 heading]
+                 [:form.listing-form (merge {:method "post" :action (if listing (str "/listings/" (:id listing)) "/listings")
+                                             :enctype "multipart/form-data"
+                                             :data-signals initial-signals :novalidate true}
+                                            layout/once)
+                  [:fieldset.segmented
+                   [:legend (i18n/t "You want to")]
+                   (for [[value label] [["sale" (i18n/t "Sell it")] ["free" (i18n/t "Give it away")] ["lend" (i18n/t "Lend it")]
+                                        ["wanted" (i18n/t "Look for it")]]]
+                     (radio "kind"
+                            value
+                            (= value (if (listing/kinds kind) kind (:kind (listing/default-values {}))))
+                            label
+                            (merge {:data-bind "kind"} (layout/invalid errors :kind))))
+                   (layout/field-error errors :kind)]
 
-      [:label {:for "title"} (i18n/t "Title")]
-      [:input (merge {:id "title" :name "title" :value title :maxlength 120 :required true}
-                     (layout/invalid errors :title))]
-      (layout/field-error errors :title)
+                  [:label {:for "title"} (i18n/t "Title")]
+                  [:input (merge {:id "title" :name "title" :value title :maxlength 120 :required true}
+                                 (layout/invalid errors :title))]
+                  (layout/field-error errors :title)
 
-      [:div (shown-when "$kind === 'sale'" (= "sale" kind))
-       [:label {:for "price"} (i18n/t "Price ({currency})" {:currency currency})]
-       [:input (merge {:id "price" :name "price" :value price :inputmode "decimal" :autocomplete "off"}
-                      (layout/invalid errors :price))]
-       (layout/field-error errors :price)]
+                  [:div (shown-when "$kind === 'sale'" (= "sale" kind))
+                   [:label {:for "price"} (i18n/t "Price ({currency})" {:currency currency})]
+                   [:input (merge {:id "price" :name "price" :value price :inputmode "decimal" :autocomplete "off"}
+                                  (layout/invalid errors :price))]
+                   (layout/field-error errors :price)]
 
-      [:label {:for "category"} (i18n/t "Category")]
-      [:select (merge {:id "category" :name "category"} (layout/invalid errors :category))
-       (when (and category (not-any? #(= category (:id %)) categories))
-         [:option {:value "" :selected true :disabled true} (i18n/t "Choose a category")])
-       (for [{:keys [id label]} categories]
-         [:option {:value id :selected (= id category)} label])]
-      (layout/field-error errors :category)
+                  [:label {:for "category"} (i18n/t "Category")]
+                  [:select (merge {:id "category" :name "category"} (layout/invalid errors :category))
+                   (when (and category (not-any? #(= category (:id %)) categories))
+                     [:option {:value "" :selected true :disabled true} (i18n/t "Choose a category")])
+                   (for [{:keys [id label]} categories]
+                     [:option {:value id :selected (= id category)} label])]
+                  (layout/field-error errors :category)
 
-      [:fieldset
-       ;; Where to pick it up, or for a wanted post where it is wanted.
-       (let [wanted (= "wanted" kind)]
-         [:legend
-          [:span (shown-when "$kind !== 'wanted'" (not wanted)) (i18n/t "Pickup")]
-          [:span (shown-when "$kind === 'wanted'" wanted) (i18n/t "Where")]])
-       (for [{:keys [id label]} places
-             :let [value (listing/place-pickup id)]]
-         (radio "pickup" value (= value pickup) label (merge {:data-bind "pickup"} (layout/invalid errors :pickup))))
-       (radio "pickup" "city" (= "city" pickup) (i18n/t "Elsewhere")
-              (merge {:data-bind "pickup"} (layout/invalid errors :pickup)))
-       (layout/field-error errors :pickup)
-       [:div (shown-when "$pickup === 'city'" (= "city" pickup))
-        [:label {:for "city"} (i18n/t "City")]
-        [:input (merge {:id "city" :name "city" :value city :maxlength 80} (layout/invalid errors :city))]
-        (layout/field-error errors :city)]]
+                  [:fieldset
+                   ;; Where to pick it up, or for a wanted post where it is wanted.
+                   (let [wanted (= "wanted" kind)]
+                     [:legend
+                      [:span (shown-when "$kind !== 'wanted'" (not wanted)) (i18n/t "Pickup")]
+                      [:span (shown-when "$kind === 'wanted'" wanted) (i18n/t "Where")]])
+                   (for [{:keys [id label]} places
+                         :let [value (listing/place-pickup id)]]
+                     (radio "pickup" value (= value pickup) label (merge {:data-bind "pickup"} (layout/invalid errors :pickup))))
+                   (radio "pickup"
+                          "city"
+                          (= "city" pickup)
+                          (i18n/t "Elsewhere")
+                          (merge {:data-bind "pickup"} (layout/invalid errors :pickup)))
+                   (layout/field-error errors :pickup)
+                   [:div (shown-when "$pickup === 'city'" (= "city" pickup))
+                    [:label {:for "city"} (i18n/t "City")]
+                    [:input (merge {:id "city" :name "city" :value city :maxlength 80} (layout/invalid errors :city))]
+                    (layout/field-error errors :city)]]
 
-      [:label {:for "description"} (i18n/t "Description")]
-      [:textarea (merge {:id "description" :name "description" :rows 6 :maxlength 5000}
-                        (layout/invalid errors :description))
-       description]
-      [:p.field-note (i18n/t "Markdown works: **bold**, _italics_, lists, links.")]
-      (layout/field-error errors :description)
+                  [:label {:for "description"} (i18n/t "Description")]
+                  [:textarea (merge {:id "description" :name "description" :rows 6 :maxlength 5000}
+                                    (layout/invalid errors :description))
+                   description]
+                  [:p.field-note (i18n/t "Markdown works: **bold**, _italics_, lists, links.")]
+                  (layout/field-error errors :description)
 
-      (when (seq (:photos listing))
-        [:fieldset.current-photos
-         [:legend (i18n/t "Photos")]
-         [:p.field-note (i18n/t "The cover photo shows first, on the board and on the listing.")]
-         ;; The order is that of the list as sent; with scripts, moving a
-         ;; photo, or choosing it as cover, moves it in the list.
-         [:ol.photo-order
-          (for [[i {:keys [id] :as photo}] (map-indexed vector (:photos listing))
-                :let [number (inc i)
-                      to-cover "el.closest('ol').querySelector('input[name=cover]').checked = true"]]
-            [:li
-             (thumbnail photo-url photo "")
-             [:input {:type "hidden" :name "order" :value id}]
-             [:span.photo-choices
-              [:label.choice
-               [:input {:type "radio" :name "cover" :value id :checked (zero? i)
-                        :data-on:change "const li = el.closest('li'); li.parentElement.prepend(li)"}]
-               (i18n/t "Cover")]
-              [:label.choice
-               [:input {:type "checkbox" :name "remove" :value id :checked (contains? removing id)}]
-               (i18n/t "Remove photo {number}" {:number number})]]
-             [:span.photo-moves {:style "display: none" :data-show "true"}
-              [:button.icon-button {:type "button" :aria-label (i18n/t "Move photo {number} earlier" {:number number})
-                                    :data-on:click (str "const li = el.closest('li'); li.previousElementSibling && li.previousElementSibling.before(li); " to-cover)}
-               "↑"]
-              [:button.icon-button {:type "button" :aria-label (i18n/t "Move photo {number} later" {:number number})
-                                    :data-on:click (str "const li = el.closest('li'); li.nextElementSibling && li.nextElementSibling.after(li); " to-cover)}
-               "↓"]]])]])
+                  (when (seq (:photos listing))
+                    [:fieldset.current-photos
+                     [:legend (i18n/t "Photos")]
+                     [:p.field-note (i18n/t "The cover photo shows first, on the board and on the listing.")]
+                     ;; The order is that of the list as sent; with scripts, moving a
+                     ;; photo, or choosing it as cover, moves it in the list.
+                     [:ol.photo-order
+                      (for [[i {:keys [id] :as photo}] (map-indexed vector (:photos listing))
+                            :let [number (inc i)
+                                  to-cover "el.closest('ol').querySelector('input[name=cover]').checked = true"]]
+                        [:li
+                         (thumbnail photo-url photo "")
+                         [:input {:type "hidden" :name "order" :value id}]
+                         [:span.photo-choices
+                          [:label.choice
+                           [:input {:type "radio" :name "cover" :value id :checked (zero? i)
+                                    :data-on:change "const li = el.closest('li'); li.parentElement.prepend(li)"}]
+                           (i18n/t "Cover")]
+                          [:label.choice
+                           [:input {:type "checkbox" :name "remove" :value id :checked (contains? removing id)}]
+                           (i18n/t "Remove photo {number}" {:number number})]]
+                         [:span.photo-moves {:style "display: none" :data-show "true"}
+                          [:button.icon-button {:type "button" :aria-label (i18n/t "Move photo {number} earlier" {:number number})
+                                                :data-on:click (str "const li = el.closest('li'); li.previousElementSibling && li.previousElementSibling.before(li); " to-cover)}
+                           "↑"]
+                          [:button.icon-button {:type "button" :aria-label (i18n/t "Move photo {number} later" {:number number})
+                                                :data-on:click (str "const li = el.closest('li'); li.nextElementSibling && li.nextElementSibling.after(li); " to-cover)}
+                           "↓"]]])]])
 
-      [:label {:for "photos"} (if listing
-                                (i18n/t "Add photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)" {:max listing/max-photos})
-                                (i18n/t "Photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)" {:max listing/max-photos}))]
-      [:input (merge {:id "photos" :name "photos" :type "file" :multiple true
-                      :accept "image/jpeg,image/png,image/heic,image/heif,image/avif"}
-                     (layout/invalid errors :photos))]
-      (when photos-dropped
-        [:p.field-note (i18n/t "Please select the photos again.")])
-      (layout/field-error errors :photos)
+                  [:label {:for "photos"} (if listing
+                                            (i18n/t "Add photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)" {:max listing/max-photos})
+                                            (i18n/t "Photos (up to {max} in all, JPEG, PNG, HEIC or AVIF)" {:max listing/max-photos}))]
+                  [:input (merge {:id "photos" :name "photos" :type "file" :multiple true
+                                  :accept "image/jpeg,image/png,image/heic,image/heif,image/avif"}
+                                 (layout/invalid errors :photos))]
+                  (when photos-dropped
+                    [:p.field-note (i18n/t "Please select the photos again.")])
+                  (layout/field-error errors :photos)
 
-      [:button {:type "submit"} (if listing (i18n/t "Save changes") (i18n/t "Publish listing"))]])))
+                  [:button {:type "submit"} (if listing (i18n/t "Save changes") (i18n/t "Publish listing"))]])))
 
 (defn price-label
   "What a listing is: its price when for sale, else its kind."
@@ -307,42 +313,42 @@
   "The listing page. `photo-url` gives the URL of a photo's object key and size."
   [{:keys [user query-string] :as request} {:keys [id title description owner-name photos created-at user-id] :as listing}
    photo-url]
-  (layout/page
-   request {:title title}
-   [:article.listing
-    [:div.listing-gallery (gallery photo-url title photos)]
-    [:div.listing-details
-     [:h1 title]
-     (status-section request listing)
-     (when-let [rendered (markdown/render description)]
-       [:div.description rendered])
-     [:p.listing-owner (avatar/avatar {:id user-id :name owner-name}) [:span (i18n/t "Posted by {name}" {:name [:a {:href (str "/members/" user-id)} owner-name]})]
-      [:span.listing-date icons/calendar (dates/date created-at)]]
-     (when (and (:moderator request) (not= user-id (:id user)))
-       [:p.moderation-link
-        [:a.danger-link {:href (str "/manage/listings/" id "/remove")} (i18n/t "Remove listing (moderation)")]])
-     (when (not= user-id (:id user))
-       (if (= "reported" query-string)
-         [:p.report-thanks {:role "status"} (i18n/t "Thanks, a moderator will have a look.")]
-         [:details.report
-          [:summary (i18n/t "Report this listing")]
-          [:form (merge {:method "post" :action (str "/listings/" id "/report")} layout/once)
-           [:label {:for "report-reason"} (i18n/t "What is wrong with it? (optional)")]
-           [:textarea {:id "report-reason" :name "reason" :rows 3 :maxlength 1000}]
-           [:button.secondary {:type "submit"} (i18n/t "Report")]]]))]]))
+  (layout/page request
+               {:title title}
+               [:article.listing
+                [:div.listing-gallery (gallery photo-url title photos)]
+                [:div.listing-details
+                 [:h1 title]
+                 (status-section request listing)
+                 (when-let [rendered (markdown/render description)]
+                   [:div.description rendered])
+                 [:p.listing-owner (avatar/avatar {:id user-id :name owner-name}) [:span (i18n/t "Posted by {name}" {:name [:a {:href (str "/members/" user-id)} owner-name]})]
+                  [:span.listing-date icons/calendar (dates/date created-at)]]
+                 (when (and (:moderator request) (not= user-id (:id user)))
+                   [:p.moderation-link
+                    [:a.danger-link {:href (str "/manage/listings/" id "/remove")} (i18n/t "Remove listing (moderation)")]])
+                 (when (not= user-id (:id user))
+                   (if (= "reported" query-string)
+                     [:p.report-thanks {:role "status"} (i18n/t "Thanks, a moderator will have a look.")]
+                     [:details.report
+                      [:summary (i18n/t "Report this listing")]
+                      [:form (merge {:method "post" :action (str "/listings/" id "/report")} layout/once)
+                       [:label {:for "report-reason"} (i18n/t "What is wrong with it? (optional)")]
+                       [:textarea {:id "report-reason" :name "reason" :rows 3 :maxlength 1000}]
+                       [:button.secondary {:type "submit"} (i18n/t "Report")]]]))]]))
 
 (defn remove-confirmation
   [request {:keys [id title]}]
-  (layout/page
-   request {:title (i18n/t "Remove listing")}
-   [:section.message
-    icons/empty-box
-    [:h1 (i18n/t "Remove listing?")]
-    [:p (i18n/t "“{title}” and its photos will be deleted. This cannot be undone." {:title title})]
-    [:div.message-actions
-     [:form (merge {:method "post" :action (str "/listings/" id "/remove")} layout/once)
-      [:button.danger {:type "submit"} (i18n/t "Remove listing")]]
-     [:a.button.secondary {:href (str "/listings/" id)} (i18n/t "Keep it")]]]))
+  (layout/page request
+               {:title (i18n/t "Remove listing")}
+               [:section.message
+                icons/empty-box
+                [:h1 (i18n/t "Remove listing?")]
+                [:p (i18n/t "“{title}” and its photos will be deleted. This cannot be undone." {:title title})]
+                [:div.message-actions
+                 [:form (merge {:method "post" :action (str "/listings/" id "/remove")} layout/once)
+                  [:button.danger {:type "submit"} (i18n/t "Remove listing")]]
+                 [:a.button.secondary {:href (str "/listings/" id)} (i18n/t "Keep it")]]]))
 
 (defn- board-href
   "Board URL for the given filters, leaving out the unset ones."
@@ -374,11 +380,17 @@
   make that the page URL, without a history entry per keystroke."
   (str "const query = new URLSearchParams([...new FormData(el)].filter(([k, v]) => v)).toString(); "
        "const url = query ? '/listings?' + query : '/listings'; "
-       replace-request "@get(url, {" fetch-options "}); history.replaceState(null, '', url)"))
+       replace-request
+       "@get(url, {"
+       fetch-options
+       "}); history.replaceState(null, '', url)"))
 
 (def ^:private restore
   "Back and forward: show the results and query of the URL now current."
-  (str replace-request "@get(location.href, {" fetch-options "}); "
+  (str replace-request
+       "@get(location.href, {"
+       fetch-options
+       "}); "
        "document.getElementById('q').value = new URLSearchParams(location.search).get('q') ?? ''"))
 
 (def ^:private load-more
@@ -518,12 +530,11 @@
                               :class "chip"
                               :clear current})))
             [first-chips more-chips] (split-at max-category-chips (shown-categories env facets category))]
-        (list
-         (map chip first-chips)
-         (when (seq more-chips)
-           [:details.more-categories (when (some #(= category (:id %)) more-chips) {:open true})
-            [:summary (i18n/t "More categories ({count})" {:count (count more-chips)})]
-            [:div.more-chips (map chip more-chips)]])))]]]
+        (list (map chip first-chips)
+              (when (seq more-chips)
+                [:details.more-categories (when (some #(= category (:id %)) more-chips) {:open true})
+                 [:summary (i18n/t "More categories ({count})" {:count (count more-chips)})]
+                 [:div.more-chips (map chip more-chips)]])))]]]
    (when (or q kind category)
      [:form.save-search (merge {:method "post" :action "/my/searches"} layout/once)
       (for [[k v] {"q" q "kind" kind "category" category} :when v]
@@ -545,14 +556,14 @@
   Works as plain links and forms; Datastar swaps in [[results-fragment]]
   and [[more-fragment]] instead of loading whole pages."
   [request {:keys [q] :as filters} result facets photo-url]
-  (layout/page
-   request {:title (when q (i18n/t "Search: {query}" {:query q}))}
-   [:div.board-header
-    [:h1 (i18n/t "Listings")]
-    [:p.lede (i18n/t "What your community is selling, giving away, lending and looking for.") " "
-     [:a {:href "/my/searches"} (i18n/t "Your saved searches")]]]
-   (search-form filters)
-   (results (cards-env request photo-url (board-href (merge filters (:at filters)))) filters result facets)))
+  (layout/page request
+               {:title (when q (i18n/t "Search: {query}" {:query q}))}
+               [:div.board-header
+                [:h1 (i18n/t "Listings")]
+                [:p.lede (i18n/t "What your community is selling, giving away, lending and looking for.") " "
+                 [:a {:href "/my/searches"} (i18n/t "Your saved searches")]]]
+               (search-form filters)
+               (results (cards-env request photo-url (board-href (merge filters (:at filters)))) filters result facets)))
 
 (defn results-fragment
   "What a Datastar board request replaces, matched by id."
@@ -569,67 +580,67 @@
 (defn mine
   "The signed-in user's listings, any status."
   [request listings photo-url]
-  (layout/page
-   request {:title (i18n/t "My listings")}
-   [:div.board-header
-    [:h1 (i18n/t "My listings")]
-    [:p.lede (i18n/t "Everything you posted, sold and given away included.")]]
-   (if (seq listings)
-     [:div.cards (for [listing listings] (card (cards-env request photo-url "/my/listings") listing))]
-     [:div.empty icons/empty-box
-      [:p (i18n/t "You have not posted anything yet.")]
-      [:a.button {:href "/listings/new"} (i18n/t "Post a listing")]])))
+  (layout/page request
+               {:title (i18n/t "My listings")}
+               [:div.board-header
+                [:h1 (i18n/t "My listings")]
+                [:p.lede (i18n/t "Everything you posted, sold and given away included.")]]
+               (if (seq listings)
+                 [:div.cards (for [listing listings] (card (cards-env request photo-url "/my/listings") listing))]
+                 [:div.empty icons/empty-box
+                  [:p (i18n/t "You have not posted anything yet.")]
+                  [:a.button {:href "/listings/new"} (i18n/t "Post a listing")]])))
 
 (defn member
   "Member `member`'s page: who they are, and their `listings` on the board."
   [request {:keys [id name email created-at]} listings photo-url]
   (let [shown (if (str/blank? name) email name)]
-    (layout/page
-     request {:title shown}
-     [:div.board-header.member-header
-      (avatar/avatar {:id id :name shown})
-      [:div
-       [:h1 shown]
-       [:p.lede (i18n/t "Member since {date}" {:date (dates/date created-at)})]]]
-     (if (seq listings)
-       [:div.cards (for [listing listings] (card (cards-env request photo-url (str "/members/" id)) listing))]
-       [:div.empty icons/empty-box
-        [:p (i18n/t "Nothing on the board right now.")]]))))
+    (layout/page request
+                 {:title shown}
+                 [:div.board-header.member-header
+                  (avatar/avatar {:id id :name shown})
+                  [:div
+                   [:h1 shown]
+                   [:p.lede (i18n/t "Member since {date}" {:date (dates/date created-at)})]]]
+                 (if (seq listings)
+                   [:div.cards (for [listing listings] (card (cards-env request photo-url (str "/members/" id)) listing))]
+                   [:div.empty icons/empty-box
+                    [:p (i18n/t "Nothing on the board right now.")]]))))
 
 (defn favorites
   "The signed-in user's favorites, any status."
   [request listings photo-url]
-  (layout/page
-   request {:title (i18n/t "Favorites")}
-   [:div.board-header
-    [:h1 (i18n/t "Favorites")]
-    [:p.lede (i18n/t "Listings you keep an eye on. Only you see them.")]]
-   (if (seq listings)
-     [:div.cards (for [listing listings] (card (cards-env request photo-url "/my/favorites") listing))]
-     [:div.empty icons/heart
-      [:p (i18n/t "No favorites yet.")]
-      [:a.button {:href "/listings"} (i18n/t "Browse listings")]])))
+  (layout/page request
+               {:title (i18n/t "Favorites")}
+               [:div.board-header
+                [:h1 (i18n/t "Favorites")]
+                [:p.lede (i18n/t "Listings you keep an eye on. Only you see them.")]]
+               (if (seq listings)
+                 [:div.cards (for [listing listings] (card (cards-env request photo-url "/my/favorites") listing))]
+                 [:div.empty icons/heart
+                  [:p (i18n/t "No favorites yet.")]
+                  [:a.button {:href "/listings"} (i18n/t "Browse listings")]])))
 
 (defn saved-searches
   "The user's saved searches, each with a way to it and to remove it."
   [{:keys [ctx] :as request} searches saved]
   (let [categories (get-in ctx [:settings :categories])]
-    (layout/page
-     request {:title (i18n/t "Saved searches")}
-     [:div.board-header
-      [:h1 (i18n/t "Saved searches")]
-      [:p.lede (i18n/t "Once a day at most, you get an email with what is new for them. Save one from the listings, after searching or choosing a type or a category.")]]
-     (when saved [:p.field-note {:role "status"} (i18n/t "Saved.")])
-     (if (seq searches)
-       [:section.members
-        [:ul.member-list
-         (for [{:keys [id] :as search} searches
-               :let [described (saved/describe search categories)]]
-           [:li
-            [:a {:href (board-href search)} described]
-            [:span.member-meta]
-            [:form (merge {:method "post" :action (str "/my/searches/" id "/remove")} layout/once)
-             [:button.link-button {:type "submit" :aria-label (i18n/t "Remove {search}" {:search described})} (i18n/t "Remove")]]])]]
-       [:div.empty icons/search
-        [:p (i18n/t "No saved searches yet.")]
-        [:a.button {:href "/listings"} (i18n/t "Browse listings")]]))))
+    (layout/page request
+                 {:title (i18n/t "Saved searches")}
+                 [:div.board-header
+                  [:h1 (i18n/t "Saved searches")]
+                  [:p.lede (i18n/t "Once a day at most, you get an email with what is new for them. Save one from the listings, after searching or choosing a type or a category.")]]
+                 (when saved [:p.field-note {:role "status"} (i18n/t "Saved.")])
+                 (if (seq searches)
+                   [:section.members
+                    [:ul.member-list
+                     (for [{:keys [id] :as search} searches
+                           :let [described (saved/describe search categories)]]
+                       [:li
+                        [:a {:href (board-href search)} described]
+                        [:span.member-meta]
+                        [:form (merge {:method "post" :action (str "/my/searches/" id "/remove")} layout/once)
+                         [:button.link-button {:type "submit" :aria-label (i18n/t "Remove {search}" {:search described})} (i18n/t "Remove")]]])]]
+                   [:div.empty icons/search
+                    [:p (i18n/t "No saved searches yet.")]
+                    [:a.button {:href "/listings"} (i18n/t "Browse listings")]]))))

@@ -21,7 +21,8 @@
 
 (defn- outbox
   []
-  (jdbc/execute! *db* ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
+  (jdbc/execute! *db*
+                 ["SELECT recipient, subject, body FROM email_outbox ORDER BY id"]
                  {:builder-fn rs/as-unqualified-maps}))
 
 (defn- clear-outbox! [] (jdbc/execute! *db* ["DELETE FROM email_outbox"]))
@@ -33,10 +34,14 @@
 
 (defn- post!
   [owner title at]
-  (listing/create! *db* (blob/memory-store) owner
-                   (:listing (listing/validate fixtures/settings {:kind "free" :title title :category "home"
-                                                                  :pickup "place:hall"}))
-                   [] at))
+  (listing/create! *db*
+                   (blob/memory-store)
+                   owner
+                   (:listing (listing/validate fixtures/settings
+                                               {:kind "free" :title title :category "home"
+                                                :pickup "place:hall"}))
+                   []
+                   at))
 
 (defn- send! [at] (weekly/send-due! *db* fixtures/settings at))
 
@@ -53,8 +58,12 @@
       (send! week)
       (let [email (first (filter #(= "ann@example.com" (:recipient %)) (outbox)))]
         (is (= "This week on Jumble: 2 new listings" (:subject email)))
-        (is (str/includes? (:body email) (str "- Chair: http://localhost:8080/listings/" chair "\n"
-                                              "- Lamp: http://localhost:8080/listings/" lamp)))
+        (is (str/includes? (:body email)
+                           (str "- Chair: http://localhost:8080/listings/"
+                                chair
+                                "\n"
+                                "- Lamp: http://localhost:8080/listings/"
+                                lamp)))
         (is (not (str/includes? (:body email) "Ann's own desk")))
         (is (str/includes? (:body email) "http://localhost:8080/settings") "where to turn it off")))
     (testing "not again within the week"
@@ -113,7 +122,8 @@
 (deftest many-test
   (let [ann (member! "ann" 0)
         bob (member! "bob" 0)]
-    (doseq [i (range 23)] (post! bob (str "Thing " i) (+ day i)))
+    (doseq [i (range 23)]
+      (post! bob (str "Thing " i) (+ day i)))
     (testing "twenty at most, then how many more, and where"
       (send! week)
       (let [body (:body (first (filter #(= "ann@example.com" (:recipient %)) (outbox))))]
@@ -131,8 +141,10 @@
     (testing "in the member's language"
       (send! week)
       (is (= (binding [i18n/*catalog* (i18n/catalog "fr")]
-               (i18n/tn "This week on {app-name}: {n} new listing" "This week on {app-name}: {n} new listings"
-                        1 {:app-name "Jumble"}))
+               (i18n/tn "This week on {app-name}: {n} new listing"
+                        "This week on {app-name}: {n} new listings"
+                        1
+                        {:app-name "Jumble"}))
              (:subject (first (filter #(= "ann@example.com" (:recipient %)) (outbox)))))))))
 
 (deftest failing-member-test

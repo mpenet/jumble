@@ -50,7 +50,8 @@
 
 (deftest toggle-in-header-test
   (let [body (:body ((fixtures/handler) {:request-method :get :uri "/listings" :query-string "kind=free"
-                                         :headers {"cookie" (str "jumble_session=" (sign-in! "a@example.com")
+                                         :headers {"cookie" (str "jumble_session="
+                                                                 (sign-in! "a@example.com")
                                                                  "; jumble_theme=dark")}}))]
     (is (re-find #"<form class=\"theme-toggle\" method=\"post\" action=\"/theme\"" body))
     (testing "without JS it switches to the other theme and comes back here"

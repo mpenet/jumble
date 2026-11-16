@@ -25,8 +25,9 @@
     (let [handler (routes/handler {:db (:datasource db) :oidc oidc :blobs blobs :settings settings})
           server-opts {:max-request-body-bytes max-request-body-bytes}]
       (if https
-        (let [served (https/start handler {:host host :http-port port :base-url (:base-url settings)
-                                           :https https :server-opts server-opts})]
+        (let [served (https/start handler
+                                  {:host host :http-port port :base-url (:base-url settings)
+                                   :https https :server-opts server-opts})]
           (log/info "Serving HTTP on port" (enso/port (:plain served)) "for the CA's challenges and redirects")
           (assoc this :server served))
         (let [served (enso/run-server handler (assoc server-opts :host host :port port))]

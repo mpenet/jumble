@@ -15,9 +15,13 @@
      :subject (i18n/tn "New message from {name}: {subject}" "New messages from {name}: {subject}" unread values)
      :text (str (i18n/tn "{name} sent you a message about \"{subject}\":"
                          "{name} sent you {n} messages about \"{subject}\". The latest:"
-                         unread values)
-                "\n\n" (mail/quoted latest) "\n\n"
-                (i18n/t "Read and reply: {url}" {:url (str base-url (view/thread-path thread-id))}) "\n\n"
+                         unread
+                         values)
+                "\n\n"
+                (mail/quoted latest)
+                "\n\n"
+                (i18n/t "Read and reply: {url}" {:url (str base-url (view/thread-path thread-id))})
+                "\n\n"
                 "-- \n"
                 (i18n/t "You get this email from {app-name} when a message stays unread for a few minutes."
                         {:app-name app-name})

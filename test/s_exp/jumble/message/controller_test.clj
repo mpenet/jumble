@@ -75,7 +75,9 @@
   (let [alice (sign-in! "alice@example.com")
         bob (sign-in! "bob@example.com")
         id (listing! "alice@example.com" "Desk lamp")
-        response (request :post (str "/listings/" id "/message") bob
+        response (request :post
+                          (str "/listings/" id "/message")
+                          bob
                           :form {"subject" "Desk lamp" "body" "Still <b>available</b>?"})]
     [(thread-id-of response) alice bob]))
 

@@ -86,7 +86,8 @@
   (when-let [[_ encoded] (some->> (get headers "authorization") (re-matches #"Basic (.+)"))]
     (let [[id secret] (str/split (String. (.decode (Base64/getDecoder) ^String encoded)
                                           StandardCharsets/UTF_8)
-                                 #":" 2)]
+                                 #":"
+                                 2)]
       [(codec/form-decode-str id) (codec/form-decode-str secret)])))
 
 (defn- token-endpoint
@@ -106,9 +107,10 @@
       (json 400 {:error "invalid_grant"})
 
       :else
-      (json 200 (merge {:access_token "unused" :token_type "Bearer" :expires_in 300
-                        :id_token (:id-token grant)}
-                       (:token @state))))))
+      (json 200
+            (merge {:access_token "unused" :token_type "Bearer" :expires_in 300
+                    :id_token (:id-token grant)}
+                   (:token @state))))))
 
 (defn- handler
   [state]
@@ -116,14 +118,15 @@
     (let [{:keys [issuer discovery keys]} @state]
       (case [request-method uri]
         [:get "/.well-known/openid-configuration"]
-        (json 200 (into {}
-                        (remove (comp nil? val))
-                        (merge {:issuer issuer
-                                :authorization_endpoint (str issuer "/auth")
-                                :token_endpoint (str issuer "/token")
-                                :jwks_uri (str issuer "/keys")
-                                :id_token_signing_alg_values_supported ["RS256"]}
-                               discovery)))
+        (json 200
+              (into {}
+                    (remove (comp nil? val))
+                    (merge {:issuer issuer
+                            :authorization_endpoint (str issuer "/auth")
+                            :token_endpoint (str issuer "/token")
+                            :jwks_uri (str issuer "/keys")
+                            :id_token_signing_alg_values_supported ["RS256"]}
+                           discovery)))
 
         [:get "/keys"]
         (json 200 (oda/parse (str (.toPublicJWKSet (JWKSet. ^List keys)))))
@@ -166,7 +169,9 @@
      (assert (= "code" response_type))
      (assert (= "S256" code_challenge_method))
      (assert (= #{"openid" "email" "profile"} (set (str/split scope #" "))))
-     (swap! (:state idp) assoc-in [:codes code]
+     (swap! (:state idp)
+            assoc-in
+            [:codes code]
             {:challenge code_challenge
              :redirect-uri redirect_uri
              :id-token (id-token idp (merge {:nonce nonce} claims))})

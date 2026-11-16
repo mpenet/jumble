@@ -23,7 +23,12 @@
                  "alice@" "@example.org" "a@b@c.org"
                  ;; Whole top-level domains, or hosts without a domain.
                  "*@*.com" "*@com" "bob@localhost"]]
-      (is (= ::error/invalid-pattern (try (membership/parse bad) nil (catch clojure.lang.ExceptionInfo e (ex/ex-type e))))
+      (is (= ::error/invalid-pattern
+             (try
+               (membership/parse bad)
+               nil
+               (catch clojure.lang.ExceptionInfo e
+                 (ex/ex-type e))))
           bad))))
 
 (deftest allows-test

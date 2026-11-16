@@ -13,7 +13,8 @@
 (set! *warn-on-reflection* true)
 
 (def ^:private messages-sent
-  (metrics/counter "jumble_messages_sent_total" "Messages sent, by kind: first (a conversation opened) or reply."
+  (metrics/counter "jumble_messages_sent_total"
+                   "Messages sent, by kind: first (a conversation opened) or reply."
                    [{:kind "first"} {:kind "reply"}]))
 
 (defn- messageable
@@ -40,9 +41,10 @@
           {:keys [errors] {:keys [subject body]} :message} (message/validate values)]
       (if errors
         (response/html 422 (view/compose request found {:values values :errors errors}))
-        (if-let [thread-id (message/start! (:db ctx) {:sender-id (:id user) :listing-id (:id found)
-                                                      :subject subject :body body
-                                                      :now (System/currentTimeMillis)})]
+        (if-let [thread-id (message/start! (:db ctx)
+                                           {:sender-id (:id user) :listing-id (:id found)
+                                            :subject subject :body body
+                                            :now (System/currentTimeMillis)})]
           (do (metrics/inc! messages-sent {:kind "first"})
               (response/redirect (view/thread-path thread-id)))
           (layout/not-found request))))

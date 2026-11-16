@@ -17,7 +17,8 @@
 (set! *warn-on-reflection* true)
 
 (def ^:private sent
-  (metrics/counter "jumble_push_total" "Browser notifications handled, by result: sent, gone, failed or dropped."
+  (metrics/counter "jumble_push_total"
+                   "Browser notifications handled, by result: sent, gone, failed or dropped."
                    (for [result ["sent" "gone" "failed" "dropped"]] {:result result})))
 
 (def ^:private batch-size 100)
@@ -35,7 +36,8 @@
   "Notifications due at `now`, each `:needless` when there is no longer
   anything to tell, or nobody signed in on that device to tell it to."
   [db now]
-  (jdbc/execute! db ["SELECT d.id, d.attempts, d.subscription_id, s.endpoint, s.p256dh, s.auth,
+  (jdbc/execute! db
+                 ["SELECT d.id, d.attempts, d.subscription_id, s.endpoint, s.p256dh, s.auth,
                              m.thread_id, t.subject, sender.name AS sender_name, u.email, u.language,
                              (u.deleted_at IS NOT NULL OR sender.deleted_at IS NOT NULL OR p.user_id IS NULL
                               OR p.last_read_message_id >= m.id
@@ -50,7 +52,10 @@
                       LEFT JOIN thread_participant p ON p.thread_id = m.thread_id AND p.user_id = s.user_id
                       WHERE d.due_at <= ?
                       ORDER BY d.due_at, d.id LIMIT ?"
-                     now (- now account/max-session-age) now batch-size]
+                  now
+                  (- now account/max-session-age)
+                  now
+                  batch-size]
                  db/opts))
 
 (defn- notification
@@ -59,7 +64,9 @@
   conversation, the latest replacing the earlier."
   [{:keys [base-url]} {:keys [thread-id subject sender-name language]}]
   (i18n/speaking language
-    (oda/write-str {:title (i18n/tn "New message from {name}: {subject}" "New messages from {name}: {subject}" 1
+    (oda/write-str {:title (i18n/tn "New message from {name}: {subject}"
+                                    "New messages from {name}: {subject}"
+                                    1
                                     {:name sender-name :subject subject})
                     :url (str base-url (message-view/thread-path thread-id))
                     :tag (str "thread-" thread-id)
@@ -75,8 +82,11 @@
   (let [attempts (inc attempts)]
     (db/with-write-tx [tx db]
       (if (< attempts max-attempts)
-        (jdbc/execute-one! tx ["UPDATE push_delivery SET attempts = ?, due_at = ? WHERE id = ?"
-                               attempts (outbox/retry-at attempts now) id])
+        (jdbc/execute-one! tx
+                           ["UPDATE push_delivery SET attempts = ?, due_at = ? WHERE id = ?"
+                            attempts
+                            (outbox/retry-at attempts now)
+                            id])
         (jdbc/execute-one! tx ["DELETE FROM push_delivery WHERE id = ?" id])))))
 
 (defn- deliver!
@@ -86,18 +96,19 @@
     (do (done! db id)
         (metrics/inc! sent {:result "dropped"})
         false)
-    (let [status (try (:status (send {:method :post
-                                      :url endpoint
-                                      :headers {"content-encoding" "aes128gcm"
-                                                "content-type" "application/octet-stream"
-                                                "ttl" ttl
-                                                "urgency" "normal"
-                                                "authorization" (crypto/authorization keys endpoint (:base-url settings) now)}
-                                      :body (crypto/encrypt pending (.getBytes ^String (notification settings pending) "UTF-8"))}))
-                      ;; Unreachable, or anything else: tried again, then given up on.
-                      (catch Exception e
-                        (log/warn e "Push notification not sent" {:subscription subscription-id})
-                        nil))]
+    (let [status (try
+                   (:status (send {:method :post
+                                   :url endpoint
+                                   :headers {"content-encoding" "aes128gcm"
+                                             "content-type" "application/octet-stream"
+                                             "ttl" ttl
+                                             "urgency" "normal"
+                                             "authorization" (crypto/authorization keys endpoint (:base-url settings) now)}
+                                   :body (crypto/encrypt pending (.getBytes ^String (notification settings pending) "UTF-8"))}))
+                   ;; Unreachable, or anything else: tried again, then given up on.
+                   (catch Exception e
+                     (log/warn e "Push notification not sent" {:subscription subscription-id})
+                     nil))]
       (cond
         (and status (<= 200 status 299))
         (do (done! db id) (metrics/inc! sent {:result "sent"}) true)

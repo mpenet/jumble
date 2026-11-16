@@ -40,9 +40,10 @@
 (defn choose!
   "Makes `palette`, one of [[names]], the community's."
   [db palette]
-  (jdbc/execute-one! db ["INSERT INTO community_setting (name, value) VALUES ('palette', ?)
+  (jdbc/execute-one! db
+                     ["INSERT INTO community_setting (name, value) VALUES ('palette', ?)
                           ON CONFLICT (name) DO UPDATE SET value = excluded.value"
-                         palette]))
+                      palette]))
 
 (defn wrap-palette
   "Gives the request the community's `:palette`, a delay: read only by

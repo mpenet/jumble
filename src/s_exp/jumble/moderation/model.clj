@@ -26,28 +26,38 @@
   listing is gone or theirs."
   [db {:keys [listing-id reporter-id reason now alerts]}]
   (db/with-write-tx [tx db]
-    (let [{:keys [title user-id]} (jdbc/execute-one! tx ["SELECT title, user_id FROM listing WHERE id = ?" listing-id]
+    (let [{:keys [title user-id]} (jdbc/execute-one! tx
+                                                     ["SELECT title, user_id FROM listing WHERE id = ?" listing-id]
                                                      db/opts)
           open (when title
-                 (jdbc/execute! tx ["SELECT reporter_id FROM report WHERE listing_id = ? AND resolution IS NULL"
-                                    listing-id]
+                 (jdbc/execute! tx
+                                ["SELECT reporter_id FROM report WHERE listing_id = ? AND resolution IS NULL"
+                                 listing-id]
                                 db/opts))]
       (cond
         (or (nil? title) (= reporter-id user-id)) nil
         (some #(= reporter-id (:reporter-id %)) open) :already
-        :else (do (jdbc/execute-one! tx ["INSERT INTO report (listing_id, listing_title, reporter_id, reason, created_at)
+
+        :else
+        (do (jdbc/execute-one! tx
+                               ["INSERT INTO report (listing_id, listing_title, reporter_id, reason, created_at)
                                           VALUES (?, ?, ?, ?, ?)"
-                                         listing-id title reporter-id reason now])
-                  (when (empty? open)
-                    (doseq [alert alerts]
-                      (outbox/enqueue! tx alert now)))
-                  :new)))))
+                                listing-id
+                                title
+                                reporter-id
+                                reason
+                                now])
+            (when (empty? open)
+              (doseq [alert alerts]
+                (outbox/enqueue! tx alert now)))
+            :new)))))
 
 (defn open-reports
   "Listings with open reports, the longest waiting first, each with its
   owner and reports."
   [db]
-  (->> (jdbc/execute! db ["SELECT r.listing_id, r.listing_title, o.id AS owner_id, o.name AS owner_name, o.email AS owner_email,
+  (->> (jdbc/execute! db
+                      ["SELECT r.listing_id, r.listing_title, o.id AS owner_id, o.name AS owner_name, o.email AS owner_email,
                                   u.name AS reporter_name, r.reason, r.created_at
                            FROM report r
                            JOIN listing l ON l.id = r.listing_id
@@ -69,10 +79,13 @@
 
 (defn- resolve!
   [tx listing-id resolution moderator-id now]
-  (:next.jdbc/update-count
-   (jdbc/execute-one! tx ["UPDATE report SET resolution = ?, resolved_by = ?, resolved_at = ?
+  (:next.jdbc/update-count (jdbc/execute-one! tx
+                                              ["UPDATE report SET resolution = ?, resolved_by = ?, resolved_at = ?
                            WHERE listing_id = ? AND resolution IS NULL"
-                          resolution moderator-id now listing-id])))
+                                               resolution
+                                               moderator-id
+                                               now
+                                               listing-id])))
 
 (defn remove-listing!
   "Removes listing `listing-id` as moderator `moderator-id`, resolving its open
@@ -80,13 +93,22 @@
   reported records it as a report by the moderator, with `reason`, resolved
   at once. True when it was there."
   [db blobs {:keys [listing-id moderator-id now notice reason]}]
-  (listing/remove! db blobs listing-id
+  (listing/remove! db
+                   blobs
+                   listing-id
                    (fn [tx {:keys [title]}]
                      (when (zero? (resolve! tx listing-id "removed" moderator-id now))
-                       (jdbc/execute-one! tx ["INSERT INTO report (listing_id, listing_title, reporter_id, reason, created_at,
+                       (jdbc/execute-one! tx
+                                          ["INSERT INTO report (listing_id, listing_title, reporter_id, reason, created_at,
                                                                    resolution, resolved_by, resolved_at)
                                                VALUES (?, ?, ?, ?, ?, 'removed', ?, ?)"
-                                              listing-id title moderator-id (or reason "") now moderator-id now]))
+                                           listing-id
+                                           title
+                                           moderator-id
+                                           (or reason "")
+                                           now
+                                           moderator-id
+                                           now]))
                      (outbox/enqueue! tx notice now))))
 
 (defn dismiss!

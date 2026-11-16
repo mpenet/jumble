@@ -28,7 +28,8 @@
    :ctx (ctx "http://localhost:8080")})
 
 (deftest require-user-test
-  (let [user (account/upsert-user! *db* {:iss "i" :sub "s" :email "a@example.com" :name "A"}
+  (let [user (account/upsert-user! *db*
+                                   {:iss "i" :sub "s" :email "a@example.com" :name "A"}
                                    (System/currentTimeMillis))
         t (account/create-session! *db* (:id user) (System/currentTimeMillis) ttl)]
     (testing "a live session cookie resolves to its user"

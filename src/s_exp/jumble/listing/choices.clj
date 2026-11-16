@@ -21,8 +21,10 @@
 
 (defn- entries
   [db which]
-  (jdbc/execute! db [(str "SELECT id, label, retired_at FROM " (get-in tables [which :table])
-                          " ORDER BY position, id")]
+  (jdbc/execute! db
+                 [(str "SELECT id, label, retired_at FROM "
+                       (get-in tables [which :table])
+                       " ORDER BY position, id")]
                  db/opts))
 
 (defn all
@@ -53,9 +55,12 @@
   (db/with-write-tx [tx db]
     (doseq [[id english translated] (default-categories)
             :when (not= english translated)]
-      (jdbc/execute-one! tx ["UPDATE category SET label = ?1 WHERE id = ?2 AND label = ?3
+      (jdbc/execute-one! tx
+                         ["UPDATE category SET label = ?1 WHERE id = ?2 AND label = ?3
                               AND NOT EXISTS (SELECT 1 FROM category WHERE label = ?1 COLLATE NOCASE AND id <> ?2)"
-                             translated id english]))))
+                          translated
+                          id
+                          english]))))
 
 (defn choosable
   "The `entries` not retired: those offered to listings."
@@ -68,8 +73,14 @@
   (let [{:keys [column]} (tables which)]
     (into {}
           (map (juxt :id :n))
-          (jdbc/execute! db [(str "SELECT " column " AS id, count(*) AS n FROM listing
-                                   WHERE " column " IS NOT NULL GROUP BY " column)]
+          (jdbc/execute! db
+                         [(str "SELECT "
+                               column
+                               " AS id, count(*) AS n FROM listing
+                                   WHERE "
+                               column
+                               " IS NOT NULL GROUP BY "
+                               column)]
                          db/opts))))
 
 (defn slug
@@ -89,18 +100,27 @@
   (cond
     (str/blank? label) {:label (i18n/t "Give it a name.")}
     (> (count label) max-label) {:label (i18n/t "Keep the name to {max} characters or fewer." {:max max-label})}
-    :else (when-let [{other :label} (jdbc/execute-one! tx [(str "SELECT label FROM " (get-in tables [which :table])
-                                                                " WHERE label = ? COLLATE NOCASE AND id IS NOT ?")
-                                                           label id]
-                                                       db/opts)]
-            {:label (i18n/t "There is already one named “{label}”." {:label other})})))
+
+    :else
+    (when-let [{other :label} (jdbc/execute-one! tx
+                                                 [(str "SELECT label FROM "
+                                                       (get-in tables [which :table])
+                                                       " WHERE label = ? COLLATE NOCASE AND id IS NOT ?")
+                                                  label
+                                                  id]
+                                                 db/opts)]
+      {:label (i18n/t "There is already one named “{label}”." {:label other})})))
 
 (defn- free-id
   "`base`, or `base-2`, `base-3`… the first not taken in `table`."
   [tx table base]
-  (let [taken (into #{} (map :id) (jdbc/execute! tx [(str "SELECT id FROM " table " WHERE id = ? OR id LIKE ?")
-                                                     base (str base "-%")]
-                                                 db/opts))]
+  (let [taken (into #{}
+                    (map :id)
+                    (jdbc/execute! tx
+                                   [(str "SELECT id FROM " table " WHERE id = ? OR id LIKE ?")
+                                    base
+                                    (str base "-%")]
+                                   db/opts))]
     (first (remove taken (cons base (map #(str base "-" %) (iterate inc 2)))))))
 
 (defn add!
@@ -112,9 +132,14 @@
     (db/with-write-tx [tx db]
       (or (some->> (label-errors tx which nil label) (hash-map :errors))
           (let [id (free-id tx table (or (not-empty (slug label)) table))]
-            (jdbc/execute-one! tx [(str "INSERT INTO " table " (id, label, position)
-                                         SELECT ?, ?, coalesce(max(position), 0) + 1 FROM " table)
-                                   id label])
+            (jdbc/execute-one! tx
+                               [(str "INSERT INTO "
+                                     table
+                                     " (id, label, position)
+                                         SELECT ?, ?, coalesce(max(position), 0) + 1 FROM "
+                                     table)
+                                id
+                                label])
             {:id id})))))
 
 (defn rename!
@@ -124,9 +149,12 @@
   (let [label (params/trimmed label)]
     (db/with-write-tx [tx db]
       (or (some->> (label-errors tx which id label) (hash-map :errors))
-          (when (pos? (::jdbc/update-count (jdbc/execute-one! tx [(str "UPDATE " (get-in tables [which :table])
-                                                                       " SET label = ? WHERE id = ?")
-                                                                  label id])))
+          (when (pos? (::jdbc/update-count (jdbc/execute-one! tx
+                                                              [(str "UPDATE "
+                                                                    (get-in tables [which :table])
+                                                                    " SET label = ? WHERE id = ?")
+                                                               label
+                                                               id])))
             {:ok true})))))
 
 (defn move!
@@ -135,8 +163,10 @@
   [db which id direction]
   (let [{:keys [table]} (tables which)]
     (db/with-write-tx [tx db]
-      (let [ordered (jdbc/execute! tx [(str "SELECT id, position FROM " table
-                                            " WHERE retired_at IS NULL ORDER BY position, id")]
+      (let [ordered (jdbc/execute! tx
+                                   [(str "SELECT id, position FROM "
+                                         table
+                                         " WHERE retired_at IS NULL ORDER BY position, id")]
                                    db/opts)
             ordered (cond-> ordered (= :up direction) reverse)
             [entry neighbour] (->> ordered (drop-while #(not= id (:id %))) (take 2))]
@@ -154,9 +184,13 @@
       (if (and (= :category which)
                (= [{:id id}] (jdbc/execute! tx ["SELECT id FROM category WHERE retired_at IS NULL"] db/opts)))
         {:errors {:label (i18n/t "Keep at least one category.")}}
-        (when (pos? (::jdbc/update-count (jdbc/execute-one! tx [(str "UPDATE " table " SET retired_at = ?
+        (when (pos? (::jdbc/update-count (jdbc/execute-one! tx
+                                                            [(str "UPDATE "
+                                                                  table
+                                                                  " SET retired_at = ?
                                                                       WHERE id = ? AND retired_at IS NULL")
-                                                                now id])))
+                                                             now
+                                                             id])))
           {:ok true})))))
 
 (defn restore!
@@ -164,8 +198,10 @@
   nil when there is no such retired entry."
   [db which id]
   (db/with-write-tx [tx db]
-    (when (pos? (::jdbc/update-count (jdbc/execute-one! tx [(str "UPDATE " (get-in tables [which :table])
-                                                                 " SET retired_at = NULL
+    (when (pos? (::jdbc/update-count (jdbc/execute-one! tx
+                                                        [(str "UPDATE "
+                                                              (get-in tables [which :table])
+                                                              " SET retired_at = NULL
                                                                    WHERE id = ? AND retired_at IS NOT NULL")
-                                                            id])))
+                                                         id])))
       {:ok true})))

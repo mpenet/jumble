@@ -77,7 +77,8 @@
 
 (deftest override-test
   (testing "the ex-data's :http/status, :http/headers and :http/body go over the category's response"
-    (let [{:keys [status headers body]} (respond (ex/ex-info "Taken" ::ex/conflict
+    (let [{:keys [status headers body]} (respond (ex/ex-info "Taken"
+                                                             ::ex/conflict
                                                              {:http/status 422
                                                               :http/headers {"x-reason" "taken"
                                                                              "content-type" "text/plain"}

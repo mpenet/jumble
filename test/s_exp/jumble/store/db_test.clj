@@ -95,8 +95,12 @@
                                                      (.await release)))]
                          (.await held)
                          (try
-                           (let [e (try (db/with-write-tx [_ ds] :unreachable) nil
-                                        (catch clojure.lang.ExceptionInfo e e))]
+                           (let [e (try
+                                     (db/with-write-tx [_ ds]
+                                       :unreachable)
+                                     nil
+                                     (catch clojure.lang.ExceptionInfo e
+                                       e))]
                              (is (re-find #"write lock" (ex-message e)))
                              (is (= ::error/write-lock-timeout (ex/ex-type e))))
                            (finally
@@ -107,10 +111,13 @@
   (call-with-db-path (fn [path]
                        (with-open [ds (db/datasource path)]
                          (testing "a nested write transaction would wait on its own lock; it fails fast"
-                           (let [e (try (db/with-write-tx [_ ds]
-                                          (db/with-write-tx [_ ds] :unreachable))
-                                        nil
-                                        (catch clojure.lang.ExceptionInfo e e))]
+                           (let [e (try
+                                     (db/with-write-tx [_ ds]
+                                       (db/with-write-tx [_ ds]
+                                         :unreachable))
+                                     nil
+                                     (catch clojure.lang.ExceptionInfo e
+                                       e))]
                              (is (re-find #"[Nn]ested" (ex-message e)))
                              (is (= ::error/nested-write-tx (ex/ex-type e)))))))))
 
@@ -121,11 +128,15 @@
                          (testing "recorded on first start, accepted while unchanged"
                            (db/pin-settings! ds {"currency" "CHF"})
                            (db/pin-settings! ds {"currency" "CHF"})
-                           (is (= "CHF" (:value (jdbc/execute-one! ds ["SELECT value FROM setting WHERE key = 'currency'"]
+                           (is (= "CHF" (:value (jdbc/execute-one! ds
+                                                                   ["SELECT value FROM setting WHERE key = 'currency'"]
                                                                    {:builder-fn rs/as-unqualified-maps})))))
                          (testing "a changed value refuses to start, naming both"
-                           (let [e (try (db/pin-settings! ds {"currency" "EUR"}) nil
-                                        (catch clojure.lang.ExceptionInfo e e))]
+                           (let [e (try
+                                     (db/pin-settings! ds {"currency" "EUR"})
+                                     nil
+                                     (catch clojure.lang.ExceptionInfo e
+                                       e))]
                              (is (= {:type ::error/setting-changed :setting "currency" :recorded "CHF" :configured "EUR"} (ex-data e)))))))))
 
 (deftest busy-from-outside-test
@@ -136,7 +147,11 @@
                    other (java.sql.DriverManager/getConnection (str "jdbc:sqlite:" path))]
          (jdbc/execute! ds ["CREATE TABLE t (x INTEGER)"])
          (jdbc/execute! other ["BEGIN IMMEDIATE"])
-         (let [e (try (db/with-write-tx [tx ds] (jdbc/execute! tx ["INSERT INTO t VALUES (1)"])) nil
-                      (catch clojure.lang.ExceptionInfo e e))]
+         (let [e (try
+                   (db/with-write-tx [tx ds]
+                     (jdbc/execute! tx ["INSERT INTO t VALUES (1)"]))
+                   nil
+                   (catch clojure.lang.ExceptionInfo e
+                     e))]
            (is (= ::error/write-lock-timeout (ex/ex-type e))))
          (jdbc/execute! other ["ROLLBACK"]))))))

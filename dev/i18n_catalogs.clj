@@ -65,12 +65,13 @@
 
 (defn- po-entry
   [{:keys [msgid msgid-plural refs]} translation]
-  (str/join "\n" (concat [(str "#: " (str/join " " refs))
-                          (str "msgid " (quote-po msgid))]
-                         (if msgid-plural
-                           (cons (str "msgid_plural " (quote-po msgid-plural))
-                                 (for [i [0 1]] (str "msgstr[" i "] " (quote-po (get translation i "")))))
-                           [(str "msgstr " (quote-po (get translation 0 "")))]))))
+  (str/join "\n"
+            (concat [(str "#: " (str/join " " refs))
+                     (str "msgid " (quote-po msgid))]
+                    (if msgid-plural
+                      (cons (str "msgid_plural " (quote-po msgid-plural))
+                            (for [i [0 1]] (str "msgstr[" i "] " (quote-po (get translation i "")))))
+                      [(str "msgstr " (quote-po (get translation 0 "")))]))))
 
 (def ^:private plural-forms
   {"fr" "nplurals=2; plural=(n > 1);"
@@ -89,13 +90,16 @@
   (str "msgid \"\"\nmsgstr \"\"\n"
        (when language (str "\"Language: " language "\\n\"\n"))
        "\"Content-Type: text/plain; charset=UTF-8\\n\"\n"
-       "\"Plural-Forms: " (plural-forms language "nplurals=2; plural=(n != 1);") "\\n\"\n"))
+       "\"Plural-Forms: "
+       (plural-forms language "nplurals=2; plural=(n != 1);")
+       "\\n\"\n"))
 
 (defn catalog-text
   "The .po text of `language` (nil for the template) for `messages`,
   with `translations` (msgid -> index -> text) where known."
   [language messages translations]
-  (str (header language) "\n"
+  (str (header language)
+       "\n"
        (str/join "\n\n" (map #(po-entry % (get translations (:msgid %))) messages))
        "\n"))
 

@@ -44,7 +44,8 @@
           :softbreak (constantly [:br])
           :todo-item (fn [ctx {:keys [attrs] :as node}]
                        (md/into-hiccup [:li [:input {:type "checkbox" :checked (:checked attrs) :disabled true}]]
-                                       ctx node))
+                                       ctx
+                                       node))
           :toc (constantly nil)}))
 
 (defn- paragraphs

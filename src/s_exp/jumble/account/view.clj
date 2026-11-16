@@ -40,101 +40,101 @@
 
 (defn settings
   [{:keys [user] :as request} {:keys [notify-messages weekly-digest language name-editable values errors saved] :as data}]
-  (layout/page
-   request {:title (i18n/t "Settings")}
-   [:div.board-header
-    [:h1 (i18n/t "Settings")]
-    [:p.lede (i18n/t "Signed in as {email}" {:email (:email user)})]]
-   [:form.listing-form (merge {:method "post" :action "/settings" :novalidate true} layout/once)
-    (when name-editable
-      (list [:label {:for "name"} (i18n/t "Name")]
-            [:input (merge {:id "name" :name "name" :value (:name values) :maxlength 80 :required true
-                            :autocomplete "name"}
-                           (layout/invalid errors :name))]
-            (layout/field-error errors :name)
-            [:p.field-note (i18n/t "Shown to other members on your listings and messages.")]))
-    [:label {:for "language"} (i18n/t "Language")]
-    [:select {:id "language" :name "language"}
-     [:option {:value "" :selected (nil? language)}
-      (i18n/t "The community's ({language})" {:language (i18n/language-name (:language i18n/*community-catalog* "en"))})]
-     (for [[l name] i18n/language-names]
-       [:option {:value l :selected (= l language)} name])]
-    [:fieldset
-     [:legend (i18n/t "Email")]
-     [:label.choice
-      [:input {:type "checkbox" :name "notify_messages" :checked notify-messages}]
-      (i18n/t "Email me when a message stays unread for a few minutes")]
-     [:label.choice
-      [:input {:type "checkbox" :name "weekly_digest" :checked weekly-digest}]
-      (i18n/t "Email me once a week what is new on the board")]]
-    (when saved [:p.field-note {:role "status"} (i18n/t "Saved.")])
-    [:button {:type "submit"} (i18n/t "Save")]]
-   (notifications request data)
-   [:section.your-data
-    [:h2 (i18n/t "Your data")]
-    [:p (i18n/t "{download-link} — your account, listings, favorites, conversations and reports, as a JSON file."
-                {:download-link [:a {:href "/settings/export"} (i18n/t "Download your data")]})]
-    [:p [:a.danger-link {:href "/settings/delete"} (i18n/t "Delete your account")]]]))
+  (layout/page request
+               {:title (i18n/t "Settings")}
+               [:div.board-header
+                [:h1 (i18n/t "Settings")]
+                [:p.lede (i18n/t "Signed in as {email}" {:email (:email user)})]]
+               [:form.listing-form (merge {:method "post" :action "/settings" :novalidate true} layout/once)
+                (when name-editable
+                  (list [:label {:for "name"} (i18n/t "Name")]
+                        [:input (merge {:id "name" :name "name" :value (:name values) :maxlength 80 :required true
+                                        :autocomplete "name"}
+                                       (layout/invalid errors :name))]
+                        (layout/field-error errors :name)
+                        [:p.field-note (i18n/t "Shown to other members on your listings and messages.")]))
+                [:label {:for "language"} (i18n/t "Language")]
+                [:select {:id "language" :name "language"}
+                 [:option {:value "" :selected (nil? language)}
+                  (i18n/t "The community's ({language})" {:language (i18n/language-name (:language i18n/*community-catalog* "en"))})]
+                 (for [[l name] i18n/language-names]
+                   [:option {:value l :selected (= l language)} name])]
+                [:fieldset
+                 [:legend (i18n/t "Email")]
+                 [:label.choice
+                  [:input {:type "checkbox" :name "notify_messages" :checked notify-messages}]
+                  (i18n/t "Email me when a message stays unread for a few minutes")]
+                 [:label.choice
+                  [:input {:type "checkbox" :name "weekly_digest" :checked weekly-digest}]
+                  (i18n/t "Email me once a week what is new on the board")]]
+                (when saved [:p.field-note {:role "status"} (i18n/t "Saved.")])
+                [:button {:type "submit"} (i18n/t "Save")]]
+               (notifications request data)
+               [:section.your-data
+                [:h2 (i18n/t "Your data")]
+                [:p (i18n/t "{download-link} — your account, listings, favorites, conversations and reports, as a JSON file."
+                            {:download-link [:a {:href "/settings/export"} (i18n/t "Download your data")]})]
+                [:p [:a.danger-link {:href "/settings/delete"} (i18n/t "Delete your account")]]]))
 
 (defn confirm-delete
   "Asks the user to confirm deleting their account, saying what happens."
   [request]
-  (layout/page
-   request {:title (i18n/t "Delete your account")}
-   [:section.message
-    icons/empty-box
-    [:h1 (i18n/t "Delete your account?")]
-    [:p (i18n/t "Your listings and their photos, your favorites and your settings will be deleted, and you will be signed out. Messages you sent stay with the people you wrote to, from \"A former member\". This cannot be undone.")]
-    [:p (i18n/t "{download-link} first, if you want to keep a copy."
-                {:download-link [:a {:href "/settings/export"} (i18n/t "Download your data")]})]
-    [:div.message-actions
-     [:form (merge {:method "post" :action "/settings/delete"} layout/once)
-      [:button.danger {:type "submit"} (i18n/t "Delete my account")]]
-     [:a.button.secondary {:href "/settings"} (i18n/t "Keep it")]]]))
+  (layout/page request
+               {:title (i18n/t "Delete your account")}
+               [:section.message
+                icons/empty-box
+                [:h1 (i18n/t "Delete your account?")]
+                [:p (i18n/t "Your listings and their photos, your favorites and your settings will be deleted, and you will be signed out. Messages you sent stay with the people you wrote to, from \"A former member\". This cannot be undone.")]
+                [:p (i18n/t "{download-link} first, if you want to keep a copy."
+                            {:download-link [:a {:href "/settings/export"} (i18n/t "Download your data")]})]
+                [:div.message-actions
+                 [:form (merge {:method "post" :action "/settings/delete"} layout/once)
+                  [:button.danger {:type "submit"} (i18n/t "Delete my account")]]
+                 [:a.button.secondary {:href "/settings"} (i18n/t "Keep it")]]]))
 
 (defn email-sign-in
   "Asks for the email address to send a sign-in link to."
   [request {:keys [values errors]}]
-  (layout/page
-   request {:title (i18n/t "Sign in")}
-   [:section.message
-    icons/mail
-    [:h1 (i18n/t "Sign in")]
-    [:p (i18n/t "Enter your email address and we will send you a link to sign in.")]
-    [:form.sign-in-form (merge {:method "post" :action "/login" :novalidate true} layout/once)
-     [:input {:type "hidden" :name "return_to" :value (:return-to values)}]
-     [:label.sr-only {:for "email"} (i18n/t "Email address")]
-     [:input (merge {:id "email" :type "email" :name "email" :value (:email values) :autocomplete "email"
-                     :required true :placeholder (i18n/t "you@example.org")}
-                    (layout/invalid errors :email))]
-     (layout/field-error errors :email)
-     [:button {:type "submit"} (i18n/t "Email me a link")]]]))
+  (layout/page request
+               {:title (i18n/t "Sign in")}
+               [:section.message
+                icons/mail
+                [:h1 (i18n/t "Sign in")]
+                [:p (i18n/t "Enter your email address and we will send you a link to sign in.")]
+                [:form.sign-in-form (merge {:method "post" :action "/login" :novalidate true} layout/once)
+                 [:input {:type "hidden" :name "return_to" :value (:return-to values)}]
+                 [:label.sr-only {:for "email"} (i18n/t "Email address")]
+                 [:input (merge {:id "email" :type "email" :name "email" :value (:email values) :autocomplete "email"
+                                 :required true :placeholder (i18n/t "you@example.org")}
+                                (layout/invalid errors :email))]
+                 (layout/field-error errors :email)
+                 [:button {:type "submit"} (i18n/t "Email me a link")]]]))
 
 (defn check-inbox
   "What anyone asking for a link is told, member or not."
   [request minutes]
-  (layout/page
-   request {:title (i18n/t "Check your inbox")}
-   [:section.message
-    icons/mail
-    [:h1 (i18n/t "Check your inbox")]
-    [:p (i18n/tn "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minute."
-                 "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minutes."
-                 minutes)]
-    [:div.message-actions
-     [:a.button.secondary {:href "/login"} (i18n/t "Use another address")]]]))
+  (layout/page request
+               {:title (i18n/t "Check your inbox")}
+               [:section.message
+                icons/mail
+                [:h1 (i18n/t "Check your inbox")]
+                [:p (i18n/tn "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minute."
+                             "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minutes."
+                             minutes)]
+                [:div.message-actions
+                 [:a.button.secondary {:href "/login"} (i18n/t "Use another address")]]]))
 
 (defn confirm-email-sign-in
   "Asks to confirm signing in with the link's token. A page, not an
   immediate sign-in: mail scanners follow links, and would use them up."
   [request email token]
-  (layout/page
-   request {:title (i18n/t "Sign in")}
-   [:section.message
-    icons/mail
-    [:h1 (i18n/t "Sign in")]
-    [:p (i18n/t "Sign in as {email}?" {:email [:strong email]})]
-    [:form (merge {:method "post" :action "/login/email"} layout/once)
-     [:input {:type "hidden" :name "token" :value token}]
-     [:div.message-actions
-      [:button {:type "submit"} (i18n/t "Sign in")]]]]))
+  (layout/page request
+               {:title (i18n/t "Sign in")}
+               [:section.message
+                icons/mail
+                [:h1 (i18n/t "Sign in")]
+                [:p (i18n/t "Sign in as {email}?" {:email [:strong email]})]
+                [:form (merge {:method "post" :action "/login/email"} layout/once)
+                 [:input {:type "hidden" :name "token" :value token}]
+                 [:div.message-actions
+                  [:button {:type "submit"} (i18n/t "Sign in")]]]]))

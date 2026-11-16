@@ -20,17 +20,22 @@
   (let [{:keys [send postpone]} (notification/decide db pending now)]
     (cond
       (and send (not (allowed (:to send)))) (do (notification/drop! db pending) false)
-      send (if-let [error (try (mailer (i18n/speaking (:language send) (email/notification settings send)))
-                               nil
-                               (catch Exception e e))]
-             (let [outcome (notification/failed! db pending now)]
-               (metrics/inc! outbox/emails {:result "failed"})
-               (log/warn "Message email failed"
-                         (merge {:thread-id (:thread-id pending) :outcome outcome} (mail/failure error)))
-               false)
-             (do (metrics/inc! outbox/emails {:result "sent"})
-                 (outbox/record-sent! #(notification/sent! db pending now))
-                 true))
+
+      send
+      (if-let [error (try
+                       (mailer (i18n/speaking (:language send) (email/notification settings send)))
+                       nil
+                       (catch Exception e
+                         e))]
+        (let [outcome (notification/failed! db pending now)]
+          (metrics/inc! outbox/emails {:result "failed"})
+          (log/warn "Message email failed"
+                    (merge {:thread-id (:thread-id pending) :outcome outcome} (mail/failure error)))
+          false)
+        (do (metrics/inc! outbox/emails {:result "sent"})
+            (outbox/record-sent! #(notification/sent! db pending now))
+            true))
+
       postpone (do (notification/postpone! db pending postpone) false)
       :else (do (notification/drop! db pending) false))))
 

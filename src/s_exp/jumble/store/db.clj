@@ -82,7 +82,8 @@
     (when (.isHeldByCurrentThread lock)
       (throw (ex/ex-info "Nested write transaction" ::error/nested-write-tx)))
     (when-not (.tryLock lock (.-write-lock-timeout-ms db) TimeUnit/MILLISECONDS)
-      (throw (ex/ex-info "Timed out waiting for the database write lock" ::error/write-lock-timeout
+      (throw (ex/ex-info "Timed out waiting for the database write lock"
+                         ::error/write-lock-timeout
                          {:timeout-ms (.-write-lock-timeout-ms db)})))
     (try
       (jdbc/with-transaction [tx db]
@@ -114,13 +115,17 @@
   [db settings]
   (with-write-tx [tx db]
     (doseq [[k v] settings]
-      (let [recorded (:value (jdbc/execute-one! tx ["SELECT value FROM setting WHERE key = ?" k]
+      (let [recorded (:value (jdbc/execute-one! tx
+                                                ["SELECT value FROM setting WHERE key = ?" k]
                                                 opts))]
         (cond
-          (nil? recorded) (jdbc/execute-one! tx ["INSERT INTO setting (key, value) VALUES (?, ?)" k v])
-          (not= recorded v) (throw (ex/ex-info (str "Configured " k " differs from the one this database was created with")
-                                               ::error/setting-changed
-                                               {:setting k :recorded recorded :configured v})))))))
+          (nil? recorded)
+          (jdbc/execute-one! tx ["INSERT INTO setting (key, value) VALUES (?, ?)" k v])
+
+          (not= recorded v)
+          (throw (ex/ex-info (str "Configured " k " differs from the one this database was created with")
+                             ::error/setting-changed
+                             {:setting k :recorded recorded :configured v})))))))
 
 ;; Started component carries `:datasource`; not a declared field so it does not
 ;; shadow the `datasource` fn inside the methods.

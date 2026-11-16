@@ -39,15 +39,21 @@
 
 (deftest missing-settings-name-variables-test
   (testing "what is missing is named as the variable to set"
-    (let [e (try (config/load-config :prod nil) nil
-                 (catch clojure.lang.ExceptionInfo e e))]
+    (let [e (try
+              (config/load-config :prod nil)
+              nil
+              (catch clojure.lang.ExceptionInfo e
+                e))]
       (is (re-find #"JUMBLE_BASE_URL" (ex-message e)))
       (is (re-find #"JUMBLE_SIGN_IN" (ex-message e))))))
 
 (deftest prod-profile-requires-settings-test
   (testing "without environment variables, production refuses to start and says why"
-    (let [e (try (config/load-config :prod nil) nil
-                 (catch clojure.lang.ExceptionInfo e e))]
+    (let [e (try
+              (config/load-config :prod nil)
+              nil
+              (catch clojure.lang.ExceptionInfo e
+                e))]
       (is (= ::error/missing-config (ex/ex-type e)))
       (is (= #{[:base-url] [:auth :method] [:auth :allowed-emails]
                [:storage :endpoint] [:storage :region] [:storage :bucket]
@@ -70,8 +76,11 @@
 
 (defn- invalid-path
   [config]
-  (try (config/normalize config) nil
-       (catch clojure.lang.ExceptionInfo e (:invalid (ex-data e)))))
+  (try
+    (config/normalize config)
+    nil
+    (catch clojure.lang.ExceptionInfo e
+      (:invalid (ex-data e)))))
 
 (deftest catalog-validation-test
   (testing "currency must be an ISO 4217 code"
@@ -171,18 +180,25 @@
            (get-in (config/normalize (assoc-in valid [:auth :allowed-emails] ["*@example.com"]))
                    [:auth :allowed-emails]))))
   (testing "* lets anyone in"
-    (is (= :anyone (get-in (config/normalize (assoc-in valid [:auth :allowed-emails] "*"))
-                           [:auth :allowed-emails]))))
+    (is (= :anyone
+           (get-in (config/normalize (assoc-in valid [:auth :allowed-emails] "*"))
+                   [:auth :allowed-emails]))))
   (testing "OIDC settings are required when signing in with OIDC"
-    (is (= [[:auth :issuer]] (:missing (ex-data (try (config/normalize (update valid :auth dissoc :issuer))
-                                                     (catch clojure.lang.ExceptionInfo e e)))))))
+    (is (= [[:auth :issuer]]
+           (:missing (ex-data (try
+                                (config/normalize (update valid :auth dissoc :issuer))
+                                (catch clojure.lang.ExceptionInfo e
+                                  e)))))))
   (testing "blank counts as missing"
     (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Missing configuration"
                           (config/normalize (assoc-in valid [:auth :client-secret] " ")))))
 
   (testing "an invalid setting is named, as an invalid configuration"
-    (let [e (try (config/normalize (assoc valid :base-url "jumble.example.com")) nil
-                 (catch clojure.lang.ExceptionInfo e e))]
+    (let [e (try
+              (config/normalize (assoc valid :base-url "jumble.example.com"))
+              nil
+              (catch clojure.lang.ExceptionInfo e
+                e))]
       (is (= ::error/invalid-config (ex/ex-type e)))
       (is (= [:base-url] (:invalid (ex-data e))))))
   (testing "base-url must be https, except on the local machine"
@@ -259,8 +275,10 @@
       (is (= [:https :certificates] (invalid-path (assoc valid :https (assoc https :port 8443 :certificates " ")))))
       (is (= [:https :port] (invalid-path (assoc valid :https (assoc https :port "8080"))))
           "the http port, which answers the CA")
-      (is (= [:base-url] (invalid-path (assoc valid :base-url "http://localhost:8080"
-                                              :https (assoc https :port 8443))))
+      (is (= [:base-url]
+             (invalid-path (assoc valid
+                                  :base-url "http://localhost:8080"
+                                  :https (assoc https :port 8443))))
           "plain http has no certificate to get"))))
 
 (deftest chat-webhook-url-test

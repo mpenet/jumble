@@ -25,7 +25,8 @@
 (defn keys!
   "The community's keys for signing to push services: made once, then kept."
   [db]
-  (let [stored #(let [rows (jdbc/execute! % ["SELECT name, value FROM community_setting
+  (let [stored #(let [rows (jdbc/execute! %
+                                          ["SELECT name, value FROM community_setting
                                                WHERE name IN ('push_private_key', 'push_public_key')"]
                                           db/opts)
                       by-name (into {} (map (juxt :name :value)) rows)]
@@ -36,10 +37,14 @@
          (db/with-write-tx [tx db]
            (or (stored tx)
                (let [{:keys [private public] :as written} (crypto/write-keys (crypto/generate-keys))]
-                 (jdbc/execute-one! tx ["INSERT INTO community_setting (name, value) VALUES ('push_private_key', ?)
-                                         ON CONFLICT (name) DO UPDATE SET value = excluded.value" private])
-                 (jdbc/execute-one! tx ["INSERT INTO community_setting (name, value) VALUES ('push_public_key', ?)
-                                         ON CONFLICT (name) DO UPDATE SET value = excluded.value" public])
+                 (jdbc/execute-one! tx
+                                    ["INSERT INTO community_setting (name, value) VALUES ('push_private_key', ?)
+                                         ON CONFLICT (name) DO UPDATE SET value = excluded.value"
+                                     private])
+                 (jdbc/execute-one! tx
+                                    ["INSERT INTO community_setting (name, value) VALUES ('push_public_key', ?)
+                                         ON CONFLICT (name) DO UPDATE SET value = excluded.value"
+                                     public])
                  written)))))))
 
 (defn- push-service?
@@ -51,18 +56,23 @@
            (nil? (.getUserInfo uri))
            (#{-1 443} (.getPort uri))
            (some #(or (= host %) (str/ends-with? host (str "." %))) push-services)))
-    (catch Exception _ false)))
+    (catch Exception _
+      false)))
 
 (defn- decoded
   ^bytes [s]
-  (try (.decode (Base64/getUrlDecoder) ^String s)
-       (catch Exception _ (byte-array 0))))
+  (try
+    (.decode (Base64/getUrlDecoder) ^String s)
+    (catch Exception _
+      (byte-array 0))))
 
 (defn- valid?
   "Whether `subscription` is one a browser gives: a push service's address,
   its P-256 key and 16-byte secret."
   [{:keys [endpoint p256dh auth]}]
-  (and (string? endpoint) (string? p256dh) (string? auth)
+  (and (string? endpoint)
+       (string? p256dh)
+       (string? auth)
        (< (count endpoint) 2000)
        (push-service? endpoint)
        (crypto/usable-key? (decoded p256dh))
@@ -79,17 +89,28 @@
   (boolean
    (when (valid? subscription)
      (db/with-write-tx [tx db]
-       (jdbc/execute-one! tx ["DELETE FROM push_delivery WHERE subscription_id IN
+       (jdbc/execute-one! tx
+                          ["DELETE FROM push_delivery WHERE subscription_id IN
                                  (SELECT id FROM push_subscription WHERE endpoint = ? AND user_id <> ?)"
-                              endpoint user-id])
-       (jdbc/execute-one! tx ["INSERT INTO push_subscription (user_id, session_hash, endpoint, p256dh, auth, created_at)
+                           endpoint
+                           user-id])
+       (jdbc/execute-one! tx
+                          ["INSERT INTO push_subscription (user_id, session_hash, endpoint, p256dh, auth, created_at)
                                VALUES (?, ?, ?, ?, ?, ?)
                                ON CONFLICT (endpoint) DO UPDATE SET user_id = excluded.user_id,
                                  session_hash = excluded.session_hash, p256dh = excluded.p256dh, auth = excluded.auth"
-                              user-id (token/digest token) endpoint p256dh auth now])
-       (jdbc/execute-one! tx ["DELETE FROM push_subscription WHERE user_id = ? AND id NOT IN
+                           user-id
+                           (token/digest token)
+                           endpoint
+                           p256dh
+                           auth
+                           now])
+       (jdbc/execute-one! tx
+                          ["DELETE FROM push_subscription WHERE user_id = ? AND id NOT IN
                                  (SELECT id FROM push_subscription WHERE user_id = ? ORDER BY id DESC LIMIT ?)"
-                              user-id user-id max-devices]))
+                           user-id
+                           user-id
+                           max-devices]))
      true)))
 
 (defn unsubscribe!
@@ -114,16 +135,21 @@
   `{:id :created-at :key}` (see [[endpoint-key]])."
   [db user-id]
   (mapv (fn [{:keys [endpoint] :as row}] (-> row (dissoc :endpoint) (assoc :key (endpoint-key endpoint))))
-        (jdbc/execute! db ["SELECT id, endpoint, created_at FROM push_subscription WHERE user_id = ? ORDER BY id DESC"
-                           user-id]
+        (jdbc/execute! db
+                       ["SELECT id, endpoint, created_at FROM push_subscription WHERE user_id = ? ORDER BY id DESC"
+                        user-id]
                        db/opts)))
 
 (defn queue!
   "Queues, in transaction `tx`, a notification of message `message-id` to
   each device of the other participants of thread `thread-id`, due `now`."
   [tx thread-id sender-id message-id now]
-  (jdbc/execute-one! tx ["INSERT INTO push_delivery (subscription_id, message_id, due_at)
+  (jdbc/execute-one! tx
+                     ["INSERT INTO push_delivery (subscription_id, message_id, due_at)
                           SELECT s.id, ?, ? FROM push_subscription s
                           JOIN thread_participant p ON p.user_id = s.user_id
                           WHERE p.thread_id = ? AND p.user_id <> ?"
-                         message-id now thread-id sender-id]))
+                      message-id
+                      now
+                      thread-id
+                      sender-id]))

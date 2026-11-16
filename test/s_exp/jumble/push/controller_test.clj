@@ -41,12 +41,17 @@
       (is (= 204 (:status (request :post "/push/subscriptions" token :json (subscription phone)))))
       (is (= 1 (count (push/devices *db* alice)))))
     (testing "not one to anywhere but a push service"
-      (is (= 422 (:status (request :post "/push/subscriptions" token
+      (is (= 422 (:status (request :post
+                                   "/push/subscriptions"
+                                   token
                                    :json (subscription "https://169.254.169.254/x")))))
       (is (= 422 (:status (request :post "/push/subscriptions" token :json {"endpoint" phone}))))
       (is (= 400 (:status (request :post "/push/subscriptions" token :json "not an object")))))
     (testing "only JSON: a multipart body, which escapes the form size limit, is refused"
-      (is (= 415 (:status (request :post "/push/subscriptions" token :form {"endpoint" phone}
+      (is (= 415 (:status (request :post
+                                   "/push/subscriptions"
+                                   token
+                                   :form {"endpoint" phone}
                                    :headers {"content-type" "multipart/form-data; boundary=x"})))))
     (testing "the settings page lists it, with the key to subscribe with"
       (let [body (:body (request :get "/settings" token))]

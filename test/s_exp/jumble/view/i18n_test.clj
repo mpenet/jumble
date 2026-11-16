@@ -48,10 +48,18 @@
 
 (deftest unknown-language-test
   (testing "a language without a catalog or a plural rule is refused"
-    (is (= ::error/no-catalog (ex/ex-type (try (i18n/catalog "zz") nil
-                                               (catch clojure.lang.ExceptionInfo e e)))))
-    (is (= ::error/no-plural-rule (ex/ex-type (try (i18n/read-catalog "xx" (io/resource "i18n/xx.po")) nil
-                                                   (catch clojure.lang.ExceptionInfo e e)))))))
+    (is (= ::error/no-catalog
+           (ex/ex-type (try
+                         (i18n/catalog "zz")
+                         nil
+                         (catch clojure.lang.ExceptionInfo e
+                           e)))))
+    (is (= ::error/no-plural-rule
+           (ex/ex-type (try
+                         (i18n/read-catalog "xx" (io/resource "i18n/xx.po"))
+                         nil
+                         (catch clojure.lang.ExceptionInfo e
+                           e)))))))
 
 (deftest languages-test
   (testing "the languages spoken, each named in itself, in the order offered"

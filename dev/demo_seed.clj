@@ -52,11 +52,13 @@
             status (.statusCode response)]
         (cond
           (= 200 status) (.body response)
+
           (and (= 429 status) (< attempt 5))
           (let [wait (or (some-> (.firstValue (.headers response) "retry-after") (.orElse nil) parse-long)
                          (* 10 attempt))]
             (Thread/sleep (* 1000 (long (min wait 120))))
             (recur (inc attempt)))
+
           :else (throw (ex-info "Download failed" {:url url :status status})))))))
 
 (defn- webp?
@@ -102,9 +104,10 @@
 (defn- add-listing!
   "Creates listing `entry` for `user-id`, dated `age-days` before `now`."
   [ds blobs settings user-id {:keys [kind title price category city status age-days description photos]} now]
-  (let [{:keys [listing errors]} (listing/validate settings {:kind kind :title title :description description
-                                                             :price price :category category
-                                                             :pickup "city" :city city})
+  (let [{:keys [listing errors]} (listing/validate settings
+                                                   {:kind kind :title title :description description
+                                                    :price price :category category
+                                                    :pickup "city" :city city})
         _ (when errors (throw (ex-info "Invalid demo listing" {:title title :errors errors})))
         prepared (listing/prepare-photos (mapv (comp as-jpeg download :url) photos))
         _ (when (:errors prepared) (throw (ex-info "Unusable demo photo" {:title title :errors (:errors prepared)})))
@@ -119,14 +122,16 @@
   what the nightly reset checks before deleting anyone."
   [ds domain]
   (db/with-write-tx [tx ds]
-    (jdbc/execute-one! tx ["INSERT INTO community_setting (name, value) VALUES ('demo', ?)
+    (jdbc/execute-one! tx
+                       ["INSERT INTO community_setting (name, value) VALUES ('demo', ?)
                             ON CONFLICT (name) DO UPDATE SET value = excluded.value"
-                           domain])))
+                        domain])))
 
 (defn -main
   [data-path domain]
   (when-not (= "true" (System/getProperty "jumble.demo"))
-    (binding [*out* *err*] (println "Refusing to seed without -Djumble.demo=true: this adds members and listings."))
+    (binding [*out* *err*]
+      (println "Refusing to seed without -Djumble.demo=true: this adds members and listings."))
     (System/exit 1))
   (let [{:keys [members listings]} (edn/read-string (slurp data-path))
         {:keys [db storage currency]} (config/load-config)

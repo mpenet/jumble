@@ -94,7 +94,11 @@
   "Whether `s` is an IPv4 or IPv6 address as written, never looked up as a
   name."
   [s]
-  (boolean (and (string? s) (try (InetAddress/ofLiteral s) (catch IllegalArgumentException _ nil)))))
+  (boolean (and (string? s)
+                (try
+                  (InetAddress/ofLiteral s)
+                  (catch IllegalArgumentException _
+                    nil)))))
 
 (defn wrap-client-address
   "Behind a proxy (`behind-proxy`), takes the client's address as the last
@@ -121,8 +125,10 @@
   address: the header is the client's, whatever it holds."
   [request]
   (when-let [referer (get-in request [:headers "referer"])]
-    (try (.getRawPath (URI. referer))
-         (catch URISyntaxException _ nil))))
+    (try
+      (.getRawPath (URI. referer))
+      (catch URISyntaxException _
+        nil))))
 
 (def ^:private requests
   (metrics/counter "jumble_http_requests_total" "Requests answered, by method, route and status."))
@@ -163,7 +169,9 @@
     (let [response (handler request)]
       (if (and (= 401 (:status response)) (not (response/datastar? request)))
         (let [back (auth/local-path (referer-path request))]
-          (layout/message request 401 (i18n/t "Signed out")
+          (layout/message request
+                          401
+                          (i18n/t "Signed out")
                           (i18n/t "You were signed out, so this was not saved. Sign in, then send it again.")
                           [:a.button {:href (str "/login?" (codec/form-encode {"return_to" back}))} (i18n/t "Sign in")]))
         response))))
@@ -195,9 +203,20 @@
   requests and sign-ins started, by client."
   [ctx]
   (let [{:keys [settings] :as ctx} (assoc ctx :sign-in-requests (atom {}) :login-requests (atom {}))]
-    (-> (dispatcher (merge health/routes assets/routes account/routes theme/routes home/routes listing/routes
-                           message/routes moderation/routes branding/routes privacy/routes manifest/routes metrics-page/routes
-                           push/routes) ctx)
+    (-> (dispatcher (merge health/routes
+                           assets/routes
+                           account/routes
+                           theme/routes
+                           home/routes
+                           listing/routes
+                           message/routes
+                           moderation/routes
+                           branding/routes
+                           privacy/routes
+                           manifest/routes
+                           metrics-page/routes
+                           push/routes)
+                    ctx)
         (wrap-signed-out)
         (auth/wrap-same-origin (:base-url settings))
         (wrap-params)
