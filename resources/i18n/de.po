@@ -16,7 +16,7 @@ msgstr "Anmeldung nicht verfügbar"
 msgid "The sign-in service cannot be reached right now. Please try again shortly."
 msgstr "Der Anmeldedienst ist gerade nicht erreichbar. Bitte versuch es gleich noch einmal."
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/listing/controller.clj
 msgid "Try again"
 msgstr "Erneut versuchen"
 
@@ -527,6 +527,10 @@ msgid "Only listings on the board can be edited. Put it back on the board first.
 msgstr "Nur Anzeigen, die online sind, können bearbeitet werden. Stell sie zuerst wieder online."
 
 #: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Zurück zum Formular"
+
+#: src/s_exp/jumble/listing/controller.clj
 msgid "Upload too large"
 msgstr "Upload zu groß"
 
@@ -534,9 +538,9 @@ msgstr "Upload zu groß"
 msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
 msgstr "Eine Anzeige kann bis zu {max} Fotos mit je höchstens {megabytes} MB haben."
 
-#: src/s_exp/jumble/listing/controller.clj
-msgid "Back to the form"
-msgstr "Zurück zum Formular"
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "Gerade werden zu viele Fotos verarbeitet. Bitte versuch es gleich noch einmal."
 
 #: src/s_exp/jumble/listing/freshness.clj
 msgid "Still looking for \"{title}\"?"
@@ -613,10 +617,6 @@ msgstr "Foto {number} ist zu groß (über {megapixels} Megapixel)."
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} took too long to process. Try a smaller one."
 msgstr "Foto {number} hat zu lange gedauert. Versuch es mit einem kleineren."
-
-#: src/s_exp/jumble/listing/model.clj
-msgid "Too many photos are being processed right now. Please try again in a moment."
-msgstr "Gerade werden zu viele Fotos verarbeitet. Bitte versuch es gleich noch einmal."
 
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."

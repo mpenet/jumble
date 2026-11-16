@@ -617,21 +617,34 @@
       (listing/update! *db* blobs id owner fields [] [] 400 {:order [999 c]})
       (is (= c (first (ids)))))))
 
-(deftest one-upload-at-a-time-test
-  (let [in-process (promise)
+(defn- hold-turn!
+  "Starts an upload of member `user-id`'s that keeps its turn; returns a
+  function ending it, which returns what the upload did: :done, or :busy
+  without a turn."
+  [user-id]
+  (let [started (promise)
         release (promise)
-        process image/process
-        png (fixture-bytes "transparent.png")]
-    (with-redefs [image/process (fn [bs] (deliver in-process true) @release (process bs))]
-      (let [first-upload (future (listing/prepare-photos-of! 1 [png]))]
-        @in-process
-        (testing "a member's photos are processed one upload at a time"
-          (is (= {:errors {:photos "Too many photos are being processed right now. Please try again in a moment."}}
-                 (listing/prepare-photos-of! 1 [png]))))
-        (testing "others are not held back by it"
-          (let [other (future (listing/prepare-photos-of! 2 [png]))]
-            (deliver release true)
-            (is (= 1 (count (:photos @other))))))
-        (is (= 1 (count (:photos @first-upload))))
-        (testing "and the member can upload again once it is done"
-          (is (= 1 (count (:photos (listing/prepare-photos-of! 1 [png]))))))))))
+        upload (future (listing/with-upload-turn user-id
+                                                 #(do (deliver started true) @release :done)
+                                                 #(do (deliver started true) :busy)))]
+    @started
+    #(do (deliver release true) @upload)))
+
+(defn- upload! [user-id]
+  (listing/with-upload-turn user-id (constantly :done) (constantly :busy)))
+
+(deftest upload-turn-test
+  (testing "a member's uploads one at a time, others not held back"
+    (let [end (hold-turn! 1)]
+      (is (= :busy (upload! 1)))
+      (is (= :done (upload! 2)))
+      (is (= :done (end)))
+      (is (= :done (upload! 1)) "and again once done")))
+  (testing "a few at once over everyone, each held in memory while it is taken in"
+    (let [ends (mapv hold-turn! (range 10 (+ 10 listing/max-uploads)))]
+      (is (= :busy (upload! 99)))
+      (is (every? #{:done} (map #(%) ends)))
+      (is (= :done (upload! 99)))))
+  (testing "the turn is given back when the upload fails"
+    (is (thrown? IllegalStateException (listing/with-upload-turn 1 #(throw (IllegalStateException.)) (constantly :busy))))
+    (is (= :done (upload! 1)))))

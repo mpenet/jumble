@@ -178,6 +178,37 @@
                                    :files [["photos" "big.jpg" (byte-array (* 11 1024 1024))]])))))
     (is (= 0 (listing-count)))))
 
+(deftest upload-turn-test
+  (let [token (sign-in! "alice@example.com")
+        alice (fixtures/user-id "alice@example.com")
+        started (promise)
+        release (promise)
+        held (future (listing/with-upload-turn alice #(do (deliver started true) @release) (constantly nil)))
+        read (atom false)
+        {:keys [^bytes body content-type]} (multipart valid-fields [])
+        response (do @started
+                     ((fixtures/handler {:blobs *blobs*})
+                      {:request-method :post
+                       :uri "/listings"
+                       :headers {"origin" "http://localhost:8080"
+                                 "cookie" (str "jumble_session=" token)
+                                 "content-type" content-type
+                                 "content-length" (str (alength body))}
+                       :body (proxy [java.io.InputStream] []
+                               (read
+                                 ([] (reset! read true) -1)
+                                 ([_] (reset! read true) -1)
+                                 ([_ _ _] (reset! read true) -1)))}))]
+    (deliver release true)
+    @held
+    (testing "a member's upload while another of theirs is under way is turned away, its body unread"
+      (is (= 503 (:status response)))
+      (is (str/includes? (:body response) "Too many photos are being processed right now."))
+      (is (not @read)))
+    (testing "back to the form it came from"
+      (is (str/includes? (:body response) "href=\"/listings/new\"")))
+    (is (= 0 (listing-count)))))
+
 (defn- card-titles
   "Listing titles on a board page, in order."
   [body]

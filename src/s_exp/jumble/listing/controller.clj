@@ -80,7 +80,7 @@
         {:keys [listing errors]} (listing/validate settings values)]
     (if errors
       (invalid-form request {:values values :photos-dropped (seq files)} errors)
-      (let [{:keys [photos errors]} (listing/prepare-photos-of! (:id user) files)]
+      (let [{:keys [photos errors]} (listing/prepare-photos files)]
         (if errors
           (invalid-form request {:values values :photos-dropped true} errors)
           (if-let [id (listing/create! db blobs (:id user) listing photos (System/currentTimeMillis))]
@@ -319,7 +319,7 @@
            {:keys [listing errors]} (listing/validate settings values)]
        (if errors
          (invalid-form request (assoc form :photos-dropped (seq files)) errors)
-         (let [{:keys [photos errors]} (listing/prepare-photos-of! (:id user) files)
+         (let [{:keys [photos errors]} (listing/prepare-photos files)
                result (when-not errors
                         (listing/update! db blobs (:id found) (:id user) listing removing photos
                                          (System/currentTimeMillis) {:order (photo-order params)}))]
@@ -329,15 +329,33 @@
              (:errors result) (invalid-form request (assoc form :photos-dropped true) (:errors result))
              :else (layout/not-found request (i18n/t "This listing does not exist, or no longer does.")))))))))
 
+(defn- back-to-form
+  "A link back to the form an upload came from: the new listing's, or the
+  edit form of `/listings/<id>`."
+  [uri]
+  [:a.button {:href (if (= "/listings" uri) "/listings/new" (str uri "/edit"))}
+   (i18n/t "Back to the form")])
+
 (defn- too-large
-  "Shown when the upload broke the parser's limits; back to the form it came
-  from (new listing, or the edit form of `/listings/<id>`)."
+  "Shown when the upload broke the parser's limits."
   [{:keys [uri] :as request}]
   (layout/message request 413 (i18n/t "Upload too large")
                   (i18n/t "A listing can have up to {max} photos of at most {megabytes} MB each."
                           {:max listing/max-photos :megabytes (quot max-photo-bytes (* 1024 1024))})
-                  [:a.button {:href (if (= "/listings" uri) "/listings/new" (str uri "/edit"))}
-                   (i18n/t "Back to the form")]))
+                  (back-to-form uri)))
+
+(defn- uploads-busy
+  "Shown to an upload without a turn (see [[listing/with-upload-turn]])."
+  [{:keys [uri] :as request}]
+  (layout/message request 503 (i18n/t "Try again")
+                  (i18n/t "Too many photos are being processed right now. Please try again in a moment.")
+                  (back-to-form uri)))
+
+(defn- wrap-upload-turn
+  "Takes an upload in only when it has a turn, before its body is read."
+  [handler]
+  (fn [{:keys [user] :as request}]
+    (listing/with-upload-turn (:id user) #(handler request) #(uploads-busy request))))
 
 (def ^:private wrap-uploads
   #(wrap-multipart-params % {:store (byte-array-store)
@@ -359,10 +377,10 @@
    [:post "/my/searches"] (for-members #'save-search)
    [:post "/my/searches/{id}/remove"] (auth/require-user #'remove-search)
    [:get "/listings/new"] (for-members #'new-form)
-   [:post "/listings"] (for-members (wrap-uploads #'create))
+   [:post "/listings"] (for-members (wrap-upload-turn (wrap-uploads #'create)))
    [:get "/listings/{id}"] (for-members #'show)
    [:get "/listings/{id}/edit"] (for-members #'edit-form)
-   [:post "/listings/{id}"] (for-members (wrap-uploads #'update-listing))
+   [:post "/listings/{id}"] (for-members (wrap-upload-turn (wrap-uploads #'update-listing)))
    [:post "/listings/{id}/status"] (for-members #'change-status)
    [:post "/listings/{id}/fresh"] (auth/require-user #'confirm-fresh)
    [:post "/listings/{id}/favorite"] (auth/require-user #'favorite)

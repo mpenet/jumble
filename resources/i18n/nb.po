@@ -16,7 +16,7 @@ msgstr "Innlogging utilgjengelig"
 msgid "The sign-in service cannot be reached right now. Please try again shortly."
 msgstr "Innloggingstjenesten svarer ikke akkurat nå. Prøv igjen om litt."
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/listing/controller.clj
 msgid "Try again"
 msgstr "Prøv igjen"
 
@@ -527,6 +527,10 @@ msgid "Only listings on the board can be edited. Put it back on the board first.
 msgstr "Bare annonser på tavla kan redigeres. Legg den ut på tavla igjen først."
 
 #: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Tilbake til skjemaet"
+
+#: src/s_exp/jumble/listing/controller.clj
 msgid "Upload too large"
 msgstr "Opplastingen er for stor"
 
@@ -534,9 +538,9 @@ msgstr "Opplastingen er for stor"
 msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
 msgstr "En annonse kan ha opptil {max} bilder på maks {megabytes} MB hver."
 
-#: src/s_exp/jumble/listing/controller.clj
-msgid "Back to the form"
-msgstr "Tilbake til skjemaet"
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "For mange bilder behandles akkurat nå. Prøv igjen om litt."
 
 #: src/s_exp/jumble/listing/freshness.clj
 msgid "Still looking for \"{title}\"?"
@@ -613,10 +617,6 @@ msgstr "Bilde {number} er for stort (over {megapixels} megapiksler)."
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} took too long to process. Try a smaller one."
 msgstr "Bilde {number} tok for lang tid å behandle. Prøv et mindre bilde."
-
-#: src/s_exp/jumble/listing/model.clj
-msgid "Too many photos are being processed right now. Please try again in a moment."
-msgstr "For mange bilder behandles akkurat nå. Prøv igjen om litt."
 
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."

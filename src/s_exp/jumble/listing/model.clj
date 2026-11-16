@@ -15,7 +15,8 @@
             [s-exp.jumble.money :as money]
             [s-exp.jumble.email.outbox :as outbox]
             [s-exp.jumble.web.params :as params]
-            [s-exp.jumble.token :as token]))
+            [s-exp.jumble.token :as token])
+  (:import (java.util.concurrent Semaphore)))
 
 (set! *warn-on-reflection* true)
 
@@ -123,20 +124,33 @@
             {:photos []}
             (map-indexed vector uploads))))
 
+(def max-uploads
+  "Uploads taken in at once, over all members: each is held in memory while
+  it is read and its photos processed."
+  4)
+
+(defonce ^:private upload-slots (Semaphore. max-uploads))
+
 (defonce ^:private uploading
-  ;; Members whose photos are being processed.
+  ;; Members with an upload under way.
   (atom #{}))
 
-(defn prepare-photos-of!
-  "[[prepare-photos]] for member `user-id`, one upload of theirs at a time:
-  processing is shared by everyone, so one member's uploads must not keep
-  it to themselves. A second one meanwhile gets the busy message."
-  [user-id uploads]
+(defn with-upload-turn
+  "Calls `(f)`, an upload of member `user-id`'s, when it has a turn: one of
+  theirs at a time, as processing is shared by everyone, and at most
+  [[max-uploads]] over everyone. Without one, returns `(busy)`: decided
+  before the upload is read, so one turned away costs nothing."
+  [user-id f busy]
   (let [[before] (swap-vals! uploading conj user-id)]
     (if (contains? before user-id)
-      {:errors {:photos (photo-problem 1 ::error/images-busy)}}
+      (busy)
       (try
-        (prepare-photos uploads)
+        (if (.tryAcquire ^Semaphore upload-slots)
+          (try
+            (f)
+            (finally
+              (.release ^Semaphore upload-slots)))
+          (busy))
         (finally
           (swap! uploading disj user-id))))))
 

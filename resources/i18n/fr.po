@@ -16,7 +16,7 @@ msgstr "Connexion indisponible"
 msgid "The sign-in service cannot be reached right now. Please try again shortly."
 msgstr "Le service de connexion est injoignable pour le moment. Veuillez réessayer dans un instant."
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/listing/controller.clj
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -527,6 +527,10 @@ msgid "Only listings on the board can be edited. Put it back on the board first.
 msgstr "Seules les annonces en ligne peuvent être modifiées. Remettez-la d'abord en ligne."
 
 #: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Retour au formulaire"
+
+#: src/s_exp/jumble/listing/controller.clj
 msgid "Upload too large"
 msgstr "Envoi trop volumineux"
 
@@ -534,9 +538,9 @@ msgstr "Envoi trop volumineux"
 msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
 msgstr "Une annonce peut contenir jusqu'à {max} photos de {megabytes} Mo maximum chacune."
 
-#: src/s_exp/jumble/listing/controller.clj
-msgid "Back to the form"
-msgstr "Retour au formulaire"
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "Trop de photos sont en cours de traitement. Veuillez réessayer dans un instant."
 
 #: src/s_exp/jumble/listing/freshness.clj
 msgid "Still looking for \"{title}\"?"
@@ -613,10 +617,6 @@ msgstr "La photo {number} est trop grande (plus de {megapixels} mégapixels)."
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} took too long to process. Try a smaller one."
 msgstr "La photo {number} a pris trop de temps à traiter. Essayez-en une plus petite."
-
-#: src/s_exp/jumble/listing/model.clj
-msgid "Too many photos are being processed right now. Please try again in a moment."
-msgstr "Trop de photos sont en cours de traitement. Veuillez réessayer dans un instant."
 
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."

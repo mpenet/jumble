@@ -15,7 +15,7 @@ msgstr ""
 msgid "The sign-in service cannot be reached right now. Please try again shortly."
 msgstr ""
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/listing/controller.clj
 msgid "Try again"
 msgstr ""
 
@@ -526,6 +526,10 @@ msgid "Only listings on the board can be edited. Put it back on the board first.
 msgstr ""
 
 #: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr ""
+
+#: src/s_exp/jumble/listing/controller.clj
 msgid "Upload too large"
 msgstr ""
 
@@ -533,8 +537,8 @@ msgstr ""
 msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
 msgstr ""
 
-#: src/s_exp/jumble/listing/controller.clj
-msgid "Back to the form"
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
 msgstr ""
 
 #: src/s_exp/jumble/listing/freshness.clj
@@ -611,10 +615,6 @@ msgstr ""
 
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} took too long to process. Try a smaller one."
-msgstr ""
-
-#: src/s_exp/jumble/listing/model.clj
-msgid "Too many photos are being processed right now. Please try again in a moment."
 msgstr ""
 
 #: src/s_exp/jumble/listing/model.clj

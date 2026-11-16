@@ -16,7 +16,7 @@ msgstr "Kirjautuminen ei ole käytettävissä"
 msgid "The sign-in service cannot be reached right now. Please try again shortly."
 msgstr "Kirjautumispalveluun ei saada juuri nyt yhteyttä. Yritä hetken päästä uudelleen."
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/listing/controller.clj
 msgid "Try again"
 msgstr "Yritä uudelleen"
 
@@ -527,6 +527,10 @@ msgid "Only listings on the board can be edited. Put it back on the board first.
 msgstr "Vain ilmoitustaululla olevia ilmoituksia voi muokata. Palauta se ensin ilmoitustaululle."
 
 #: src/s_exp/jumble/listing/controller.clj
+msgid "Back to the form"
+msgstr "Takaisin lomakkeeseen"
+
+#: src/s_exp/jumble/listing/controller.clj
 msgid "Upload too large"
 msgstr "Liian suuri lähetys"
 
@@ -534,9 +538,9 @@ msgstr "Liian suuri lähetys"
 msgid "A listing can have up to {max} photos of at most {megabytes} MB each."
 msgstr "Ilmoituksessa voi olla enintään {max} kuvaa, kukin enintään {megabytes} Mt."
 
-#: src/s_exp/jumble/listing/controller.clj
-msgid "Back to the form"
-msgstr "Takaisin lomakkeeseen"
+#: src/s_exp/jumble/listing/controller.clj src/s_exp/jumble/listing/model.clj
+msgid "Too many photos are being processed right now. Please try again in a moment."
+msgstr "Juuri nyt käsitellään liian montaa kuvaa. Yritä hetken päästä uudelleen."
 
 #: src/s_exp/jumble/listing/freshness.clj
 msgid "Still looking for \"{title}\"?"
@@ -613,10 +617,6 @@ msgstr "Kuva {number} on liian suuri (yli {megapixels} megapikseliä)."
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} took too long to process. Try a smaller one."
 msgstr "Kuvan {number} käsittely kesti liian kauan. Kokeile pienempää kuvaa."
-
-#: src/s_exp/jumble/listing/model.clj
-msgid "Too many photos are being processed right now. Please try again in a moment."
-msgstr "Juuri nyt käsitellään liian montaa kuvaa. Yritä hetken päästä uudelleen."
 
 #: src/s_exp/jumble/listing/model.clj
 msgid "Photo {number} is not a JPEG, PNG, HEIC or AVIF image."
