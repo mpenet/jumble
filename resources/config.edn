@@ -54,6 +54,10 @@
  ;; /slack added), told of each new post; none is told without one. A
  ;; secret: anyone holding it can post to the channel.
  :chat-webhook-url #env JUMBLE_CHAT_WEBHOOK_URL
+ ;; An IRC channel told of each new post by a bot staying in it:
+ ;; ircs://nick[:password]@host[:port]/#channel[?key=key], the password the
+ ;; nick's account's (SASL). A secret, like the webhook.
+ :irc-url #env JUMBLE_IRC_URL
  ;; A Markdown file shown to everyone at the top of every page while it
  ;; exists: a notice such as planned maintenance, or that this is a demo.
  :notice #env JUMBLE_NOTICE_FILE

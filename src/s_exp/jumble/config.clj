@@ -10,7 +10,8 @@
             [s-exp.jumble.error :as error]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.email.mail :as mail])
-  (:import (java.net URI URISyntaxException)
+  (:import (java.net URI URISyntaxException URLDecoder)
+           (java.nio.charset StandardCharsets)
            (java.time ZoneId)
            (java.util Currency)))
 
@@ -287,6 +288,38 @@
 
 (def ^:private min-token-length 32)
 
+(defn- decode
+  "Percent-decoded `s`; a + stays one, as in a URL's user part."
+  [^String s]
+  (when s
+    (URLDecoder/decode (str/replace s "+" "%2B") StandardCharsets/UTF_8)))
+
+(defn- check-irc-url
+  "The IRC channel new posts are announced on, from
+  ircs://nick[:password]@host[:port]/#channel[?key=key]: the password is
+  the nick's account's, for SASL, the key the channel's. TLS only, but
+  with `allow-insecure` (tests)."
+  [url allow-insecure]
+  (when-let [url (text url [:irc-url])]
+    (let [^URI uri (try (URI. url) (catch URISyntaxException _ nil))
+          scheme (some-> uri .getScheme)
+          [nick password] (some-> uri .getRawUserInfo (str/split #":" 2))
+          [channel query] (some-> uri .getRawFragment (str/split #"\?" 2))
+          nick (decode nick)
+          channel (some->> (decode channel) (str "#"))]
+      (when-not (and uri (.getHost uri)
+                     (or (= "ircs" scheme) (and allow-insecure (= "irc" scheme)))
+                     nick (re-matches #"[A-Za-z\[\]\\`_^{|}][A-Za-z0-9\[\]\\`_^{|}-]*" nick)
+                     channel (re-matches #"#[^\s,\x00-\x1f]+" channel))
+        (invalid "must be ircs://nick[:password]@host[:port]/#channel" [:irc-url]))
+      {:host (.getHost uri)
+       :port (if (pos? (.getPort uri)) (.getPort uri) 6697)
+       :tls (= "ircs" scheme)
+       :nick nick
+       :password (decode password)
+       :channel channel
+       :key (some->> query (re-find #"(?:^|&)key=([^&]*)") second decode)})))
+
 (defn- check-metrics-token
   "The token metrics are read with, none (metrics off) when unset."
   [token]
@@ -380,6 +413,7 @@
                 (update :notice text [:notice])
                 (update :chat-webhook-url #(some-> (text % [:chat-webhook-url])
                                                    (check-secure-url [:chat-webhook-url] allow-insecure)))
+                (as-> c (-> c (assoc :irc (check-irc-url (:irc-url c) allow-insecure)) (dissoc :irc-url)))
                 (update :hosted-by check-hosted-by)
                 (update :source-url #(check-secure-url (or (text % [:source-url]) upstream-source) [:source-url] allow-insecure))
                 (update :listing-reminder-days #(check-listing-reminder-days (if (nil? %) 60 %)))

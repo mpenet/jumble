@@ -273,6 +273,20 @@
     (is (= [:chat-webhook-url] (invalid-path (assoc valid :chat-webhook-url "http://hooks.example.org/x"))))
     (is (= [:chat-webhook-url] (invalid-path (assoc valid :chat-webhook-url "not a url"))))))
 
+(deftest irc-url-test
+  (let [irc #(:irc (config/normalize (assoc valid :irc-url %)))]
+    (testing "new posts are announced on an IRC channel when one is set, by a bot staying in it"
+      (is (nil? (:irc (config/normalize valid))))
+      (is (nil? (irc " ")))
+      (is (= {:host "irc.example.org" :port 6697 :tls true :nick "jumble" :password "s3cr:t@x" :channel "#swap" :key nil}
+             (irc "ircs://jumble:s3cr%3At%40x@irc.example.org/#swap")))
+      (is (= {:host "irc.example.org" :port 7000 :tls true :nick "jumble" :password nil :channel "#swap" :key "door"}
+             (irc "ircs://jumble@irc.example.org:7000/#swap?key=door"))))
+    (testing "over TLS, with a nick and a channel"
+      (doseq [url ["irc://jumble@irc.example.org/#swap" "ircs://irc.example.org/#swap" "ircs://jumble@irc.example.org/"
+                   "ircs://jumble@irc.example.org/#bad,channel" "not a url"]]
+        (is (= [:irc-url] (invalid-path (assoc valid :irc-url url))) url)))))
+
 (deftest litestream-metrics-url-test
   (testing "where Litestream serves its metrics, on the same machine; off when unset"
     (is (nil? (:litestream-metrics-url (config/normalize valid))))
@@ -303,6 +317,7 @@
                       [[:moderator-notice] 1]
                       [[:notice] 1]
                       [[:chat-webhook-url] 1]
+                      [[:irc-url] 1]
                       [[:logo] 1]
                       [[:privacy] 1]
                       [[:hosted-by :name] 1]
