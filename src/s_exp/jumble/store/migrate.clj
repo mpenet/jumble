@@ -21,7 +21,8 @@
    "018-user-email-index.sql" "019-reminder-give-ups.sql" "020-search-prefixes.sql"
    "021-object-deletion.sql" "022-community-settings.sql"
    "023-member-language.sql" "024-weekly-digest.sql" "025-wanted.sql"
-   "026-expiring-emails.sql" "027-push.sql" "028-reminded-index.sql"])
+   "026-expiring-emails.sql" "027-push.sql" "028-reminded-index.sql"
+   "029-chat-announcements.sql"])
 
 (defn migrations
   []

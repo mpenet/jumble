@@ -5,6 +5,7 @@
             [clojure.tools.logging :as log]
             [next.jdbc :as jdbc]
             [s-exp.jumble.store.blob :as blob]
+            [s-exp.jumble.chat.model :as chat]
             [s-exp.ex :as ex]
             [s-exp.jumble.metrics :as metrics]
             [s-exp.jumble.store.db :as db]
@@ -289,6 +290,7 @@
                                       VALUES (?, ?, ?, ?, ?)"
                                      id position object-key width height]))
             (unqueue-deletions! tx object-keys)
+            (chat/enqueue! tx id now)
             id))))
     (catch clojure.lang.ExceptionInfo e
       (when-not (= ::error/owner-gone (ex/ex-type e))
