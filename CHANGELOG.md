@@ -9,6 +9,18 @@ To upgrade, deploy the new version (see [running it](doc/operations.md)):
 the database is migrated as it starts, from any earlier version. What needs
 doing besides is under **Upgrade notes**.
 
+## 2026.11.1 (2026-11-16)
+
+- Logs can be sent to [Axiom](https://axiom.co): with an `axiom.env` in the
+  instance (dataset, ingest token, and the organisation's region),
+  `deploy.sh` runs Fluent Bit next to Jumble, reading the app's lines from
+  the journal, in at most 64 MB of memory. See
+  [running it](doc/operations.md#logs-in-axiom).
+
+### Upgrade notes
+
+None: logs stay on the server unless `axiom.env` is added.
+
 ## 2026.11.0 (2026-11-16)
 
 The first release.
