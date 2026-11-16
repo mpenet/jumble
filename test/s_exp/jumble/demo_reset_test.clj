@@ -3,6 +3,7 @@
   demo members' side; demo members and moderators stay as they were."
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [demo-reset]
+            [demo-seed]
             [next.jdbc :as jdbc]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture]]
@@ -57,6 +58,7 @@
     (talk! eve lamp 20)
     (listing/favorite! *db* eve (:id lamp) 30)
     (moderation/report! *db* {:listing-id (:id lamp) :reporter-id eve :reason "spam" :now 40 :alerts []})
+    (demo-seed/mark-demo! *db* "jumbl.ing")
     (is (= 1 (demo-reset/clear-visitors! *db* (blob/memory-store) {:domain "jumbl.ing" :moderators #{"max@example.com"}
                                                           :now 50})))
     (testing "visitors' accounts are deleted, with their listings"
@@ -73,3 +75,13 @@
     (testing "nothing is left to reset the night after"
       (is (zero? (demo-reset/clear-visitors! *db* (blob/memory-store) {:domain "jumbl.ing" :moderators #{"max@example.com"}
                                                               :now 60}))))))
+
+(deftest demo-only-test
+  (let [eve (account! "eve@visitor.example.org")
+        clear! #(demo-reset/clear-visitors! *db* (blob/memory-store) {:domain "jumbl.ing" :moderators #{} :now 50})]
+    (testing "a community the demo seed did not fill is left alone"
+      (is (thrown? clojure.lang.ExceptionInfo (clear!))))
+    (testing "nor one it filled for another domain"
+      (demo-seed/mark-demo! *db* "demo.example.org")
+      (is (thrown? clojure.lang.ExceptionInfo (clear!))))
+    (is (= [eve] (map :id (jdbc/execute! *db* ["SELECT id FROM user WHERE deleted_at IS NULL"] db/opts))))))

@@ -112,7 +112,9 @@ HOST=jumble-admin@<server> DOMAIN=<domain> deploy/demo/install.sh
 
 A timer then runs [`dev/demo_reset.clj`](../dev/demo_reset.clj) at 04:00:
 it deletes every account but the demo members' and the moderators', with
-what they left on the others' side, and seeds again what is missing. The
+what they left on the others' side, and seeds again what is missing. It
+refuses to run where the demo seed has not marked the community as a demo
+for that domain. The
 [notice](../deploy/demo/notice.md) at the top of every page says so.
 
 To remove it all, the photos and backups with it:

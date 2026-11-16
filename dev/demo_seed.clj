@@ -4,7 +4,8 @@
   functions the application uses. Members are email accounts at
   `*@<domain>`, with message emails off: their mailboxes do not exist.
   Listings a member already has, by title, are left alone, so running it
-  again adds only what is missing.
+  again adds only what is missing. It marks the community as a demo, which
+  dev/demo_reset.clj requires.
 
   Run against a deployment's own database and storage, with its settings
   in the environment and -Djumble.demo=true:
@@ -113,6 +114,15 @@
       (listing/set-status! ds id user-id status (+ created-at day)))
     id))
 
+(defn mark-demo!
+  "Records that this community is a demo whose members are at `domain`:
+  what the nightly reset checks before deleting anyone."
+  [ds domain]
+  (db/with-write-tx [tx ds]
+    (jdbc/execute-one! tx ["INSERT INTO community_setting (name, value) VALUES ('demo', ?)
+                            ON CONFLICT (name) DO UPDATE SET value = excluded.value"
+                           domain])))
+
 (defn -main
   [data-path domain]
   (when-not (= "true" (System/getProperty "jumble.demo"))
@@ -124,6 +134,7 @@
         blobs (blob/s3-store storage)
         now (System/currentTimeMillis)
         _ (migrate/migrate! ds (migrate/migrations))
+        _ (mark-demo! ds domain)
         settings (merge {:currency currency} (choices/all ds))
         users (mapv #(member! ds domain % now) members)
         added (reduce (fn [n {:keys [owner title] :as entry}]

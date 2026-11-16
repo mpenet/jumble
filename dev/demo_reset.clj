@@ -24,8 +24,12 @@
   the `moderators` (addresses), as [[data/delete-account!]] does; then the
   conversations and reports any deleted account had a part in, which
   deleting an account keeps for the others. Returns how many accounts were
-  deleted."
+  deleted. Throws, deleting nothing, unless the demo seed marked this
+  community as a demo at `domain` (see [[demo-seed/mark-demo!]])."
   [db blobs {:keys [domain moderators now]}]
+  (when-not (= domain (:value (jdbc/execute-one! db ["SELECT value FROM community_setting WHERE name = 'demo'"]
+                                                 db/opts)))
+    (throw (ex-info "Not a demo at this domain: refusing to delete accounts" {:domain domain})))
   (let [moderators (set (map str/lower-case moderators))
         kept? (fn [{:keys [email]}]
                 (let [email (str/lower-case email)]
