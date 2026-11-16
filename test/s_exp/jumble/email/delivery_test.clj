@@ -60,7 +60,10 @@
           (try
             (is (= ["carol@example.com"] (eventually #(seq (map :to @emails)))))
             (testing "each step's runs counted, failed or not, and its last success marked"
-              (let [text (metrics/text)]
+              ;; Counted once the step returns, after the email went to the mailer.
+              (let [text (eventually #(let [text (metrics/text)]
+                                        (when (re-find #"jumble_background_last_success_seconds\{step=\"outbox\"\}" text)
+                                          text)))]
                 (is (re-find #"jumble_background_runs_total\{result=\"failed\",step=\"freshness\"\} [1-9]" text))
                 (is (re-find #"jumble_background_runs_total\{result=\"ok\",step=\"outbox\"\} [1-9]" text))
                 (is (re-find #"jumble_background_last_success_seconds\{step=\"outbox\"\} \d{10}" text))
