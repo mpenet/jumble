@@ -1,5 +1,7 @@
 (ns build
-  "Builds the application uberjar: clojure -T:build uber"
+  "Builds the application uberjar: clojure -T:build uber, with the version
+  and commit from JUMBLE_VERSION and JUMBLE_REVISION when set (CI, the
+  image's build arguments)."
   (:require [clojure.tools.build.api :as b]))
 
 (def ^:private class-dir "target/classes")
@@ -14,6 +16,9 @@
   (clean nil)
   (let [basis (b/create-basis {:project "deps.edn"})]
     (b/copy-dir {:src-dirs ["resources"] :target-dir class-dir})
+    (b/write-file {:path (str class-dir "/jumble/version.edn")
+                   :string (pr-str {:version (or (not-empty (System/getenv "JUMBLE_VERSION")) "dev")
+                                    :revision (or (not-empty (System/getenv "JUMBLE_REVISION")) "unknown")})})
     (b/compile-clj {:basis basis
                     :ns-compile ['s-exp.jumble]
                     :class-dir class-dir

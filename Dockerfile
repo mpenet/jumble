@@ -9,6 +9,9 @@ COPY deps.edn build.clj ./
 RUN clojure -P && clojure -T:build clean
 COPY src src
 COPY resources resources
+# The version and commit the jar says it is (see build.clj): CI's.
+ARG JUMBLE_VERSION=dev
+ARG JUMBLE_REVISION=unknown
 RUN clojure -T:build uber
 
 # Litestream release binary, verified against its published SHA-256.

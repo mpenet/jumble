@@ -36,7 +36,9 @@ itself went wrong, restore the database to before the upgrade (see
 
 ## Health and logs
 
-`GET /healthz` answers 200 while the app and its database work. Podman
+`GET /healthz` answers 200 while the app and its database work, with
+`ok` on its first line, then the version running and the commit it was
+built from (`version 2026.11.0`, `revision …`). Podman
 checks it every 30 seconds (`deploy/podman/jumble.container`), allowing five
 minutes for a first start that restores a backup; three checks failed in
 a row, it stops the container, and systemd starts it again, so an app that

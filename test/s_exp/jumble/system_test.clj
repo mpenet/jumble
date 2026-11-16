@@ -1,6 +1,7 @@
 (ns s-exp.jumble.system-test
   "The whole system started from a configuration, serving requests."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.string :as str]
+            [clojure.test :refer [deftest is testing]]
             [com.stuartsierra.component :as component]
             [next.jdbc :as jdbc]
             [s-exp.enso :as enso]
@@ -76,7 +77,9 @@
                          (try
                            (let [port (enso/port (get-in system [:server :server]))]
                              (testing "serves the health endpoint backed by the database"
-                               (is (= {:status 200 :body "ok"} (http-get port "/healthz"))))
+                               (let [{:keys [status body]} (http-get port "/healthz")]
+                                 (is (= 200 status))
+                                 (is (= "ok" (first (str/split-lines body))))))
                              (testing "sign-in is wired to the provider, unreachable here"
                                (is (= 503 (:status (http-get port "/login")))))
                              (testing "uploads large enough for a listing's photos reach the application"

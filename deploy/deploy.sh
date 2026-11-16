@@ -67,6 +67,7 @@ if [ -n "$BUILD" ]; then
   fi
   echo "deploy: building $revision for linux/amd64"
   docker buildx build --quiet --load --platform linux/amd64 \
+    --build-arg JUMBLE_REVISION="$revision" \
     --label "org.opencontainers.image.revision=$revision" --tag jumble:build "$root" >/dev/null
   # Named by its image id, a digest of its content: the same checks apply.
   IMAGE="jumble@$(docker image inspect --format '{{.Id}}' jumble:build)"
