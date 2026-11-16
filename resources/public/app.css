@@ -1783,25 +1783,25 @@ button.danger {
   display: inline-flex;
   align-items: center;
   margin: 0;
-  padding: 0.3rem 1rem 0.3rem 1.9rem;
+  padding: 0.25rem 0.85rem 0.25rem 1.7rem;
   background: var(--tag-bg);
   color: var(--tag-fg);
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  clip-path: polygon(0.85rem 0, 100% 0, 100% 100%, 0.85rem 100%, 0 50%);
+  clip-path: polygon(0.75rem 0, 100% 0, 100% 100%, 0.75rem 100%, 0 50%);
 }
 
 .listing-price::before {
   content: "";
   position: absolute;
-  left: 0.8rem;
+  left: 0.75rem;
   top: 50%;
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 0.4rem;
+  height: 0.4rem;
   border-radius: 50%;
   background: var(--tag-hole);
   translate: 0 -50%;
