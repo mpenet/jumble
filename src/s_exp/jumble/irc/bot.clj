@@ -5,6 +5,7 @@
   the connection; [[say!]] writes from any other."
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
+            [com.stuartsierra.component :as component]
             [s-exp.jumble.irc.protocol :as irc])
   (:import (java.io BufferedReader InputStreamReader OutputStreamWriter Writer)
            (java.net InetSocketAddress Socket SocketTimeoutException)
@@ -184,3 +185,19 @@
   (when-let [^Socket socket (:socket @state)]
     (.close socket))
   (.join thread 5000))
+
+(defrecord Bot [config bot]
+  component/Lifecycle
+  (start [this]
+    (if (and config (nil? bot))
+      (assoc this :bot (start config))
+      this))
+  (stop [this]
+    (when bot (stop bot))
+    (assoc this :bot nil)))
+
+(defn component
+  "The system's bot for `config` (see [[start]]); none when it is nil, IRC
+  not being configured."
+  [config]
+  (map->Bot {:config config}))

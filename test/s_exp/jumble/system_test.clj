@@ -53,7 +53,11 @@
     (let [chat {:chat-webhook-url "https://hooks.example.org/x"
                 :irc {:host "irc.example.org" :port 6697 :tls true :nick "jumble" :channel "#swap"}}
           settings (get-in (jumble/system (merge (config "unused.db") chat)) [:delivery :settings])]
-      (is (= (assoc chat :currency "CHF") (select-keys settings [:chat-webhook-url :irc :currency]))))))
+      (is (= (assoc chat :currency "CHF") (select-keys settings [:chat-webhook-url :irc :currency])))
+      (testing "and the bot, which the loop says them with, is part of the system"
+        (let [system (jumble/system (merge (config "unused.db") chat))]
+          (is (= (:irc chat) (get-in system [:irc :config])))
+          (is (contains? (set (keys (component/dependencies (:delivery system)))) :irc)))))))
 
 (deftest delivery-settings-test
   (testing "emails go to those allowed in, by the rule the application signs them in with"

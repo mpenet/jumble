@@ -1,6 +1,7 @@
 (ns s-exp.jumble.chat.delivery
-  "Announces the queued new posts to the community's chat channel through
-  its webhook (Slack's, Mattermost's, Discord's), tried again while it fails."
+  "Announces the queued new posts on the community's chat channels: through
+  its webhook (Slack's, Mattermost's, Discord's) and by its IRC bot, each
+  tried again while it fails."
   (:require [clojure.tools.logging :as log]
             [next.jdbc :as jdbc]
             [s-exp.jumble.chat.message :as message]
@@ -15,13 +16,10 @@
 (set! *warn-on-reflection* true)
 
 (def ^:private announced
-  (metrics/counter "jumble_chat_total" "New posts handled for the chat channel, by result: sent, failed or dropped."
-                   (for [result ["sent" "failed" "dropped"]] {:result result})))
-
-(def ^:private batch-size
-  "Announcements sent in one delivery round, the rest in the next: chat
-  services take about one a second on a webhook."
-  20)
+  (metrics/counter "jumble_chat_total" "New posts handled for the chat channels, by channel and result: sent, failed or dropped."
+                   (for [channel chat/channels
+                         result ["sent" "failed" "dropped"]]
+                     {:channel channel :result result})))
 
 (def ^:private max-attempts
   "Failed sends before an announcement is given up on, a few hours on."
@@ -33,9 +31,10 @@
   (* 24 60 60 1000))
 
 (defn- due
-  "Announcements due at `now`, each `:needless` when its post is off the
-  board, its owner's account deleted, or the post older than [[max-age]]."
-  [db now]
+  "`channel`'s announcements due at `now`, at most `limit`, each `:needless`
+  when its post is off the board, its owner's account deleted, or the post
+  older than [[max-age]]."
+  [db channel now limit]
   (jdbc/execute! db [(str "SELECT a.id, a.attempts, l.id AS listing_id, l.title, l.kind, l.price_minor,
                                   l.category, l.pickup_place, l.pickup_city,
                                   (l.status NOT IN " listing/on-board-sql " OR u.deleted_at IS NOT NULL
@@ -43,9 +42,9 @@
                            FROM chat_announcement a
                            JOIN listing l ON l.id = a.listing_id
                            JOIN user u ON u.id = l.user_id
-                           WHERE a.channel = 'webhook' AND a.due_at <= ?
+                           WHERE a.channel = ? AND a.due_at <= ?
                            ORDER BY a.due_at, a.id LIMIT ?")
-                     (- now max-age) now batch-size]
+                     (- now max-age) channel now limit]
                  db/opts))
 
 (defn- done!
@@ -63,45 +62,62 @@
         (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE id = ?" id])))))
 
 (defn- deliver!
-  "Sends one announcement with `send`; true when the channel took it."
-  [db send settings {:keys [id listing-id needless] :as pending} now]
-  (if (= 1 needless)
-    (do (done! db id)
-        (metrics/inc! announced {:result "dropped"})
-        false)
-    (let [text (message/text settings (assoc pending :id listing-id))
-          status (try (:status (send {:method :post
-                                      :url (:chat-webhook-url settings)
+  "Announces one post on `channel` with `announce`, a function of the
+  settings and the post returning :sent, :failed (tried again later),
+  :refused (dropped) or :wait (left as it is). True when it went out."
+  [db channel announce settings {:keys [id listing-id needless] :as pending} now]
+  (let [outcome (if (= 1 needless) :refused (announce settings (assoc pending :id listing-id)))]
+    (case outcome
+      :sent (do (done! db id) (metrics/inc! announced {:channel channel :result "sent"}) true)
+      :failed (do (failed! db pending now) (metrics/inc! announced {:channel channel :result "failed"}) false)
+      :refused (do (done! db id) (metrics/inc! announced {:channel channel :result "dropped"}) false)
+      :wait false)))
+
+(defn- deliver-due!
+  "Announces `channel`'s posts due at `now` with `announce` (see
+  [[deliver!]]), at most `limit`, one by one while `running` returns true;
+  one failing leaves the others. Without `announce`, the channel is not
+  configured and its queue is emptied. Returns how many went out."
+  [db channel announce settings now running limit]
+  (if-not announce
+    (do (chat/drop-due! db channel now)
+        0)
+    (if-let [pending (seq (due db channel now limit))]
+      (let [settings (merge settings (choices/all db))]
+        (outbox/deliver-each pending running #(deliver! db channel announce settings % now)
+                             #(select-keys % [:id :listing-id])))
+      0)))
+
+(defn- webhook
+  "Announces a post by posting its message as JSON with `send` (a function
+  of a request to its response) to the webhook at `url`."
+  [send url]
+  (fn [settings {:keys [listing-id] :as post}]
+    (let [status (try (:status (send {:method :post
+                                      :url url
                                       :headers {"content-type" "application/json"}
-                                      :body (oda/write-str {:text text})}))
+                                      :body (oda/write-str {:text (message/text settings post)})}))
                       ;; Unreachable, or anything else: tried again, then given up on.
                       (catch Exception e
                         (log/warn e "Chat announcement not sent" {:listing listing-id})
                         nil))]
       (cond
-        (and status (<= 200 status 299))
-        (do (done! db id) (metrics/inc! announced {:result "sent"}) true)
-
-        (or (nil? status) (= 429 status) (<= 500 status))
-        (do (failed! db pending now) (metrics/inc! announced {:result "failed"}) false)
-
+        (and status (<= 200 status 299)) :sent
+        (or (nil? status) (= 429 status) (<= 500 status)) :failed
         ;; The webhook was deleted, or refuses: asking again would not help.
-        :else
-        (do (log/warn "Chat webhook refused an announcement" {:listing listing-id :status status})
-            (done! db id)
-            (metrics/inc! announced {:result "dropped"})
-            false)))))
+        :else (do (log/warn "Chat webhook refused an announcement" {:listing listing-id :status status})
+                  :refused)))))
 
-(defn deliver-due!
-  "Announces the new posts due at `now` with `send` (a function of a
-  request to its response), one by one while `running` returns true; one
-  failing leaves the others. Without a webhook the queue is emptied.
-  Returns how many went out."
-  [db send settings now running]
-  (if-not (:chat-webhook-url settings)
-    (do (chat/drop-due! db "webhook" now)
-        0)
-    (if-let [pending (seq (due db now))]
-      (let [settings (merge settings (choices/all db))]
-        (outbox/deliver-each pending running #(deliver! db send settings % now) #(select-keys % [:id :listing-id])))
-      0)))
+(defn deliver-webhook!
+  "Announces the posts due at `now` through the webhook of the settings, if
+  any, with `send` (see [[webhook]]). Returns how many went out."
+  [db send {:keys [chat-webhook-url] :as settings} now running]
+  (deliver-due! db "webhook" (when chat-webhook-url (webhook send chat-webhook-url)) settings now running 20))
+
+(defn deliver-irc!
+  "Announces the posts due at `now` on IRC with `say`, the bot's, true once
+  said and false while it is out of its channel, when they wait. A few
+  each round: the bot says one line every two seconds. Returns how many
+  went out."
+  [db say settings now running]
+  (deliver-due! db "irc" (when say #(if (say (message/irc-line %1 %2)) :sent :wait)) settings now running 5))

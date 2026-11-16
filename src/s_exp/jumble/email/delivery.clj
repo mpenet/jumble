@@ -4,8 +4,9 @@
   listings without news (see [[freshness/sweep!]]), the daily news for
   saved searches (see [[saved-searches/send-due!]]) and the weekly email of
   what is new (see [[weekly/send-due!]]); sends browser notifications (see
-  [[push/deliver-due!]]); announces new posts to the chat channel (see
-  [[chat/deliver-due!]]); and deletes the photo objects due (see
+  [[push/deliver-due!]]); announces new posts on the chat channels (see
+  [[chat/deliver-webhook!]], [[chat/deliver-irc!]]); and deletes the photo
+  objects due (see
   [[listing/delete-due-objects!]])."
   (:require [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]
@@ -20,6 +21,7 @@
             [s-exp.jumble.http :as http]
             [s-exp.jumble.push.delivery :as push]
             [s-exp.jumble.chat.delivery :as chat]
+            [s-exp.jumble.irc.bot :as bot]
             [s-exp.jumble.email.outbox :as outbox])
   (:import (java.util.concurrent Executors ScheduledExecutorService TimeUnit)))
 
@@ -45,7 +47,7 @@
       (metrics/inc! runs {:step step :result "failed"})
       (log/error t "Delivery step failed:" step))))
 
-(defrecord Delivery [db mailer blobs settings interval-ms]
+(defrecord Delivery [db irc mailer blobs settings interval-ms]
   component/Lifecycle
   (start [this]
     (let [executor (Executors/newSingleThreadScheduledExecutor
@@ -53,7 +55,8 @@
           running #(not (.isShutdown executor))
           ;; Push services and the chat webhook.
           client (http/client {:connect-timeout 5000 :timeout 10000})
-          send-request #(http/request client % :string)]
+          send-request #(http/request client % :string)
+          say (when-let [b (:bot irc)] #(bot/say! b %))]
       (.scheduleWithFixedDelay executor
                                (fn []
                                  ;; An exception escaping here would cancel all later runs:
@@ -69,7 +72,8 @@
                                                        ["weekly digest" #(weekly/send-due! ds settings now)]
                                                        ["outbox" #(outbox/deliver-due! ds mailer now running)]
                                                        ["push" #(push/deliver-due! ds send-request settings now running)]
-                                                       ["chat" #(chat/deliver-due! ds send-request settings now running)]
+                                                       ["chat" #(chat/deliver-webhook! ds send-request settings now running)]
+                                                       ["irc" #(chat/deliver-irc! ds say settings now running)]
                                                        ["storage" #(listing/delete-due-objects! ds blobs now)]
                                                        ["deletions" #(data/finish-deletions! ds blobs now)]]
                                              :while (running)]
@@ -86,6 +90,7 @@
 
 (defn component
   "Delivers due emails every `interval-ms`, and deletes the photo objects due
-  from `blobs`. Uses the `:db` component."
+  from `blobs`. Uses the `:db` component, and `:irc`'s bot to announce new
+  posts on IRC."
   [{:keys! [mailer blobs settings interval-ms]}]
   (map->Delivery {:mailer mailer :blobs blobs :settings settings :interval-ms interval-ms}))

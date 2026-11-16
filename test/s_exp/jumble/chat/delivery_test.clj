@@ -39,7 +39,7 @@
 
 (defn- deliver!
   ([send now] (deliver! send settings now))
-  ([send settings now] (delivery/deliver-due! *db* send settings now (constantly true))))
+  ([send settings now] (delivery/deliver-webhook! *db* send settings now (constantly true))))
 
 (defn- said
   "The text of each request to the channel."
@@ -111,3 +111,26 @@
       (is (zero? (deliver! (channel requests 200) fixtures/settings chat/delay-ms)))
       (is (empty? @requests))
       (is (empty? (webhook-queue))))))
+
+(defn- irc-queue []
+  (filter #(= "irc" (:channel %)) (chat/queued *db*)))
+
+(defn- deliver-irc!
+  ([say now] (deliver-irc! say settings now))
+  ([say settings now] (delivery/deliver-irc! *db* say settings now (constantly true))))
+
+(deftest irc-test
+  (let [ann (fixtures/user! "ann")
+        said (atom [])
+        lamp (post! ann "Desk lamp" 0)]
+    (testing "said by the bot, on one line with the link"
+      (is (= 1 (deliver-irc! #(do (swap! said conj %) true) (assoc settings :irc {:channel "#swap"}) chat/delay-ms)))
+      (is (= [(str "New on Jumble: Desk lamp · Free · Furniture & home · Main hall · http://localhost:8080/listings/" lamp)] @said))
+      (is (empty? (irc-queue))))
+    (testing "the bot out of its channel, it waits for it, without counting tries"
+      (post! ann "Chair" 0)
+      (is (zero? (deliver-irc! (constantly false) (assoc settings :irc {:channel "#swap"}) chat/delay-ms)))
+      (is (= [0] (map :attempts (irc-queue)))))
+    (testing "without a bot, the queue is emptied"
+      (is (zero? (deliver-irc! nil settings chat/delay-ms)))
+      (is (empty? (irc-queue))))))

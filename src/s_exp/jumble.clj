@@ -7,6 +7,7 @@
             [s-exp.jumble.config :as config]
             [s-exp.jumble.store.db :as db]
             [s-exp.jumble.email.delivery :as delivery]
+            [s-exp.jumble.irc.bot :as bot]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.email.mail :as mail]
             [s-exp.jumble.oidc :as oidc]
@@ -80,7 +81,8 @@
                                                 :chat-webhook-url chat-webhook-url
                                                 :irc irc}
                                      :interval-ms 30000})
-                [:db]))))
+                [:db :irc])
+     :irc (bot/component irc))))
 
 (defn -main
   [& _]
