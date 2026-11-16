@@ -1773,22 +1773,56 @@ button.danger {
   gap: var(--space-3);
 }
 
+/* The price as a tag, punched and pointed, tinted by kind: the cards'
+   price chips, larger. */
 .listing-price {
+  --tag-bg: var(--pop-soft);
+  --tag-fg: var(--fg);
+  --tag-hole: var(--pop);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   margin: 0;
-  font-size: var(--text-xl);
+  padding: 0.3rem 1rem 0.3rem 1.9rem;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  font-size: var(--text-2xl);
   font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  clip-path: polygon(0.85rem 0, 100% 0, 100% 100%, 0.85rem 100%, 0 50%);
+}
+
+.listing-price::before {
+  content: "";
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--tag-hole);
+  translate: 0 -50%;
 }
 
 .listing-price.price-free {
-  color: var(--free);
+  --tag-bg: var(--free-soft);
+  --tag-fg: var(--free);
+  --tag-hole: var(--free);
 }
 
 .listing-price.price-lend {
-  color: var(--lend);
+  --tag-bg: var(--lend-soft);
+  --tag-fg: var(--lend);
+  --tag-hole: var(--lend);
 }
 
 .listing-price.price-wanted {
-  color: var(--wanted);
+  --tag-bg: var(--wanted-soft);
+  --tag-fg: var(--wanted);
+  --tag-hole: var(--wanted);
 }
 
 #listing-status {
