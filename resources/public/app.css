@@ -31,9 +31,9 @@
   --radius-lg: 12px;
   --radius-control: 8px;
 
-  --bg: light-dark(#f7f5f1, #20201e);
-  --surface: light-dark(#ffffff, #2a2a27);
-  --surface-sunken: light-dark(#efece6, #33322f);
+  --bg: light-dark(#f6f8fa, #0d1117);
+  --surface: light-dark(#ffffff, #161b22);
+  --surface-sunken: light-dark(#f6f8fa, #0d1117);
   --fg: light-dark(#1f1d1a, #ecebe8);
   --muted: light-dark(#6c675f, #aeaaa2);
   --line: light-dark(#e4e0d8, #42403c);

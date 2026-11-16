@@ -18,7 +18,7 @@
                           :start_url "/"
                           :display "standalone"
                           ;; The page's light background, behind the icon while it opens.
-                          :background_color "#f7f5f1"
+                          :background_color "#f6f8fa"
                           :icons [(icon "icon-192.png" 192) (icon "icon-512.png" 512)]})})
 
 (def routes
