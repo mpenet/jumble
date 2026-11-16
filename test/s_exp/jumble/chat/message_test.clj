@@ -38,3 +38,9 @@
       (is (str/includes? text "&amp;"))
       (doseq [mention ["@everyone" "@here" "@all"]]
         (is (not (str/includes? text mention)) mention)))))
+
+(deftest irc-line-test
+  (testing "for IRC, one line with the link, as written: IRC has no markup to escape"
+    (is (= "New on Swap Shop: Desk lamp · CHF 25 · Home · Main hall · https://swap.example.org/listings/42"
+           (message/irc-line settings lamp)))
+    (is (str/includes? (message/irc-line settings (assoc lamp :title "Pots & pans")) "Pots & pans"))))

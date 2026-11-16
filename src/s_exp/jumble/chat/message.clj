@@ -19,12 +19,26 @@
       (str/replace ">" "&gt;")
       (str/replace "@" "@​")))
 
-(defn text
-  "The message announcing `listing`, in the language in use: one line, then
-  the link to it, which every chat service makes a link of."
-  [{:keys [base-url app-name currency categories places]} {:keys [id title category] :as listing}]
-  (str (i18n/t "New on {app-name}: {title}" {:app-name (inert app-name) :title (inert (mail/one-line title))})
+(defn- summary
+  "`listing` in one line, in the language in use, as members wrote it."
+  [{:keys [app-name currency categories places]} {:keys [title category] :as listing}]
+  (str (i18n/t "New on {app-name}: {title}" {:app-name app-name :title (mail/one-line title)})
        " · " (view/price-label currency listing)
-       " · " (inert (view/label-of categories category))
-       " · " (inert (view/pickup-label places listing))
-       "\n" base-url "/listings/" id))
+       " · " (view/label-of categories category)
+       " · " (view/pickup-label places listing)))
+
+(defn- link
+  [{:keys [base-url]} {:keys [id]}]
+  (str base-url "/listings/" id))
+
+(defn text
+  "The webhook's message announcing `listing`: its summary, made inert, then
+  the link to it, which every chat service makes a link of."
+  [settings listing]
+  (str (inert (summary settings listing)) "\n" (link settings listing)))
+
+(defn irc-line
+  "IRC's message announcing `listing`: its summary and the link on one
+  line; made safe to send by the bot."
+  [settings listing]
+  (str (summary settings listing) " · " (link settings listing)))
