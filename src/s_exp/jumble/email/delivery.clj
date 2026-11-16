@@ -4,7 +4,8 @@
   listings without news (see [[freshness/sweep!]]), the daily news for
   saved searches (see [[saved-searches/send-due!]]) and the weekly email of
   what is new (see [[weekly/send-due!]]); sends browser notifications (see
-  [[push/deliver-due!]]); and deletes the photo objects due (see
+  [[push/deliver-due!]]); announces new posts to the chat channel (see
+  [[chat/deliver-due!]]); and deletes the photo objects due (see
   [[listing/delete-due-objects!]])."
   (:require [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]
@@ -18,6 +19,7 @@
             [s-exp.jumble.message.notifier :as notifier]
             [s-exp.jumble.http :as http]
             [s-exp.jumble.push.delivery :as push]
+            [s-exp.jumble.chat.delivery :as chat]
             [s-exp.jumble.email.outbox :as outbox])
   (:import (java.util.concurrent Executors ScheduledExecutorService TimeUnit)))
 
@@ -49,8 +51,9 @@
     (let [executor (Executors/newSingleThreadScheduledExecutor
                     (.factory (.name (Thread/ofVirtual) "jumble-delivery")))
           running #(not (.isShutdown executor))
-          push-service (http/client {:connect-timeout 5000 :timeout 10000})
-          send-push #(http/request push-service % :string)]
+          ;; Push services and the chat webhook.
+          client (http/client {:connect-timeout 5000 :timeout 10000})
+          send-request #(http/request client % :string)]
       (.scheduleWithFixedDelay executor
                                (fn []
                                  ;; An exception escaping here would cancel all later runs:
@@ -65,7 +68,8 @@
                                                        ["saved searches" #(saved-searches/send-due! ds settings now)]
                                                        ["weekly digest" #(weekly/send-due! ds settings now)]
                                                        ["outbox" #(outbox/deliver-due! ds mailer now running)]
-                                                       ["push" #(push/deliver-due! ds send-push settings now running)]
+                                                       ["push" #(push/deliver-due! ds send-request settings now running)]
+                                                       ["chat" #(chat/deliver-due! ds send-request settings now running)]
                                                        ["storage" #(listing/delete-due-objects! ds blobs now)]
                                                        ["deletions" #(data/finish-deletions! ds blobs now)]]
                                              :while (running)]
