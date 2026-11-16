@@ -20,6 +20,26 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
+### Colour palettes
+
+Eleven of the palettes in `resources/public/app.css` take their colours
+from these themes, each under the MIT License. Their names are their
+authors' and owners'; Jumble is not affiliated with or endorsed by them.
+
+| Palette | Theme | Source |
+|---|---|---|
+| Tokyo Night | Tokyo Night, by enkia | https://github.com/enkia/tokyo-night-vscode-theme |
+| Catppuccin | Catppuccin Latte and Mocha | https://github.com/catppuccin/catppuccin |
+| Gruvbox | gruvbox, by Pavel Pertsev | https://github.com/morhetz/gruvbox |
+| Nord | Nord | https://github.com/nordtheme/nord |
+| Rosé Pine | Rosé Pine Dawn and Rosé Pine | https://github.com/rose-pine/rose-pine-theme |
+| Solarized | Solarized, by Ethan Schoonover | https://github.com/altercation/solarized |
+| Dracula | Dracula | https://github.com/dracula/dracula-theme |
+| One | Atom's One Light and One Dark | https://github.com/atom/one-light-syntax, https://github.com/atom/one-dark-syntax |
+| GitHub | GitHub's Primer colours | https://github.com/primer/primitives |
+| Everforest | Everforest, by sainnhe | https://github.com/sainnhe/everforest |
+| Kanagawa | Kanagawa, by rebelot | https://github.com/rebelot/kanagawa.nvim |
+
 ### Libraries in the jar
 
 The application jar bundles these libraries, each under its license (see
