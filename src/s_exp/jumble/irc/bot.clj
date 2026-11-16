@@ -29,6 +29,9 @@
    :line-interval-ms 2000
    ;; Wait before joining again, kicked or refused.
    :rejoin-after-ms (* 60 1000)
+   ;; A write taking longer, the server no longer reading, ends the
+   ;; connection: it must not hold up the delivery loop saying something.
+   :write-timeout-ms 10000
    ;; Waits between connection attempts, the last repeated.
    :reconnect-delays-ms [1000 2000 5000 15000 30000 60000 120000 300000]})
 
@@ -40,23 +43,46 @@
     (let [^SSLSocket socket (.createSocket ^SSLSocketFactory (SSLSocketFactory/getDefault))
           params (doto (.getSSLParameters socket) (.setEndpointIdentificationAlgorithm "HTTPS"))]
       (.setSSLParameters socket params)
+      ;; Bounds the handshake too.
+      (.setSoTimeout socket 20000)
       (.connect socket (InetSocketAddress. ^String host (int port)) 20000)
       (.startHandshake socket)
       socket)
     (doto (Socket.)
+      (.setSoTimeout 20000)
       (.connect (InetSocketAddress. ^String host (int port)) 20000))))
 
 (defn- write!
-  "Writes `line` on the current connection; false when there is none."
+  "Writes `line` on the current connection; false when there is none, or it
+  failed. A write under way is marked, for [[watch!]]."
   [{:keys [state]} line]
   (if-let [^Writer out (:out @state)]
     (try
       (locking out
-        (.write out (str line "\r\n"))
-        (.flush out))
+        (swap! state assoc :writing-since (System/currentTimeMillis))
+        (try
+          (.write out (str line "\r\n"))
+          (.flush out)
+          (finally
+            (swap! state dissoc :writing-since))))
       true
       (catch java.io.IOException _ false))
     false))
+
+(defn- watch!
+  "Closes the connection when a write has been under way longer than the
+  write timeout: the server stopped reading, and the writer, the delivery
+  loop maybe, gets its failure instead of waiting for ever."
+  [{:keys [state options]}]
+  (while (:running @state)
+    (try
+      (Thread/sleep (long (:tick-ms options)))
+      (let [{:keys [writing-since ^Socket socket]} @state]
+        (when (and writing-since socket
+                   (> (- (System/currentTimeMillis) writing-since) (:write-timeout-ms options)))
+          (log/warn "IRC server stopped reading; connecting again")
+          (.close socket)))
+      (catch InterruptedException _))))
 
 (defn joined?
   "Whether the bot is in its channel, so that what it says is heard."
@@ -197,7 +223,10 @@
     (when (:running @state)
       (let [delays (:reconnect-delays-ms options)
             attempt (:attempt (swap! state update :attempt (fnil inc 0)))]
-        (Thread/sleep (long (nth delays (min (dec attempt) (dec (count delays))))))))))
+        (try
+          (Thread/sleep (long (nth delays (min (dec attempt) (dec (count delays))))))
+          ;; Stopped meanwhile.
+          (catch InterruptedException _))))))
 
 (defn start
   "Starts a bot for `config`, `{:host :port :tls :nick :password :channel
@@ -210,15 +239,20 @@
      (add-watch state ::joined (fn [_ _ before after]
                                  (when (not= (boolean (:joined before)) (boolean (:joined after)))
                                    (metrics/set-gauge! joined-gauge {} (if (:joined after) 1 0)))))
-     (assoc bot :thread (Thread/startVirtualThread #(keep-connected! bot))))))
+     (assoc bot
+            :thread (Thread/startVirtualThread #(keep-connected! bot))
+            :watchdog (Thread/startVirtualThread #(watch! bot))))))
 
 (defn stop
   "Says goodbye and closes the connection, for good."
-  [{:keys [state ^Thread thread] :as bot}]
+  [{:keys [state ^Thread thread ^Thread watchdog] :as bot}]
   (swap! state assoc :running false)
-  (write! bot (irc/line "QUIT" "Bye"))
+  ;; Not waited for long: the server may have stopped reading.
+  (deref (future (write! bot (irc/line "QUIT" "Bye"))) 2000 nil)
   (when-let [^Socket socket (:socket @state)]
     (.close socket))
+  (.interrupt thread)
+  (.interrupt watchdog)
   (.join thread 5000))
 
 (defrecord Bot [config bot]

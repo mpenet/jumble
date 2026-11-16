@@ -69,7 +69,7 @@
                      :nick "jumble" :password nil :channel "#swap" :key nil}
                     options)
              {:tick-ms 50 :ping-after-ms 400 :dead-after-ms 1200 :line-interval-ms 100 :rejoin-after-ms 200
-              :reconnect-delays-ms [50 100]}))
+              :write-timeout-ms 300 :reconnect-delays-ms [50 100]}))
 
 (defn- eventually
   [f]
@@ -208,5 +208,42 @@
           (bot/stop b)
           (is (str/starts-with? (said-until srv #"^QUIT") "QUIT"))
           (is (nil? (connection srv)))))
+      (finally
+        (.close ^ServerSocket (:listener srv))))))
+
+(deftest stuck-write-test
+  (let [srv (server)
+        b (start srv)]
+    (try
+      (let [socket (connection srv)]
+        (joined! srv socket)
+        (eventually #(bot/joined? b))
+        (testing "a server no longer reading cannot hold up the one saying something: the connection is given up"
+          (let [^Socket own (:socket @(:state b))
+                stuck (proxy [Writer] []
+                        (write
+                          ([_] (while (not (.isClosed own)) (Thread/sleep 10)) (throw (java.io.IOException. "closed")))
+                          ([_ _ _] (while (not (.isClosed own)) (Thread/sleep 10)) (throw (java.io.IOException. "closed"))))
+                        (flush [])
+                        (close []))]
+            (swap! (:state b) assoc :out stuck)
+            (let [said (future (bot/say! b "Desk lamp"))]
+              (is (false? (deref said 2000 ::still-stuck)) "not said, so it waits for later")
+              (is (connection srv) "and the bot connects again")))))
+      (finally
+        (bot/stop b)
+        (.close ^ServerSocket (:listener srv))))))
+
+(deftest stop-while-waiting-test
+  (let [srv (server)
+        b (bot/start {:host "127.0.0.1" :port 1 :tls false :nick "jumble" :channel "#swap"}
+                     {:reconnect-delays-ms [60000]})]
+    (try
+      (Thread/sleep 200)
+      (testing "stopped while waiting to connect again, it stops at once"
+        (let [started (System/currentTimeMillis)]
+          (bot/stop b)
+          (is (< (- (System/currentTimeMillis) started) 2000))
+          (is (not (.isAlive ^Thread (:thread b))))))
       (finally
         (.close ^ServerSocket (:listener srv))))))
