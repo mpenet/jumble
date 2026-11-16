@@ -2265,6 +2265,18 @@ textarea {
   background: var(--surface-sunken);
 }
 
+/* The first and last rows round as the list does, so their hover
+   background keeps its corners. */
+.threads li:first-child .thread-row {
+  border-start-start-radius: var(--radius-lg);
+  border-start-end-radius: var(--radius-lg);
+}
+
+.threads li:last-child .thread-row {
+  border-end-start-radius: var(--radius-lg);
+  border-end-end-radius: var(--radius-lg);
+}
+
 /* Members' initials on one of five palette colours, each pair checked for
    contrast with the palettes. */
 .avatar {
