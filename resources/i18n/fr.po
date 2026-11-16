@@ -1585,6 +1585,10 @@ msgid "Until you remove it, or delete your account; then the messages you wrote 
 msgstr "Jusqu'à ce que vous le retiriez, ou que vous supprimiez votre compte ; les messages que vous avez écrits restent alors à leurs destinataires, et vos signalements aux modérateurs, sans votre nom. Les sauvegardes conservent les données supprimées quelque temps, en général jusqu'à trois mois."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."
+msgstr "Les messages signalant les nouvelles annonces restent dans l'historique du canal de discussion après la suppression de l'annonce ou de votre compte, et le canal peut être lisible au-delà de la communauté."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Your choices"
 msgstr "Vos choix"
 

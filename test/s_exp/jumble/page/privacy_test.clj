@@ -24,8 +24,9 @@
                        "<a href=\"mailto:privacy@club.org\">privacy@club.org</a>")))
   (testing "new posts announced in a chat channel, when they are, say so"
     (is (not (str/includes? (:body (request :get "/privacy" nil)) "chat channel")))
-    (is (str/includes? (:body (request :get "/privacy" nil :ctx {:settings {:chat-announced true}}))
-                       "New listings are also announced in your community's chat channel")))
+    (let [body (:body (request :get "/privacy" nil :ctx {:settings {:chat-announced true}}))]
+      (is (str/includes? body "New listings are also announced in your community's chat channel"))
+      (is (str/includes? body "stay in the chat channel's history"))))
   (testing "the community's own text replaces it"
     (let [body (:body (request :get "/privacy" nil :ctx {:settings {:privacy "# Our rules\n\nWe keep **little**."}}))]
       (is (str/includes? body "<strong>little</strong>"))

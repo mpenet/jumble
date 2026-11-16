@@ -37,7 +37,9 @@
             (when chat-announced
               (i18n/t "New listings are also announced in your community's chat channel: their title, price, category and pickup place, with a link; not who posted them.")))
    (section (i18n/t "How long")
-            (i18n/t "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."))
+            (i18n/t "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months.")
+            (when chat-announced
+              (i18n/t "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community.")))
    (section (i18n/t "Your choices")
             (i18n/t "Download everything {app-name} keeps about you, or delete your account, from {settings}."
                     {:app-name app-name :settings [:a {:href "/settings"} (i18n/t "Settings")]}))

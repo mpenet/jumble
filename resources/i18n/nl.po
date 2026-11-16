@@ -1585,6 +1585,10 @@ msgid "Until you remove it, or delete your account; then the messages you wrote 
 msgstr "Tot je het verwijdert of je account verwijdert; daarna blijven de berichten die je schreef bij de mensen aan wie je schreef, en je meldingen bij de moderatoren, zonder je naam. Back-ups bewaren verwijderde gegevens nog een tijdje, meestal tot drie maanden."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."
+msgstr "Meldingen van nieuwe advertenties blijven in de geschiedenis van het chatkanaal staan nadat de advertentie of je account is verwijderd, en het kanaal kan buiten de gemeenschap leesbaar zijn."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Your choices"
 msgstr "Je keuzes"
 

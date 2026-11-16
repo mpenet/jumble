@@ -1585,6 +1585,10 @@ msgid "Until you remove it, or delete your account; then the messages you wrote 
 msgstr "Indtil du fjerner det eller sletter din konto; så bliver de beskeder, du har skrevet, hos modtagerne, og dine anmeldelser hos moderatorerne, uden dit navn. Backups beholder slettede data et stykke tid, som regel op til tre måneder."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."
+msgstr "Meddelelser om nye annoncer bliver i chatkanalens historik, også efter at annoncen eller din konto er slettet, og kanalen kan være læsbar uden for fællesskabet."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Your choices"
 msgstr "Dine valg"
 

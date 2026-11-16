@@ -1585,6 +1585,10 @@ msgid "Until you remove it, or delete your account; then the messages you wrote 
 msgstr "Kunnes poistat ne tai poistat tilisi; sen jälkeen kirjoittamasi viestit jäävät vastaanottajille ja raporttisi moderaattoreille ilman nimeäsi. Varmuuskopioissa poistetut tiedot säilyvät jonkin aikaa, yleensä enintään kolme kuukautta."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."
+msgstr "Viestit uusista ilmoituksista jäävät chat-kanavan historiaan, vaikka ilmoitus tai tilisi poistettaisiin, ja kanava voi olla luettavissa yhteisön ulkopuolellakin."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Your choices"
 msgstr "Valintasi"
 

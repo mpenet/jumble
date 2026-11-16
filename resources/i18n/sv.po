@@ -1585,6 +1585,10 @@ msgid "Until you remove it, or delete your account; then the messages you wrote 
 msgstr "Tills du tar bort det, eller raderar ditt konto; då finns meddelandena du skrev kvar hos mottagarna, och dina anmälningar hos moderatorerna, utan ditt namn. Säkerhetskopior behåller raderad data ett tag, oftast upp till tre månader."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."
+msgstr "Meddelanden om nya annonser finns kvar i chattkanalens historik även efter att annonsen eller ditt konto tagits bort, och kanalen kan vara läsbar utanför gemenskapen."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Your choices"
 msgstr "Dina val"
 
