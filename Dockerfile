@@ -28,7 +28,7 @@ RUN set -eu; \
     tar -C /usr/local/bin -xzf "/tmp/$file" litestream
 
 # glibc base: sqlite-jdbc's native library is built against it.
-FROM eclipse-temurin:25-jre-noble@sha256:ce8543ddd3070ccbeaac2106a74c9387ddeb8d47a1c43348345715c1ef245c7f
+FROM eclipse-temurin:25-jre-noble@sha256:e3b6f7887a50f20d8f07abf279d8a81a5953fb398a9555bd9edd56b9bd15968c
 # libvips' vips command processes uploaded photos; libheif's HEVC decoder,
 # a plugin of its own, reads HEIC, as phones save photos (AVIF it reads as is).
 RUN apt-get update \
