@@ -53,13 +53,17 @@
     (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE id = ?" id])))
 
 (defn- failed!
+  "Records a failed try, to be tried again later; true when that was the
+  last, the announcement given up on."
   [db {:keys [id attempts]} now]
-  (let [attempts (inc attempts)]
+  (let [attempts (inc attempts)
+        last-try (>= attempts max-attempts)]
     (db/with-write-tx [tx db]
-      (if (< attempts max-attempts)
+      (if last-try
+        (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE id = ?" id])
         (jdbc/execute-one! tx ["UPDATE chat_announcement SET attempts = ?, due_at = ? WHERE id = ?"
-                               attempts (outbox/retry-at attempts now) id])
-        (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE id = ?" id])))))
+                               attempts (outbox/retry-at attempts now) id])))
+    last-try))
 
 (defn- deliver!
   "Announces one post on `channel` with `announce`, a function of the
@@ -69,7 +73,11 @@
   (let [outcome (if (= 1 needless) :refused (announce settings (assoc pending :id listing-id)))]
     (case outcome
       :sent (do (done! db id) (metrics/inc! announced {:channel channel :result "sent"}) true)
-      :failed (do (failed! db pending now) (metrics/inc! announced {:channel channel :result "failed"}) false)
+      :failed (if (failed! db pending now)
+                (do (log/warn "Chat announcement given up on after repeated failures" {:channel channel :listing listing-id})
+                    (metrics/inc! announced {:channel channel :result "dropped"})
+                    false)
+                (do (metrics/inc! announced {:channel channel :result "failed"}) false))
       :refused (do (done! db id) (metrics/inc! announced {:channel channel :result "dropped"}) false)
       :wait false)))
 

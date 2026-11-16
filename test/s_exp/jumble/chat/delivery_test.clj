@@ -8,6 +8,7 @@
             [s-exp.jumble.chat.model :as chat]
             [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture]]
             [s-exp.jumble.listing.model :as listing]
+            [s-exp.jumble.metrics :as metrics]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.oda :as oda]))
 
@@ -36,6 +37,15 @@
 
 (defn- webhook-queue []
   (filter #(= "webhook" (:channel %)) (chat/queued *db*)))
+
+(defn- counted
+  "How many webhook announcements the metrics count as `result`."
+  [result]
+  (or (some->> (metrics/text)
+               (re-find (re-pattern (str "jumble_chat_total\\{channel=\"webhook\",result=\"" result "\"\\} (\\d+)")))
+               second
+               parse-long)
+      0))
 
 (defn- deliver!
   ([send now] (deliver! send settings now))
@@ -70,11 +80,13 @@
       (is (zero? (deliver! (fn [_] (throw (java.io.IOException. "down"))) (* 2 chat/delay-ms))))
       (is (= [2] (map :attempts (webhook-queue))))
       (is (= 1 (deliver! (channel requests 200) (* 60 minute)))))
-    (testing "and given up on in the end"
+    (testing "and given up on in the end, counted as dropped"
       (post! ann "Chair" (* 60 minute))
-      (doseq [i (range 10)]
-        (deliver! (channel requests 429) (* (+ 2 i) 60 minute)))
-      (is (empty? (webhook-queue))))))
+      (let [dropped (counted "dropped")]
+        (doseq [i (range 10)]
+          (deliver! (channel requests 429) (* (+ 2 i) 60 minute)))
+        (is (empty? (webhook-queue)))
+        (is (= (inc dropped) (counted "dropped")))))))
 
 (deftest failing-channel-test
   (let [ann (fixtures/user! "ann")

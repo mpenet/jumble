@@ -80,8 +80,8 @@ in Prometheus' text format:
   failed, dropped);
 - the chat channels: `jumble_chat_total` by channel (webhook, irc) and
   result, new posts announced (sent), tried again (failed) or not
-  announced (dropped: off the board, too old, or refused by the webhook,
-  which the log then says); and `jumble_irc_joined`, 1 while the IRC bot
+  announced (dropped: off the board, too old, refused by the webhook, or
+  failing still after eight tries; the log says which of the last two); and `jumble_irc_joined`, 1 while the IRC bot
   is in its channel;
 - sizes: `jumble_database_bytes` of the database file and its
   write-ahead log, and `jumble_disk_bytes`, free and total, of the disk
