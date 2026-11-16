@@ -24,3 +24,15 @@
     (testing "and leaves the queue with the post"
       (listing/delete! *db* (blob/memory-store) lamp ann)
       (is (empty? (chat/queued *db*))))))
+
+(deftest forget-test
+  (let [ann (fixtures/user! "ann")
+        post! #(listing/create! *db* (blob/memory-store) ann
+                                (:listing (listing/validate fixtures/settings {:kind "free" :title % :category "home"
+                                                                               :pickup "place:hall"}))
+                                [] 1000)
+        lamp (post! "Desk lamp")
+        chair (post! "Chair")]
+    (testing "listings that are not news, a seed's, are not announced"
+      (chat/forget! *db* [lamp])
+      (is (= #{chair} (set (map :listing-id (chat/queued *db*))))))))

@@ -29,6 +29,14 @@
   [db]
   (jdbc/execute! db ["SELECT * FROM chat_announcement ORDER BY due_at, id"] db/opts))
 
+(defn forget!
+  "Drops the announcements of listings `listing-ids`, which are not news:
+  a seed's."
+  [db listing-ids]
+  (db/with-write-tx [tx db]
+    (doseq [id listing-ids]
+      (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE listing_id = ?" id]))))
+
 (defn drop-due!
   "Empties `channel`'s queue of what is due at `now`: it is not configured.
   Writes only when there is something to drop, as it runs every round."

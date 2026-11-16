@@ -9,6 +9,7 @@
             [next.jdbc.result-set :as rs]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
+            [s-exp.jumble.chat.model :as chat]
             [s-exp.jumble.config :as config]
             [s-exp.jumble.store.db :as db]
             [s-exp.jumble.listing.choices :as choices]
@@ -162,5 +163,7 @@
                  (listing/create! ds blobs (:id (nth users (mod i (count users)))) listing photos
                                ;; Spread over the last three weeks, newest last.
                                   (- now (* (- (count listings) i) (quot (* 21 day) (count listings)))))))]
+      ;; Not news: a chat channel connected in development is not told.
+      (chat/forget! ds listing-ids)
       (println "Seeded" (count users) "members and" (count listings) "listings.")
       (seed-conversations! ds listing-ids now))))
