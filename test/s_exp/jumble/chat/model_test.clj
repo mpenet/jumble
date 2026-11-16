@@ -17,9 +17,10 @@
                               (:listing (listing/validate fixtures/settings {:kind "free" :title "Desk lamp" :category "home"
                                                                              :pickup "place:hall"}))
                               [] 1000)]
-    (testing "a new post is queued, due a few minutes later, so edits made right after posting are in"
-      (is (= [{:listing-id lamp :due-at (+ 1000 chat/delay-ms) :attempts 0}]
-             (map #(select-keys % [:listing-id :due-at :attempts]) (chat/queued *db*)))))
+    (testing "a new post is queued for each channel, due a few minutes later, so edits made right after posting are in"
+      (is (= #{{:channel "webhook" :listing-id lamp :due-at (+ 1000 chat/delay-ms) :attempts 0}
+               {:channel "irc" :listing-id lamp :due-at (+ 1000 chat/delay-ms) :attempts 0}}
+             (set (map #(select-keys % [:channel :listing-id :due-at :attempts]) (chat/queued *db*))))))
     (testing "and leaves the queue with the post"
       (listing/delete! *db* (blob/memory-store) lamp ann)
       (is (empty? (chat/queued *db*))))))

@@ -22,7 +22,7 @@
    "021-object-deletion.sql" "022-community-settings.sql"
    "023-member-language.sql" "024-weekly-digest.sql" "025-wanted.sql"
    "026-expiring-emails.sql" "027-push.sql" "028-reminded-index.sql"
-   "029-chat-announcements.sql"])
+   "029-chat-announcements.sql" "030-chat-channels.sql"])
 
 (defn migrations
   []

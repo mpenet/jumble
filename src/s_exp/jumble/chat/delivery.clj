@@ -4,6 +4,7 @@
   (:require [clojure.tools.logging :as log]
             [next.jdbc :as jdbc]
             [s-exp.jumble.chat.message :as message]
+            [s-exp.jumble.chat.model :as chat]
             [s-exp.jumble.email.outbox :as outbox]
             [s-exp.jumble.listing.choices :as choices]
             [s-exp.jumble.listing.model :as listing]
@@ -42,7 +43,7 @@
                            FROM chat_announcement a
                            JOIN listing l ON l.id = a.listing_id
                            JOIN user u ON u.id = l.user_id
-                           WHERE a.due_at <= ?
+                           WHERE a.channel = 'webhook' AND a.due_at <= ?
                            ORDER BY a.due_at, a.id LIMIT ?")
                      (- now max-age) now batch-size]
                  db/opts))
@@ -98,8 +99,7 @@
   Returns how many went out."
   [db send settings now running]
   (if-not (:chat-webhook-url settings)
-    (do (db/with-write-tx [tx db]
-          (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE due_at <= ?" now]))
+    (do (chat/drop-due! db "webhook" now)
         0)
     (if-let [pending (seq (due db now))]
       (let [settings (merge settings (choices/all db))]

@@ -34,6 +34,9 @@
   [requests status]
   (fn [request] (swap! requests conj request) {:status status}))
 
+(defn- webhook-queue []
+  (filter #(= "webhook" (:channel %)) (chat/queued *db*)))
+
 (defn- deliver!
   ([send now] (deliver! send settings now))
   ([send settings now] (delivery/deliver-due! *db* send settings now (constantly true))))
@@ -56,7 +59,7 @@
         (is (= [webhook :post "application/json"] [url method (get headers "content-type")])))
       (is (str/includes? (first (said requests)) "Desk lamp"))
       (is (str/includes? (first (said requests)) (str "/listings/" lamp)))
-      (is (empty? (chat/queued *db*))))))
+      (is (empty? (webhook-queue))))))
 
 (deftest retry-test
   (let [ann (fixtures/user! "ann")
@@ -65,13 +68,13 @@
     (testing "the channel failing or out of reach, tried again later"
       (is (zero? (deliver! (channel requests 503) chat/delay-ms)))
       (is (zero? (deliver! (fn [_] (throw (java.io.IOException. "down"))) (* 2 chat/delay-ms))))
-      (is (= [2] (map :attempts (chat/queued *db*))))
+      (is (= [2] (map :attempts (webhook-queue))))
       (is (= 1 (deliver! (channel requests 200) (* 60 minute)))))
     (testing "and given up on in the end"
       (post! ann "Chair" (* 60 minute))
       (doseq [i (range 10)]
         (deliver! (channel requests 429) (* (+ 2 i) 60 minute)))
-      (is (empty? (chat/queued *db*))))))
+      (is (empty? (webhook-queue))))))
 
 (deftest refused-test
   (let [ann (fixtures/user! "ann")
@@ -79,7 +82,7 @@
     (post! ann "Desk lamp" 0)
     (testing "a webhook deleted, or refusing it, is not asked again"
       (is (zero? (deliver! (channel requests 404) chat/delay-ms)))
-      (is (empty? (chat/queued *db*))))))
+      (is (empty? (webhook-queue))))))
 
 (deftest needless-test
   (let [ann (fixtures/user! "ann")
@@ -98,7 +101,7 @@
       (post! ann "Old sofa" 0)
       (deliver! send (* 3 24 60 minute)))
     (is (empty? @requests))
-    (is (empty? (chat/queued *db*)))))
+    (is (empty? (webhook-queue)))))
 
 (deftest no-channel-test
   (let [ann (fixtures/user! "ann")
@@ -107,4 +110,4 @@
     (testing "without a webhook, nothing is sent and the queue does not grow"
       (is (zero? (deliver! (channel requests 200) fixtures/settings chat/delay-ms)))
       (is (empty? @requests))
-      (is (empty? (chat/queued *db*))))))
+      (is (empty? (webhook-queue))))))
