@@ -1,7 +1,9 @@
 # Contributing
 
 Thank you for helping. Bug reports, questions and suggestions are welcome
-as GitHub issues.
+as GitHub issues. Everyone taking part follows the
+[code of conduct](CODE_OF_CONDUCT.md). Security issues are reported
+privately, as [SECURITY.md](SECURITY.md) explains, not in issues.
 
 ## Changes
 
@@ -24,3 +26,10 @@ State your agreement once, in your first pull request's description:
 
 > I have read the Jumble Contributor License Agreement (CLA.md) and agree
 > to it for this and my future contributions to Jumble.
+
+The pull request template has it as a box to tick. The maintainer checks
+it before merging; a pull request without it is not merged. For a
+contribution sent another way, a patch by email say, write the same
+sentence to info@jumbl.ing. If what you contribute belongs to your
+employer, as work done for them often does, make sure they agree to it
+being contributed first.
