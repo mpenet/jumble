@@ -60,6 +60,7 @@
                                                   :moderator-notice moderator-notice
                                                   :notice notice
                                                   :chat-webhook-url chat-webhook-url
+                                                  ;; Named on the privacy page.
                                                   :irc irc
                                                   :hosted-by hosted-by
                                                   :source-url source-url

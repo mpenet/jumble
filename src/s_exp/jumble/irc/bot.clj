@@ -6,13 +6,17 @@
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]
-            [s-exp.jumble.irc.protocol :as irc])
+            [s-exp.jumble.irc.protocol :as irc]
+            [s-exp.jumble.metrics :as metrics])
   (:import (java.io BufferedReader InputStreamReader OutputStreamWriter Writer)
            (java.net InetSocketAddress Socket SocketTimeoutException)
            (java.nio.charset StandardCharsets)
            (javax.net.ssl SSLSocket SSLSocketFactory)))
 
 (set! *warn-on-reflection* true)
+
+(def ^:private joined-gauge
+  (metrics/gauge "jumble_irc_joined" "Whether the IRC bot is in its channel, so new posts are announced: 1 or 0."))
 
 (def ^:private defaults
   {;; How often the connection's thread looks up from reading.
@@ -172,9 +176,12 @@
   :key}`, with `options` overriding the timings in [[defaults]] (tests)."
   ([config] (start config {}))
   ([config options]
-   (let [bot {:config config
-              :options (merge defaults options)
-              :state (atom {:running true :attempt 0})}]
+   (let [state (atom {:running true :attempt 0})
+         bot {:config config :options (merge defaults options) :state state}]
+     (metrics/set-gauge! joined-gauge {} 0)
+     (add-watch state ::joined (fn [_ _ before after]
+                                 (when (not= (boolean (:joined before)) (boolean (:joined after)))
+                                   (metrics/set-gauge! joined-gauge {} (if (:joined after) 1 0)))))
      (assoc bot :thread (Thread/startVirtualThread #(keep-connected! bot))))))
 
 (defn stop

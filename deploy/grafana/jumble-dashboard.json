@@ -1741,7 +1741,7 @@
         "type": "prometheus",
         "uid": "${ds}"
       },
-      "description": "New posts announced to the community's chat channel: sent, failed (retried) or dropped (off the board, too old, or refused by the webhook: see the log).",
+      "description": "New posts announced on the community's chat channels, the webhook's and IRC's: sent, failed (retried) or dropped (off the board, too old, or refused by the webhook: see the log).",
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -1754,8 +1754,8 @@
             "type": "prometheus",
             "uid": "${ds}"
           },
-          "expr": "sum by (result) (increase(jumble_chat_total{job=\"$job\"}[1h]))",
-          "legendFormat": "{{result}}",
+          "expr": "sum by (channel, result) (increase(jumble_chat_total{job=\"$job\"}[1h]))",
+          "legendFormat": "{{channel}} {{result}}",
           "refId": "A",
           "range": true,
           "instant": false

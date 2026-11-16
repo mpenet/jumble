@@ -3,7 +3,8 @@
   test's own: signing in, SASL, keeping the connection, getting back in."
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
-            [s-exp.jumble.irc.bot :as bot])
+            [s-exp.jumble.irc.bot :as bot]
+            [s-exp.jumble.metrics :as metrics])
   (:import (java.io BufferedReader InputStreamReader OutputStreamWriter Writer)
            (java.net ServerSocket Socket)
            (java.nio.charset StandardCharsets)
@@ -92,7 +93,8 @@
           (is (not (bot/joined? b)))
           (is (not (bot/say! b "too early")) "nothing said before it is in")
           (joined! srv socket)
-          (is (eventually #(bot/joined? b))))
+          (is (eventually #(bot/joined? b)))
+          (is (str/includes? (metrics/text) "jumble_irc_joined 1") "watched by the dashboard"))
         (testing "and says what it is given, made safe: no line break starts a command"
           (is (bot/say! b "Desk lamp\r\nQUIT :bye"))
           (is (= "PRIVMSG #swap :Desk lamp QUIT :bye" (said-until srv #"^PRIVMSG "))))
@@ -148,6 +150,7 @@
         (testing "kicked, it is out, and joins again a while later"
           (tell! socket ":op!o@host KICK #swap jumble :out")
           (is (eventually #(not (bot/joined? b))))
+          (is (str/includes? (metrics/text) "jumble_irc_joined 0"))
           (is (= "JOIN #swap" (said-until srv #"^JOIN ")))))
       (finally
         (bot/stop b)

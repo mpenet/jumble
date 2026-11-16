@@ -78,9 +78,11 @@ in Prometheus' text format:
   `jumble_background_last_success_seconds` by step;
 - browser notifications: `jumble_push_total` by result (sent, gone,
   failed, dropped);
-- the chat channel: `jumble_chat_total`, new posts announced (sent),
-  tried again (failed) or not announced (dropped: off the board, too old,
-  or refused by the webhook, which the log then says);
+- the chat channels: `jumble_chat_total` by channel (webhook, irc) and
+  result, new posts announced (sent), tried again (failed) or not
+  announced (dropped: off the board, too old, or refused by the webhook,
+  which the log then says); and `jumble_irc_joined`, 1 while the IRC bot
+  is in its channel;
 - sizes: `jumble_database_bytes` of the database file and its
   write-ahead log, and `jumble_disk_bytes`, free and total, of the disk
   holding them;
@@ -111,6 +113,7 @@ as your email first, under **Alerting → Contact points**):
 | Backups down | `min(jumble_litestream_up{job="<job>"})` | below 1: Litestream does not answer |
 | Backups failing | `sum(increase(litestream_sync_error_count{job="<job>"}[15m]))` | above 0: changes failed to reach the bucket |
 | Metrics missing | `absent(jumble_members{job="<job>"})` | 1: Grafana gets nothing, the app or its token gone |
+| IRC bot out | `max_over_time(jumble_irc_joined{job="<job>"}[15m])` | below 1: with JUMBLE_IRC_URL, the bot has not been in its channel for 15 minutes; the log says why (refused sign-in, kicked, banned, unreachable) |
 | Disk filling up | `min(jumble_disk_bytes{job="<job>",state="free"} / ignoring(state) jumble_disk_bytes{job="<job>",state="total"})` | below 0.1: less than a tenth of the disk is free |
 
 Jumble being down shows first in the uptime monitor; the backup heartbeat

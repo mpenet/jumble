@@ -17,7 +17,7 @@
    (for [p paragraphs :when p] [:p p])])
 
 (defn- default-text
-  [{:keys [app-name contact chat-webhook-url]}]
+  [{:keys [app-name contact chat-webhook-url irc]}]
   (list
    [:h1 (i18n/t "Privacy")]
    [:p.lede (i18n/t "{app-name} is run by and for its community. This page says what it keeps about you, and why."
@@ -34,7 +34,7 @@
                     {:app-name app-name}))
    (section (i18n/t "Services involved")
             (i18n/t "Photos and backups are stored with your community's storage provider, emails go through its email provider, and signing in may go through its sign-in service. Notifications you turn on go through your browser's push service (Google's, Apple's, Mozilla's or Microsoft's), encrypted: it sees only when one is sent.")
-            (when chat-webhook-url
+            (when (or chat-webhook-url irc)
               (i18n/t "New listings are also announced in your community's chat channel: their title, price, category and pickup place, with a link; not who posted them.")))
    (section (i18n/t "How long")
             (i18n/t "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."))

@@ -57,8 +57,8 @@ share what you see as a link.
   their location and camera data removed before anyone sees them. The
   first one is the cover shown on the board.
 
-If your community has a chat channel connected (Slack, Mattermost or
-Discord), a new post is announced there a few minutes after you publish
+If your community has a chat channel connected (Slack, Mattermost, Discord
+or IRC), a new post is announced there a few minutes after you publish
 it: its title, price or kind, category and pickup, with a link. Your name
 is not in it.
 

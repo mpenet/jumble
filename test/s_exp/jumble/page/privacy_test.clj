@@ -25,6 +25,8 @@
   (testing "new posts announced in a chat channel, when they are, say so"
     (is (not (str/includes? (:body (request :get "/privacy" nil)) "chat channel")))
     (is (str/includes? (:body (request :get "/privacy" nil :ctx {:settings {:chat-webhook-url "https://hooks.example.org/x"}}))
+                       "New listings are also announced in your community's chat channel"))
+    (is (str/includes? (:body (request :get "/privacy" nil :ctx {:settings {:irc {:channel "#swap"}}}))
                        "New listings are also announced in your community's chat channel")))
   (testing "the community's own text replaces it"
     (let [body (:body (request :get "/privacy" nil :ctx {:settings {:privacy "# Our rules\n\nWe keep **little**."}}))]
