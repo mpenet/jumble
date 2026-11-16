@@ -22,6 +22,10 @@
   (testing "a contact address, when set, is where questions go"
     (is (str/includes? (:body (request :get "/privacy" nil :ctx {:settings {:contact "privacy@club.org"}}))
                        "<a href=\"mailto:privacy@club.org\">privacy@club.org</a>")))
+  (testing "new posts announced in a chat channel, when they are, say so"
+    (is (not (str/includes? (:body (request :get "/privacy" nil)) "chat channel")))
+    (is (str/includes? (:body (request :get "/privacy" nil :ctx {:settings {:chat-webhook-url "https://hooks.example.org/x"}}))
+                       "New listings are also announced in your community's chat channel")))
   (testing "the community's own text replaces it"
     (let [body (:body (request :get "/privacy" nil :ctx {:settings {:privacy "# Our rules\n\nWe keep **little**."}}))]
       (is (str/includes? body "<strong>little</strong>"))

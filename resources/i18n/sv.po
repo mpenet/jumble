@@ -1573,6 +1573,10 @@ msgid "Photos and backups are stored with your community's storage provider, ema
 msgstr "Bilder och säkerhetskopior lagras hos din communitys lagringsleverantör, mejl går via dess e-postleverantör, och inloggningen kan gå via dess inloggningstjänst. Aviseringar som du slår på går krypterade via webbläsarens push-tjänst (Googles, Apples, Mozillas eller Microsofts): den ser bara när en avisering skickas."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "New listings are also announced in your community's chat channel: their title, price, category and pickup place, with a link; not who posted them."
+msgstr "Nya annonser meddelas också i din gemenskaps chattkanal: deras titel, pris, kategori och upphämtningsplats, med en länk; inte vem som lade upp dem."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "How long"
 msgstr "Hur länge"
 

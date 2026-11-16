@@ -1628,7 +1628,7 @@
       "description": "Emails handed to the mail server, sent or failed.",
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 8,
         "x": 0,
         "y": 53
       },
@@ -1686,8 +1686,8 @@
       "description": "Notifications to members' devices: sent, gone (the device unsubscribed), failed (retried) or dropped (read meanwhile).",
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 8,
+        "x": 8,
         "y": 53
       },
       "targets": [
@@ -1733,6 +1733,64 @@
         "overrides": []
       },
       "id": 31
+    },
+    {
+      "type": "timeseries",
+      "title": "Chat announcements (per hour)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "description": "New posts announced to the community's chat channel: sent, failed (retried) or dropped (off the board, too old, or refused by the webhook: see the log).",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 53
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (result) (increase(jumble_chat_total{job=\"$job\"}[1h]))",
+          "legendFormat": "{{result}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "lineWidth": 2,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "id": 46
     },
     {
       "type": "row",

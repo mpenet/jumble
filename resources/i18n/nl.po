@@ -1573,6 +1573,10 @@ msgid "Photos and backups are stored with your community's storage provider, ema
 msgstr "Foto's en back-ups worden opgeslagen bij de opslagprovider van je community, e-mails gaan via de e-mailprovider ervan, en inloggen kan via de inlogdienst ervan lopen. Notificaties die je aanzet, gaan versleuteld via de pushdienst van je browser (die van Google, Apple, Mozilla of Microsoft): die ziet alleen wanneer er een wordt verstuurd."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "New listings are also announced in your community's chat channel: their title, price, category and pickup place, with a link; not who posted them."
+msgstr "Nieuwe advertenties worden ook gemeld in het chatkanaal van je gemeenschap: hun titel, prijs, categorie en ophaalplaats, met een link; niet wie ze plaatste."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "How long"
 msgstr "Hoe lang"
 

@@ -1573,6 +1573,10 @@ msgid "Photos and backups are stored with your community's storage provider, ema
 msgstr "Kuvat ja varmuuskopiot tallennetaan yhteisösi tallennuspalveluun, sähköpostit kulkevat sen sähköpostipalvelun kautta, ja kirjautuminen voi kulkea sen kirjautumispalvelun kautta. Käyttöön ottamasi push-ilmoitukset kulkevat salattuina selaimesi push-palvelun (Googlen, Applen, Mozillan tai Microsoftin) kautta: se näkee vain, milloin ilmoitus lähetetään."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "New listings are also announced in your community's chat channel: their title, price, category and pickup place, with a link; not who posted them."
+msgstr "Uusista ilmoituksista kerrotaan myös yhteisösi chat-kanavalla: niiden otsikko, hinta, kategoria ja noutopaikka sekä linkki; ei sitä, kuka ne jätti."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "How long"
 msgstr "Kuinka kauan"
 

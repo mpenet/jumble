@@ -1572,6 +1572,10 @@ msgid "Photos and backups are stored with your community's storage provider, ema
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "New listings are also announced in your community's chat channel: their title, price, category and pickup place, with a link; not who posted them."
+msgstr ""
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "How long"
 msgstr ""
 

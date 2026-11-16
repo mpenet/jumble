@@ -78,6 +78,9 @@ in Prometheus' text format:
   `jumble_background_last_success_seconds` by step;
 - browser notifications: `jumble_push_total` by result (sent, gone,
   failed, dropped);
+- the chat channel: `jumble_chat_total`, new posts announced (sent),
+  tried again (failed) or not announced (dropped: off the board, too old,
+  or refused by the webhook, which the log then says);
 - sizes: `jumble_database_bytes` of the database file and its
   write-ahead log, and `jumble_disk_bytes`, free and total, of the disk
   holding them;
