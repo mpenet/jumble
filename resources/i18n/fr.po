@@ -312,6 +312,10 @@ msgstr "Utiliser une autre adresse"
 msgid "Sign in as {email}?"
 msgstr "Se connecter avec {email} ?"
 
+#: src/s_exp/jumble/chat/message.clj
+msgid "New on {app-name}: {title}"
+msgstr "Nouveau sur {app-name} : {title}"
+
 #: src/s_exp/jumble/error/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Go to the home page"
 msgstr "Aller à l'accueil"

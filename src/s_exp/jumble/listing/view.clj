@@ -18,7 +18,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn- label-of
+(defn label-of
   "Label of `id` in `entries`, retired ones included, or the id itself."
   [entries id]
   (or (some #(when (= id (:id %)) (:label %)) entries) id))
@@ -165,7 +165,8 @@
 
       [:button {:type "submit"} (if listing (i18n/t "Save changes") (i18n/t "Publish listing"))]])))
 
-(defn- price-label
+(defn price-label
+  "What a listing is: its price when for sale, else its kind."
   [currency {:keys [kind price-minor]}]
   (case kind
     "sale" (money/format currency price-minor)
@@ -200,7 +201,8 @@
     "found" (i18n/t "Mark as found")
     "active" (if (= "reserved" from) (i18n/t "Make available again") (i18n/t "Put back on the board"))))
 
-(defn- pickup-label
+(defn pickup-label
+  "Where a listing is picked up: its place's label, or its city."
   [places {:keys [pickup-place pickup-city]}]
   (if pickup-place (label-of places pickup-place) pickup-city))
 
