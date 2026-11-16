@@ -36,8 +36,8 @@
   --surface-sunken: light-dark(#f6f8fa, #0d1117);
   --fg: light-dark(#1f1d1a, #ecebe8);
   --muted: light-dark(#6c675f, #aeaaa2);
-  --line: light-dark(#e4e0d8, #42403c);
-  --field-border: light-dark(#bdb6a9, #5a5752);
+  --line: light-dark(#e4e0d8, #30363d);
+  --field-border: light-dark(#bdb6a9, #3d444d);
 
   --accent: light-dark(#0b7552, #4fc394);
   --accent-hover: light-dark(#086143, #74d4ad);
@@ -61,7 +61,7 @@
   --danger-soft: light-dark(#fbe7e5, #472c29);
 
   --shadow-color: light-dark(rgb(31 29 26 / 0.11), rgb(0 0 0 / 0.38));
-  --ring: light-dark(transparent, #45433f);
+  --ring: light-dark(transparent, #30363d);
   --shadow-sm: 0 1px 2px var(--shadow-color);
   --shadow: 0 0 0 1px var(--ring), 0 1px 3px var(--shadow-color), 0 6px 18px var(--shadow-color);
   --shadow-lg: 0 0 0 1px var(--ring), 0 4px 10px var(--shadow-color), 0 16px 36px var(--shadow-color);
