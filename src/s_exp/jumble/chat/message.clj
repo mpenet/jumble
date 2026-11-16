@@ -8,24 +8,34 @@
 
 (set! *warn-on-reflection* true)
 
+(def ^:private zero-width-space "\u200B")
+
 (defn- inert
   "`s` as plain text in a chat message: Slack's markup characters escaped,
-  as its webhooks ask, and a zero-width space after each @, so that no
-  @everyone, @here, @channel or @all in what a member wrote pings anyone."
+  as its webhooks ask; a zero-width space after each @, so that no
+  @everyone, @here, @channel or @all in what a member wrote pings anyone;
+  and inside Markdown's link and image syntax, which Mattermost and
+  Discord would show as a link of any text or load an image from anywhere."
   [s]
   (-> s
       (str/replace "&" "&amp;")
       (str/replace "<" "&lt;")
       (str/replace ">" "&gt;")
-      (str/replace "@" "@​")))
+      (str/replace "@" (str "@" zero-width-space))
+      (str/replace "](" (str "]" zero-width-space "("))
+      (str/replace "![" (str "!" zero-width-space "["))))
 
 (defn- summary
-  "`listing` in one line, in the language in use, as members wrote it."
+  "`listing` in one line, in the language in use, as members wrote it but
+  for line breaks, and the characters turning the text's direction, which
+  could show the line, link included, other than it is."
   [{:keys [app-name currency categories places]} {:keys [title category] :as listing}]
-  (str (i18n/t "New on {app-name}: {title}" {:app-name app-name :title (mail/one-line title)})
-       " · " (view/price-label currency listing)
-       " · " (view/label-of categories category)
-       " · " (view/pickup-label places listing)))
+  (-> (str (i18n/t "New on {app-name}: {title}" {:app-name app-name :title title})
+           " · " (view/price-label currency listing)
+           " · " (view/label-of categories category)
+           " · " (view/pickup-label places listing))
+      mail/one-line
+      (str/replace #"[\u202A-\u202E\u2066-\u2069\u200E\u200F\u061C]" "")))
 
 (defn- link
   [{:keys [base-url]} {:keys [id]}]

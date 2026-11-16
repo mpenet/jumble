@@ -44,3 +44,17 @@
     (is (= "New on Swap Shop: Desk lamp · CHF 25 · Home · Main hall · https://swap.example.org/listings/42"
            (message/irc-line settings lamp)))
     (is (str/includes? (message/irc-line settings (assoc lamp :title "Pots & pans")) "Pots & pans"))))
+
+(deftest injection-test
+  (testing "what a member wrote stays on the summary's line: no line of their own, as a link that looks like ours"
+    (let [text (message/text settings (assoc lamp :pickup-place nil :pickup-city "Paris\nhttps://evil.example/listings/42"))]
+      (is (= 1 (count (re-seq #"\n" text))))
+      (is (str/ends-with? text "\nhttps://swap.example.org/listings/42"))))
+  (testing "no Markdown link nor image, which Mattermost and Discord show"
+    (let [text (message/text settings (assoc lamp :title "[https://swap.example.org/listings/1](https://evil.example) ![](https://tracker.example/p.png)"))]
+      (is (not (str/includes? text "](")))
+      (is (not (str/includes? text "![")))))
+  (testing "no control of the text's direction, which could turn the line, link included, around"
+    (doseq [line [(message/text settings (assoc lamp :title "lamp \u202Egnp.live"))
+                  (message/irc-line settings (assoc lamp :title "lamp \u202Egnp.live \u2066x\u2069"))]]
+      (is (not (re-find #"[\u202A-\u202E\u2066-\u2069\u200E\u200F\u061C]" line)) line))))
