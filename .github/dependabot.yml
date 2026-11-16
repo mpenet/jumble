@@ -8,6 +8,13 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # A new Java version is moved to in the build, the runtime and CI
+    # together, by hand.
+    ignore:
+      - dependency-name: clojure
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eclipse-temurin
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker-compose
     directory: /
     schedule:

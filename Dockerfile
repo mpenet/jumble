@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 
-# Base images pinned by digest (Dependabot proposes updates).
-FROM clojure:temurin-27-tools-deps@sha256:2ee1c2fa687fe84cfde31beaf39f3a47f7502aa675b2cc98a5ab8a091f227f0d AS build
+# Base images pinned by digest (Dependabot proposes updates). The build's
+# Java is the runtime's, below, and CI's: code compiled against a newer one
+# can call what the runtime does not have.
+FROM clojure:temurin-25-tools-deps@sha256:4f3c4256fcf8bfcb250cd4a8353af8f447368736dce7c5cdc80a3aba48c8b518 AS build
 WORKDIR /src
 COPY deps.edn build.clj ./
 RUN clojure -P && clojure -T:build clean
