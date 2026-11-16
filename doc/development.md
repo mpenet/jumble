@@ -160,7 +160,10 @@ Each context is split three ways:
   message contents.
 - **Configuration is validated at startup**, in `config.clj`, with a test
   for each rule.
-- Formatting by cljfmt; no vertical alignment.
+- Formatting by cljfmt (`.cljfmt.edn`), which `dev/check.sh` checks; no
+  vertical alignment. Bodies of `try`, `catch`, `doseq` and the like on
+  their own lines; a call spanning lines keeps only its first argument on
+  the first line, the others one per line under it.
 
 ## Translations
 

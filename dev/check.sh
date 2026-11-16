@@ -16,6 +16,8 @@ echo "check: tests"
 clojure -M:test
 echo "check: lint"
 clojure -Sdeps '{:deps {clj-kondo/clj-kondo {:mvn/version "2026.10.26"}}}' -M -m clj-kondo.main --lint src test dev
+echo "check: formatting"
+clojure -Sdeps '{:deps {dev.weavejester/cljfmt {:mvn/version "0.16.6"}}}' -M -m cljfmt.main check src test dev
 
 shell_checks='shellcheck deploy/*.sh deploy/*/*.sh dev/*.sh && dev/check-units.sh'
 echo "check: deploy scripts and units"
