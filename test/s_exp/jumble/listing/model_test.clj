@@ -625,8 +625,8 @@
   (let [started (promise)
         release (promise)
         upload (future (listing/with-upload-turn user-id
-                                                 #(do (deliver started true) @release :done)
-                                                 #(do (deliver started true) :busy)))]
+                         #(do (deliver started true) @release :done)
+                         #(do (deliver started true) :busy)))]
     @started
     #(do (deliver release true) @upload)))
 

@@ -17,16 +17,16 @@
   (let [title (mail/one-line title)]
     (vec
      (for [moderator (sort moderators)]
-      (i18n/speaking (language-of moderator)
-      {:to moderator
-       :subject (i18n/t "Listing reported: {title}" {:title title})
-       :text (str (i18n/t "{reporter} reported \"{title}\"." {:reporter (mail/one-line reporter-name) :title title})
-                  (reason-lines reason) "\n\n"
-                  (i18n/t "Review the reports: {url}" {:url (str base-url "/manage")}) "\n\n"
-                  "-- \n"
-                  (i18n/t "You get this email as a moderator of {app-name}, once per reported listing."
-                          {:app-name app-name})
-                  "\n")})))))
+       (i18n/speaking (language-of moderator)
+         {:to moderator
+          :subject (i18n/t "Listing reported: {title}" {:title title})
+          :text (str (i18n/t "{reporter} reported \"{title}\"." {:reporter (mail/one-line reporter-name) :title title})
+                     (reason-lines reason) "\n\n"
+                     (i18n/t "Review the reports: {url}" {:url (str base-url "/manage")}) "\n\n"
+                     "-- \n"
+                     (i18n/t "You get this email as a moderator of {app-name}, once per reported listing."
+                             {:app-name app-name})
+                     "\n")})))))
 
 (defn removal-notice
   "Email to `owner-email` saying listing `title` was removed, and why."

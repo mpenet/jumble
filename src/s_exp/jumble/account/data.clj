@@ -49,12 +49,12 @@
      :listings (for [row (jdbc/execute! db ["SELECT id, title, description, kind, price_minor, category, pickup_place,
                                                    pickup_city, status, created_at AS posted_at, updated_at
                                             FROM listing WHERE user_id = ? ORDER BY id"
-                                           user-id]
-                                       db/opts)]
+                                            user-id]
+                                        db/opts)]
                  (assoc row :photos (for [{:keys [object-key]} (jdbc/execute! db ["SELECT object_key FROM photo
                                                                                   WHERE listing_id = ? ORDER BY position"
-                                                                                 (:id row)]
-                                                                             db/opts)]
+                                                                                  (:id row)]
+                                                                              db/opts)]
                                       (photo-url object-key "full"))))
      :favorites (jdbc/execute! db ["SELECT f.listing_id, l.title, f.created_at AS favorited_at FROM favorite f
                                     JOIN listing l ON l.id = f.listing_id

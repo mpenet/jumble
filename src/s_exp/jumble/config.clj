@@ -189,9 +189,9 @@
 (defn- check-allowed-emails
   [patterns]
   (ex/try+
-   (membership/parse patterns)
-   (catch ::error/invalid-pattern _
-     (invalid (ex-message &ex) [:auth :allowed-emails]))))
+    (membership/parse patterns)
+    (catch ::error/invalid-pattern _
+      (invalid (ex-message &ex) [:auth :allowed-emails]))))
 
 (defn- check-hosted-domain
   "Google accounts can be registered with any verified address, work ones
@@ -219,9 +219,9 @@
   [path key]
   (when-let [path (text path [key])]
     (ex/try+
-     (branding/read-logo path)
-     (catch ::error/invalid-logo _
-       (invalid (ex-message &ex) [key])))))
+      (branding/read-logo path)
+      (catch ::error/invalid-logo _
+        (invalid (ex-message &ex) [key])))))
 
 (def ^:private max-privacy-bytes (* 200 1024))
 

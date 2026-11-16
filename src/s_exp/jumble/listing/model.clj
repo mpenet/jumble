@@ -431,7 +431,7 @@
   [db blobs id f]
   (some? (deleting! db blobs (fn [tx]
                                (when-let [listing (jdbc/execute-one! tx ["SELECT title, user_id FROM listing WHERE id = ?" id]
-                                                                         db/opts)]
+                                                                     db/opts)]
                                  (f tx listing)
                                  (delete-in-tx! tx id))))))
 

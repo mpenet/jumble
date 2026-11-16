@@ -1,0 +1,5 @@
+;; cljfmt's settings: its defaults, with the macros of the project and its
+;; libraries indented as the forms they are.
+{:extra-indents {speaking [[:block 1]]
+                 with-write-tx [[:block 1]]
+                 try+ [[:block 0]]}}

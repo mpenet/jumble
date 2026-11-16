@@ -144,7 +144,7 @@
              :messages (jdbc/execute! db ["SELECT m.id, m.sender_id, u.name AS sender_name, m.body, m.created_at
                                           FROM message m JOIN user u ON u.id = m.sender_id
                                           WHERE m.thread_id = ? ORDER BY m.id"
-                                         thread-id]
+                                          thread-id]
                                       db/opts)))))
 
 (defn mark-read!

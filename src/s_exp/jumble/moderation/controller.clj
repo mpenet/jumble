@@ -126,12 +126,12 @@
   `{:error message}`."
   [text]
   (ex/try+
-   (let [patterns (membership/parse (str/split (or text "") #"[,\s]+"))]
-     (if (= :anyone patterns)
-       {:error (i18n/t "To let anyone in, use * in the configuration.")}
-       {:patterns patterns}))
-   (catch ::error/invalid-pattern _
-     {:error (ex-message &ex)})))
+    (let [patterns (membership/parse (str/split (or text "") #"[,\s]+"))]
+      (if (= :anyone patterns)
+        {:error (i18n/t "To let anyone in, use * in the configuration.")}
+        {:patterns patterns}))
+    (catch ::error/invalid-pattern _
+      {:error (ex-message &ex)})))
 
 (defn add-members
   "Lets the typed patterns sign in, inviting the plain addresses when asked."

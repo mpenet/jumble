@@ -60,10 +60,10 @@
     (moderation/report! *db* {:listing-id (:id lamp) :reporter-id eve :reason "spam" :now 40 :alerts []})
     (demo-seed/mark-demo! *db* "jumbl.ing")
     (is (= 1 (demo-reset/clear-visitors! *db* (blob/memory-store) {:domain "jumbl.ing" :moderators #{"max@example.com"}
-                                                          :now 50})))
+                                                                   :now 50})))
     (testing "visitors' accounts are deleted, with their listings"
       (is (= [ana moderator] (map :id (jdbc/execute! *db* ["SELECT id FROM user WHERE deleted_at IS NULL ORDER BY id"]
-                                               db/opts))))
+                                                     db/opts))))
       (is (= #{"Desk lamp" "Moderator's bike"} (titles))))
     (testing "and what they left with demo members: conversations, their notifications, reports"
       (is (= 1 (count-of "thread")))
@@ -74,7 +74,7 @@
       (is (= 1 (count-of "push_delivery"))))
     (testing "nothing is left to reset the night after"
       (is (zero? (demo-reset/clear-visitors! *db* (blob/memory-store) {:domain "jumbl.ing" :moderators #{"max@example.com"}
-                                                              :now 60}))))))
+                                                                       :now 60}))))))
 
 (deftest demo-only-test
   (let [eve (account! "eve@visitor.example.org")

@@ -87,14 +87,14 @@
       (if-let [{:keys [user renewed]} (when member resumed)]
         (cond-> (i18n/speaking (:language user)
                   (handler (let [moderator (contains? (:moderators settings) (:email user))]
-                           (cond-> (assoc request
-                                          :user user
-                                          :moderator moderator
+                             (cond-> (assoc request
+                                            :user user
+                                            :moderator moderator
                                           ;; For the header; read when the page is rendered, after
                                           ;; the handler has, say, marked a thread read.
-                                          :unread-messages (delay (message/unread-count db (:id user)))
-                                          :changed-favorites (delay (listing/changed-favorites db (:id user))))
-                             moderator (assoc :open-reports (delay (moderation/open-count db)))))))
+                                            :unread-messages (delay (message/unread-count db (:id user)))
+                                            :changed-favorites (delay (listing/changed-favorites db (:id user))))
+                               moderator (assoc :open-reports (delay (moderation/open-count db)))))))
           renewed (update :cookies #(merge {session-name (cookie base-url t (quot session-ttl 1000))} %)))
         (if (page-load? request)
           (login-redirect request)

@@ -55,7 +55,7 @@
         (is (some? token))
         (is (empty? (jdbc/execute! *db* ["SELECT 1 FROM email_sign_in WHERE token_hash = ?" token]))))
       (is (= [ttl] (map :expires_at (jdbc/execute! *db* ["SELECT expires_at FROM email_outbox"]
-                                                    {:builder-fn rs/as-unqualified-maps})))
+                                                   {:builder-fn rs/as-unqualified-maps})))
           "the email is of no use once the link expired"))
     (testing "at most three links per address in a quarter of an hour"
       (is (= [:sent :sent :limited] (mapv request! [minute (* 2 minute) (* 3 minute)])))

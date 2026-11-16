@@ -225,7 +225,7 @@
         (do (when ((account/allowed db (:allowed-emails settings)) email)
               (if (and (:clients-known settings)
                        (not (client-allowed! sign-in-requests remote-addr (System/currentTimeMillis)
-                                            (* link-minutes 60 1000) links-per-client)))
+                                             (* link-minutes 60 1000) links-per-client)))
                 (log/info "Sign-in link not sent, too many asked for by one client")
                 (let [outcome (account/request-email-sign-in!
                                db {:email email :return-to target :now (System/currentTimeMillis)

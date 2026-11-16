@@ -10,8 +10,8 @@
 (defn- mailpit
   [path]
   (oda/parse ^String (:body (http/request (http/client {:connect-timeout 5000})
-                                         {:method :get :url (str "http://127.0.0.1:8025/api/v1" path)}
-                                         :string))))
+                                          {:method :get :url (str "http://127.0.0.1:8025/api/v1" path)}
+                                          :string))))
 
 (deftest smtp-mailer-test
   (let [token (str (random-uuid))

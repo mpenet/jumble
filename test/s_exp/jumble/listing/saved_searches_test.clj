@@ -138,5 +138,5 @@
                                       (throw (ex-info "Unreadable search" {}))
                                       (by-user db id)))]
         (is (thrown-with-msg? clojure.lang.ExceptionInfo #"failed for 1 of 2"
-              (saved/send-due! *db* fixtures/settings day)) "the failure still told"))
+                              (saved/send-due! *db* fixtures/settings day)) "the failure still told"))
       (is (= ["cleo@example.com"] (map :recipient (outbox)))))))
