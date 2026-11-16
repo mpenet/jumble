@@ -9,6 +9,7 @@
             [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture]]
             [s-exp.jumble.listing.model :as listing]
             [s-exp.jumble.metrics :as metrics]
+            [next.jdbc :as jdbc]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.oda :as oda]))
 
@@ -156,3 +157,12 @@
     (testing "without a bot, the queue is emptied"
       (is (zero? (deliver-irc! nil settings chat/delay-ms)))
       (is (empty? (irc-queue))))))
+
+(deftest idle-test
+  (testing "with no channel and nothing due, a round writes nothing: it runs every 30 seconds"
+    (let [statements (atom [])
+          execute-one! jdbc/execute-one!]
+      (with-redefs [jdbc/execute-one! (fn [db sql & more] (swap! statements conj (first sql)) (apply execute-one! db sql more))]
+        (deliver! (channel (atom []) 200) fixtures/settings 1000)
+        (deliver-irc! nil fixtures/settings 1000))
+      (is (not-any? #(re-find #"(?i)^\s*(DELETE|UPDATE|INSERT)" %) @statements)))))

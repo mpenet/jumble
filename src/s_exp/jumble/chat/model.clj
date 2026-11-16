@@ -30,7 +30,9 @@
   (jdbc/execute! db ["SELECT * FROM chat_announcement ORDER BY due_at, id"] db/opts))
 
 (defn drop-due!
-  "Empties `channel`'s queue of what is due at `now`: it is not configured."
+  "Empties `channel`'s queue of what is due at `now`: it is not configured.
+  Writes only when there is something to drop, as it runs every round."
   [db channel now]
-  (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE channel = ? AND due_at <= ?" channel now])))
+  (when (jdbc/execute-one! db ["SELECT 1 FROM chat_announcement WHERE channel = ? AND due_at <= ? LIMIT 1" channel now])
+    (db/with-write-tx [tx db]
+      (jdbc/execute-one! tx ["DELETE FROM chat_announcement WHERE channel = ? AND due_at <= ?" channel now]))))
