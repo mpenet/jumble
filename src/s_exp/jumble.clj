@@ -75,7 +75,10 @@
                                      :blobs blobs
                                      :settings {:base-url base-url :app-name app-name :catalog catalog
                                                 :allowed-emails allowed-emails
-                                                :listing-reminder-days listing-reminder-days}
+                                                :listing-reminder-days listing-reminder-days
+                                                :currency currency
+                                                :chat-webhook-url chat-webhook-url
+                                                :irc irc}
                                      :interval-ms 30000})
                 [:db]))))
 

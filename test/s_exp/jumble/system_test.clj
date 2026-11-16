@@ -48,6 +48,13 @@
       (is (= hosting (select-keys (get-in (jumble/system (merge (config "unused.db") hosting)) [:server :settings])
                                   (keys hosting)))))))
 
+(deftest chat-settings-test
+  (testing "the chat channels reach the delivery loop that announces new posts, with what it writes prices in"
+    (let [chat {:chat-webhook-url "https://hooks.example.org/x"
+                :irc {:host "irc.example.org" :port 6697 :tls true :nick "jumble" :channel "#swap"}}
+          settings (get-in (jumble/system (merge (config "unused.db") chat)) [:delivery :settings])]
+      (is (= (assoc chat :currency "CHF") (select-keys settings [:chat-webhook-url :irc :currency]))))))
+
 (deftest delivery-settings-test
   (testing "emails go to those allowed in, by the rule the application signs them in with"
     (let [system (jumble/system (config "unused.db"))]
