@@ -378,6 +378,8 @@
                                                          (check-secure-url [:litestream-metrics-url] allow-insecure)))
                 (update :moderator-notice text [:moderator-notice])
                 (update :notice text [:notice])
+                (update :chat-webhook-url #(some-> (text % [:chat-webhook-url])
+                                                   (check-secure-url [:chat-webhook-url] allow-insecure)))
                 (update :hosted-by check-hosted-by)
                 (update :source-url #(check-secure-url (or (text % [:source-url]) upstream-source) [:source-url] allow-insecure))
                 (update :listing-reminder-days #(check-listing-reminder-days (if (nil? %) 60 %)))

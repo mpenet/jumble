@@ -263,6 +263,16 @@
                                               :https (assoc https :port 8443))))
           "plain http has no certificate to get"))))
 
+(deftest chat-webhook-url-test
+  (testing "new posts are announced to a chat webhook when one is set: Slack's, Mattermost's, Discord's"
+    (is (nil? (:chat-webhook-url (config/normalize valid))))
+    (is (nil? (:chat-webhook-url (config/normalize (assoc valid :chat-webhook-url " ")))))
+    (is (= "https://hooks.slack.com/services/T0/B0/x"
+           (:chat-webhook-url (config/normalize (assoc valid :chat-webhook-url "https://hooks.slack.com/services/T0/B0/x"))))))
+  (testing "over https only: the address is a secret"
+    (is (= [:chat-webhook-url] (invalid-path (assoc valid :chat-webhook-url "http://hooks.example.org/x"))))
+    (is (= [:chat-webhook-url] (invalid-path (assoc valid :chat-webhook-url "not a url"))))))
+
 (deftest litestream-metrics-url-test
   (testing "where Litestream serves its metrics, on the same machine; off when unset"
     (is (nil? (:litestream-metrics-url (config/normalize valid))))
@@ -292,6 +302,7 @@
                       [[:contact] 1]
                       [[:moderator-notice] 1]
                       [[:notice] 1]
+                      [[:chat-webhook-url] 1]
                       [[:logo] 1]
                       [[:privacy] 1]
                       [[:hosted-by :name] 1]
