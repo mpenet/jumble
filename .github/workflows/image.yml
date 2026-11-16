@@ -1,14 +1,16 @@
 # Tests every change: unit tests and lint, then the image against the
 # development services (integration tests, backups restored end to end). On
-# main, a job of its own pushes that same image to GHCR, where
-# deploy/deploy.sh runs it from by digest: only that job can push, and it
-# runs none of the repository's code. Actions are pinned by commit
-# (Dependabot proposes updates).
+# main and on release tags (v2026.11.0), a job of its own pushes that same
+# image to GHCR, where deploy/deploy.sh runs it from by digest: only that
+# job can push, and it runs none of the repository's code. A release tag
+# then gets its GitHub release, with its section of CHANGELOG.md. Actions
+# are pinned by commit (Dependabot proposes updates).
 name: image
 
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
 
 permissions:
@@ -52,11 +54,21 @@ jobs:
           dev/s3-init.sh
       - name: Integration tests
         run: clojure -M:test:integration
-      # Built once: the image checked here is the one pushed.
+      # Built once: the image checked here is the one pushed. It says its
+      # version in /healthz: a release's, main, or dev for a pull request.
       - name: Image
-        run: >-
-          docker buildx build --load --platform linux/amd64 -t jumble:dev
-          --cache-from type=gha --cache-to type=gha,mode=max .
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          case "$REF_TYPE/$REF_NAME" in
+            tag/v*) version=${REF_NAME#v} ;;
+            branch/main) version=main ;;
+            *) version=dev ;;
+          esac
+          docker buildx build --load --platform linux/amd64 -t jumble:dev \
+            --build-arg JUMBLE_VERSION="$version" --build-arg JUMBLE_REVISION="$GITHUB_SHA" \
+            --cache-from type=gha --cache-to type=gha,mode=max .
       - name: Backups restore
         run: dev/backup-restore-check.sh jumble:dev
       - name: Keep the image
@@ -88,13 +100,52 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # main: the commit and main. A release, v2026.11.0: the commit, the
+      # release, its month's latest (2026.11) and latest.
       - name: Push
         env:
           REPOSITORY: ghcr.io/${{ github.repository }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          for tag in "$GITHUB_SHA" main; do
+          if [ "$REF_TYPE" = tag ]; then
+            if ! [[ $REF_NAME =~ ^v[0-9]{4}\.[0-9]{2}\.[0-9]+$ ]]; then
+              echo "A release tag is vYYYY.MM.N, not $REF_NAME" >&2
+              exit 1
+            fi
+            version=${REF_NAME#v}
+            tags="$GITHUB_SHA $version ${version%.*} latest"
+          else
+            tags="$GITHUB_SHA main"
+          fi
+          for tag in $tags; do
             docker tag jumble:dev "$REPOSITORY:$tag"
             docker push --quiet "$REPOSITORY:$tag"
           done
           # In the log as well: gh run view --log | grep IMAGE=
           echo "IMAGE=$(docker inspect --format '{{index .RepoDigests 0}}' "$REPOSITORY:$GITHUB_SHA")" | tee -a "$GITHUB_STEP_SUMMARY"
+
+  release:
+    needs: push
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The release's notes: its section of CHANGELOG.md, which must be there.
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          version=${REF_NAME#v}
+          awk -v v="$version" '$0 ~ "^## " v "( |$)" {found=1; next} found && /^## / {exit} found' CHANGELOG.md >notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "CHANGELOG.md has no section for $version" >&2
+            exit 1
+          fi
+          gh release create "$REF_NAME" --title "Jumble $version" --notes-file notes.md --verify-tag
