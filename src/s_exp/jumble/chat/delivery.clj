@@ -76,15 +76,22 @@
 (defn- deliver-due!
   "Announces `channel`'s posts due at `now` with `announce` (see
   [[deliver!]]), at most `limit`, one by one while `running` returns true;
-  one failing leaves the others. Without `announce`, the channel is not
-  configured and its queue is emptied. Returns how many went out."
+  one throwing leaves the others, one failing ends the round, as each try
+  of a channel down may take seconds the loop's other work waits for.
+  Without `announce`, the channel is not configured and its queue is
+  emptied. Returns how many went out."
   [db channel announce settings now running limit]
   (if-not announce
     (do (chat/drop-due! db channel now)
         0)
     (if-let [pending (seq (due db channel now limit))]
-      (let [settings (merge settings (choices/all db))]
-        (outbox/deliver-each pending running #(deliver! db channel announce settings % now)
+      (let [settings (merge settings (choices/all db))
+            failed (volatile! false)
+            announce (fn [settings post]
+                       (let [outcome (announce settings post)]
+                         (when (= :failed outcome) (vreset! failed true))
+                         outcome))]
+        (outbox/deliver-each pending #(and (running) (not @failed)) #(deliver! db channel announce settings % now)
                              #(select-keys % [:id :listing-id])))
       0)))
 

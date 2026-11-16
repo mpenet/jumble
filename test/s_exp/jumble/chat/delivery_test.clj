@@ -76,6 +76,16 @@
         (deliver! (channel requests 429) (* (+ 2 i) 60 minute)))
       (is (empty? (webhook-queue))))))
 
+(deftest failing-channel-test
+  (let [ann (fixtures/user! "ann")
+        requests (atom [])]
+    (post! ann "Desk lamp" 0)
+    (post! ann "Chair" 1)
+    (testing "a channel failing is not asked again in the same round: each try may take seconds, and others wait"
+      (deliver! (channel requests 503) chat/delay-ms)
+      (is (= 1 (count @requests)))
+      (is (= [0 1] (sort (map :attempts (webhook-queue))))))))
+
 (deftest refused-test
   (let [ann (fixtures/user! "ann")
         requests (atom [])]
