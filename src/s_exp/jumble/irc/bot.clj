@@ -8,7 +8,7 @@
             [com.stuartsierra.component :as component]
             [s-exp.jumble.irc.protocol :as irc]
             [s-exp.jumble.metrics :as metrics])
-  (:import (java.io BufferedReader InputStreamReader OutputStreamWriter Writer)
+  (:import (java.io BufferedInputStream ByteArrayOutputStream InputStream OutputStreamWriter Writer)
            (java.net InetSocketAddress Socket SocketTimeoutException)
            (java.nio.charset StandardCharsets)
            (javax.net.ssl SSLSocket SSLSocketFactory)))
@@ -133,12 +133,40 @@
       (and rejoin-at (>= now rejoin-at)) (do (swap! state assoc :rejoin-at nil)
                                              (join! bot)))))
 
+(def ^:private max-line-bytes
+  "A longer line from the server is dropped: IRC's are 512 bytes, with
+  message tags 8 KB more."
+  (* 9 1024))
+
+(defn- read-line!
+  "The next line from `in`, decoded once whole, without its line ending;
+  ::quiet when nothing came for a tick, the part of a line read so far kept
+  in `pending` for the next call; nil when the server closed the
+  connection."
+  [^InputStream in ^ByteArrayOutputStream pending]
+  (loop []
+    (let [b (try (.read in) (catch SocketTimeoutException _ ::quiet))]
+      (cond
+        (= ::quiet b) ::quiet
+        (= -1 b) nil
+        (= 10 b) (let [line (.toString pending StandardCharsets/UTF_8)]
+                   (.reset pending)
+                   (if (str/ends-with? line "\r") (subs line 0 (dec (count line))) line))
+        (< (.size pending) max-line-bytes) (do (.write pending (int b)) (recur))
+        ;; Too long: skipped to its end, none of it read as a line.
+        :else (do (.reset pending)
+                  (loop []
+                    (let [b (.read in)]
+                      (when-not (#{10 -1} b) (recur))))
+                  (recur))))))
+
 (defn- session!
   "One connection, from signing in until it ends."
   [{:keys [state config options] :as bot}]
   (with-open [socket (open config)]
     (.setSoTimeout socket (int (:tick-ms options)))
-    (let [reader (BufferedReader. (InputStreamReader. (.getInputStream socket) StandardCharsets/UTF_8))
+    (let [in (BufferedInputStream. (.getInputStream socket))
+          pending (ByteArrayOutputStream.)
           out (OutputStreamWriter. (.getOutputStream socket) StandardCharsets/UTF_8)
           {:keys [nick password]} config]
       (swap! state assoc :out out :socket socket :nick nick :registered false :joined false
@@ -148,7 +176,7 @@
       (write! bot (irc/line "USER" nick "0" "*" "Jumble"))
       (loop []
         (when (:running @state)
-          (let [line (try (.readLine reader) (catch SocketTimeoutException _ ::quiet))]
+          (let [line (read-line! in pending)]
             (cond
               (nil? line) (throw (java.io.IOException. "The IRC server closed the connection"))
               (= ::quiet line) (tick! bot)

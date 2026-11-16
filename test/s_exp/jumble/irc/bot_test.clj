@@ -105,7 +105,15 @@
             (is (>= (- (System/currentTimeMillis) start) 100))))
         (testing "it answers the server's pings"
           (tell! socket "PING :irc.test")
-          (is (= "PONG irc.test" (said-until srv #"^PONG ")))))
+          (is (= "PONG irc.test" (said-until srv #"^PONG "))))
+        (testing "a line arriving in pieces, slower than it looks up from reading, is read whole"
+          (let [out (OutputStreamWriter. (.getOutputStream socket) StandardCharsets/UTF_8)]
+            (.write ^Writer out "PING :sl")
+            (.flush out)
+            (Thread/sleep 200)
+            (.write ^Writer out "ow-é\r\n")
+            (.flush out))
+          (is (= "PONG slow-é" (said-until srv #"^PONG ")))))
       (finally
         (bot/stop b)
         (.close ^ServerSocket (:listener srv))))))
