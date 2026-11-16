@@ -282,6 +282,15 @@
              (irc "ircs://jumble:s3cr%3At%40x@irc.example.org/#swap")))
       (is (= {:host "irc.example.org" :port 7000 :tls true :nick "jumble" :password nil :channel "#swap" :key "door"}
              (irc "ircs://jumble@irc.example.org:7000/#swap?key=door"))))
+    (testing "channels as networks name them, the scheme in any case, an empty password as none"
+      (is (= "##linux" (:channel (irc "ircs://jumble@irc.example.org/##linux"))))
+      (is (= {:channel "##linux" :key "door"} (select-keys (irc "ircs://jumble@irc.example.org/##linux?key=door") [:channel :key])))
+      (is (= "#swap" (:channel (irc "IRCS://jumble@irc.example.org/#swap"))))
+      (is (nil? (:password (irc "ircs://jumble:@irc.example.org/#swap")))))
+    (testing "a key that would end the JOIN line, or add to it, is refused"
+      (doseq [url ["ircs://jumble@irc.example.org/#swap?key=a%0D%0AQUIT" "ircs://jumble@irc.example.org/#swap?key=a%20b"
+                   "ircs://jumble@irc.example.org/#swap?key=a,b"]]
+        (is (= [:irc-url] (invalid-path (assoc valid :irc-url url))) url)))
     (testing "over TLS, with a nick and a channel"
       (doseq [url ["irc://jumble@irc.example.org/#swap" "ircs://irc.example.org/#swap" "ircs://jumble@irc.example.org/"
                    "ircs://jumble@irc.example.org/#bad,channel" "not a url"]]

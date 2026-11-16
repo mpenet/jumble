@@ -297,28 +297,34 @@
 (defn- check-irc-url
   "The IRC channel new posts are announced on, from
   ircs://nick[:password]@host[:port]/#channel[?key=key]: the password is
-  the nick's account's, for SASL, the key the channel's. TLS only, but
-  with `allow-insecure` (tests)."
+  the nick's account's, for SASL, the key the channel's. The channel is
+  what follows the first #, so that ##channel works as written. TLS only,
+  but with `allow-insecure` (tests)."
   [url allow-insecure]
   (when-let [url (text url [:irc-url])]
-    (let [^URI uri (try (URI. url) (catch URISyntaxException _ nil))
-          scheme (some-> uri .getScheme)
+    (let [refuse #(invalid "must be ircs://nick[:password]@host[:port]/#channel" [:irc-url])
+          [base fragment] (str/split url #"#" 2)
+          ^URI uri (try (URI. base) (catch URISyntaxException _ nil))
+          scheme (some-> uri .getScheme str/lower-case)
           [nick password] (some-> uri .getRawUserInfo (str/split #":" 2))
-          [channel query] (some-> uri .getRawFragment (str/split #"\?" 2))
-          nick (decode nick)
-          channel (some->> (decode channel) (str "#"))]
+          [channel query] (some-> fragment (str/split #"\?" 2))
+          [nick password channel key] (try
+                                        [(decode nick) (decode password) (some->> (decode channel) (str "#"))
+                                         (some->> query (re-find #"(?:^|&)key=([^&]*)") second decode not-empty)]
+                                        (catch IllegalArgumentException _ (refuse)))]
       (when-not (and uri (.getHost uri)
                      (or (= "ircs" scheme) (and allow-insecure (= "irc" scheme)))
                      nick (re-matches #"[A-Za-z\[\]\\`_^{|}][A-Za-z0-9\[\]\\`_^{|}-]*" nick)
-                     channel (re-matches #"#[^\s,\x00-\x1f]+" channel))
-        (invalid "must be ircs://nick[:password]@host[:port]/#channel" [:irc-url]))
+                     channel (re-matches #"#[^\s,\x00-\x1f]+" channel)
+                     (or (nil? key) (re-matches #"[^\s,\x00-\x1f]+" key)))
+        (refuse))
       {:host (.getHost uri)
        :port (if (pos? (.getPort uri)) (.getPort uri) 6697)
        :tls (= "ircs" scheme)
        :nick nick
-       :password (decode password)
+       :password (when-not (str/blank? password) password)
        :channel channel
-       :key (some->> query (re-find #"(?:^|&)key=([^&]*)") second decode)})))
+       :key key})))
 
 (defn- check-metrics-token
   "The token metrics are read with, none (metrics off) when unset."
