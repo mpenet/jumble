@@ -38,21 +38,32 @@
                                (str ":" last-param)
                                last-param)])))))
 
+(defn- byte-count
+  [^String s]
+  (alength (.getBytes s StandardCharsets/UTF_8)))
+
+(defn fit
+  "`s` cut to `max-bytes` of UTF-8, with an ellipsis, on whole characters:
+  never inside one, nor between the halves of an emoji."
+  [^String s max-bytes]
+  (if (<= (byte-count s) max-bytes)
+    s
+    (loop [n (min (.codePointCount s 0 (count s)) max-bytes)]
+      (let [cut (str (subs s 0 (.offsetByCodePoints s 0 (int n))) "…")]
+        (if (or (<= (byte-count cut) max-bytes) (zero? n))
+          cut
+          (recur (dec n)))))))
+
 (defn safe-text
   "`s` sendable as a message's text: control characters, line breaks among
   them, which would end the line and start a command of the sender's
-  choosing, become spaces; then it is cut to [[max-text-bytes]], never
-  inside a character, with an ellipsis."
+  choosing, become spaces; then it is cut to [[max-text-bytes]]."
   [^String s]
-  (let [s (-> s (str/replace #"[\x00-\x1f\x7f]+" " ") (str/replace #" {2,}" " ") str/trim)
-        fits? #(<= (alength (.getBytes ^String % StandardCharsets/UTF_8)) max-text-bytes)]
-    (if (fits? s)
-      s
-      (loop [end (min (count s) max-text-bytes)]
-        (let [cut (str (subs s 0 end) "…")]
-          (if (or (fits? cut) (zero? end))
-            cut
-            (recur (dec end))))))))
+  (-> s
+      (str/replace #"[\x00-\x1f\x7f]+" " ")
+      (str/replace #" {2,}" " ")
+      str/trim
+      (fit max-text-bytes)))
 
 (defn sasl-plain
   "The AUTHENTICATE lines carrying `account`'s `password` (SASL PLAIN), in

@@ -3,6 +3,7 @@
   it is, its category and pickup, and a link; nothing of who posted it."
   (:require [clojure.string :as str]
             [s-exp.jumble.email.mail :as mail]
+            [s-exp.jumble.irc.protocol :as irc]
             [s-exp.jumble.listing.view :as view]
             [s-exp.jumble.view.i18n :as i18n]))
 
@@ -49,6 +50,9 @@
 
 (defn irc-line
   "IRC's message announcing `listing`: its summary and the link on one
-  line; made safe to send by the bot."
+  line, made safe to send; the summary cut to what the link leaves of
+  a line, the link always whole."
   [settings listing]
-  (str (summary settings listing) " · " (link settings listing)))
+  (let [tail (str " · " (link settings listing))
+        room (- irc/max-text-bytes (alength (.getBytes tail java.nio.charset.StandardCharsets/UTF_8)))]
+    (str (irc/fit (irc/safe-text (summary settings listing)) room) tail)))

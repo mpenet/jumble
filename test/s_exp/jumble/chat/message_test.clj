@@ -4,6 +4,7 @@
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [s-exp.jumble.chat.message :as message]
+            [s-exp.jumble.irc.protocol :as irc]
             [s-exp.jumble.view.i18n :as i18n]))
 
 (set! *warn-on-reflection* true)
@@ -58,3 +59,10 @@
     (doseq [line [(message/text settings (assoc lamp :title "lamp \u202Egnp.live"))
                   (message/irc-line settings (assoc lamp :title "lamp \u202Egnp.live \u2066x\u2069"))]]
       (is (not (re-find #"[\u202A-\u202E\u2066-\u2069\u200E\u200F\u061C]" line)) line))))
+
+(deftest irc-length-test
+  (testing "however long the post in bytes, the IRC line fits and keeps its link whole"
+    (let [line (message/irc-line settings (assoc lamp :title (apply str (repeat 120 "家"))
+                                                 :pickup-place nil :pickup-city (apply str (repeat 80 "é"))))]
+      (is (str/ends-with? line " · https://swap.example.org/listings/42"))
+      (is (<= (alength (.getBytes ^String line java.nio.charset.StandardCharsets/UTF_8)) irc/max-text-bytes)))))

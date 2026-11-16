@@ -39,6 +39,14 @@
       (is (str/ends-with? text "…"))
       (is (every? #{\é \…} text)))))
 
+(deftest fit-test
+  (testing "cut to a number of bytes on whole characters, an emoji never halved"
+    (let [cut (irc/fit (apply str (repeat 50 "😀")) 21)]
+      (is (<= (alength (.getBytes ^String cut StandardCharsets/UTF_8)) 21))
+      (is (= (str (apply str (repeat 4 "😀")) "…") cut))))
+  (testing "what fits is left as it is"
+    (is (= "lamp" (irc/fit "lamp" 10)))))
+
 (deftest sasl-test
   (testing "SASL PLAIN: the account and password, in base64"
     (is (= ["AUTHENTICATE anVtYmxlAGp1bWJsZQBzM2NyZXQ="]
