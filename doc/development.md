@@ -83,6 +83,27 @@ linter on every change, then the integration tests against the
 development services and the backup check on the image; on `main`, a job
 of its own pushes that image to the registry.
 
+## Releasing
+
+Versions are dates, `2026.11.0`, then `2026.11.1` for a fix to it (see
+[the changelog](../CHANGELOG.md)). To release:
+
+1. Add the version's section to `CHANGELOG.md`, `## 2026.11.0 (date)`:
+   what is new, what is fixed, and **Upgrade notes**, anything operators
+   must do besides deploying it (a setting renamed, a long migration).
+2. Commit it to `main`, and wait for the workflow to pass.
+3. Tag that commit and push the tag:
+
+   ```sh
+   git tag -a v2026.11.0 -m "Jumble 2026.11.0"
+   git push origin v2026.11.0
+   ```
+
+The workflow tests and builds the tagged commit, pushes its image as
+`:2026.11.0`, `:2026.11` and `:latest`, and publishes the GitHub release
+with the changelog's section. A tag that is not `vYYYY.MM.N`, or a version
+without its section, fails before anything is published.
+
 ## How the code is organised
 
 ```

@@ -18,9 +18,9 @@
 # pulled here, sent over SSH and checked to be the same there, layer by
 # layer, then run from that copy.
 #
-# IMAGE may name a tag instead (ghcr.io/<owner>/jumble:main, the latest
-# image CI tested and pushed): it is pulled here and resolved to its
-# digest, which is what runs.
+# IMAGE may name a tag instead (ghcr.io/<owner>/jumble:latest, the latest
+# release; :2026.11.0, a release; :main, the latest commit CI tested and
+# pushed): it is pulled here and resolved to its digest, which is what runs.
 #
 # With BUILD=1, no registry at all: the image is built here, from this
 # checkout, for the server's platform (linux/amd64), labelled with its
@@ -30,7 +30,7 @@
 # deploy.env may set IMAGE, SHIP, BUILD and MODE too; the command line wins.
 #
 #   IMAGE=ghcr.io/<owner>/jumble@sha256:... INSTANCE=deploy/instances/community deploy/deploy.sh
-#   IMAGE=ghcr.io/<owner>/jumble:main SHIP=1 INSTANCE=deploy/instances/community deploy/deploy.sh
+#   IMAGE=ghcr.io/<owner>/jumble:latest SHIP=1 INSTANCE=deploy/instances/community deploy/deploy.sh
 #   BUILD=1 INSTANCE=deploy/instances/community deploy/deploy.sh
 #   IMAGE=ghcr.io/<owner>/jumble@sha256:... HOST=jumble-admin@jumble-server deploy/deploy.sh
 set -euo pipefail
@@ -72,7 +72,7 @@ if [ -n "$BUILD" ]; then
   # Named by its image id, a digest of its content: the same checks apply.
   IMAGE="jumble@$(docker image inspect --format '{{.Id}}' jumble:build)"
   SHIP=1
-elif [[ ${IMAGE:?the image to run: <registry>/jumble@sha256:..., a tag such as <registry>/jumble:main, or BUILD=1} != *@sha256:* ]]; then
+elif [[ ${IMAGE:?the image to run: <registry>/jumble@sha256:..., a tag such as <registry>/jumble:latest, or BUILD=1} != *@sha256:* ]]; then
   if [[ ! $IMAGE =~ ^[a-z0-9./_-]+(:[A-Za-z0-9._-]+)?$ ]]; then
     echo "deploy: IMAGE must name a digest or a tag" >&2
     exit 1

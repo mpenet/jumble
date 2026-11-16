@@ -70,7 +70,8 @@ More in [development](doc/development.md).
 [Deployment](doc/deployment.md) ·
 [Running it](doc/operations.md) ·
 [Configuration](doc/configuration.md) ·
-[Development](doc/development.md)
+[Development](doc/development.md) ·
+[Changelog](CHANGELOG.md)
 
 ## Built with
 

@@ -35,5 +35,5 @@ Files for running Jumble in production, described in
   `SHIP=1` sends the image over SSH, for servers without registry access;
   `BUILD=1` builds it here from the checkout and sends it, no registry at
   all. `deploy.env` may set `IMAGE` (a tag such as
-  `ghcr.io/<owner>/jumble:main` resolves to its digest), `SHIP` and `BUILD`
+  `ghcr.io/<owner>/jumble:latest` resolves to its digest), `SHIP` and `BUILD`
   as defaults.

@@ -25,7 +25,7 @@ Leave out any real member's data.
 
 ## What is supported
 
-The latest image built from `main` (`ghcr.io/mpenet/jumble:main`) and the
-code on `main`. Fixes go there; there are no older releases kept up to date,
-so upgrading is how a fix reaches a running Jumble (see
+The latest release (`ghcr.io/mpenet/jumble:latest`) and the code on
+`main`. A fix comes in a new release; older releases are not kept up to
+date, so upgrading is how a fix reaches a running Jumble (see
 [upgrading](doc/operations.md#upgrading)).

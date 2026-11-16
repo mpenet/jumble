@@ -5,9 +5,12 @@ checklist, for a Jumble [deployed](deployment.md).
 
 ## Upgrading
 
-Deploy the new image the same way. `IMAGE` may name a tag rather than a
-digest: `ghcr.io/<owner>/jumble:main` is the latest image the workflow
-tested and pushed, `ghcr.io/<owner>/jumble:<commit>` that commit's.
+Deploy the new image the same way; [the changelog](../CHANGELOG.md) says
+what changed, and under **Upgrade notes** anything to do besides. `IMAGE`
+may name a tag rather than a digest: `ghcr.io/<owner>/jumble:latest` is the
+latest release, `:2026.11.0` a release, `:2026.11` that month's latest fix;
+`:main` is the latest commit the workflow tested and pushed, `:<commit>`
+that commit's.
 `deploy.sh` resolves it to its digest, which is what runs, and prints it.
 With `IMAGE` (and `SHIP=1`) in the instance's `deploy.env`, upgrading is:
 
