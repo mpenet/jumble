@@ -158,12 +158,6 @@ Each context is split three ways:
   enhances them.
 - **Nothing personal in logs**: email domains, ids; never addresses or
   message contents.
-- **Configuration is validated at startup**, in `config.clj`, with a test
-  for each rule.
-- Formatting by cljfmt (`.cljfmt.edn`), which `dev/check.sh` checks; no
-  vertical alignment. Bodies of `try`, `catch`, `doseq` and the like on
-  their own lines; a call spanning lines keeps only its first argument on
-  the first line, the others one per line under it.
 
 ## Translations
 
