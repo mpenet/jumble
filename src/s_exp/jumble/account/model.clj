@@ -212,10 +212,11 @@
                    db/opts)))
 
 (defn added-emails
-  "The patterns moderators added, with who added each and when."
+  "The patterns moderators added, with who added each and when, or whether
+  it joined with the join link."
   [db]
   (jdbc/execute! db
-                 ["SELECT a.pattern, u.name AS added_by, a.added_at
+                 ["SELECT a.pattern, u.name AS added_by, a.added_at, a.joined_by_link
                       FROM allowed_email a LEFT JOIN user u ON u.id = a.added_by
                       ORDER BY a.pattern"]
                  db/opts))

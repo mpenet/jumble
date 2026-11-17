@@ -1361,6 +1361,62 @@ msgid "Keep them"
 msgstr "Garder ce membre"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Expires"
+msgstr "Expire"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Never"
+msgstr "Jamais"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "In 30 days"
+msgstr "Dans 30 jours"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "In 7 days"
+msgstr "Dans 7 jours"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Join link"
+msgstr "Lien d'invitation"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
+msgstr "Toute personne ayant un lien d'invitation peut rejoindre la communauté sans être sur la liste : partagez-le, ou imprimez-le sur l'affiche."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Create a join link"
+msgstr "Créer un lien d'invitation"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Made by {who}, {date}."
+msgstr "Créé par {who}, {date}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "un ancien membre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Works until {date}."
+msgstr "Valable jusqu'au {date}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Never expires."
+msgstr "N'expire jamais."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone holding it, a photo of the poster included, can join. Renew it to stop this one working, or turn it off."
+msgstr "Toute personne qui l'a, y compris via une photo de l'affiche, peut rejoindre la communauté. Renouvelez-le pour que celui-ci ne fonctionne plus, ou désactivez-le."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Renew"
+msgstr "Renouveler"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Turn off the join link"
+msgstr "Désactiver le lien d'invitation"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adresses et motifs : {person} pour une personne, {domain} pour un domaine, {subdomains} pour ses sous-domaines."
 
@@ -1377,12 +1433,12 @@ msgid "Added here"
 msgstr "Ajoutés ici"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "added by {who}, {date}"
-msgstr "ajouté par {who}, le {date}"
+msgid "joined with the join link, {date}"
+msgstr "a rejoint avec le lien d'invitation, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "un ancien membre"
+msgid "added by {who}, {date}"
+msgstr "ajouté par {who}, le {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Withdraw {pattern}"

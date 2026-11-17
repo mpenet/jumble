@@ -6,6 +6,7 @@
             [next.jdbc :as jdbc]
             [next.jdbc.result-set :as rs]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture sign-in!]]
@@ -182,3 +183,41 @@
     (testing "other mailboxes are not affected"
       (is (not (account/removed? *db* "caroline@example.com")))
       (is ((account/allowed *db* :anyone) "caroline@example.com")))))
+
+(deftest join-link-page-test
+  (let [bob (sign-in! "bob@example.com")
+        dave (sign-in! "dave@example.com")
+        page #(:body (request :get "/manage/members" dave))]
+    (testing "moderators only"
+      (is (= 404 (:status (request :post "/manage/members/join-link" bob :form {"expires" "never"}))))
+      (is (= 404 (:status (request :post "/manage/members/join-link/off" bob))))
+      (is (nil? (join/current *db* (System/currentTimeMillis)))))
+    (testing "none at first: a moderator may make one, expiring or not"
+      (is (re-find #"<form [^>]*action=\"/manage/members/join-link\"" (page)))
+      (is (str/includes? (page) "name=\"expires\""))
+      (let [response (request :post "/manage/members/join-link" dave :form {"expires" "30"})]
+        (is (= 303 (:status response)))
+        (is (= "/manage/members" (get-in response [:headers "location"])))))
+    (let [{:keys [token expires-at created-at]} (join/current *db* (System/currentTimeMillis))]
+      (testing "then the page shows it whole, to copy or print, with who made it and until when"
+        (is (some? token))
+        (is (= (* 30 24 60 60 1000) (- expires-at created-at)))
+        (is (str/includes? (page) (str "http://localhost:8080/join/" token)))
+        (is (str/includes? (page) "dave@example.com")))
+      (testing "renewed, the earlier link no longer works; never expiring by default"
+        (request :post "/manage/members/join-link" dave :form {"expires" "never"})
+        (let [renewed (join/current *db* (System/currentTimeMillis))]
+          (is (not= token (:token renewed)))
+          (is (nil? (:expires-at renewed)))
+          (is (not (str/includes? (page) token))))))
+    (testing "who joined by it is shown as such"
+      (join/admit! *db* "neighbour@gmail.com" 0)
+      (is (str/includes? (page) "neighbour@gmail.com"))
+      (is (str/includes? (page) "joined with the join link")))
+    (testing "turned off, it is gone"
+      (request :post "/manage/members/join-link/off" dave)
+      (is (nil? (join/current *db* (System/currentTimeMillis))))
+      (is (not (str/includes? (page) "/join/"))))
+    (testing "nothing to offer where the configuration lets anyone in"
+      (is (not (re-find #"action=\"/manage/members/join-link\""
+                        (:body (fixtures/request :get "/manage/members" dave {:ctx {:settings {:allowed-emails :anyone}}}))))))))

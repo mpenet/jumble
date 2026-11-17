@@ -1361,6 +1361,62 @@ msgid "Keep them"
 msgstr "Älä poista"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Expires"
+msgstr "Vanhenee"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Never"
+msgstr "Ei koskaan"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "In 30 days"
+msgstr "30 päivän kuluttua"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "In 7 days"
+msgstr "7 päivän kuluttua"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Join link"
+msgstr "Liittymislinkki"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
+msgstr "Kuka tahansa, jolla on liittymislinkki, voi liittyä olematta listalla: jaa se tai tulosta se julisteeseen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Create a join link"
+msgstr "Luo liittymislinkki"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Made by {who}, {date}."
+msgstr "Luonut {who}, {date}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "entinen jäsen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Works until {date}."
+msgstr "Voimassa {date} asti."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Never expires."
+msgstr "Ei vanhene koskaan."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone holding it, a photo of the poster included, can join. Renew it to stop this one working, or turn it off."
+msgstr "Kuka tahansa, jolla se on, myös julisteen kuvan kautta, voi liittyä. Uusi se, jotta tämä lakkaa toimimasta, tai poista se käytöstä."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Renew"
+msgstr "Uusi"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Turn off the join link"
+msgstr "Poista liittymislinkki käytöstä"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Osoitteet ja mallit: {person} yhdelle henkilölle, {domain} verkkotunnukselle, {subdomains} sen aliverkkotunnuksille."
 
@@ -1377,12 +1433,12 @@ msgid "Added here"
 msgstr "Lisätty täällä"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "added by {who}, {date}"
-msgstr "lisännyt {who}, {date}"
+msgid "joined with the join link, {date}"
+msgstr "liittyi liittymislinkillä, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "entinen jäsen"
+msgid "added by {who}, {date}"
+msgstr "lisännyt {who}, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Withdraw {pattern}"

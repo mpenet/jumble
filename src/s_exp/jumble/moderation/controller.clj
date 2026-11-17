@@ -8,6 +8,7 @@
             [s-exp.jumble.account.email :as account-email]
             [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.account.model :as account]
+            [s-exp.jumble.account.join :as join]
             [s-exp.jumble.web.auth :as auth]
             [s-exp.jumble.error :as error]
             [s-exp.jumble.view.i18n :as i18n]
@@ -131,7 +132,28 @@
                    (view/members request
                                  (assoc form
                                         :configured configured
-                                        :added (when-not (= :anyone configured) (account/added-emails db)))))))
+                                        :added (when-not (= :anyone configured) (account/added-emails db))
+                                        :join (join/current db (System/currentTimeMillis)))))))
+
+(def ^:private join-expiries
+  "How long a join link may work, as the form offers it: never expiring
+  unless chosen."
+  {"30" (* 30 24 60 60 1000)
+   "7" (* 7 24 60 60 1000)})
+
+(defn create-join-link
+  "Makes the join link, in place of any earlier one."
+  [{:keys [ctx params user]}]
+  (join/create! (:db ctx)
+                {:moderator-id (:id user)
+                 :expires-in (get join-expiries (params/one params "expires"))
+                 :now (System/currentTimeMillis)})
+  (response/redirect "/manage/members"))
+
+(defn turn-off-join-link
+  [{:keys [ctx]}]
+  (join/turn-off! (:db ctx))
+  (response/redirect "/manage/members"))
 
 (defn members
   [{:keys [query-string] :as request}]
@@ -344,6 +366,8 @@
           [:get "/manage/members"] (moderators-only #'members)
           [:post "/manage/members"] (moderators-only #'add-members)
           [:post "/manage/members/withdraw"] (moderators-only #'withdraw-pattern)
+          [:post "/manage/members/join-link"] (moderators-only #'create-join-link)
+          [:post "/manage/members/join-link/off"] (moderators-only #'turn-off-join-link)
           [:get "/manage/members/remove"] (moderators-only #'confirm-member-removal)
           [:post "/manage/members/remove"] (moderators-only #'remove-member)
           [:get "/manage/listings/{id}/remove"] (moderators-only #'confirm-removal)

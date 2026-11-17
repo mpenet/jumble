@@ -1361,6 +1361,62 @@ msgid "Keep them"
 msgstr "No eliminar"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Expires"
+msgstr "Caduca"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Never"
+msgstr "Nunca"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "In 30 days"
+msgstr "En 30 días"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "In 7 days"
+msgstr "En 7 días"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Join link"
+msgstr "Enlace para unirse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
+msgstr "Cualquiera con un enlace para unirse puede unirse sin estar en la lista: compártelo o imprímelo en el cartel."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Create a join link"
+msgstr "Crear un enlace para unirse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Made by {who}, {date}."
+msgstr "Creado por {who}, {date}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "un antiguo miembro"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Works until {date}."
+msgstr "Válido hasta el {date}."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Never expires."
+msgstr "No caduca nunca."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone holding it, a photo of the poster included, can join. Renew it to stop this one working, or turn it off."
+msgstr "Cualquiera que lo tenga, también con una foto del cartel, puede unirse. Renuévalo para que este deje de funcionar, o desactívalo."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Renew"
+msgstr "Renovar"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Turn off the join link"
+msgstr "Desactivar el enlace para unirse"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Direcciones y patrones: {person} para una persona, {domain} para un dominio, {subdomains} para sus subdominios."
 
@@ -1377,12 +1433,12 @@ msgid "Added here"
 msgstr "Añadidos aquí"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "added by {who}, {date}"
-msgstr "añadido por {who}, el {date}"
+msgid "joined with the join link, {date}"
+msgstr "se unió con el enlace para unirse, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "un antiguo miembro"
+msgid "added by {who}, {date}"
+msgstr "añadido por {who}, el {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Withdraw {pattern}"

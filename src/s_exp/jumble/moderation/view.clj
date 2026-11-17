@@ -145,10 +145,48 @@
                   [:button.danger {:type "submit"} (i18n/t "Remove for good")]
                   [:a.button.secondary {:href "/manage/members"} (i18n/t "Keep them")]]]]))
 
+(defn- join-link-form
+  "Makes the join link, in place of any earlier one, expiring as chosen."
+  [label]
+  [:form.listing-form (merge {:method "post" :action "/manage/members/join-link"} layout/once)
+   [:label {:for "expires"} (i18n/t "Expires")]
+   [:select {:id "expires" :name "expires"}
+    [:option {:value "never" :selected true} (i18n/t "Never")]
+    [:option {:value "30"} (i18n/t "In 30 days")]
+    [:option {:value "7"} (i18n/t "In 7 days")]]
+   [:button {:type "submit"} label]])
+
+(defn- join-link-section
+  "The join link: the way to make one, or the current one whole, to copy or
+  print, with who made it, until when it works, and the ways to renew or
+  turn it off."
+  [base-url {:keys [token created-at created-by expires-at] :as join}]
+  [:section.members
+   [:h2 (i18n/t "Join link")]
+   (if-not join
+     (list [:p.lede (i18n/t "Anyone with a join link can join, without being on the list: share it, or print it on the poster.")]
+           (join-link-form (i18n/t "Create a join link")))
+     (list [:input.join-link {:type "text"
+                              :readonly true
+                              :value (str base-url "/join/" token)
+                              :aria-label (i18n/t "Join link")}]
+           [:p.field-note
+            (i18n/t "Made by {who}, {date}."
+                    {:who (if (str/blank? created-by) (i18n/t "a former member") created-by)
+                     :date (dates/date created-at)})
+            " "
+            (if expires-at
+              (i18n/t "Works until {date}." {:date (dates/date expires-at)})
+              (i18n/t "Never expires."))]
+           [:p.field-note (i18n/t "Anyone holding it, a photo of the poster included, can join. Renew it to stop this one working, or turn it off.")]
+           (join-link-form (i18n/t "Renew"))
+           [:form (merge {:method "post" :action "/manage/members/join-link/off"} layout/once)
+            [:button.link-button {:type "submit"} (i18n/t "Turn off the join link")]]))])
+
 (defn members
-  "Who may sign in: the configured patterns, those moderators added, and a
-  form to add more; and a form to remove a member."
-  [request {:keys [configured added values errors saved] :as form}]
+  "Who may sign in: the join link, the configured patterns, those
+  moderators added, and a form to add more; and a form to remove a member."
+  [{:keys [ctx] :as request} {:keys [configured added join values errors saved] :as form}]
   (layout/page request
                {:title (i18n/t "Who may sign in")}
                [:div.board-header
@@ -162,19 +200,22 @@
                  (list [:div.empty
                         [:p (i18n/t "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here.")]]
                        (remove-member-form form))
-                 (list [:section.members
+                 (list (join-link-section (get-in ctx [:settings :base-url]) join)
+                       [:section.members
                         [:h2 (i18n/t "From the configuration")]
                         [:ul.member-list (for [pattern configured] [:li [:code pattern]])]]
                        [:section.members
                         [:h2 (i18n/t "Added here")]
                         (if (seq added)
                           [:ul.member-list
-                           (for [{:keys [pattern added-by added-at]} added]
+                           (for [{:keys [pattern added-by added-at joined-by-link]} added]
                              [:li
                               [:code pattern]
-                              [:span.member-meta (i18n/t "added by {who}, {date}"
-                                                         {:who (if (str/blank? added-by) (i18n/t "a former member") added-by)
-                                                          :date (dates/date added-at)})]
+                              [:span.member-meta (if (= 1 joined-by-link)
+                                                   (i18n/t "joined with the join link, {date}" {:date (dates/date added-at)})
+                                                   (i18n/t "added by {who}, {date}"
+                                                           {:who (if (str/blank? added-by) (i18n/t "a former member") added-by)
+                                                            :date (dates/date added-at)}))]
                               [:form (merge {:method "post" :action "/manage/members/withdraw"} layout/once)
                                [:input {:type "hidden" :name "pattern" :value pattern}]
                                [:button.link-button {:type "submit" :aria-label (i18n/t "Withdraw {pattern}" {:pattern pattern})}
