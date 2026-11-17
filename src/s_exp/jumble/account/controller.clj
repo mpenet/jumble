@@ -106,20 +106,25 @@
   [request]
   (= "email" (get-in request [:ctx :settings :sign-in])))
 
-(defn- joining-token
-  "`t` when it is the join link's, for a sign-in to carry; nil otherwise."
+(defn- current-join-token
+  "`t` when it is the join link working now, for a sign-in to carry; nil
+  otherwise."
   [db t]
   (when (and (seq t) (join/valid? db t (System/currentTimeMillis)))
     t))
 
-(defn- joining?
-  "Whether `email`, which no rule lets in, joins by the join link's
-  `join-token`, still the link's: one address only, never a pattern
-  letting in others, and the moderators' removals still apply."
-  [db join-token email]
-  (and (some? (joining-token db join-token))
-       (membership/address? email)
-       (not (account/removed? db email))))
+(defn- admission
+  "The way `email` gets in: `:allowed`, when the rules let it in
+  (`allowed`); `:joining`, by the join link's `join-token`, still the
+  link's, for one address only, never a pattern letting in others, and
+  not one the moderators removed; nil when neither."
+  [db allowed join-token email]
+  (cond
+    allowed :allowed
+    (and (current-join-token db join-token)
+         (membership/address? email)
+         (not (account/removed? db email)))
+    :joining))
 
 (defn- oidc-login
   [{:keys [ctx params remote-addr] :as request}]
@@ -145,7 +150,7 @@
                                          {:nonce nonce
                                           :code-verifier code-verifier
                                           :return-to target
-                                          :join-token (joining-token db (params/one params "join"))}
+                                          :join-token (current-join-token db (params/one params "join"))}
                                          (System/currentTimeMillis)
                                          login-ttl)
           (-> (response/redirect 302 url)
@@ -206,11 +211,18 @@
                   (i18n/t "It has as many members as it can have. Ask its moderators to make room.")))
 
 (defn- room
-  "Account creation options for `email`: the community's member limit, which
-  never keeps its moderators out."
-  [settings email]
+  "Account creation options for `email`, let in by `admission`: the
+  community's member limit, which never keeps its moderators out, and
+  whether it joins by the join link."
+  [settings email admission]
   {:member-limit (when-not (contains? (:moderators settings) (str/lower-case email))
-                   (:member-limit settings))})
+                   (:member-limit settings))
+   :joining (= :joining admission)})
+
+(defn- log-joining
+  [admission email]
+  (when (= :joining admission)
+    (log/info "Joined by the join link:" (email-domain email))))
 
 (defn- finish-deletion!
   "Finishes deleting the account `iss` and `sub` when its deletion stopped
@@ -231,17 +243,20 @@
         claims (oidc/verify-id-token oidc
                                      (oidc/exchange-code! oidc code (:code-verifier attempt))
                                      (:nonce attempt))
-        allowed (and (allowed? allowed-emails require-hosted-domain claims)
-                     (not (account/removed? db (:email claims))))
-        joining (and (not allowed) (joining? db (:join-token attempt) (:email claims)))]
-    (if-not (or allowed joining)
+        admission (admission db
+                             (and (allowed? allowed-emails require-hosted-domain claims)
+                                  (not (account/removed? db (:email claims))))
+                             (:join-token attempt)
+                             (:email claims))]
+    (if-not admission
       (do (log/info "Sign-in refused, not allowed:" (email-domain (:email claims)))
           (not-allowed request))
       (do (finish-deletion! ctx (:iss claims) (:sub claims))
-          (let [user (account/upsert-user! db claims (System/currentTimeMillis) (room settings (:email claims)))]
-            (when joining
-              (log/info "Joined by the join link:" (email-domain (:email claims)))
-              (join/admit! db (:email claims) (System/currentTimeMillis)))
+          (let [user (account/upsert-user! db
+                                           claims
+                                           (System/currentTimeMillis)
+                                           (room settings (:email claims) admission))]
+            (log-joining admission (:email claims))
             (start-session request user (:return-to attempt)))))))
 
 (defn request-link
@@ -261,8 +276,7 @@
                                             :errors {:email (if (empty? email)
                                                               (i18n/t "Enter your email address.")
                                                               (i18n/t "“{email}” is not an email address." {:email email}))}}))
-        (do (when (or ((account/allowed db (:allowed-emails settings)) email)
-                      (joining? db join-token email))
+        (do (when-let [admission (admission db ((account/allowed db (:allowed-emails settings)) email) join-token email)]
               (if (and (:clients-known settings)
                        (not (client-allowed! sign-in-requests
                                              remote-addr
@@ -273,7 +287,7 @@
                 (let [outcome (account/request-email-sign-in! db
                                                               {:email email
                                                                :return-to target
-                                                               :join-token (joining-token db join-token)
+                                                               :join-token (when (= :joining admission) join-token)
                                                                :now (System/currentTimeMillis)
                                                                :ttl (* link-minutes 60 1000)
                                                                :email-for (let [language (account/language-of db email)]
@@ -311,21 +325,17 @@
       (layout/not-found request)
       (if-let [{:keys [email return-to join-token]}
                (account/use-email-sign-in! db (params/one params "token") (System/currentTimeMillis))]
-        (let [allowed ((account/allowed db (:allowed-emails settings)) email)
-              joining (and (not allowed) (joining? db join-token email))]
-          (if (or allowed joining)
-            (ex/try+
-              (finish-deletion! ctx "email" email)
-              (let [user (account/email-user! db email (System/currentTimeMillis) (room settings email))]
-                (when joining
-                  (log/info "Joined by the join link:" (email-domain email))
-                  (join/admit! db email (System/currentTimeMillis)))
-                (start-session request user return-to))
-              (catch ::error/community-full _
-                (log/info "Sign-in refused, community full:" (email-domain email))
-                (community-full request)))
-            (do (log/info "Sign-in refused, not allowed:" (email-domain email))
-                (not-allowed request))))
+        (if-let [admission (admission db ((account/allowed db (:allowed-emails settings)) email) join-token email)]
+          (ex/try+
+            (finish-deletion! ctx "email" email)
+            (let [user (account/email-user! db email (System/currentTimeMillis) (room settings email admission))]
+              (log-joining admission email)
+              (start-session request user return-to))
+            (catch ::error/community-full _
+              (log/info "Sign-in refused, community full:" (email-domain email))
+              (community-full request)))
+          (do (log/info "Sign-in refused, not allowed:" (email-domain email))
+              (not-allowed request)))
         (link-expired request)))))
 
 (defn join-page
@@ -333,7 +343,7 @@
   the way in."
   [{:keys [ctx path-params] :as request}]
   (let [t (:token path-params)]
-    (if (some? (joining-token (:db ctx) t))
+    (if (some? (current-join-token (:db ctx) t))
       (response/html 200 (view/join request t (email-sign-in? request)))
       (layout/not-found request (i18n/t "This join link no longer works. Ask the community's moderators for the current one.")))))
 

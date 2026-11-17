@@ -2,11 +2,8 @@
   "The community's join link: anyone holding it may join, until moderators
   renew it, turn it off, or it expires."
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
-            [next.jdbc :as jdbc]
             [s-exp.jumble.account.join :as join]
-            [s-exp.jumble.account.model :as account]
-            [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture]]
-            [s-exp.jumble.store.db :as db]))
+            [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture]]))
 
 (set! *warn-on-reflection* true)
 
@@ -41,18 +38,3 @@
         (is (= (* 7 day) (:expires-at (join/current *db* 0))))
         (is (not (join/valid? *db* token (* 7 day))))
         (is (nil? (join/current *db* (* 7 day))))))))
-
-(deftest admit-test
-  (testing "joining by the link lets the address in from then on, as one moderators added"
-    (join/admit! *db* "Ann@Example.org" 1000)
-    (is ((account/allowed *db* ["*@club.example"]) "ann@example.org"))
-    (is (= [{:pattern "ann@example.org" :way "link"}]
-           (map #(select-keys % [:pattern :way])
-                (jdbc/execute! *db* ["SELECT * FROM allowed_email"] db/opts)))))
-  (testing "only one address joins: never a pattern letting in others"
-    (is (thrown? Exception (join/admit! *db* "*@club.example" 3000)))
-    (is (not ((account/allowed *db* ["*@example.com"]) "anyone@club.example"))))
-  (testing "an address already let in stays as it was"
-    (account/allow! *db* {:patterns ["bob@example.org"] :moderator-id nil :now 1})
-    (join/admit! *db* "bob@example.org" 2000)
-    (is (= "moderator" (:way (jdbc/execute-one! *db* ["SELECT way FROM allowed_email WHERE pattern = ?" "bob@example.org"] db/opts))))))

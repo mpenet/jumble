@@ -167,3 +167,25 @@
       (is (false? (:renewed (account/resume-session! *db* token (+ t0 (* 11 hour)) day))))
       (is (true? (:renewed (account/resume-session! *db* token (+ t0 (* 13 hour)) day))))
       (is (some? (account/resume-session! *db* token (+ t0 (* 30 hour)) day)) "past its first day"))))
+
+(defn- allowlist
+  []
+  (jdbc/execute! *db* ["SELECT pattern, way FROM allowed_email ORDER BY pattern"] {:builder-fn rs/as-unqualified-maps}))
+
+(deftest joining-test
+  (testing "an account made by joining lets its address in from then on, as joined by the link"
+    (account/email-user! *db* "Ann@Example.org" t0 {:joining true})
+    (account/upsert-user! *db* (assoc identity-claims :sub "u2" :email "Bea@Example.org") t0 {:joining true})
+    (is (= [{:pattern "ann@example.org" :way "link"} {:pattern "bea@example.org" :way "link"}] (allowlist)))
+    (is ((account/allowed *db* ["*@club.example"]) "ann@example.org")))
+  (testing "no account, no address let in: both or neither"
+    (is (= ::error/community-full
+           (refused #(account/email-user! *db* "cy@example.org" t0 {:member-limit 2 :joining true}))))
+    (is (= 2 (count (allowlist)))))
+  (testing "only one address joins: never a pattern letting in others"
+    (is (= ::error/invalid-pattern (refused #(account/email-user! *db* "*@club.example" t0 {:joining true}))))
+    (is (= 0 (:n (jdbc/execute-one! *db* ["SELECT count(*) AS n FROM user WHERE email = '*@club.example'"])))))
+  (testing "an address already let in stays as it was"
+    (account/allow! *db* {:patterns ["dan@example.org"] :moderator-id nil :now 1})
+    (account/email-user! *db* "dan@example.org" t0 {:joining true})
+    (is (some #{{:pattern "dan@example.org" :way "moderator"}} (allowlist)))))

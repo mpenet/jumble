@@ -55,15 +55,33 @@
   [user]
   (or user (throw (ex/ex-info "Account being deleted" ::error/account-deleted))))
 
+(defn allow-address!
+  "Lets the one address `email` in from `now` on, within transaction `tx`,
+  the `way` it came (see 032-allowlist-way.sql), from `added-by` if anyone.
+  An address already in stays as it was. Throws ex-info of type
+  ::error/invalid-pattern for a pattern, which would let in others."
+  [tx {:keys! [email way now] :keys [added-by]}]
+  (membership/address! email)
+  (jdbc/execute-one! tx
+                     ["INSERT INTO allowed_email (pattern, added_by, added_at, way) VALUES (?, ?, ?, ?)
+                          ON CONFLICT (pattern) DO NOTHING"
+                      (str/lower-case email)
+                      added-by
+                      now
+                      way]))
+
 (defn upsert-user!
   "Creates or updates the user identified by `iss` and `sub`, refreshing
   email and name from the identity. Returns `{:id :email :name}`. Creating
   one past `member-limit` throws, see [[check-room!]]; so does an account
-  being deleted, see [[signed-in]]."
+  being deleted, see [[signed-in]]. When `joining` by the join link, its
+  address is let in with it, see [[allow-address!]]."
   ([db claims now] (upsert-user! db claims now nil))
-  ([db {:keys! [iss sub ^String email name]} now {:keys [member-limit]}]
+  ([db {:keys! [iss sub ^String email name]} now {:keys [member-limit joining]}]
    (db/with-write-tx [tx db]
      (check-room! tx iss sub member-limit)
+     (when joining
+       (allow-address! tx {:email email :way "link" :now now}))
      (signed-in (jdbc/execute-one! tx
                                    ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
                                         VALUES (?, ?, ?, ?, ?, ?)
@@ -128,11 +146,15 @@
   "The user signing in by email as `email`, created on first sign-in with the
   address as name. Unlike [[upsert-user!]], the name stays as its owner set
   it. Returns `{:id :email :name}`. Creating one past `member-limit` throws,
-  see [[check-room!]]; so does an account being deleted, see [[signed-in]]."
+  see [[check-room!]]; so does an account being deleted, see [[signed-in]].
+  When `joining` by the join link, its address is let in with it, see
+  [[allow-address!]]."
   ([db email now] (email-user! db email now nil))
-  ([db email now {:keys [member-limit]}]
+  ([db email now {:keys [member-limit joining]}]
    (db/with-write-tx [tx db]
      (check-room! tx "email" email member-limit)
+     (when joining
+       (allow-address! tx {:email email :way "link" :now now}))
      (signed-in (jdbc/execute-one! tx
                                    ["INSERT INTO user (iss, sub, email, name, created_at, last_login_at)
                                         VALUES ('email', ?, ?, ?, ?, ?)
@@ -237,21 +259,6 @@
             :let [invitation (some-> invite-for (apply [pattern]))]
             :when invitation]
       (outbox/enqueue! tx invitation now))))
-
-(defn allow-address!
-  "Lets the one address `email` in from `now` on, within transaction `tx`,
-  the `way` it came (see 032-allowlist-way.sql), from `added-by` if anyone.
-  An address already in stays as it was. Throws ex-info of type
-  ::error/invalid-pattern for a pattern, which would let in others."
-  [tx {:keys! [email way now] :keys [added-by]}]
-  (membership/address! email)
-  (jdbc/execute-one! tx
-                     ["INSERT INTO allowed_email (pattern, added_by, added_at, way) VALUES (?, ?, ?, ?)
-                          ON CONFLICT (pattern) DO NOTHING"
-                      (str/lower-case email)
-                      added-by
-                      now
-                      way]))
 
 (defn disallow!
   [db pattern]

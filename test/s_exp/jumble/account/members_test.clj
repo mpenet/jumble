@@ -212,7 +212,7 @@
           (is (nil? (:expires-at renewed)))
           (is (not (str/includes? (page) token))))))
     (testing "who joined by it is shown as such"
-      (join/admit! *db* "neighbour@gmail.com" 0)
+      (account/email-user! *db* "neighbour@gmail.com" 0 {:joining true})
       (is (str/includes? (page) "neighbour@gmail.com"))
       (is (str/includes? (page) "joined with the join link")))
     (testing "turned off, it is gone"
