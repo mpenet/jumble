@@ -137,20 +137,17 @@
                                         :join (join/current db (System/currentTimeMillis))
                                         :invitations-open (invite/open? db))))))
 
-(def ^:private join-expiries
-  "How long a join link may work, as the form offers it: never expiring
-  unless chosen."
-  {"30" (* 30 24 60 60 1000)
-   "7" (* 7 24 60 60 1000)})
-
 (defn create-join-link
-  "Makes the join link, in place of any earlier one."
-  [{:keys [ctx params user]}]
-  (join/create! (:db ctx)
-                {:moderator-id (:id user)
-                 :expires-in (get join-expiries (params/one params "expires"))
-                 :now (System/currentTimeMillis)})
-  (response/redirect "/manage/members"))
+  "Makes the join link, in place of any earlier one, working as long as
+  chosen among [[join/expiries]]."
+  [{:keys [ctx params user] :as request}]
+  (if-let [[_ expires-in] (some #(when (= (params/one params "expires") (first %)) %) join/expiries)]
+    (do (join/create! (:db ctx)
+                      {:moderator-id (:id user)
+                       :expires-in expires-in
+                       :now (System/currentTimeMillis)})
+        (response/redirect "/manage/members"))
+    (members-page request 400 {})))
 
 (defn turn-off-join-link
   [{:keys [ctx]}]

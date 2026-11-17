@@ -45,12 +45,12 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Elle compte autant de membres qu’elle peut en avoir. Demandez à ses modérateurs de faire de la place."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Enter your email address."
-msgstr "Saisissez votre adresse e-mail."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "“{email}” is not an email address."
 msgstr "« {email} » n'est pas une adresse e-mail."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Saisissez votre adresse e-mail."
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Link expired"
@@ -1429,6 +1429,10 @@ msgid "Keep them"
 msgstr "Garder ce membre"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "un ancien membre"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Expires"
 msgstr "Expire"
 
@@ -1459,10 +1463,6 @@ msgstr "Créer un lien d'invitation"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
 msgstr "Créé par {who}, {date}."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "un ancien membre"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Works until {date}."

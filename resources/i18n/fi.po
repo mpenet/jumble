@@ -45,12 +45,12 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Siinä on jo niin monta jäsentä kuin mahtuu. Pyydä moderaattoreita tekemään tilaa."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Enter your email address."
-msgstr "Anna sähköpostiosoitteesi."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "“{email}” is not an email address."
 msgstr "”{email}” ei ole sähköpostiosoite."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Anna sähköpostiosoitteesi."
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Link expired"
@@ -1429,6 +1429,10 @@ msgid "Keep them"
 msgstr "Älä poista"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "entinen jäsen"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Expires"
 msgstr "Vanhenee"
 
@@ -1459,10 +1463,6 @@ msgstr "Luo liittymislinkki"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
 msgstr "Luonut {who}, {date}."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "entinen jäsen"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Works until {date}."

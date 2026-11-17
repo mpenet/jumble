@@ -219,5 +219,7 @@
          (testing "addresses that joined by the link say so; the others were added by a moderator"
            (is (= [{:pattern "*@partner.org" :way "moderator"} {:pattern "ann@example.org" :way "link"}]
                   (q ["SELECT pattern, way FROM allowed_email ORDER BY pattern"]))))
+         (testing "the mark it replaces is gone"
+           (is (not-any? #{"joined_by_link"} (map :name (q ["PRAGMA table_info(allowed_email)"])))))
          (testing "the way is one of those known"
            (is (thrown? Exception (jdbc/execute! ds ["UPDATE allowed_email SET way = 'other'"])))))))))

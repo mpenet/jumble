@@ -234,8 +234,8 @@
                    db/opts)))
 
 (defn added-emails
-  "The patterns moderators added, with who added each, when, and the way
-  it came in (see 032-allowlist-way.sql)."
+  "The allowlist's patterns, beyond the configured ones: with who added
+  each, when, and the way it came in (see 032-allowlist-way.sql)."
   [db]
   (jdbc/execute! db
                  ["SELECT a.pattern, u.name AS added_by, a.added_at, a.way

@@ -45,12 +45,12 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Het maximale aantal leden is bereikt. Vraag de moderatoren om ruimte te maken."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Enter your email address."
-msgstr "Vul je e-mailadres in."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "“{email}” is not an email address."
 msgstr "“{email}” is geen e-mailadres."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Vul je e-mailadres in."
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Link expired"
@@ -1429,6 +1429,10 @@ msgid "Keep them"
 msgstr "Lid behouden"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "een voormalig lid"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Expires"
 msgstr "Verloopt"
 
@@ -1459,10 +1463,6 @@ msgstr "Uitnodigingslink maken"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
 msgstr "Gemaakt door {who}, {date}."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "een voormalig lid"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Works until {date}."

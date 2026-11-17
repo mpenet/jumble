@@ -5,6 +5,7 @@
             [s-exp.jumble.view.dates :as dates]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.account.invite :as invite]
+            [s-exp.jumble.account.join :as join]
             [s-exp.jumble.page.assets :as assets]
             [s-exp.jumble.view.icons :as icons]
             [s-exp.jumble.view.layout :as layout]
@@ -146,15 +147,24 @@
                   [:button.danger {:type "submit"} (i18n/t "Remove for good")]
                   [:a.button.secondary {:href "/manage/members"} (i18n/t "Keep them")]]]]))
 
+(defn- former-member-or
+  "`name`, or \"a former member\" when their account is gone."
+  [name]
+  (if (str/blank? name) (i18n/t "a former member") name))
+
 (defn- join-link-form
-  "Makes the join link, in place of any earlier one, expiring as chosen."
+  "Makes the join link, in place of any earlier one, expiring as chosen
+  among [[join/expiries]], the first unless another is."
   [label]
   [:form.listing-form (merge {:method "post" :action "/manage/members/join-link"} layout/once)
    [:label {:for "expires"} (i18n/t "Expires")]
    [:select {:id "expires" :name "expires"}
-    [:option {:value "never" :selected true} (i18n/t "Never")]
-    [:option {:value "30"} (i18n/t "In 30 days")]
-    [:option {:value "7"} (i18n/t "In 7 days")]]
+    (for [[value] join/expiries]
+      [:option {:value value}
+       (case value
+         "never" (i18n/t "Never")
+         "30" (i18n/t "In 30 days")
+         "7" (i18n/t "In 7 days"))])]
    [:button {:type "submit"} label]])
 
 (defn- join-link-section
@@ -173,7 +183,7 @@
                               :aria-label (i18n/t "Join link")}]
            [:p.field-note
             (i18n/t "Made by {who}, {date}."
-                    {:who (if (str/blank? created-by) (i18n/t "a former member") created-by)
+                    {:who (former-member-or created-by)
                      :date (dates/date created-at)})
             " "
             (if expires-at
@@ -230,7 +240,7 @@
                            (for [{:keys [pattern added-by added-at way]} added]
                              [:li
                               [:code pattern]
-                              [:span.member-meta (let [who (if (str/blank? added-by) (i18n/t "a former member") added-by)
+                              [:span.member-meta (let [who (former-member-or added-by)
                                                        date (dates/date added-at)]
                                                    (case way
                                                      "link" (i18n/t "joined with the join link, {date}" {:date date})

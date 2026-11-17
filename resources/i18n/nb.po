@@ -45,12 +45,12 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Det har så mange medlemmer som det kan ha. Be moderatorene om å gjøre plass."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Enter your email address."
-msgstr "Skriv inn e-postadressen din."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "“{email}” is not an email address."
 msgstr "«{email}» er ikke en e-postadresse."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Enter your email address."
+msgstr "Skriv inn e-postadressen din."
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Link expired"
@@ -1429,6 +1429,10 @@ msgid "Keep them"
 msgstr "Behold medlemmet"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr "et tidligere medlem"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Expires"
 msgstr "Utløper"
 
@@ -1459,10 +1463,6 @@ msgstr "Lag en invitasjonslenke"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
 msgstr "Laget av {who}, {date}."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
-msgstr "et tidligere medlem"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Works until {date}."

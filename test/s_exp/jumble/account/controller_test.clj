@@ -5,6 +5,7 @@
             [clojure.test :refer [deftest is testing use-fixtures]]
             [next.jdbc :as jdbc]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
@@ -252,4 +253,29 @@
       (is (= 403 (:status (sign-in nil {:email "anyone@attacker.example"})))))
     (testing "the link is enough where the provider's organisation is otherwise required"
       (binding [*handler* (app *idp* {:require-hosted-domain true})]
-        (is (= 303 (:status (join {:email "friend@gmail.com"}))))))))
+        (is (= 303 (:status (join {:email "friend@gmail.com"}))))
+        (is ((account/allowed *db* ["*@example.com"]) "friend@gmail.com"))))
+    (testing "a member the moderators removed does not come back by it"
+      (data/remove-member! *db* (blob/memory-store) {:email "neighbour@gmail.com" :moderator-id nil :now 0})
+      (is (= 403 (:status (join {:email "neighbour@gmail.com"})))))
+    (testing "a link renewed while signing in no longer lets in"
+      (let [login (request :get (str "/login?join=" token) nil)]
+        (join/create! *db* {:moderator-id nil :expires-in nil :now 1})
+        (is (= 403 (:status (request :get
+                                     (idp/authorize! *idp* (location login) {:email "late@gmail.com"})
+                                     (set-cookies login)))))))))
+
+(deftest invitee-test
+  (testing "whom a member invited signs in with the provider, organisation required or not"
+    (let [ann (:id (account/upsert-user! *db* {:iss "i" :sub "ann" :email "ann@example.com" :name "Ann"} 0))]
+      (doseq [address ["guest@gmail.com" "other@gmail.com"]]
+        (invite/invite! *db*
+                        {:member-id ann
+                         :email address
+                         :now 0
+                         :configured ["*@example.com"]
+                         :community-per-day 100
+                         :email-for (fn [to] {:to to :subject "Invited" :text "Come"})}))
+      (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))))
+      (binding [*handler* (app *idp* {:require-hosted-domain true})]
+        (is (= 303 (:status (sign-in nil {:email "other@gmail.com"}))))))))

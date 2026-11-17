@@ -193,6 +193,9 @@
       (is (= 404 (:status (request :post "/manage/members/join-link" bob :form {"expires" "never"}))))
       (is (= 404 (:status (request :post "/manage/members/join-link/off" bob))))
       (is (nil? (join/current *db* (System/currentTimeMillis)))))
+    (testing "an expiry the form does not offer is refused"
+      (is (= 400 (:status (request :post "/manage/members/join-link" dave :form {"expires" "1000"}))))
+      (is (nil? (join/current *db* (System/currentTimeMillis)))))
     (testing "none at first: a moderator may make one, expiring or not"
       (is (re-find #"<form [^>]*action=\"/manage/members/join-link\"" (page)))
       (is (str/includes? (page) "name=\"expires\""))
@@ -204,7 +207,7 @@
         (is (some? token))
         (is (= (* 30 24 60 60 1000) (- expires-at created-at)))
         (is (str/includes? (page) (str "http://localhost:8080/join/" token)))
-        (is (str/includes? (page) "dave@example.com")))
+        (is (str/includes? (page) "Made by dave@example.com")))
       (testing "renewed, the earlier link no longer works; never expiring by default"
         (request :post "/manage/members/join-link" dave :form {"expires" "never"})
         (let [renewed (join/current *db* (System/currentTimeMillis))]
@@ -286,6 +289,7 @@
         (is (str/includes? body "Invitations are closed"))
         (is (str/includes? body "href=\"/settings\"")))
       (is (= 403 (:status (invite! "neighbour@gmail.com"))))
+      (is (= 403 (:status (request :get "/invite" (sign-in! "dave@example.com")))) "moderators too")
       (is (= [] (outbox)))
       (is (not (str/includes? (page "/settings") "href=\"/invite\""))))
     (invite/set-open! *db* true)

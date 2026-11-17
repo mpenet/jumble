@@ -44,11 +44,11 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Enter your email address."
+msgid "“{email}” is not an email address."
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "“{email}” is not an email address."
+msgid "Enter your email address."
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
@@ -1428,6 +1428,10 @@ msgid "Keep them"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "a former member"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Expires"
 msgstr ""
 
@@ -1457,10 +1461,6 @@ msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "a former member"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj

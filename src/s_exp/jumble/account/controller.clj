@@ -268,6 +268,17 @@
             (log-joining admission (:email claims))
             (start-session request user (:return-to attempt)))))))
 
+(defn- typed-address
+  "The address typed in the `email` field of `params`, trimmed and
+  lowercased: `{:email address}`, or `{:error message}` when it is not one,
+  `missing` when none was typed."
+  [params missing]
+  (let [email (some-> (params/one params "email") str/trim str/lower-case)]
+    (cond
+      (empty? email) {:error missing}
+      (mail/plain-address? email) {:email email}
+      :else {:error (i18n/t "“{email}” is not an email address." {:email email})})))
+
 (defn request-link
   "Emails a sign-in link to an address allowed in. Everyone is told the
   same, so the page reveals nothing about who may sign in."
@@ -275,16 +286,14 @@
   (if-not (email-sign-in? request)
     (layout/not-found request)
     (let [{:keys [db settings sign-in-requests]} ctx
-          email (some-> (params/one params "email") str/trim str/lower-case)
+          {:keys [email error]} (typed-address params (i18n/t "Enter your email address."))
           target (auth/local-path (params/one params "return_to"))
           join-token (params/one params "join")]
-      (if-not (mail/plain-address? email)
+      (if error
         (response/html 422
                        (view/email-sign-in request
                                            {:values {:email (params/one params "email") :return-to target :join join-token}
-                                            :errors {:email (if (empty? email)
-                                                              (i18n/t "Enter your email address.")
-                                                              (i18n/t "“{email}” is not an email address." {:email email}))}}))
+                                            :errors {:email error}}))
         (do (when-let [admission (admission db ((account/allowed db (:allowed-emails settings)) email) join-token email)]
               (if (and (:clients-known settings)
                        (not (client-allowed! sign-in-requests
@@ -512,14 +521,9 @@
     (invitations-closed request)
     (let [{:keys [db settings]} ctx
           typed (params/one params "email")
-          address (some-> typed str/trim str/lower-case)]
-      (if-not (mail/plain-address? address)
-        (invite-page request
-                     422
-                     {:values {:email typed}
-                      :errors {:email (if (empty? address)
-                                        (i18n/t "Enter an email address.")
-                                        (i18n/t "“{email}” is not an email address." {:email address}))}})
+          {address :email error :error} (typed-address params (i18n/t "Enter an email address."))]
+      (if error
+        (invite-page request 422 {:values {:email typed} :errors {:email error}})
         (case (invite/invite! db
                               {:member-id (:id user)
                                :email address

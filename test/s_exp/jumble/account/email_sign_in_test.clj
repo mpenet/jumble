@@ -341,3 +341,10 @@
           (data/remove-member! *db* (blob/memory-store) {:email "gone@gmail.com" :moderator-id dave :now 2})
           (request :post "/login" :form {"email" "gone@gmail.com" "join" renewed})
           (is (not-any? #{"gone@gmail.com"} (map :recipient (outbox)))))))))
+
+(deftest expired-join-link-test
+  (let [expired (join/create! *db* {:moderator-id nil :expires-in 1 :now 0})]
+    (testing "an expired link says so, and sends no link"
+      (is (= 410 (:status (request :get (str "/join/" expired)))))
+      (request :post "/login" :form {"email" "late@gmail.com" "join" expired})
+      (is (= [] (outbox))))))

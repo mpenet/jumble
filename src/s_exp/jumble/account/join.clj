@@ -8,6 +8,13 @@
 
 (set! *warn-on-reflection* true)
 
+(def ^:private day (* 24 60 60 1000))
+
+(def expiries
+  "How long a join link may work, as moderators choose it, in the order
+  offered: the form's value and the time, nil for never."
+  [["never" nil] ["30" (* 30 day)] ["7" (* 7 day)]])
+
 (defn create!
   "Makes the community's join link, in place of any earlier one, as
   moderator `moderator-id`, expiring `expires-in` ms after `now` or never
