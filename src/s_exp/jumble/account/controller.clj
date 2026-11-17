@@ -6,6 +6,7 @@
             [clojure.tools.logging :as log]
             [s-exp.ex :as ex]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.account.email :as email]
@@ -396,13 +397,21 @@
     (-> (response/redirect "/")
         (assoc :cookies (clear-cookie base-url auth/session-cookie)))))
 
+(defn- inviting?
+  "Whether members may invite people: sign-in is limited to some, and
+  moderators let them."
+  [{:keys [ctx]}]
+  (and (not= :anyone (get-in ctx [:settings :allowed-emails]))
+       (invite/open? (:db ctx))))
+
 (defn settings
   "Settings. People signing in by email set their name here; a sign-in
   provider supplies it otherwise."
   [{:keys [ctx user query-string] :as request}]
   (response/html 200
                  (view/settings request
-                                {:devices (push/devices (:db ctx) (:id user))
+                                {:inviting (inviting? request)
+                                 :devices (push/devices (:db ctx) (:id user))
                                  :application-key (crypto/application-key (push/keys! (:db ctx)))
                                  :notify-messages (account/notify-messages (:db ctx) (:id user))
                                  :weekly-digest (account/weekly-digest (:db ctx) (:id user))
@@ -421,7 +430,8 @@
     (if errors
       (response/html 422
                      (view/settings request
-                                    {:devices (push/devices db (:id user))
+                                    {:inviting (inviting? request)
+                                     :devices (push/devices db (:id user))
                                      :application-key (crypto/application-key (push/keys! db))
                                      :notify-messages notify :weekly-digest weekly :language (:language user)
                                      :name-editable true
@@ -433,6 +443,49 @@
           ;; A language Jumble does not speak is the community's.
           (account/set-language! db (:id user) (i18n/languages (params/one params "language")))
           (response/redirect "/settings?saved")))))
+
+(defn- invite-page
+  [{:keys [ctx user] :as request} status form]
+  (response/html status (view/invite request (assoc form :invitations (invite/sent (:db ctx) (:id user))))))
+
+(defn invitations
+  "Where members invite people, with those they invited."
+  [{:keys [query-string] :as request}]
+  (if-not (inviting? request)
+    (layout/not-found request)
+    (invite-page request 200 {:sent (= "sent" query-string)})))
+
+(defn send-invitation
+  "Invites the typed address, from the member. They are told the same
+  whoever it is, so the page reveals nothing of who is a member or was
+  removed."
+  [{:keys [ctx params user] :as request}]
+  (if-not (inviting? request)
+    (layout/not-found request)
+    (let [{:keys [db settings]} ctx
+          typed (params/one params "email")
+          address (some-> typed str/trim str/lower-case)]
+      (if-not (mail/plain-address? address)
+        (invite-page request
+                     422
+                     {:values {:email typed}
+                      :errors {:email (if (empty? address)
+                                        (i18n/t "Enter an email address.")
+                                        (i18n/t "“{email}” is not an email address." {:email address}))}})
+        (case (invite/invite! db
+                              {:member-id (:id user)
+                               :email address
+                               :now (System/currentTimeMillis)
+                               :configured (:allowed-emails settings)
+                               ;; Not a member yet: the community's language.
+                               :email-for #(i18n/speaking nil (email/invitation settings (:name user) %))})
+          ;; Redirected, so reloading the page sends no other invitation.
+          :sent (response/redirect "/invite?sent")
+          :limited (invite-page request
+                                429
+                                {:values {:email typed}
+                                 :errors {:email (i18n/t "You have sent {count} invitations in the last 24 hours: try again later."
+                                                         {:count invite/per-day})}}))))))
 
 (defn export-data
   "Everything Jumble holds about the user, as a JSON file to download."
@@ -469,6 +522,8 @@
    [:post "/login/email"] #'use-link
    [:get "/settings"] (auth/require-user #'settings)
    [:post "/settings"] (auth/require-user #'save-settings)
+   [:get "/invite"] (auth/require-user #'invitations)
+   [:post "/invite"] (auth/require-user #'send-invitation)
    [:get "/settings/export"] (auth/require-user #'export-data)
    [:get "/settings/delete"] (auth/require-user #'confirm-delete)
    [:post "/settings/delete"] (auth/require-user #'delete-account)

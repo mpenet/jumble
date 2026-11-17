@@ -101,6 +101,14 @@ msgid "Something went wrong while signing you in."
 msgstr "Algo correu mal ao iniciar a tua sessão."
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "Enter an email address."
+msgstr "Escreve um endereço de email."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "You have sent {count} invitations in the last 24 hours: try again later."
+msgstr "Enviaste {count} convites nas últimas 24 horas: tenta de novo mais tarde."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Your account was deleted"
 msgstr "A tua conta foi eliminada"
 
@@ -243,6 +251,18 @@ msgid "Save"
 msgstr "Guardar"
 
 #: src/s_exp/jumble/account/view.clj
+msgid "Invitations"
+msgstr "Convites"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{invite-link}: they get an email saying you invited them, and can join with that address."
+msgstr "{invite-link}: recebe um email a dizer que a convidaste, e pode entrar com esse endereço."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Invite someone you know"
+msgstr "Convidar alguém que conheces"
+
+#: src/s_exp/jumble/account/view.clj
 msgid "Your data"
 msgstr "Os teus dados"
 
@@ -257,6 +277,34 @@ msgstr "Descarregar os teus dados"
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account"
 msgstr "Eliminar a tua conta"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "They get an email saying you invited them to {app-name}, and can join with that address. You can invite {count} people a day."
+msgstr "Recebe um email a dizer que a convidaste para {app-name}, e pode entrar com esse endereço. Podes convidar {count} pessoas por dia."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email address"
+msgstr "Endereço de email"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "If the address can join, an invitation is on its way."
+msgstr "Se o endereço puder entrar, há um convite a caminho."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Send the invitation"
+msgstr "Enviar o convite"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Whom you invited"
+msgstr "Os teus convites"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "invited {date}, joined since"
+msgstr "convidada a {date}, já entrou"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "invited {date}"
+msgstr "convidada a {date}"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account?"
@@ -277,10 +325,6 @@ msgstr "Eliminar a minha conta"
 #: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
 msgid "Keep it"
 msgstr "Manter"
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Email address"
-msgstr "Endereço de email"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "you@example.org"

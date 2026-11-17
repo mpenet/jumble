@@ -23,7 +23,8 @@
                 "\n")}))
 
 (defn invitation
-  "Email inviting `to`, added by moderator `inviter`, to sign in."
+  "Email inviting `to` to sign in, from `inviter`: the moderator who added
+  the address, or the member who invited it."
   [{:keys [base-url app-name]} inviter to]
   (let [app-name (mail/one-line app-name)]
     {:to to

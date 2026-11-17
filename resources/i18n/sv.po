@@ -101,6 +101,14 @@ msgid "Something went wrong while signing you in."
 msgstr "Något gick fel när du skulle loggas in."
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "Enter an email address."
+msgstr "Skriv en e-postadress."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "You have sent {count} invitations in the last 24 hours: try again later."
+msgstr "Du har skickat {count} inbjudningar de senaste 24 timmarna: försök igen senare."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Your account was deleted"
 msgstr "Ditt konto har raderats"
 
@@ -243,6 +251,18 @@ msgid "Save"
 msgstr "Spara"
 
 #: src/s_exp/jumble/account/view.clj
+msgid "Invitations"
+msgstr "Inbjudningar"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{invite-link}: they get an email saying you invited them, and can join with that address."
+msgstr "{invite-link}: personen får ett mejl om att du bjudit in dem, och kan gå med med den adressen."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Invite someone you know"
+msgstr "Bjud in någon du känner"
+
+#: src/s_exp/jumble/account/view.clj
 msgid "Your data"
 msgstr "Din data"
 
@@ -257,6 +277,34 @@ msgstr "Ladda ner din data"
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account"
 msgstr "Radera ditt konto"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "They get an email saying you invited them to {app-name}, and can join with that address. You can invite {count} people a day."
+msgstr "Personen får ett mejl om att du bjudit in dem till {app-name}, och kan gå med med den adressen. Du kan bjuda in {count} personer om dagen."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email address"
+msgstr "E-postadress"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "If the address can join, an invitation is on its way."
+msgstr "Om adressen kan gå med är en inbjudan på väg."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Send the invitation"
+msgstr "Skicka inbjudan"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Whom you invited"
+msgstr "Dina inbjudningar"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "invited {date}, joined since"
+msgstr "inbjuden {date}, har gått med"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "invited {date}"
+msgstr "inbjuden {date}"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account?"
@@ -277,10 +325,6 @@ msgstr "Radera mitt konto"
 #: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
 msgid "Keep it"
 msgstr "Behåll det"
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Email address"
-msgstr "E-postadress"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "you@example.org"

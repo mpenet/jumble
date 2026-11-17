@@ -2615,6 +2615,7 @@ textarea {
 /* Settings: your data */
 
 .notifications,
+.invitations,
 .your-data {
   max-width: 40rem;
   margin-top: var(--space-6);
@@ -2623,6 +2624,7 @@ textarea {
 }
 
 .notifications h2,
+.invitations h2,
 .your-data h2 {
   margin: 0 0 var(--space-2);
   font-size: var(--text-lg);

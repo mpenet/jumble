@@ -101,6 +101,14 @@ msgid "Something went wrong while signing you in."
 msgstr "Noget gik galt, da du skulle logges ind."
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "Enter an email address."
+msgstr "Skriv en e-mailadresse."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "You have sent {count} invitations in the last 24 hours: try again later."
+msgstr "Du har sendt {count} invitationer de sidste 24 timer: prøv igen senere."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Your account was deleted"
 msgstr "Din konto er slettet"
 
@@ -243,6 +251,18 @@ msgid "Save"
 msgstr "Gem"
 
 #: src/s_exp/jumble/account/view.clj
+msgid "Invitations"
+msgstr "Invitationer"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "{invite-link}: they get an email saying you invited them, and can join with that address."
+msgstr "{invite-link}: vedkommende får en e-mail om, at du har inviteret dem, og kan blive medlem med den adresse."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Invite someone you know"
+msgstr "Invitér en, du kender"
+
+#: src/s_exp/jumble/account/view.clj
 msgid "Your data"
 msgstr "Dine data"
 
@@ -257,6 +277,34 @@ msgstr "Download dine data"
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account"
 msgstr "Slet din konto"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "They get an email saying you invited them to {app-name}, and can join with that address. You can invite {count} people a day."
+msgstr "Vedkommende får en e-mail om, at du har inviteret dem til {app-name}, og kan blive medlem med den adresse. Du kan invitere {count} personer om dagen."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Email address"
+msgstr "E-mailadresse"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "If the address can join, an invitation is on its way."
+msgstr "Hvis adressen kan blive medlem, er en invitation på vej."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Send the invitation"
+msgstr "Send invitationen"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Whom you invited"
+msgstr "Dine invitationer"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "invited {date}, joined since"
+msgstr "inviteret {date}, er blevet medlem"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "invited {date}"
+msgstr "inviteret {date}"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account?"
@@ -277,10 +325,6 @@ msgstr "Slet min konto"
 #: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj src/s_exp/jumble/moderation/view.clj
 msgid "Keep it"
 msgstr "Behold den"
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Email address"
-msgstr "E-mailadresse"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "you@example.org"

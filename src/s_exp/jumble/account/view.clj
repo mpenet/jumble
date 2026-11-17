@@ -1,7 +1,8 @@
 (ns s-exp.jumble.account.view
   "Pages of a member's account: settings, deleting it, and signing in by
   email."
-  (:require [s-exp.jumble.page.assets :as assets]
+  (:require [s-exp.jumble.account.invite :as invite]
+            [s-exp.jumble.page.assets :as assets]
             [s-exp.jumble.view.dates :as dates]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.view.icons :as icons]
@@ -39,7 +40,7 @@
 (set! *warn-on-reflection* true)
 
 (defn settings
-  [{:keys [user] :as request} {:keys [notify-messages weekly-digest language name-editable values errors saved] :as data}]
+  [{:keys [user] :as request} {:keys [inviting notify-messages weekly-digest language name-editable values errors saved] :as data}]
   (layout/page request
                {:title (i18n/t "Settings")}
                [:div.board-header
@@ -70,11 +71,45 @@
                 (when saved [:p.field-note {:role "status"} (i18n/t "Saved.")])
                 [:button {:type "submit"} (i18n/t "Save")]]
                (notifications request data)
+               (when inviting
+                 [:section.invitations
+                  [:h2 (i18n/t "Invitations")]
+                  [:p (i18n/t "{invite-link}: they get an email saying you invited them, and can join with that address."
+                              {:invite-link [:a {:href "/invite"} (i18n/t "Invite someone you know")]})]])
                [:section.your-data
                 [:h2 (i18n/t "Your data")]
                 [:p (i18n/t "{download-link} — your account, listings, favorites, conversations and reports, as a JSON file."
                             {:download-link [:a {:href "/settings/export"} (i18n/t "Download your data")]})]
                 [:p [:a.danger-link {:href "/settings/delete"} (i18n/t "Delete your account")]]]))
+
+(defn invite
+  "Where members invite someone they know, by email, with whom they invited
+  and who of them joined."
+  [{:keys [ctx] :as request} {:keys [values errors sent invitations]}]
+  (layout/page request
+               {:title (i18n/t "Invite someone you know")}
+               [:div.board-header
+                [:h1 (i18n/t "Invite someone you know")]
+                [:p.lede (i18n/t "They get an email saying you invited them to {app-name}, and can join with that address. You can invite {count} people a day."
+                                 {:app-name (get-in ctx [:settings :app-name]) :count invite/per-day})]]
+               [:form.listing-form (merge {:method "post" :action "/invite" :novalidate true} layout/once)
+                [:label {:for "email"} (i18n/t "Email address")]
+                [:input (merge {:id "email" :type "email" :name "email" :value (:email values) :required true :autocomplete "off"}
+                               (layout/invalid errors :email))]
+                (layout/field-error errors :email)
+                (when sent
+                  [:p.field-note {:role "status"} (i18n/t "If the address can join, an invitation is on its way.")])
+                [:button {:type "submit"} (i18n/t "Send the invitation")]]
+               (when (seq invitations)
+                 [:section.members
+                  [:h2 (i18n/t "Whom you invited")]
+                  [:ul.member-list
+                   (for [{:keys [email sent-at joined]} invitations]
+                     [:li
+                      [:code email]
+                      [:span.member-meta (if joined
+                                           (i18n/t "invited {date}, joined since" {:date (dates/date sent-at)})
+                                           (i18n/t "invited {date}" {:date (dates/date sent-at)}))]])]])))
 
 (defn confirm-delete
   "Asks the user to confirm deleting their account, saying what happens."

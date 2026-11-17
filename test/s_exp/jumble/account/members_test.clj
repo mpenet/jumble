@@ -1,6 +1,6 @@
 (ns s-exp.jumble.account.members-test
   "Who may sign in, as moderators manage it: patterns added and withdrawn,
-  invitations, and removing a member."
+  invitations, the join link, removing a member; and members inviting."
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is testing use-fixtures]]
             [next.jdbc :as jdbc]
@@ -274,3 +274,40 @@
     (testing "nothing to offer where the configuration lets anyone in"
       (is (not (re-find #"action=\"/manage/members/invitations\""
                         (:body (fixtures/request :get "/manage/members" dave {:ctx {:settings {:allowed-emails :anyone}}}))))))))
+
+(deftest invite-page-test
+  (let [bob (sign-in! "bob@example.com")
+        page #(:body (request :get % bob))
+        invite! #(request :post "/invite" bob :form {"email" %})]
+    (testing "none while moderators have not let members invite"
+      (is (= 404 (:status (request :get "/invite" bob))))
+      (is (= 404 (:status (invite! "neighbour@gmail.com"))))
+      (is (not (str/includes? (page "/settings") "href=\"/invite\""))))
+    (invite/set-open! *db* true)
+    (testing "then members' settings lead to it"
+      (is (str/includes? (page "/settings") "href=\"/invite\""))
+      (is (re-find #"<form [^>]*action=\"/invite\"" (page "/invite"))))
+    (testing "an address that is not one comes back with an explanation"
+      (let [{:keys [status body]} (invite! "nope")]
+        (is (= 422 status))
+        (is (str/includes? body "is not an email address"))))
+    (testing "inviting emails the address, from the member, and lists it"
+      (let [response (invite! "Neighbour@Gmail.com")]
+        (is (= 303 (:status response)))
+        (is (= "/invite?sent" (get-in response [:headers "location"]))))
+      (let [[{:keys [recipient body]}] (outbox)]
+        (is (= "neighbour@gmail.com" recipient))
+        (is (str/includes? body "bob@example.com invited you")))
+      (let [body (page "/invite?sent")]
+        (is (str/includes? body "If the address can join, an invitation is on its way."))
+        (is (str/includes? body "neighbour@gmail.com"))))
+    (testing "past five a day, the member is asked to wait"
+      (doseq [i (range 4)]
+        (invite! (str "n" i "@gmail.com")))
+      (let [{:keys [status body]} (invite! "sixth@gmail.com")]
+        (is (= 429 status))
+        (is (str/includes? body "You have sent 5 invitations in the last 24 hours"))))
+    (testing "nothing where the configuration lets anyone in"
+      (is (= 404 (:status (fixtures/request :get "/invite" bob {:ctx {:settings {:allowed-emails :anyone}}}))))
+      (is (not (str/includes? (:body (fixtures/request :get "/settings" bob {:ctx {:settings {:allowed-emails :anyone}}}))
+                              "href=\"/invite\""))))))
