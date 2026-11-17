@@ -65,6 +65,10 @@ msgid "Get a new link"
 msgstr "Få en ny lenke"
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "This join link no longer works. Ask the community's moderators for the current one."
+msgstr "Denne invitasjonslenken virker ikke lenger. Be fellesskapets moderatorer om den gjeldende."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr "Innloggingen er utløpt"
 
@@ -274,14 +278,6 @@ msgstr "Slett kontoen min"
 msgid "Keep it"
 msgstr "Behold den"
 
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
-msgid "Sign in"
-msgstr "Logg inn"
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Enter your email address and we will send you a link to sign in."
-msgstr "Skriv inn e-postadressen din, så sender vi deg en innloggingslenke."
-
 #: src/s_exp/jumble/account/view.clj
 msgid "Email address"
 msgstr "E-postadresse"
@@ -293,6 +289,26 @@ msgstr "deg@eksempel.no"
 #: src/s_exp/jumble/account/view.clj
 msgid "Email me a link"
 msgstr "Send meg en lenke"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr "Logg inn"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr "Skriv inn e-postadressen din, så sender vi deg en innloggingslenke."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Join {app-name}"
+msgstr "Bli med i {app-name}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "You are invited to {app-name}, where members sell, give away and lend things to each other."
+msgstr "Du er invitert til {app-name}, der medlemmer selger, gir bort og låner ut ting til hverandre."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in to join"
+msgstr "Logg inn for å bli med"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Check your inbox"

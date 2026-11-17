@@ -322,8 +322,9 @@
   `(email-for token)` that carries it. Returns `:sent`, or `:limited` when
   too many links went to that address, or, for an address without an
   account, to such addresses in the last `ttl` ms. Expired requests are
-  purged on the way."
-  [db {:keys! [email return-to now ttl email-for]}]
+  purged on the way. A `join-token` (the join link's) goes with the link,
+  for the address to join when it is used."
+  [db {:keys! [email return-to now ttl email-for] :keys [join-token]}]
   (db/with-write-tx [tx db]
     (jdbc/execute-one! tx ["DELETE FROM email_sign_in WHERE expires_at <= ?" now])
     (let [count-of #(:n (jdbc/execute-one! tx % db/opts))]
@@ -340,13 +341,14 @@
         :limited
         (let [t (token/generate)]
           (jdbc/execute-one! tx
-                             ["INSERT INTO email_sign_in (token_hash, email, return_to, created_at, expires_at)
-                                  VALUES (?, ?, ?, ?, ?)"
+                             ["INSERT INTO email_sign_in (token_hash, email, return_to, created_at, expires_at, join_token)
+                                  VALUES (?, ?, ?, ?, ?, ?)"
                               (token/digest t)
                               email
                               return-to
                               now
-                              (+ now ttl)])
+                              (+ now ttl)
+                              join-token])
           (outbox/enqueue! tx (assoc (email-for t) :expires-at (+ now ttl)) now)
           :sent)))))
 
@@ -362,15 +364,15 @@
                                db/opts))))
 
 (defn use-email-sign-in!
-  "Marks sign-in link `t` used and returns `{:email :return-to}`, when it
-  was valid and unused: each link signs in once."
+  "Marks sign-in link `t` used and returns `{:email :return-to :join-token}`,
+  when it was valid and unused: each link signs in once."
   [db t now]
   (when (seq t)
     (db/with-write-tx [tx db]
       (when-let [row (jdbc/execute-one! tx
                                         ["UPDATE email_sign_in SET used = 1
                                              WHERE token_hash = ? AND used = 0 AND expires_at > ?
-                                             RETURNING email, return_to"
+                                             RETURNING email, return_to, join_token"
                                          (token/digest t)
                                          now]
                                         db/opts)]
@@ -379,19 +381,21 @@
         row))))
 
 (defn create-login-attempt!
-  "Records a sign-in in progress under `state`. Expired attempts are purged
-  on the way, so abandoned sign-ins do not accumulate."
-  [db state {:keys! [nonce code-verifier return-to]} now ttl]
+  "Records a sign-in in progress under `state`, with the join link's
+  `join-token` when started from it. Expired attempts are purged on the
+  way, so abandoned sign-ins do not accumulate."
+  [db state {:keys! [nonce code-verifier return-to] :keys [join-token]} now ttl]
   (db/with-write-tx [tx db]
     (jdbc/execute-one! tx ["DELETE FROM login_attempt WHERE expires_at <= ?" now])
     (jdbc/execute-one! tx
-                       ["INSERT INTO login_attempt (state_hash, nonce, code_verifier, return_to, expires_at)
-                            VALUES (?, ?, ?, ?, ?)"
+                       ["INSERT INTO login_attempt (state_hash, nonce, code_verifier, return_to, expires_at, join_token)
+                            VALUES (?, ?, ?, ?, ?, ?)"
                         (token/digest state)
                         nonce
                         code-verifier
                         return-to
-                        (+ now ttl)])))
+                        (+ now ttl)
+                        join-token])))
 
 (defn consume-login-attempt!
   "Removes the attempt for `state` and returns it if it had not expired, so
@@ -402,7 +406,7 @@
                (db/with-write-tx [tx db]
                  (jdbc/execute-one! tx
                                     ["DELETE FROM login_attempt WHERE state_hash = ?
-                                         RETURNING nonce, code_verifier, return_to, expires_at"
+                                         RETURNING nonce, code_verifier, return_to, join_token, expires_at"
                                      (token/digest state)]
                                     db/opts))]
       (when (> expires-at now)

@@ -5,6 +5,7 @@
             [clojure.test :refer [deftest is testing use-fixtures]]
             [next.jdbc :as jdbc]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.jumble.fake-idp :as idp]
@@ -232,3 +233,20 @@
       (let [response (sign-in nil)]
         (is (= 403 (:status response)))
         (is (nil? (session-user response)))))))
+
+(deftest join-link-test
+  (let [token (join/create! *db* {:moderator-id nil :expires-in nil :now 0})
+        join (fn [claims]
+               (let [login (request :get (str "/login?join=" token) nil)]
+                 (request :get (idp/authorize! *idp* (location login) claims) (set-cookies login))))]
+    (testing "the join link's page leads to signing in with the link"
+      (is (str/includes? (:body (request :get (str "/join/" token) nil)) (str "/login?join=" token))))
+    (testing "from the join link, an address no rule lets in joins"
+      (is (= 303 (:status (join {:email "neighbour@gmail.com"}))))
+      (testing "and signs in later without it"
+        (is (= 303 (:status (sign-in nil {:email "neighbour@gmail.com"}))))))
+    (testing "without it, refused"
+      (is (= 403 (:status (sign-in nil {:email "other@gmail.com"})))))
+    (testing "the link is enough where the provider's organisation is otherwise required"
+      (binding [*handler* (app *idp* {:require-hosted-domain true})]
+        (is (= 303 (:status (join {:email "friend@gmail.com"}))))))))

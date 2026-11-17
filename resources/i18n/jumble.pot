@@ -64,6 +64,10 @@ msgid "Get a new link"
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "This join link no longer works. Ask the community's moderators for the current one."
+msgstr ""
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr ""
 
@@ -273,14 +277,6 @@ msgstr ""
 msgid "Keep it"
 msgstr ""
 
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
-msgid "Sign in"
-msgstr ""
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Enter your email address and we will send you a link to sign in."
-msgstr ""
-
 #: src/s_exp/jumble/account/view.clj
 msgid "Email address"
 msgstr ""
@@ -291,6 +287,26 @@ msgstr ""
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Email me a link"
+msgstr ""
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr ""
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr ""
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Join {app-name}"
+msgstr ""
+
+#: src/s_exp/jumble/account/view.clj
+msgid "You are invited to {app-name}, where members sell, give away and lend things to each other."
+msgstr ""
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in to join"
 msgstr ""
 
 #: src/s_exp/jumble/account/view.clj

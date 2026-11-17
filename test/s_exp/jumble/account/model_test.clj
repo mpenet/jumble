@@ -120,7 +120,7 @@
 (def attempt-ttl (* 10 60 1000))
 
 (deftest login-attempt-test
-  (let [attempt {:nonce "n" :code-verifier "v" :return-to "/listings/1"}
+  (let [attempt {:nonce "n" :code-verifier "v" :return-to "/listings/1" :join-token "j"}
         state (token/generate)]
     (account/create-login-attempt! *db* state attempt t0 attempt-ttl)
     (testing "consuming returns what was stored, once"

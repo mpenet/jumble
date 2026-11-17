@@ -65,6 +65,10 @@ msgid "Get a new link"
 msgstr "Tilaa uusi linkki"
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "This join link no longer works. Ask the community's moderators for the current one."
+msgstr "Tämä liittymislinkki ei enää toimi. Pyydä nykyinen linkki yhteisön moderaattoreilta."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr "Kirjautuminen vanhentui"
 
@@ -274,14 +278,6 @@ msgstr "Poista tilini"
 msgid "Keep it"
 msgstr "Älä poista"
 
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
-msgid "Sign in"
-msgstr "Kirjaudu sisään"
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Enter your email address and we will send you a link to sign in."
-msgstr "Anna sähköpostiosoitteesi, niin lähetämme sinulle kirjautumislinkin."
-
 #: src/s_exp/jumble/account/view.clj
 msgid "Email address"
 msgstr "Sähköpostiosoite"
@@ -293,6 +289,26 @@ msgstr "nimi@example.org"
 #: src/s_exp/jumble/account/view.clj
 msgid "Email me a link"
 msgstr "Lähetä linkki"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr "Kirjaudu sisään"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr "Anna sähköpostiosoitteesi, niin lähetämme sinulle kirjautumislinkin."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Join {app-name}"
+msgstr "Liity palveluun {app-name}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "You are invited to {app-name}, where members sell, give away and lend things to each other."
+msgstr "Sinut on kutsuttu palveluun {app-name}, jossa jäsenet myyvät, lahjoittavat ja lainaavat tavaroita toisilleen."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in to join"
+msgstr "Kirjaudu sisään liittyäksesi"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Check your inbox"

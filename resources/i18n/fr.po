@@ -65,6 +65,10 @@ msgid "Get a new link"
 msgstr "Recevoir un nouveau lien"
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "This join link no longer works. Ask the community's moderators for the current one."
+msgstr "Ce lien d'invitation ne fonctionne plus. Demandez le lien actuel aux modérateurs de la communauté."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr "Connexion expirée"
 
@@ -274,14 +278,6 @@ msgstr "Supprimer mon compte"
 msgid "Keep it"
 msgstr "Conserver"
 
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
-msgid "Sign in"
-msgstr "Se connecter"
-
-#: src/s_exp/jumble/account/view.clj
-msgid "Enter your email address and we will send you a link to sign in."
-msgstr "Saisissez votre adresse e-mail et nous vous enverrons un lien de connexion."
-
 #: src/s_exp/jumble/account/view.clj
 msgid "Email address"
 msgstr "Adresse e-mail"
@@ -293,6 +289,26 @@ msgstr "vous@exemple.org"
 #: src/s_exp/jumble/account/view.clj
 msgid "Email me a link"
 msgstr "M'envoyer un lien"
+
+#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/web/routes.clj
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Enter your email address and we will send you a link to sign in."
+msgstr "Saisissez votre adresse e-mail et nous vous enverrons un lien de connexion."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Join {app-name}"
+msgstr "Rejoindre {app-name}"
+
+#: src/s_exp/jumble/account/view.clj
+msgid "You are invited to {app-name}, where members sell, give away and lend things to each other."
+msgstr "Vous êtes invité à rejoindre {app-name}, où les membres se vendent, se donnent et se prêtent des objets."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "Sign in to join"
+msgstr "Se connecter pour rejoindre"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Check your inbox"

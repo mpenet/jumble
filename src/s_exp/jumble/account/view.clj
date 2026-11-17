@@ -92,6 +92,26 @@
                   [:button.danger {:type "submit"} (i18n/t "Delete my account")]]
                  [:a.button.secondary {:href "/settings"} (i18n/t "Keep it")]]]))
 
+(defn- email-form
+  "The form asking for the address to send a sign-in link to; with the join
+  link's token when joining by it."
+  [{:keys [values errors]}]
+  [:form.sign-in-form (merge {:method "post" :action "/login" :novalidate true} layout/once)
+   [:input {:type "hidden" :name "return_to" :value (:return-to values)}]
+   (when (:join values)
+     [:input {:type "hidden" :name "join" :value (:join values)}])
+   [:label.sr-only {:for "email"} (i18n/t "Email address")]
+   [:input (merge {:id "email"
+                   :type "email"
+                   :name "email"
+                   :value (:email values)
+                   :autocomplete "email"
+                   :required true
+                   :placeholder (i18n/t "you@example.org")}
+                  (layout/invalid errors :email))]
+   (layout/field-error errors :email)
+   [:button {:type "submit"} (i18n/t "Email me a link")]])
+
 (defn email-sign-in
   "Asks for the email address to send a sign-in link to."
   [request {:keys [values errors]}]
@@ -101,14 +121,24 @@
                 icons/mail
                 [:h1 (i18n/t "Sign in")]
                 [:p (i18n/t "Enter your email address and we will send you a link to sign in.")]
-                [:form.sign-in-form (merge {:method "post" :action "/login" :novalidate true} layout/once)
-                 [:input {:type "hidden" :name "return_to" :value (:return-to values)}]
-                 [:label.sr-only {:for "email"} (i18n/t "Email address")]
-                 [:input (merge {:id "email" :type "email" :name "email" :value (:email values) :autocomplete "email"
-                                 :required true :placeholder (i18n/t "you@example.org")}
-                                (layout/invalid errors :email))]
-                 (layout/field-error errors :email)
-                 [:button {:type "submit"} (i18n/t "Email me a link")]]]))
+                (email-form {:values values :errors errors})]))
+
+(defn join
+  "The join link's page: an invitation to the community, and the way in,
+  by email or the sign-in provider, carrying the link's `token`."
+  [{:keys [ctx] :as request} token email]
+  (let [app-name (get-in ctx [:settings :app-name])]
+    (layout/page request
+                 {:title (i18n/t "Join {app-name}" {:app-name app-name})}
+                 [:section.message
+                  icons/mail
+                  [:h1 (i18n/t "Join {app-name}" {:app-name app-name})]
+                  [:p (i18n/t "You are invited to {app-name}, where members sell, give away and lend things to each other."
+                              {:app-name app-name})]
+                  (if email
+                    (email-form {:values {:return-to "/" :join token}})
+                    [:div.message-actions
+                     [:a.button {:href (str "/login?join=" token)} (i18n/t "Sign in to join")]])])))
 
 (defn check-inbox
   "What anyone asking for a link is told, member or not."

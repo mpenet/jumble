@@ -6,6 +6,7 @@
             [clojure.tools.logging :as log]
             [s-exp.ex :as ex]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.account.email :as email]
             [s-exp.jumble.account.model :as account]
@@ -104,6 +105,19 @@
   [request]
   (= "email" (get-in request [:ctx :settings :sign-in])))
 
+(defn- joining-token
+  "`t` when it is the join link's, for a sign-in to carry; nil otherwise."
+  [db t]
+  (when (and (seq t) (join/valid? db t (System/currentTimeMillis)))
+    t))
+
+(defn- joining?
+  "Whether `email`, which no rule lets in, joins by the join link's
+  `join-token`, still the link's: the moderators' removals still apply."
+  [db join-token email]
+  (and (some? (joining-token db join-token))
+       (not (account/removed? db email))))
+
 (defn- oidc-login
   [{:keys [ctx params remote-addr] :as request}]
   (let [{:keys [db oidc settings login-requests]} ctx
@@ -125,7 +139,10 @@
               url (oidc/authorization-url oidc {:state state :nonce nonce :code-verifier code-verifier})]
           (account/create-login-attempt! db
                                          state
-                                         {:nonce nonce :code-verifier code-verifier :return-to target}
+                                         {:nonce nonce
+                                          :code-verifier code-verifier
+                                          :return-to target
+                                          :join-token (joining-token db (params/one params "join"))}
                                          (System/currentTimeMillis)
                                          login-ttl)
           (-> (response/redirect 302 url)
@@ -210,15 +227,19 @@
         allowed-emails (account/allowed-emails db (:allowed-emails settings))
         claims (oidc/verify-id-token oidc
                                      (oidc/exchange-code! oidc code (:code-verifier attempt))
-                                     (:nonce attempt))]
-    (if-not (and (allowed? allowed-emails require-hosted-domain claims)
-                 (not (account/removed? db (:email claims))))
+                                     (:nonce attempt))
+        allowed (and (allowed? allowed-emails require-hosted-domain claims)
+                     (not (account/removed? db (:email claims))))
+        joining (and (not allowed) (joining? db (:join-token attempt) (:email claims)))]
+    (if-not (or allowed joining)
       (do (log/info "Sign-in refused, not allowed:" (email-domain (:email claims)))
           (not-allowed request))
       (do (finish-deletion! ctx (:iss claims) (:sub claims))
-          (start-session request
-                         (account/upsert-user! db claims (System/currentTimeMillis) (room settings (:email claims)))
-                         (:return-to attempt))))))
+          (let [user (account/upsert-user! db claims (System/currentTimeMillis) (room settings (:email claims)))]
+            (when joining
+              (log/info "Joined by the join link:" (email-domain (:email claims)))
+              (join/admit! db (:email claims) (System/currentTimeMillis)))
+            (start-session request user (:return-to attempt)))))))
 
 (defn request-link
   "Emails a sign-in link to an address allowed in. Everyone is told the
@@ -228,15 +249,17 @@
     (layout/not-found request)
     (let [{:keys [db settings sign-in-requests]} ctx
           email (some-> (params/one params "email") str/trim str/lower-case)
-          target (auth/local-path (params/one params "return_to"))]
+          target (auth/local-path (params/one params "return_to"))
+          join-token (params/one params "join")]
       (if-not (mail/plain-address? email)
         (response/html 422
                        (view/email-sign-in request
-                                           {:values {:email (params/one params "email") :return-to target}
+                                           {:values {:email (params/one params "email") :return-to target :join join-token}
                                             :errors {:email (if (empty? email)
                                                               (i18n/t "Enter your email address.")
                                                               (i18n/t "“{email}” is not an email address." {:email email}))}}))
-        (do (when ((account/allowed db (:allowed-emails settings)) email)
+        (do (when (or ((account/allowed db (:allowed-emails settings)) email)
+                      (joining? db join-token email))
               (if (and (:clients-known settings)
                        (not (client-allowed! sign-in-requests
                                              remote-addr
@@ -245,7 +268,10 @@
                                              links-per-client)))
                 (log/info "Sign-in link not sent, too many asked for by one client")
                 (let [outcome (account/request-email-sign-in! db
-                                                              {:email email :return-to target :now (System/currentTimeMillis)
+                                                              {:email email
+                                                               :return-to target
+                                                               :join-token (joining-token db join-token)
+                                                               :now (System/currentTimeMillis)
                                                                :ttl (* link-minutes 60 1000)
                                                                :email-for (let [language (account/language-of db email)]
                                                                             #(i18n/speaking language (email/sign-in-link settings email % link-minutes)))})]
@@ -280,19 +306,33 @@
   (let [{:keys [db settings]} ctx]
     (if-not (email-sign-in? request)
       (layout/not-found request)
-      (if-let [{:keys [email return-to]} (account/use-email-sign-in! db (params/one params "token") (System/currentTimeMillis))]
-        (if ((account/allowed db (:allowed-emails settings)) email)
-          (ex/try+
-            (finish-deletion! ctx "email" email)
-            (start-session request
-                           (account/email-user! db email (System/currentTimeMillis) (room settings email))
-                           return-to)
-            (catch ::error/community-full _
-              (log/info "Sign-in refused, community full:" (email-domain email))
-              (community-full request)))
-          (do (log/info "Sign-in refused, not allowed:" (email-domain email))
-              (not-allowed request)))
+      (if-let [{:keys [email return-to join-token]}
+               (account/use-email-sign-in! db (params/one params "token") (System/currentTimeMillis))]
+        (let [allowed ((account/allowed db (:allowed-emails settings)) email)
+              joining (and (not allowed) (joining? db join-token email))]
+          (if (or allowed joining)
+            (ex/try+
+              (finish-deletion! ctx "email" email)
+              (let [user (account/email-user! db email (System/currentTimeMillis) (room settings email))]
+                (when joining
+                  (log/info "Joined by the join link:" (email-domain email))
+                  (join/admit! db email (System/currentTimeMillis)))
+                (start-session request user return-to))
+              (catch ::error/community-full _
+                (log/info "Sign-in refused, community full:" (email-domain email))
+                (community-full request)))
+            (do (log/info "Sign-in refused, not allowed:" (email-domain email))
+                (not-allowed request))))
         (link-expired request)))))
+
+(defn join-page
+  "The join link's page, while it is the community's: an invitation, and
+  the way in."
+  [{:keys [ctx path-params] :as request}]
+  (let [t (:token path-params)]
+    (if (some? (joining-token (:db ctx) t))
+      (response/html 200 (view/join request t (email-sign-in? request)))
+      (layout/not-found request (i18n/t "This join link no longer works. Ask the community's moderators for the current one.")))))
 
 (defn callback
   [{:keys [ctx params cookies] :as request}]
@@ -422,7 +462,8 @@
         (assoc :cookies (clear-cookie (:base-url settings) auth/session-cookie)))))
 
 (def routes
-  {[:get "/login"] #'login
+  {[:get "/join/{token}"] #'join-page
+   [:get "/login"] #'login
    [:post "/login"] #'request-link
    [:get "/login/email"] #'confirm-link
    [:post "/login/email"] #'use-link

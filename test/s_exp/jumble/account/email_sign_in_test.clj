@@ -6,6 +6,7 @@
             [next.jdbc :as jdbc]
             [next.jdbc.result-set :as rs]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.jumble.store.db :as db]
@@ -282,3 +283,34 @@
         (ask-from "198.51.100.50" "near@example.com")
         (is (= 5 (count (filter #(str/starts-with? % "far") (sent-to)))))
         (is (contains? (sent-to) "near@example.com"))))))
+
+(deftest join-link-test
+  (let [dave (fixtures/user! "dave")
+        token (join/create! *db* {:moderator-id dave :expires-in nil :now 0})
+        allowed? #((account/allowed *db* ["*@example.com" "guest@gmail.com"]) %)]
+    (testing "the join link's page asks for an address, carrying the link"
+      (let [{:keys [status body]} (request :get (str "/join/" token))]
+        (is (= 200 status))
+        (is (str/includes? body (str "name=\"join\" value=\"" token "\"")))))
+    (testing "a link that is not the community's, or no longer is, says so"
+      (is (= 404 (:status (request :get "/join/not-the-link")))))
+    (testing "with the link, an address no rule lets in is sent a link, and joins"
+      (request :post "/login" :form {"email" "neighbour@gmail.com" "join" token})
+      (is (= ["neighbour@gmail.com"] (map :recipient (outbox))))
+      (let [response (request :post "/login/email" :form {"token" (link-token "neighbour@gmail.com")})]
+        (is (= 303 (:status response)))
+        (is (some? (session-cookie response))))
+      (is (allowed? "neighbour@gmail.com") "from then on, without the link"))
+    (testing "without it, or with another, nothing is sent"
+      (request :post "/login" :form {"email" "stranger@gmail.com"})
+      (request :post "/login" :form {"email" "other@gmail.com" "join" "not-the-link"})
+      (is (not-any? #{"stranger@gmail.com" "other@gmail.com"} (map :recipient (outbox)))))
+    (testing "a link renewed once the email went out no longer lets its address in"
+      (request :post "/login" :form {"email" "late@gmail.com" "join" token})
+      (let [renewed (join/create! *db* {:moderator-id dave :expires-in nil :now 1})]
+        (is (= 403 (:status (request :post "/login/email" :form {"token" (link-token "late@gmail.com")}))))
+        (is (not (allowed? "late@gmail.com")))
+        (testing "nor does a member the moderators removed, link or not"
+          (data/remove-member! *db* (blob/memory-store) {:email "gone@gmail.com" :moderator-id dave :now 2})
+          (request :post "/login" :form {"email" "gone@gmail.com" "join" renewed})
+          (is (not-any? #{"gone@gmail.com"} (map :recipient (outbox)))))))))
