@@ -205,3 +205,19 @@
            (is (some #(re-find #"listing_board" (:detail %))
                      (q ["EXPLAIN QUERY PLAN SELECT id FROM listing WHERE status IN ('active', 'reserved')
                           ORDER BY created_at DESC, id DESC LIMIT 25"])))))))))
+
+(deftest allowlist-way-migration-test
+  (call-with-db-path
+   (fn [path]
+     (with-open [ds (db/datasource path)]
+       (let [all (migrate/migrations)
+             q #(jdbc/execute! ds % {:builder-fn rs/as-unqualified-lower-maps})]
+         (migrate/migrate! ds (subvec all 0 31))
+         (jdbc/execute! ds ["INSERT INTO allowed_email (pattern, added_by, added_at, joined_by_link)
+                             VALUES ('ann@example.org', NULL, 0, 1), ('*@partner.org', NULL, 0, 0)"])
+         (migrate/migrate! ds all)
+         (testing "addresses that joined by the link say so; the others were added by a moderator"
+           (is (= [{:pattern "*@partner.org" :way "moderator"} {:pattern "ann@example.org" :way "link"}]
+                  (q ["SELECT pattern, way FROM allowed_email ORDER BY pattern"]))))
+         (testing "the way is one of those known"
+           (is (thrown? Exception (jdbc/execute! ds ["UPDATE allowed_email SET way = 'other'"])))))))))

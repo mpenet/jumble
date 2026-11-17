@@ -24,7 +24,8 @@
    "026-expiring-emails.sql" "027-push.sql" "028-reminded-index.sql"
    "029-chat-announcements.sql" "030-chat-channels.sql"
    "031-join-link.sql"
-   "032-invitations.sql"])
+   "032-allowlist-way.sql"
+   "033-invitations.sql"])
 
 (defn migrations
   []
