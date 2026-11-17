@@ -224,8 +224,8 @@ addresses can go in the [settings file](#settings-file) instead:
 Changes take effect when Jumble restarts. Moderators can also let more
 people in from Jumble itself, without a restart (see the
 [user guide](user-guide.md#for-moderators)): what they add widens the
-configured patterns, never narrows them, and can make a join link that
-lets in whoever opens it. Whoever no longer matches, after a
+configured patterns, never narrows them, can make a join link that
+lets in whoever opens it, and can let members invite people by email. Whoever no longer matches, after a
 moderator removes an entry or the configuration changes, is signed out at
 their next click.
 

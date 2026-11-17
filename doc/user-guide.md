@@ -166,6 +166,14 @@ Once a week, Jumble emails you what others posted on the board that week:
 up to twenty listings, newest first, with a link to the rest. A week with
 nothing new sends nothing. Turn it off in **Settings**.
 
+## Inviting someone
+
+When your community's moderators allow it, **Settings** → **Invite someone
+you know** takes the address of someone you would like to see here: they
+get an email saying you invited them, and can join with that address. You
+can invite five people a day. The page lists whom you invited, and who of
+them has joined since. Your moderators see whom you invited.
+
 ## Reporting a listing
 
 **Report this listing**, under a listing, tells the community's moderators it
@@ -225,6 +233,15 @@ Anyone holding it can join, so share it where you would invite people in
 person; **Renew** makes a new one and stops the earlier one at once, and
 **Turn off the join link** stops it altogether. A removed member cannot
 come back through it.
+
+**Members' invitations.** Unless anyone can sign in, **Let members invite
+people** lets every member invite someone by email, five a day each, from
+their settings. Each address invited is added to the list, marked as
+invited by that member, and can be withdrawn like any other; it stays if
+the member leaves. A member is told the same whatever the address, so
+inviting reveals nothing of who is a member or was removed: members and
+removed addresses get no email. **Stop members inviting people** ends it;
+those already invited stay on the list.
 
 **Remove a member** takes their email address and, after asking, deletes
 their account for good, with their listings and photos, as when they
