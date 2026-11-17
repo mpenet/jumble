@@ -9,7 +9,7 @@ To upgrade, deploy the new version (see [running it](doc/operations.md)):
 the database is migrated as it starts, from any earlier version. What needs
 doing besides is under **Upgrade notes**.
 
-## Unreleased
+## 2026.11.2 (2026-11-17)
 
 - A join link: moderators make one on **Who may sign in**, working for good
   or until a date, and renew or turn it off. Whoever opens it joins, by
@@ -22,6 +22,8 @@ doing besides is under **Upgrade notes**.
   moderator, joined by the link, or invited by a member.
 - Addresses with `*` are refused at sign-in: on the list, `*` lets in a
   whole domain.
+- With a sign-in provider, the members page tells moderators that whoever
+  joins by the link or an invitation needs an account there.
 
 ### Upgrade notes
 
