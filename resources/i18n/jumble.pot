@@ -1416,6 +1416,26 @@ msgid "Turn off the join link"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Members' invitations"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members can invite people by email, {count} a day each. Whom they invited is listed below, to withdraw like any other address."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members cannot invite people. Once you let them, each can invite {count} a day by email."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Stop members inviting people"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let members invite people"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr ""
 
@@ -1433,6 +1453,10 @@ msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "invited by {who}, {date}"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj

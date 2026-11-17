@@ -1417,6 +1417,26 @@ msgid "Turn off the join link"
 msgstr "Desactivar el enlace para unirse"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Members' invitations"
+msgstr "Invitaciones de los miembros"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members can invite people by email, {count} a day each. Whom they invited is listed below, to withdraw like any other address."
+msgstr "Los miembros pueden invitar a personas por email, {count} al día cada uno. Las personas invitadas aparecen abajo, y puedes retirarlas como cualquier otra dirección."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members cannot invite people. Once you let them, each can invite {count} a day by email."
+msgstr "Los miembros no pueden invitar a nadie. Si se lo permites, cada uno podrá invitar a {count} al día por email."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Stop members inviting people"
+msgstr "Dejar de permitir que los miembros inviten"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let members invite people"
+msgstr "Permitir que los miembros inviten a personas"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Direcciones y patrones: {person} para una persona, {domain} para un dominio, {subdomains} para sus subdominios."
 
@@ -1435,6 +1455,10 @@ msgstr "Añadidos aquí"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
 msgstr "se unió con el enlace para unirse, {date}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "invited by {who}, {date}"
+msgstr "invitado por {who}, el {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "added by {who}, {date}"

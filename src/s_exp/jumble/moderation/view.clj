@@ -4,6 +4,7 @@
   (:require [clojure.string :as str]
             [s-exp.jumble.view.dates :as dates]
             [s-exp.jumble.view.i18n :as i18n]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.page.assets :as assets]
             [s-exp.jumble.view.icons :as icons]
             [s-exp.jumble.view.layout :as layout]
@@ -183,10 +184,27 @@
            [:form (merge {:method "post" :action "/manage/members/join-link/off"} layout/once)
             [:button.link-button {:type "submit"} (i18n/t "Turn off the join link")]]))])
 
+(defn- member-invitations-section
+  "Whether members may invite people, and the way to change it."
+  [open]
+  [:section.members
+   [:h2 (i18n/t "Members' invitations")]
+   [:p.lede (if open
+              (i18n/t "Members can invite people by email, {count} a day each. Whom they invited is listed below, to withdraw like any other address."
+                      {:count invite/per-day})
+              (i18n/t "Members cannot invite people. Once you let them, each can invite {count} a day by email."
+                      {:count invite/per-day}))]
+   [:form (merge {:method "post" :action "/manage/members/invitations"} layout/once)
+    [:input {:type "hidden" :name "open" :value (if open "off" "on")}]
+    [:button {:type "submit"} (if open
+                                (i18n/t "Stop members inviting people")
+                                (i18n/t "Let members invite people"))]]])
+
 (defn members
-  "Who may sign in: the join link, the configured patterns, those
-  moderators added, and a form to add more; and a form to remove a member."
-  [{:keys [ctx] :as request} {:keys [configured added join values errors saved] :as form}]
+  "Who may sign in: the join link, members' invitations, the configured
+  patterns, those moderators added, and a form to add more; and a form to
+  remove a member."
+  [{:keys [ctx] :as request} {:keys [configured added join invitations-open values errors saved] :as form}]
   (layout/page request
                {:title (i18n/t "Who may sign in")}
                [:div.board-header
@@ -201,6 +219,7 @@
                         [:p (i18n/t "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here.")]]
                        (remove-member-form form))
                  (list (join-link-section (get-in ctx [:settings :base-url]) join)
+                       (member-invitations-section invitations-open)
                        [:section.members
                         [:h2 (i18n/t "From the configuration")]
                         [:ul.member-list (for [pattern configured] [:li [:code pattern]])]]
@@ -211,11 +230,12 @@
                            (for [{:keys [pattern added-by added-at way]} added]
                              [:li
                               [:code pattern]
-                              [:span.member-meta (if (= "link" way)
-                                                   (i18n/t "joined with the join link, {date}" {:date (dates/date added-at)})
-                                                   (i18n/t "added by {who}, {date}"
-                                                           {:who (if (str/blank? added-by) (i18n/t "a former member") added-by)
-                                                            :date (dates/date added-at)}))]
+                              [:span.member-meta (let [who (if (str/blank? added-by) (i18n/t "a former member") added-by)
+                                                       date (dates/date added-at)]
+                                                   (case way
+                                                     "link" (i18n/t "joined with the join link, {date}" {:date date})
+                                                     "invitation" (i18n/t "invited by {who}, {date}" {:who who :date date})
+                                                     (i18n/t "added by {who}, {date}" {:who who :date date})))]
                               [:form (merge {:method "post" :action "/manage/members/withdraw"} layout/once)
                                [:input {:type "hidden" :name "pattern" :value pattern}]
                                [:button.link-button {:type "submit" :aria-label (i18n/t "Withdraw {pattern}" {:pattern pattern})}

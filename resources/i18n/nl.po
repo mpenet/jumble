@@ -1417,6 +1417,26 @@ msgid "Turn off the join link"
 msgstr "Uitnodigingslink uitzetten"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Members' invitations"
+msgstr "Uitnodigingen door leden"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members can invite people by email, {count} a day each. Whom they invited is listed below, to withdraw like any other address."
+msgstr "Leden kunnen mensen per e-mail uitnodigen, elk {count} per dag. Wie ze uitnodigden staat hieronder en kan net als elk ander adres worden ingetrokken."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members cannot invite people. Once you let them, each can invite {count} a day by email."
+msgstr "Leden kunnen niemand uitnodigen. Als je het toestaat, kan elk lid {count} mensen per dag per e-mail uitnodigen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Stop members inviting people"
+msgstr "Leden niet meer laten uitnodigen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let members invite people"
+msgstr "Leden mensen laten uitnodigen"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adressen en patronen: {person} voor één persoon, {domain} voor een domein, {subdomains} voor de subdomeinen daarvan."
 
@@ -1435,6 +1455,10 @@ msgstr "Hier toegevoegd"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
 msgstr "lid geworden via de uitnodigingslink, {date}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "invited by {who}, {date}"
+msgstr "uitgenodigd door {who} op {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "added by {who}, {date}"

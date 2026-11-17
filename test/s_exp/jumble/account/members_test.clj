@@ -6,6 +6,7 @@
             [next.jdbc :as jdbc]
             [next.jdbc.result-set :as rs]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.account.join :as join]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
@@ -243,3 +244,33 @@
     (testing "nothing to choose where the configuration lets anyone in"
       (is (not (str/includes? (:body (fixtures/request :get "/manage/poster" dave {:ctx {:settings {:allowed-emails :anyone}}}))
                               "code=join"))))))
+
+(deftest member-invitations-switch-test
+  (let [bob (sign-in! "bob@example.com")
+        dave (sign-in! "dave@example.com")
+        page #(:body (request :get "/manage/members" dave))]
+    (testing "moderators only"
+      (is (= 404 (:status (request :post "/manage/members/invitations" bob :form {"open" "on"}))))
+      (is (not (invite/open? *db*))))
+    (testing "closed at first: a moderator may let members invite"
+      (is (re-find #"<form [^>]*action=\"/manage/members/invitations\"" (page)))
+      (is (str/includes? (page) "Let members invite people"))
+      (let [response (request :post "/manage/members/invitations" dave :form {"open" "on"})]
+        (is (= 303 (:status response)))
+        (is (= "/manage/members" (get-in response [:headers "location"]))))
+      (is (invite/open? *db*))
+      (is (str/includes? (page) "Stop members inviting people")))
+    (testing "whom a member invited is shown as such"
+      (invite/invite! *db*
+                      {:member-id (fixtures/user-id "bob@example.com")
+                       :email "neighbour@gmail.com"
+                       :now 0
+                       :configured ["*@example.com"]
+                       :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
+      (is (str/includes? (page) "invited by bob@example.com")))
+    (testing "and closed again"
+      (request :post "/manage/members/invitations" dave :form {"open" "off"})
+      (is (not (invite/open? *db*))))
+    (testing "nothing to offer where the configuration lets anyone in"
+      (is (not (re-find #"action=\"/manage/members/invitations\""
+                        (:body (fixtures/request :get "/manage/members" dave {:ctx {:settings {:allowed-emails :anyone}}}))))))))

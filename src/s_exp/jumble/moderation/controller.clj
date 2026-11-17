@@ -8,6 +8,7 @@
             [s-exp.jumble.account.email :as account-email]
             [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.account.model :as account]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.account.join :as join]
             [s-exp.jumble.web.auth :as auth]
             [s-exp.jumble.error :as error]
@@ -133,7 +134,8 @@
                                  (assoc form
                                         :configured configured
                                         :added (when-not (= :anyone configured) (account/added-emails db))
-                                        :join (join/current db (System/currentTimeMillis)))))))
+                                        :join (join/current db (System/currentTimeMillis))
+                                        :invitations-open (invite/open? db))))))
 
 (def ^:private join-expiries
   "How long a join link may work, as the form offers it: never expiring
@@ -153,6 +155,12 @@
 (defn turn-off-join-link
   [{:keys [ctx]}]
   (join/turn-off! (:db ctx))
+  (response/redirect "/manage/members"))
+
+(defn set-member-invitations
+  "Lets members invite people, or stops them."
+  [{:keys [ctx params]}]
+  (invite/set-open! (:db ctx) (= "on" (params/one params "open")))
   (response/redirect "/manage/members"))
 
 (defn members
@@ -375,6 +383,7 @@
           [:post "/manage/members/withdraw"] (moderators-only #'withdraw-pattern)
           [:post "/manage/members/join-link"] (moderators-only #'create-join-link)
           [:post "/manage/members/join-link/off"] (moderators-only #'turn-off-join-link)
+          [:post "/manage/members/invitations"] (moderators-only #'set-member-invitations)
           [:get "/manage/members/remove"] (moderators-only #'confirm-member-removal)
           [:post "/manage/members/remove"] (moderators-only #'remove-member)
           [:get "/manage/listings/{id}/remove"] (moderators-only #'confirm-removal)

@@ -1417,6 +1417,26 @@ msgid "Turn off the join link"
 msgstr "Slå invitationslinket fra"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Members' invitations"
+msgstr "Medlemmers invitationer"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members can invite people by email, {count} a day each. Whom they invited is listed below, to withdraw like any other address."
+msgstr "Medlemmer kan invitere folk via e-mail, {count} om dagen hver. Dem, de har inviteret, står nedenfor og kan trækkes tilbage som enhver anden adresse."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Members cannot invite people. Once you let them, each can invite {count} a day by email."
+msgstr "Medlemmer kan ikke invitere nogen. Hvis du tillader det, kan hver invitere {count} om dagen via e-mail."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Stop members inviting people"
+msgstr "Lad ikke længere medlemmer invitere"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let members invite people"
+msgstr "Lad medlemmer invitere folk"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adresser og mønstre: {person} for én person, {domain} for et domæne, {subdomains} for dets underdomæner."
 
@@ -1435,6 +1455,10 @@ msgstr "Tilføjet her"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
 msgstr "blev medlem via invitationslinket, {date}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "invited by {who}, {date}"
+msgstr "inviteret af {who}, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "added by {who}, {date}"
