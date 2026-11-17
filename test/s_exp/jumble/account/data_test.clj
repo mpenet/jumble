@@ -6,6 +6,7 @@
             [s-exp.jumble.store.db :as db]
             [next.jdbc.result-set :as rs]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture]]
@@ -33,7 +34,8 @@
 
 (defn- scene
   "Ann, who posted a lamp with a photo, favorited Bob's desk, wrote to Bob
-  about it, reported it; Bob, who answered. Returns the ids."
+  about it, reported it, invited a friend; Bob, who answered. Returns the
+  ids."
   [blobs]
   (let [ann (fixtures/user! "ann")
         bob (fixtures/user! "bob")
@@ -58,6 +60,12 @@
                       :p256dh "BNcRdreALRFXTkOOUHK1EtK2wtaz5Ry4YfYCA_0QTpQtUbVlUls0VJXg7A8u-Ts1XbjhazAkj7I99e8QcYP7DkM"
                       :auth "tBHItJI5svbpez7KI4CCXg"}
                      7)
+    (invite/invite! *db*
+                    {:member-id ann
+                     :email "friend@gmail.com"
+                     :now 8
+                     :configured ["*@example.com"]
+                     :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
     {:ann ann :bob bob :lamp lamp :desk desk :thread thread}))
 
 (deftest export-test
@@ -76,7 +84,8 @@
       (is (= [{:listing-id desk :title "Desk"}] (map #(select-keys % [:listing-id :title]) (:favorites exported))))
       (is (= ["Too nice"] (map :reason (:reports exported))))
       (is (= [{:q "bike" :kind nil :category nil}] (:saved-searches exported)))
-      (is (= [{:added-at 7}] (:devices exported)) "the devices notified, not their addresses"))
+      (is (= [{:added-at 7}] (:devices exported)) "the devices notified, not their addresses")
+      (is (= [{:email "friend@gmail.com" :sent-at 8}] (:invitations exported))))
     (testing "their conversations, both sides"
       (is (= [["ann" "Is it solid?"] ["bob" "Very."]]
              (map (juxt :from :body) (:messages (first (:conversations exported)))))))))
@@ -94,6 +103,7 @@
       (is (= [] (q "SELECT * FROM favorite WHERE user_id = ?" ann)))
       (is (= [] (q "SELECT * FROM saved_search WHERE user_id = ?" ann)))
       (is (= [] (q "SELECT * FROM push_subscription WHERE user_id = ?" ann)))
+      (is (= [] (q "SELECT * FROM invitation WHERE user_id = ?" ann)))
       (is (nil? (account/session-user *db* session 30)))
       (is (= [] (q "SELECT * FROM email_outbox WHERE recipient = 'ann@example.com'"))))
     (testing "what they wrote stays for the others, without a name (shown as a former member's)"
@@ -104,6 +114,8 @@
     (testing "nothing of who they were is left on the account"
       (is (= [{:name "" :email "" :iss "deleted"}]
              (q "SELECT name, email, iss FROM user WHERE id = ?" ann))))
+    (testing "whom they invited may still join"
+      (is ((account/allowed *db* ["*@example.com"]) "friend@gmail.com")))
     (testing "their reports stay, anonymous"
       (is (= 1 (count (q "SELECT * FROM report WHERE listing_id = ?" desk)))))
     (testing "the other side can no longer reply"
@@ -118,7 +130,7 @@
     (outbox/enqueue! *db* {:to "ann@example.com" :subject "Hi" :text "For the other account"} 10)
     (data/delete-account! *db* blobs ann 20)
     (testing "emails to an address another account still uses are kept"
-      (is (= ["For the other account"] (map :body (q "SELECT body FROM email_outbox")))))))
+      (is (= ["For the other account"] (map :body (q "SELECT body FROM email_outbox WHERE recipient = 'ann@example.com'")))))))
 
 (deftest stopped-deletion-test
   (let [blobs (blob/memory-store)

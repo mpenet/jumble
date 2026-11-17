@@ -23,7 +23,8 @@
    "023-member-language.sql" "024-weekly-digest.sql" "025-wanted.sql"
    "026-expiring-emails.sql" "027-push.sql" "028-reminded-index.sql"
    "029-chat-announcements.sql" "030-chat-channels.sql"
-   "031-join-link.sql"])
+   "031-join-link.sql"
+   "032-invitations.sql"])
 
 (defn migrations
   []

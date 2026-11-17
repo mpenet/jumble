@@ -33,8 +33,8 @@
 (defn export
   "Everything about `user-id`: account, listings with links to their photos
   in `blobs` (valid from `now`), favorites, conversations (both sides: their
-  correspondence), the reports they made, their saved searches and the
-  devices they get notifications on."
+  correspondence), the reports they made, their saved searches, the
+  devices they get notifications on and the invitations they sent."
   [db blobs user-id now]
   (let [account (jdbc/execute-one! db
                                    ["SELECT name, email, created_at, last_login_at, notify_messages, weekly_digest, language
@@ -81,7 +81,11 @@
      :devices (jdbc/execute! db
                              ["SELECT created_at AS added_at FROM push_subscription WHERE user_id = ? ORDER BY id"
                               user-id]
-                             db/opts)}))
+                             db/opts)
+     :invitations (jdbc/execute! db
+                                 ["SELECT email, sent_at FROM invitation WHERE user_id = ? ORDER BY id"
+                                  user-id]
+                                 db/opts)}))
 
 (defn delete-account!
   "Deletes the account of `user-id`, as described above. The account is
@@ -103,6 +107,7 @@
       (jdbc/execute-one! tx ["DELETE FROM favorite WHERE user_id = ?" user-id])
       (jdbc/execute-one! tx ["DELETE FROM saved_search WHERE user_id = ?" user-id])
       (jdbc/execute-one! tx ["DELETE FROM push_subscription WHERE user_id = ?" user-id])
+      (jdbc/execute-one! tx ["DELETE FROM invitation WHERE user_id = ?" user-id])
       (jdbc/execute-one! tx ["DELETE FROM session WHERE user_id = ?" user-id])
       (jdbc/execute-one! tx ["DELETE FROM notification WHERE user_id = ?" user-id])
       ;; Unless another account still uses the address.
