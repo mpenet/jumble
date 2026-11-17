@@ -1,8 +1,9 @@
 (ns s-exp.jumble.account.data
   "What Jumble holds about a member: exported for them to download, or
   deleted with their account. Deleting removes their listings (photos
-  included), favorites, sessions and pending emails, and scrubs their
-  account, which stays only so that the messages and reports they wrote
+  included), favorites, sessions, pending emails and the invitations they
+  sent, their address from the allowlist when the join link or an
+  invitation put it there, and scrubs their account, which stays only so that the messages and reports they wrote
   keep a sender: one without a name, shown as a former member."
   (:require [next.jdbc :as jdbc]
             [s-exp.jumble.account.model :as account]
@@ -118,6 +119,10 @@
                           email
                           user-id])
       (jdbc/execute-one! tx ["DELETE FROM email_sign_in WHERE email = ? COLLATE NOCASE" email])
+      ;; What a moderator added stays, as they chose.
+      (jdbc/execute-one! tx
+                         ["DELETE FROM allowed_email WHERE pattern = ? AND way IN ('link', 'invitation')"
+                          email])
       (jdbc/execute-one! tx
                          ["UPDATE user SET name = '', email = '', iss = 'deleted', sub = CAST(id AS TEXT),
                                               notify_messages = 0, weekly_digest = 0, language = NULL,

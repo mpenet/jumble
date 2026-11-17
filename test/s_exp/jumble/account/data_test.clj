@@ -124,6 +124,18 @@
     (testing "signing in again starts a new account"
       (is (not= ann (:id (account/upsert-user! *db* {:iss "i" :sub "ann" :email "ann@example.com" :name "ann"} 50)))))))
 
+(deftest deleted-joiner-test
+  (let [blobs (blob/memory-store)
+        joiner (:id (account/email-user! *db* "neighbour@gmail.com" 0 {:joining true}))
+        allowed? #((account/allowed *db* ["*@example.com"]) %)]
+    (account/allow! *db* {:patterns ["guest@gmail.com"] :moderator-id nil :now 0})
+    (data/delete-account! *db* blobs joiner 10)
+    (data/delete-account! *db* blobs (:id (account/email-user! *db* "guest@gmail.com" 0)) 10)
+    (testing "an address the link or an invitation let in goes with its account"
+      (is (not (allowed? "neighbour@gmail.com"))))
+    (testing "one moderators added stays, as they chose"
+      (is (allowed? "guest@gmail.com")))))
+
 (deftest shared-address-test
   (let [blobs (blob/memory-store)
         {:keys [ann]} (scene blobs)]
