@@ -22,6 +22,12 @@
   (testing "a contact address, when set, is where questions go"
     (is (str/includes? (:body (request :get "/privacy" nil :ctx {:settings {:contact "privacy@club.org"}}))
                        "<a href=\"mailto:privacy@club.org\">privacy@club.org</a>")))
+  (testing "where sign-in is limited to a list, it says what invitations and the join link keep"
+    (is (not (str/includes? (:body (request :get "/privacy" nil)) "addresses you invite")))
+    (let [body (:body (request :get "/privacy" nil :ctx {:settings {:allowed-emails ["*@example.com"]}}))]
+      (is (str/includes? body "the addresses you invite, for 90 days"))
+      (is (str/includes? body "Moderators see who may sign in"))
+      (is (str/includes? body "takes your address off the list"))))
   (testing "new posts announced in a chat channel, when they are, say so"
     (is (not (str/includes? (:body (request :get "/privacy" nil)) "chat channel")))
     (let [body (:body (request :get "/privacy" nil :ctx {:settings {:chat-announced true}}))]

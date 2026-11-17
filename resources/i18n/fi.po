@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Nimesi ja sähköpostiosoitteesi kirjautumisesta; julkaisemasi sisältö: ilmoitukset, niiden kuvat ja viestisi; suosikkisi, tallennetut hakusi ja asetuksesi; sekä tekemäsi raportit."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Kun jäsenet saavat kutsua ihmisiä: kutsumasi osoitteet, 90 päivän ajan. Kirjautumaan pääsevät ovat lista, joka kertoo jokaisesta lisätystä osoitteesta, miten se tuli mukaan: moderaattorin, kutsun tai yhteisön liittymislinkin kautta."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Miksi"
 
@@ -1735,6 +1739,10 @@ msgstr "Kuka näkee mitä"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Muut jäsenet näkevät nimesi, ilmoituksesi ja sen, mitä kirjoitat heille. Viestit ovat vain sinun ja vastaanottajan välisiä. Moderaattorit näkevät raportit ja voivat poistaa ilmoituksia."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Moderaattorit näkevät, kuka pääsee kirjautumaan ja kuka kutsui kunkin osoitteen. Sinä näet, keitä kutsuit ja ovatko he liittyneet sen jälkeen."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Kuinka kauan"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Kunnes poistat ne tai poistat tilisi; sen jälkeen kirjoittamasi viestit jäävät vastaanottajille ja raporttisi moderaattoreille ilman nimeäsi. Varmuuskopioissa poistetut tiedot säilyvät jonkin aikaa, yleensä enintään kolme kuukautta."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Tilin poistaminen poistaa osoitteesi myös listalta, jos kutsu tai liittymislinkki lisäsi sen sinne."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

@@ -66,7 +66,7 @@ msgstr "Få et nyt link"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Dette invitationslink virker ikke længere. Bed fællesskabets moderatorer om det aktuelle."
+msgstr "Dette tilmeldingslink virker ikke længere. Bed fællesskabets moderatorer om det aktuelle."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -1450,15 +1450,15 @@ msgstr "Om 7 dage"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Join link"
-msgstr "Invitationslink"
+msgstr "Tilmeldingslink"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
-msgstr "Alle med et invitationslink kan blive medlem uden at stå på listen: del det, eller udskriv det på plakaten."
+msgstr "Alle med et tilmeldingslink kan blive medlem uden at stå på listen: del det, eller udskriv det på plakaten."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Create a join link"
-msgstr "Opret et invitationslink"
+msgstr "Opret et tilmeldingslink"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
@@ -1482,7 +1482,7 @@ msgstr "Forny"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Turn off the join link"
-msgstr "Slå invitationslinket fra"
+msgstr "Slå tilmeldingslinket fra"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Members' invitations"
@@ -1522,7 +1522,7 @@ msgstr "Tilføjet her"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
-msgstr "blev medlem via invitationslinket, {date}"
+msgstr "blev medlem via tilmeldingslinket, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "invited by {who}, {date}"
@@ -1670,7 +1670,7 @@ msgstr "fællesskabet"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "the join link"
-msgstr "invitationslinket"
+msgstr "tilmeldingslinket"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Point your phone's camera at the code"
@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Dit navn og din e-mailadresse fra login; det, du opretter: annoncer, deres billeder og dine beskeder; dine favoritter, gemte søgninger og indstillinger; og de anmeldelser, du laver."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Når medlemmer må invitere folk: de adresser, du inviterer, i 90 dage. Hvem der må logge ind, er en liste, der for hver tilføjet adresse siger, hvordan den kom med: via en moderator, en invitation eller fællesskabets tilmeldingslink."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Hvorfor"
 
@@ -1735,6 +1739,10 @@ msgstr "Hvem ser hvad"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Andre medlemmer ser dit navn, dine annoncer og det, du skriver til dem. Beskeder er mellem dig og den, du skriver til. Moderatorer ser anmeldelser og kan fjerne annoncer."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Moderatorerne ser, hvem der må logge ind, og hvem der inviterede hver adresse. Du ser, hvem du har inviteret, og om de er blevet medlem siden."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Hvor længe"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Indtil du fjerner det eller sletter din konto; så bliver de beskeder, du har skrevet, hos modtagerne, og dine anmeldelser hos moderatorerne, uden dit navn. Backups beholder slettede data et stykke tid, som regel op til tre måneder."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Når du sletter din konto, fjernes din adresse også fra listen, hvis en invitation eller tilmeldingslinket satte den der."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

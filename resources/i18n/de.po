@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Dein Name und deine E-Mail-Adresse aus der Anmeldung; was du einstellst: Anzeigen, ihre Fotos und deine Nachrichten; deine Favoriten, gespeicherten Suchen und Einstellungen; und deine Meldungen."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Wenn Mitglieder Leute einladen dürfen, die Adressen, die du einlädst, 90 Tage lang. Wer sich anmelden darf, steht in einer Liste, die bei jeder hinzugefügten Adresse sagt, wie sie dazukam: durch Moderatoren, eine Einladung oder den Beitrittslink der Community."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Warum"
 
@@ -1735,6 +1739,10 @@ msgstr "Wer was sieht"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Andere Mitglieder sehen deinen Namen, deine Anzeigen und was du ihnen schreibst. Nachrichten bleiben zwischen dir und der Person, der du schreibst. Die Moderation sieht Meldungen und kann Anzeigen entfernen."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Moderatoren sehen, wer sich anmelden darf, und wer jede Adresse eingeladen hat. Du siehst, wen du eingeladen hast, und ob die Person inzwischen beigetreten ist."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Wie lange"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Bis du es entfernst oder dein Konto löschst; deine Nachrichten bleiben dann bei denen, an die du geschrieben hast, und deine Meldungen bei den Moderatoren, ohne deinen Namen. Sicherungen behalten gelöschte Daten noch eine Weile, meist bis zu drei Monate."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Wenn du dein Konto löschst, wird auch deine Adresse von der Liste genommen, falls eine Einladung oder der Beitrittslink sie dorthin gebracht hat."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

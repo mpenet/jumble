@@ -324,11 +324,11 @@ msgstr "Os teus convites"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "invited {date}, joined since"
-msgstr "convidada a {date}, já entrou"
+msgstr "convidado a {date}, já entrou"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "invited {date}"
-msgstr "convidada a {date}"
+msgstr "convidado a {date}"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account?"
@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "O teu nome e endereço de email, do início de sessão; o que publicas: anúncios, as respetivas fotos e as tuas mensagens; os teus favoritos, pesquisas guardadas e definições; e as denúncias que fazes."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Quando os membros podem convidar pessoas, os endereços que convidas, durante 90 dias. Quem pode iniciar sessão é uma lista que indica, para cada endereço adicionado, como chegou: por um moderador, um convite ou a ligação de adesão da comunidade."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Porquê"
 
@@ -1735,6 +1739,10 @@ msgstr "Quem vê o quê"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Os outros membros veem o teu nome, os teus anúncios e o que lhes escreves. As mensagens ficam entre ti e a pessoa a quem escreves. Os moderadores veem as denúncias e podem remover anúncios."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Os moderadores veem quem pode iniciar sessão e quem convidou cada endereço. Tu vês quem convidaste e se já entrou entretanto."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Durante quanto tempo"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Até o removeres, ou eliminares a tua conta; nessa altura, as mensagens que escreveste ficam com quem as recebeu, e as tuas denúncias com os moderadores, sem o teu nome. As cópias de segurança mantêm os dados eliminados durante algum tempo, normalmente até três meses."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Eliminar a tua conta também retira o teu endereço da lista quando foi um convite ou a ligação de adesão que o lá pôs."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

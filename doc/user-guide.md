@@ -83,10 +83,12 @@ Jumble keeps about you and why.
 
 **Settings** → **Download your data** gives you a file (JSON) with
 everything Jumble holds about you: your account, listings, favorites,
-conversations and the reports you made.
+conversations, the reports you made and the invitations you sent.
 
 **Delete your account**, after confirming, deletes your listings and their
-photos, your favorites and settings, and signs you out. Messages you sent
+photos, your favorites, settings and the invitations you sent, takes your
+address off the list of who may sign in when an invitation or the join
+link put it there, and signs you out. Messages you sent
 stay with the people you wrote to, shown from "A former member"; they can
 no longer reply. Signing in again later starts a new, empty account. Your
 community's backups keep what was deleted for a while (usually up to three
@@ -170,9 +172,11 @@ nothing new sends nothing. Turn it off in **Settings**.
 
 When your community's moderators allow it, **Settings** → **Invite someone
 you know** takes the address of someone you would like to see here: they
-get an email saying you invited them, and can join with that address. You
-can invite five people a day. The page lists whom you invited, and who of
-them has joined since. Your moderators see whom you invited.
+get an email saying you invited them, with your name, and can join with
+that address. You can invite five people a day, and the community a
+limited number in all. The page lists whom you invited in the last 90
+days, and who of them has joined since. Your moderators see the addresses
+your invitations let in.
 
 ## Reporting a listing
 
@@ -222,20 +226,25 @@ those moderators added. Add an address (`alice@gmail.com`), a domain
 (`*@partner.org`) or its subdomains (`*@*.partner.org`), one per line; tick
 **Email an invitation** to let the addresses know. **Withdraw** takes
 effect at once: people only it let in are signed out at their next click,
-and their accounts stay.
+and their accounts stay. Withdrawing undoes an entry, it does not bar
+anyone: while a join link works, a withdrawn address can come back through
+it. To keep someone out, **Remove a member**.
 
 **Join link.** Unless anyone can sign in, **Who may sign in** also offers a
 join link: whoever opens it can join with any address, by email or the
-sign-in provider, without being on the list. Their address is then added,
-marked as joined with the join link, and can be withdrawn like any other.
+sign-in provider, without being on the list (where the provider's
+organisation is required, `JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN`, the link
+is enough). Their address is then added, marked as joined with the join
+link, and can be withdrawn like any other.
 There is one link at a time, working until the date chosen or for good.
 Anyone holding it can join, so share it where you would invite people in
 person; **Renew** makes a new one and stops the earlier one at once, and
 **Turn off the join link** stops it altogether. A removed member cannot
-come back through it.
+come back through it. Whoever opens a link no longer working is told so.
 
 **Members' invitations.** Unless anyone can sign in, **Let members invite
-people** lets every member invite someone by email, five a day each, from
+people** lets every member invite someone by email, five a day each and
+at most `JUMBLE_INVITATIONS_PER_DAY` (100 by default) a day in all, from
 their settings. Each address invited is added to the list, marked as
 invited by that member, and can be withdrawn like any other; it stays if
 the member leaves. A member is told the same whatever the address, so
@@ -254,7 +263,8 @@ lift: the community's name or logo, what it is for, and a QR code that
 opens it, its address written out below. **Print** prints the poster alone;
 the links beside it print it in any of Jumble's languages. While there is a
 join link, the code can open it instead, so that whoever scans the poster
-can join: anyone who sees the poster then can.
+can join: anyone who sees the poster then can. The address written below
+stays the community's, which lets in only those already allowed.
 
 **Appearance.** The community's colours, for every page and everyone:
 Forest, Plum, Ink, Slate, or one after an editor theme (Tokyo Night,

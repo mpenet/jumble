@@ -66,7 +66,7 @@ msgstr "Ricevi un nuovo link"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Questo link di invito non funziona più. Chiedi quello attuale ai moderatori della comunità."
+msgstr "Questo link per unirsi non funziona più. Chiedi quello attuale ai moderatori della comunità."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -324,11 +324,11 @@ msgstr "I tuoi inviti"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "invited {date}, joined since"
-msgstr "invitata il {date}, si è unita"
+msgstr "invitato il {date}, si è unito"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "invited {date}"
-msgstr "invitata il {date}"
+msgstr "invitato il {date}"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Delete your account?"
@@ -1450,15 +1450,15 @@ msgstr "Tra 7 giorni"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Join link"
-msgstr "Link di invito"
+msgstr "Link per unirsi"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
-msgstr "Chiunque abbia un link di invito può unirsi senza essere nella lista: condividilo o stampalo sul manifesto."
+msgstr "Chiunque abbia un link per unirsi può unirsi senza essere nella lista: condividilo o stampalo sul manifesto."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Create a join link"
-msgstr "Crea un link di invito"
+msgstr "Crea un link per unirsi"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
@@ -1482,7 +1482,7 @@ msgstr "Rinnova"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Turn off the join link"
-msgstr "Disattiva il link di invito"
+msgstr "Disattiva il link per unirsi"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Members' invitations"
@@ -1522,7 +1522,7 @@ msgstr "Aggiunti qui"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
-msgstr "entrato con il link di invito, {date}"
+msgstr "tramite il link per unirsi, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "invited by {who}, {date}"
@@ -1670,7 +1670,7 @@ msgstr "la comunità"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "the join link"
-msgstr "il link di invito"
+msgstr "il link per unirsi"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Point your phone's camera at the code"
@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Il tuo nome e indirizzo email, dall'accesso; quello che pubblichi: annunci, le loro foto e i tuoi messaggi; i tuoi preferiti, le ricerche salvate e le impostazioni; e le segnalazioni che fai."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Quando i membri possono invitare persone, gli indirizzi che inviti, per 90 giorni. Chi può accedere è una lista che indica, per ogni indirizzo aggiunto, come è arrivato: da un moderatore, da un invito o dal link per unirsi della comunità."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Perché"
 
@@ -1735,6 +1739,10 @@ msgstr "Chi vede cosa"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Gli altri membri vedono il tuo nome, i tuoi annunci e quello che scrivi loro. I messaggi restano tra te e la persona a cui scrivi. I moderatori vedono le segnalazioni e possono rimuovere annunci."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "I moderatori vedono chi può accedere e chi ha invitato ogni indirizzo. Tu vedi chi hai invitato e se si è unito da allora."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Per quanto tempo"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Finché non lo rimuovi, o elimini il tuo account; a quel punto i messaggi che hai scritto restano a chi li ha ricevuti, e le tue segnalazioni ai moderatori, senza il tuo nome. I backup conservano i dati eliminati per un po', di solito fino a tre mesi."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Eliminare il tuo account toglie anche il tuo indirizzo dalla lista, se ce l'ha messo un invito o il link per unirsi."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

@@ -66,7 +66,7 @@ msgstr "Nieuwe link aanvragen"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Deze uitnodigingslink werkt niet meer. Vraag de moderators van de gemeenschap om de huidige."
+msgstr "Deze aanmeldlink werkt niet meer. Vraag de moderators van de gemeenschap om de huidige."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -1450,15 +1450,15 @@ msgstr "Over 7 dagen"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Join link"
-msgstr "Uitnodigingslink"
+msgstr "Aanmeldlink"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
-msgstr "Iedereen met een uitnodigingslink kan lid worden zonder op de lijst te staan: deel hem, of druk hem af op de poster."
+msgstr "Iedereen met een aanmeldlink kan lid worden zonder op de lijst te staan: deel hem, of druk hem af op de poster."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Create a join link"
-msgstr "Uitnodigingslink maken"
+msgstr "Aanmeldlink maken"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
@@ -1482,7 +1482,7 @@ msgstr "Vernieuwen"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Turn off the join link"
-msgstr "Uitnodigingslink uitzetten"
+msgstr "Aanmeldlink uitzetten"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Members' invitations"
@@ -1522,7 +1522,7 @@ msgstr "Hier toegevoegd"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
-msgstr "lid geworden via de uitnodigingslink, {date}"
+msgstr "lid geworden via de aanmeldlink, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "invited by {who}, {date}"
@@ -1670,7 +1670,7 @@ msgstr "de gemeenschap"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "the join link"
-msgstr "de uitnodigingslink"
+msgstr "de aanmeldlink"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Point your phone's camera at the code"
@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Je naam en e-mailadres, van het inloggen; wat je plaatst: advertenties, de foto's daarvan en je berichten; je favorieten, opgeslagen zoekopdrachten en instellingen; en meldingen die je doet."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Als leden mensen mogen uitnodigen: de adressen die je uitnodigt, 90 dagen lang. Wie mag inloggen is een lijst die bij elk toegevoegd adres zegt hoe het erbij kwam: via een moderator, een uitnodiging of de aanmeldlink van de gemeenschap."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Waarom"
 
@@ -1735,6 +1739,10 @@ msgstr "Wie wat ziet"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Andere leden zien je naam, je advertenties en wat je hun schrijft. Berichten blijven tussen jou en degene aan wie je schrijft. Moderatoren zien meldingen en kunnen advertenties verwijderen."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Moderators zien wie mag inloggen, en wie elk adres heeft uitgenodigd. Jij ziet wie je hebt uitgenodigd, en of die inmiddels lid is."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Hoe lang"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Tot je het verwijdert of je account verwijdert; daarna blijven de berichten die je schreef bij de mensen aan wie je schreef, en je meldingen bij de moderatoren, zonder je naam. Back-ups bewaren verwijderde gegevens nog een tijdje, meestal tot drie maanden."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Als je je account verwijdert, gaat je adres ook van de lijst als een uitnodiging of de aanmeldlink het daarop heeft gezet."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

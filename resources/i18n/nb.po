@@ -66,7 +66,7 @@ msgstr "Få en ny lenke"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Denne invitasjonslenken virker ikke lenger. Be fellesskapets moderatorer om den gjeldende."
+msgstr "Denne innmeldingslenken virker ikke lenger. Be fellesskapets moderatorer om den gjeldende."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -276,7 +276,7 @@ msgstr "Invitasjoner"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "{invite-link}: they get an email saying you invited them, and can join with that address."
-msgstr "{invite-link}: personen får en e-post om at du har invitert dem, og kan bli med med den adressen."
+msgstr "{invite-link}: personen får en e-post om at du har invitert dem, og kan bli med via den adressen."
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Invite someone you know"
@@ -300,7 +300,7 @@ msgstr "Slett kontoen din"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "They get an email saying you invited them to {app-name}, and can join with that address. You can invite {count} people a day."
-msgstr "Personen får en e-post om at du har invitert dem til {app-name}, og kan bli med med den adressen. Du kan invitere {count} personer om dagen."
+msgstr "Personen får en e-post om at du har invitert dem til {app-name}, og kan bli med via den adressen. Du kan invitere {count} personer om dagen."
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Email address"
@@ -1450,15 +1450,15 @@ msgstr "Om 7 dager"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Join link"
-msgstr "Invitasjonslenke"
+msgstr "Innmeldingslenke"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Anyone with a join link can join, without being on the list: share it, or print it on the poster."
-msgstr "Alle med en invitasjonslenke kan bli med uten å stå på listen: del den, eller skriv den ut på plakaten."
+msgstr "Alle med en innmeldingslenke kan bli med uten å stå på listen: del den, eller skriv den ut på plakaten."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Create a join link"
-msgstr "Lag en invitasjonslenke"
+msgstr "Lag en innmeldingslenke"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Made by {who}, {date}."
@@ -1482,7 +1482,7 @@ msgstr "Forny"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Turn off the join link"
-msgstr "Slå av invitasjonslenken"
+msgstr "Slå av innmeldingslenken"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Members' invitations"
@@ -1522,7 +1522,7 @@ msgstr "Lagt til her"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
-msgstr "ble med via invitasjonslenken, {date}"
+msgstr "ble med via innmeldingslenken, {date}"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "invited by {who}, {date}"
@@ -1670,7 +1670,7 @@ msgstr "fellesskapet"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "the join link"
-msgstr "invitasjonslenken"
+msgstr "innmeldingslenken"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Point your phone's camera at the code"
@@ -1721,6 +1721,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Navnet og e-postadressen din, fra innloggingen; det du legger ut: annonser, bildene deres og meldingene dine; favorittene, de lagrede søkene og innstillingene dine; og rapporter du sender inn."
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr "Når medlemmer kan invitere folk: adressene du inviterer, i 90 dager. Hvem som kan logge inn er en liste som for hver adresse som er lagt til sier hvordan den kom med: via en moderator, en invitasjon eller fellesskapets innmeldingslenke."
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr "Hvorfor"
 
@@ -1735,6 +1739,10 @@ msgstr "Hvem ser hva"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
 msgstr "Andre medlemmer ser navnet ditt, annonsene dine og det du skriver til dem. Meldinger er mellom deg og den du skriver til. Moderatorer ser rapporter og kan fjerne annonser."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Moderatorene ser hvem som kan logge inn, og hvem som inviterte hver adresse. Du ser hvem du har invitert, og om de har blitt med siden."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1763,6 +1771,10 @@ msgstr "Hvor lenge"
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
 msgstr "Til du fjerner det eller sletter kontoen din; da blir meldingene du skrev, værende hos dem du skrev til, og rapportene dine hos moderatorene, uten navnet ditt. Sikkerhetskopier beholder slettede data en stund, vanligvis opptil tre måneder."
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
+msgstr "Når du sletter kontoen din, fjernes adressen din også fra listen hvis en invitasjon eller innmeldingslenken satte den der."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Announcements of new listings stay in the chat channel's history, after the listing or your account is deleted, and the channel may be readable beyond the community."

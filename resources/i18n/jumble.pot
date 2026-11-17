@@ -1720,6 +1720,10 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgstr ""
+
+#: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
 msgstr ""
 
@@ -1733,6 +1737,10 @@ msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings."
+msgstr ""
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
@@ -1761,6 +1769,10 @@ msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Until you remove it, or delete your account; then the messages you wrote stay with those you wrote to, and your reports with the moderators, without your name. Backups keep deleted data for a while, usually up to three months."
+msgstr ""
+
+#: src/s_exp/jumble/page/privacy.clj
+msgid "Deleting your account also takes your address off the list when an invitation or the join link put it there."
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj

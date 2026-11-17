@@ -9,6 +9,25 @@ To upgrade, deploy the new version (see [running it](doc/operations.md)):
 the database is migrated as it starts, from any earlier version. What needs
 doing besides is under **Upgrade notes**.
 
+## Unreleased
+
+- A join link: moderators make one on **Who may sign in**, working for good
+  or until a date, and renew or turn it off. Whoever opens it joins, by
+  email or the sign-in provider, without being on the list. The poster's
+  code can open it.
+- Members' invitations: when moderators let them, members invite people
+  they know by email, five a day each and `JUMBLE_INVITATIONS_PER_DAY`
+  (100 by default) in all. Invitations are kept 90 days.
+- The list of who may sign in says how each address came in: added by a
+  moderator, joined by the link, or invited by a member.
+- Addresses with `*` are refused at sign-in: on the list, `*` lets in a
+  whole domain.
+
+### Upgrade notes
+
+The database is migrated as Jumble starts (migrations 031 to 033). Nothing
+changes until moderators make a join link or let members invite people.
+
 ## 2026.11.1 (2026-11-16)
 
 - Logs can be sent to [Axiom](https://axiom.co): with an `axiom.env` in the
