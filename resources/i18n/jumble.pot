@@ -1512,6 +1512,10 @@ msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "From the configuration"
 msgstr ""
 

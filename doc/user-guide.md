@@ -241,6 +241,9 @@ Anyone holding it can join, so share it where you would invite people in
 person; **Renew** makes a new one and stops the earlier one at once, and
 **Turn off the join link** stops it altogether. A removed member cannot
 come back through it. Whoever opens a link no longer working is told so.
+With a sign-in provider rather than email, whoever joins by the link or an
+invitation needs an account there, with the address they join with: a
+provider that only knows your members turns them away.
 
 **Members' invitations.** Unless anyone can sign in, **Let members invite
 people** lets every member invite someone by email, five a day each and

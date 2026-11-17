@@ -230,6 +230,8 @@
                        (remove-member-form form))
                  (list (join-link-section (get-in ctx [:settings :base-url]) join)
                        (member-invitations-section invitations-open)
+                       (when (= "oidc" (get-in ctx [:settings :sign-in]))
+                         [:p.field-note.members (i18n/t "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with.")])
                        [:section.members
                         [:h2 (i18n/t "From the configuration")]
                         [:ul.member-list (for [pattern configured] [:li [:code pattern]])]]

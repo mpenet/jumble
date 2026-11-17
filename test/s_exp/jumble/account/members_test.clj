@@ -333,3 +333,11 @@
       (is (= 404 (:status (fixtures/request :get "/invite" bob {:ctx {:settings {:allowed-emails :anyone}}}))))
       (is (not (str/includes? (:body (fixtures/request :get "/settings" bob {:ctx {:settings {:allowed-emails :anyone}}}))
                               "href=\"/invite\""))))))
+
+(deftest provider-note-test
+  (let [dave (sign-in! "dave@example.com")
+        page #(:body (fixtures/request :get "/manage/members" dave {:ctx {:settings (merge (:settings restricted) {:sign-in %})}}))]
+    (testing "with a sign-in provider, moderators are told joiners need an account there"
+      (is (str/includes? (page "oidc") "need an account at your sign-in provider")))
+    (testing "not with email sign-in"
+      (is (not (str/includes? (page "email") "need an account at your sign-in provider"))))))
