@@ -221,3 +221,25 @@
     (testing "nothing to offer where the configuration lets anyone in"
       (is (not (re-find #"action=\"/manage/members/join-link\""
                         (:body (fixtures/request :get "/manage/members" dave {:ctx {:settings {:allowed-emails :anyone}}}))))))))
+
+(deftest join-link-poster-test
+  (let [dave (sign-in! "dave@example.com")
+        poster #(:body (request :get % dave))
+        code #(re-find #"(?s)<svg class=\"qr\".*?</svg>" (poster %))]
+    (testing "without a join link, the code opens the community, with no choice to make"
+      (is (not (str/includes? (poster "/manage/poster") "code=join")))
+      (is (= (code "/manage/poster") (code "/manage/poster?code=join"))))
+    (join/create! *db* {:moderator-id (fixtures/user-id "dave@example.com") :now (System/currentTimeMillis)})
+    (testing "with one, moderators choose what the code opens: the community unless asked"
+      (is (str/includes? (poster "/manage/poster") "href=\"/manage/poster?code=join\""))
+      (is (str/includes? (poster "/manage/poster") "Scan to open Jumble"))
+      (is (not= (code "/manage/poster") (code "/manage/poster?code=join")))
+      (is (str/includes? (poster "/manage/poster?code=join") "Scan to join Jumble")))
+    (testing "each choice holds as the other changes"
+      (is (str/includes? (poster "/manage/poster?code=join") "href=\"/manage/poster?code=join&amp;language=fr\""))
+      (is (str/includes? (poster "/manage/poster?language=fr") "href=\"/manage/poster?code=join&amp;language=fr\""))
+      (is (str/includes? (poster "/manage/poster?code=join&language=xx") "href=\"/manage/poster\"")
+          "a language Jumble does not speak is not carried along"))
+    (testing "nothing to choose where the configuration lets anyone in"
+      (is (not (str/includes? (:body (fixtures/request :get "/manage/poster" dave {:ctx {:settings {:allowed-emails :anyone}}}))
+                              "code=join"))))))

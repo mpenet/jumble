@@ -1553,6 +1553,14 @@ msgid "Palette"
 msgstr "Paletti"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to join {app-name}"
+msgstr "Skannaa ja liity: {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to open {app-name}"
+msgstr "Skannaa ja avaa {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Print it for a noticeboard, by the coffee machine or the lift: whoever scans it lands on {app-name}."
 msgstr "Tulosta se ilmoitustaululle, kahvinkeittimen tai hissin viereen: skannaamalla pääsee palveluun {app-name}."
 
@@ -1561,8 +1569,16 @@ msgid "Print"
 msgstr "Tulosta"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Scan to open {app-name}"
-msgstr "Skannaa ja avaa {app-name}"
+msgid "The code opens:"
+msgstr "Koodi avaa:"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "the community"
+msgstr "yhteisön"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "the join link"
+msgstr "liittymislinkin"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Point your phone's camera at the code"

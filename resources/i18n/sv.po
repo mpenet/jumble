@@ -1553,6 +1553,14 @@ msgid "Palette"
 msgstr "Palett"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to join {app-name}"
+msgstr "Skanna för att gå med i {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Scan to open {app-name}"
+msgstr "Skanna för att öppna {app-name}"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Print it for a noticeboard, by the coffee machine or the lift: whoever scans it lands on {app-name}."
 msgstr "Skriv ut den till en anslagstavla, vid kaffemaskinen eller hissen: den som skannar den hamnar på {app-name}."
 
@@ -1561,8 +1569,16 @@ msgid "Print"
 msgstr "Skriv ut"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Scan to open {app-name}"
-msgstr "Skanna för att öppna {app-name}"
+msgid "The code opens:"
+msgstr "Koden öppnar:"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "the community"
+msgstr "gemenskapen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "the join link"
+msgstr "inbjudningslänken"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Point your phone's camera at the code"

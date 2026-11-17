@@ -2922,6 +2922,10 @@ form[data-sent] [type="submit"] {
   font-size: var(--text-sm);
 }
 
+.poster-actions [aria-current] {
+  font-weight: 600;
+}
+
 .poster {
   max-width: 40rem;
   margin: var(--space-5) auto;

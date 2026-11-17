@@ -339,12 +339,26 @@
                 (when saved [:p.field-note {:role "status"} (i18n/t "Saved.")])
                 [:button {:type "submit"} (i18n/t "Save")]]))
 
+(defn- poster-href
+  "The poster's page, its code opening the join link when `joining`, in
+  `language` when one was asked for."
+  [joining language]
+  (let [query (cond-> []
+                joining (conj "code=join")
+                language (conj (str "language=" language)))]
+    (cond-> "/manage/poster"
+      (seq query) (str "?" (str/join "&" query)))))
+
 (defn poster
   "A poster for a noticeboard: the community, what it is for, and a code to
-  scan that opens it at `url` (written out as `address` too), in the
-  language in use, with links to print it in the others."
-  [{:keys [ctx] :as request} {:keys [url address]}]
-  (let [{:keys [app-name] :as settings} (:settings ctx)]
+  scan that opens `url` (the community's `address` written out), in the
+  language in use, with links to print it in the others; and, when there is
+  a join link, a choice of whether the code opens it, `joining`."
+  [{:keys [ctx] :as request} {:keys [url address language join joining]}]
+  (let [{:keys [app-name] :as settings} (:settings ctx)
+        scan-label (if joining
+                     (i18n/t "Scan to join {app-name}" {:app-name app-name})
+                     (i18n/t "Scan to open {app-name}" {:app-name app-name}))]
     (layout/page request
                  {:title (i18n/t "Poster")}
                  [:div.board-header.no-print
@@ -355,7 +369,11 @@
                   [:p.poster-actions
                    [:button {:type "button" :data-on:click "window.print()"} (i18n/t "Print")]
                    [:span (for [[l name] i18n/language-names]
-                            [:a {:href (str "?language=" l) :lang l} name])]]]
+                            [:a {:href (poster-href joining l) :lang l} name])]
+                   (when join
+                     [:span (i18n/t "The code opens:")
+                      [:a {:href (poster-href false language) :aria-current (when-not joining "page")} (i18n/t "the community")]
+                      [:a {:href (poster-href true language) :aria-current (when joining "page")} (i18n/t "the join link")]])]]
                  ;; As payment stickers are: a block in the community's colour saying
                  ;; what it is, the code framed with what scanning it does, and how.
                  [:article.poster
@@ -366,8 +384,8 @@
                    [:p.poster-lede (i18n/t "Sell, give away or lend what you no longer need to people around you, and find what you were looking for.")]]
                   [:div.poster-scan
                    ;; The code's own label says it to screen readers.
-                   [:p.poster-scan-label {:aria-hidden "true"} (i18n/t "Scan to open {app-name}" {:app-name app-name})]
-                   (qr/svg url (i18n/t "Scan to open {app-name}" {:app-name app-name}) {:mark (assets/url "mark.png")})]
+                   [:p.poster-scan-label {:aria-hidden "true"} scan-label]
+                   (qr/svg url scan-label {:mark (assets/url "mark.png")})]
                   [:ol.poster-steps
                    [:li icons/camera [:span (i18n/t "Point your phone's camera at the code")]]
                    [:li icons/tag [:span (i18n/t "Post what you no longer need, or find what you need")]]

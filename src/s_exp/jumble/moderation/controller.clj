@@ -335,14 +335,21 @@
       (response/html 400 (view/appearance request {:chosen (palette/chosen (:db ctx))})))))
 
 (defn poster
-  "The poster, in the community's language or the one asked for."
+  "The poster, in the community's language or the one asked for; its code
+  opens the join link when moderators ask for it and one works."
   [{:keys [ctx params] :as request}]
-  (let [url (get-in ctx [:settings :base-url])]
-    (i18n/speaking (i18n/languages (params/one params "language"))
+  (let [{:keys [base-url allowed-emails]} (:settings ctx)
+        language (i18n/languages (params/one params "language"))
+        join (when-not (= :anyone allowed-emails) (join/current (:db ctx) (System/currentTimeMillis)))
+        joining (boolean (and join (= "join" (params/one params "code"))))]
+    (i18n/speaking language
       (response/html 200
                      (view/poster request
-                                  {:url url
-                                   :address (-> url (str/replace #"^https?://" "") (str/replace #"/$" ""))})))))
+                                  {:url (if joining (str base-url "/join/" (:token join)) base-url)
+                                   :address (-> base-url (str/replace #"^https?://" "") (str/replace #"/$" ""))
+                                   :language language
+                                   :join (some? join)
+                                   :joining joining})))))
 
 (defn- choices-routes
   "Moderators' pages managing each list of choices."
