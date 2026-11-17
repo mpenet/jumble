@@ -31,6 +31,13 @@
                  (ex/ex-type e))))
           bad))))
 
+(deftest address-test
+  (testing "one address, which a list of patterns reads as itself"
+    (is (membership/address? "bob@gmail.com"))
+    (is (not (membership/address? "*@gmail.com")))
+    (is (not (membership/address? "a*b@gmail.com")))
+    (is (not (membership/address? nil)))))
+
 (deftest allows-test
   (testing "fully open"
     (is (allows? "*" "anyone@anywhere.net")))

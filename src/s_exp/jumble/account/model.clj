@@ -238,6 +238,21 @@
             :when invitation]
       (outbox/enqueue! tx invitation now))))
 
+(defn allow-address!
+  "Lets the one address `email` in from `now` on, within transaction `tx`,
+  the `way` it came (see 032-allowlist-way.sql), from `added-by` if anyone.
+  An address already in stays as it was. Throws ex-info of type
+  ::error/invalid-pattern for a pattern, which would let in others."
+  [tx {:keys! [email way now] :keys [added-by]}]
+  (membership/address! email)
+  (jdbc/execute-one! tx
+                     ["INSERT INTO allowed_email (pattern, added_by, added_at, way) VALUES (?, ?, ?, ?)
+                          ON CONFLICT (pattern) DO NOTHING"
+                      (str/lower-case email)
+                      added-by
+                      now
+                      way]))
+
 (defn disallow!
   [db pattern]
   (db/with-write-tx [tx db]

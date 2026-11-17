@@ -1,9 +1,9 @@
 (ns s-exp.jumble.account.join
   "The community's join link: whoever holds it may join, until moderators
   renew it, turn it off, or it expires. Joining by it lets the address in,
-  as one moderators added (see [[account/allowed-emails]])."
-  (:require [clojure.string :as str]
-            [next.jdbc :as jdbc]
+  in the allowlist as joined by the link."
+  (:require [next.jdbc :as jdbc]
+            [s-exp.jumble.account.model :as account]
             [s-exp.jumble.store.db :as db]
             [s-exp.jumble.token :as token]))
 
@@ -52,13 +52,8 @@
     (jdbc/execute-one! tx ["DELETE FROM join_link"])))
 
 (defn admit!
-  "Lets `email` in from `now` on, as joined by the link: in the allowlist,
-  by its address alone. An address already in stays as it was."
+  "Lets the one address `email` in from `now` on, as joined by the link
+  (see [[account/allow-address!]])."
   [db email now]
   (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx
-                       ["INSERT INTO allowed_email (pattern, added_by, added_at, way)
-                            VALUES (?, NULL, ?, 'link')
-                            ON CONFLICT (pattern) DO NOTHING"
-                        (str/lower-case email)
-                        now])))
+    (account/allow-address! tx {:email email :way "link" :now now})))

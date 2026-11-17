@@ -247,6 +247,9 @@
         (is (= 303 (:status (sign-in nil {:email "neighbour@gmail.com"}))))))
     (testing "without it, refused"
       (is (= 403 (:status (sign-in nil {:email "other@gmail.com"})))))
+    (testing "an address with a wildcard is refused, link or not, and lets in no one"
+      (is (= 403 (:status (join {:email "*@attacker.example"}))))
+      (is (= 403 (:status (sign-in nil {:email "anyone@attacker.example"})))))
     (testing "the link is enough where the provider's organisation is otherwise required"
       (binding [*handler* (app *idp* {:require-hosted-domain true})]
         (is (= 303 (:status (join {:email "friend@gmail.com"}))))))))

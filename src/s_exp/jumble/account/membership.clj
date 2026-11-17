@@ -46,6 +46,20 @@
               (invalid p)))
           patterns))))
 
+(defn address?
+  "Whether `email` is one address, which a list of patterns reads as itself:
+  no `*`, which would let in others."
+  [email]
+  (and (string? email) (not (str/includes? email "*"))))
+
+(defn address!
+  "`email`, when it is one address (see [[address?]]). Throws ex-info of
+  type ::error/invalid-pattern otherwise."
+  [email]
+  (if (address? email)
+    email
+    (invalid email)))
+
 (defn- matches?
   [^String pattern ^String email]
   (let [[local domain] (str/split pattern #"@" 2)

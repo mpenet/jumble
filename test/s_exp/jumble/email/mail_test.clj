@@ -12,5 +12,5 @@
 
 (deftest plain-address-test
   (is (mail/plain-address? "alice+jumble@example.org"))
-  (doseq [bad ["a,b@example.com" "eve@.example.com" "x%y@example.com" "Eve <eve@example.com>" "eve@localhost" nil]]
+  (doseq [bad ["a,b@example.com" "eve@.example.com" "x%y@example.com" "Eve <eve@example.com>" "eve@localhost" "*@gmail.com" "a*b@example.com" nil]]
     (is (not (mail/plain-address? bad)) (pr-str bad))))

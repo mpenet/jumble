@@ -56,9 +56,10 @@
 
 (def ^:private plain-address-form
   "An address as people type it, without what mail servers could read as
-  routing (`%`, `!`), comments or display names: dot-atom parts, an ASCII
-  domain of two labels or more."
-  #"[A-Za-z0-9#$&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9#$&'*+/=?^_`{|}~-]+)*@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")
+  routing (`%`, `!`), comments or display names, nor `*`, a wildcard in
+  the community's list of who may sign in: dot-atom parts, an ASCII domain
+  of two labels or more."
+  #"[A-Za-z0-9#$&'+/=?^_`{|}~-]+(?:\.[A-Za-z0-9#$&'+/=?^_`{|}~-]+)*@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")
 
 (defn plain-address?
   "Whether `s` is a bare email address, as typed into a sign-in form."

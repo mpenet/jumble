@@ -59,6 +59,9 @@
       (is (= :sent (invite! ann "gone@gmail.com" 4000)))
       (is (= 2 (count (outbox))))
       (is (not ((account/allowed *db* configured) "gone@gmail.com"))))
+    (testing "only one address is invited: never a pattern letting in others"
+      (is (thrown? Exception (invite! ann "*@gmail.com" 4500)))
+      (is (not ((account/allowed *db* configured) "stranger@gmail.com"))))
     (testing "five a day each"
       (is (= :sent (invite! ann "fifth@gmail.com" 5000)))
       (is (= :limited (invite! ann "sixth@gmail.com" 6000)))

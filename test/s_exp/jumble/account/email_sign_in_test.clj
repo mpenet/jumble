@@ -301,6 +301,10 @@
         (is (= 303 (:status response)))
         (is (some? (session-cookie response))))
       (is (allowed? "neighbour@gmail.com") "from then on, without the link"))
+    (testing "an address with a wildcard is refused, so the link never lets in a whole domain"
+      (is (= 422 (:status (request :post "/login" :form {"email" "*@attacker.example" "join" token}))))
+      (is (not-any? #{"*@attacker.example"} (map :recipient (outbox))))
+      (is (not (allowed? "anyone@attacker.example"))))
     (testing "without it, or with another, nothing is sent"
       (request :post "/login" :form {"email" "stranger@gmail.com"})
       (request :post "/login" :form {"email" "other@gmail.com" "join" "not-the-link"})

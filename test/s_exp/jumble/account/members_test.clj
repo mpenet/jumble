@@ -291,6 +291,9 @@
       (let [{:keys [status body]} (invite! "nope")]
         (is (= 422 status))
         (is (str/includes? body "is not an email address"))))
+    (testing "nor is a pattern, which would let in a whole domain"
+      (is (= 422 (:status (invite! "*@gmail.com"))))
+      (is (not ((account/allowed *db* ["*@example.com"]) "stranger@gmail.com"))))
     (testing "inviting emails the address, from the member, and lists it"
       (let [response (invite! "Neighbour@Gmail.com")]
         (is (= 303 (:status response)))

@@ -114,9 +114,11 @@
 
 (defn- joining?
   "Whether `email`, which no rule lets in, joins by the join link's
-  `join-token`, still the link's: the moderators' removals still apply."
+  `join-token`, still the link's: one address only, never a pattern
+  letting in others, and the moderators' removals still apply."
   [db join-token email]
   (and (some? (joining-token db join-token))
+       (membership/address? email)
        (not (account/removed? db email))))
 
 (defn- oidc-login

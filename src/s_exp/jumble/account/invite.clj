@@ -3,6 +3,7 @@
   each. An invitation lets its address in, in the allowlist as the member's."
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
+            [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.email.outbox :as outbox]
             [s-exp.jumble.store.db :as db]))
@@ -36,9 +37,10 @@
   already, and queues the email `(email-for address)`. Returns `:sent`, or
   `:limited` past [[per-day]] in the last day. A member's address or a
   removed one is neither emailed nor let in, with the same result: whoever
-  invites learns nothing of either."
+  invites learns nothing of either. Throws ex-info of type
+  ::error/invalid-pattern for a pattern, which would let in others."
   [db {:keys! [member-id email now configured email-for]}]
-  (let [email (str/lower-case email)]
+  (let [email (str/lower-case (membership/address! email))]
     (db/with-write-tx [tx db]
       (if (>= (:n (jdbc/execute-one! tx
                                      ["SELECT count(*) AS n FROM invitation WHERE user_id = ? AND sent_at > ?"
@@ -55,12 +57,7 @@
             (when-not (or (account/removed? tx email)
                           (jdbc/execute-one! tx ["SELECT 1 FROM user WHERE email = ? AND deleted_at IS NULL" email]))
               (when-not ((account/allowed tx configured) email)
-                (jdbc/execute-one! tx
-                                   ["INSERT INTO allowed_email (pattern, added_by, added_at, way)
-                                        VALUES (?, ?, ?, 'invitation')"
-                                    email
-                                    member-id
-                                    now]))
+                (account/allow-address! tx {:email email :way "invitation" :added-by member-id :now now}))
               (outbox/enqueue! tx (email-for email) now))
             :sent)))))
 

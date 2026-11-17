@@ -49,6 +49,9 @@
     (is (= [{:pattern "ann@example.org" :way "link"}]
            (map #(select-keys % [:pattern :way])
                 (jdbc/execute! *db* ["SELECT * FROM allowed_email"] db/opts)))))
+  (testing "only one address joins: never a pattern letting in others"
+    (is (thrown? Exception (join/admit! *db* "*@club.example" 3000)))
+    (is (not ((account/allowed *db* ["*@example.com"]) "anyone@club.example"))))
   (testing "an address already let in stays as it was"
     (account/allow! *db* {:patterns ["bob@example.org"] :moderator-id nil :now 1})
     (join/admit! *db* "bob@example.org" 2000)
