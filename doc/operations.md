@@ -243,7 +243,8 @@ the server's copy with yours.
 - Both buckets private; each key limited to its bucket; the backup bucket
   versioned and its key unable to erase versions (`verify-keys.sh` passes).
 - Sign-in limited to your community: allowed emails, an internal consent
-  screen, or a provider that only knows your members.
+  screen, or a provider that only knows your members; a join link, if
+  any, only where it was meant to go, renewed when it went further.
 - Images deployed by digest; the server's own updates applied
   automatically, and the server restarted when one needs it (with
   unattended-upgrades: `Unattended-Upgrade::Automatic-Reboot`), at an hour

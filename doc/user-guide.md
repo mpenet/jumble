@@ -216,6 +216,16 @@ those moderators added. Add an address (`alice@gmail.com`), a domain
 effect at once: people only it let in are signed out at their next click,
 and their accounts stay.
 
+**Join link.** Unless anyone can sign in, **Who may sign in** also offers a
+join link: whoever opens it can join with any address, by email or the
+sign-in provider, without being on the list. Their address is then added,
+marked as joined with the join link, and can be withdrawn like any other.
+There is one link at a time, working until the date chosen or for good.
+Anyone holding it can join, so share it where you would invite people in
+person; **Renew** makes a new one and stops the earlier one at once, and
+**Turn off the join link** stops it altogether. A removed member cannot
+come back through it.
+
 **Remove a member** takes their email address and, after asking, deletes
 their account for good, with their listings and photos, as when they
 delete it themselves; their messages stay, from a former member. They can
@@ -225,7 +235,9 @@ the configuration and are removed there.
 **Poster.** A page to print for a noticeboard, by the coffee machine or the
 lift: the community's name or logo, what it is for, and a QR code that
 opens it, its address written out below. **Print** prints the poster alone;
-the links beside it print it in any of Jumble's languages.
+the links beside it print it in any of Jumble's languages. While there is a
+join link, the code can open it instead, so that whoever scans the poster
+can join: anyone who sees the poster then can.
 
 **Appearance.** The community's colours, for every page and everyone:
 Forest, Plum, Ink, Slate, or one after an editor theme (Tokyo Night,
