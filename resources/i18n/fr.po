@@ -68,6 +68,10 @@ msgstr "Recevoir un nouveau lien"
 msgid "This join link no longer works. Ask the community's moderators for the current one."
 msgstr "Ce lien d'invitation ne fonctionne plus. Demandez le lien actuel aux modérateurs de la communauté."
 
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
+msgid "Write to {contact}."
+msgstr "Écrivez à {contact}."
+
 #: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr "Connexion expirée"
@@ -99,6 +103,18 @@ msgstr "Échec de la connexion"
 #: src/s_exp/jumble/account/controller.clj
 msgid "Something went wrong while signing you in."
 msgstr "Un problème est survenu pendant la connexion."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Invitations are closed"
+msgstr "Les invitations sont fermées"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your community's moderators do not let members invite people at the moment."
+msgstr "Les modérateurs de votre communauté ne laissent pas les membres inviter des personnes pour le moment."
+
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Settings"
+msgstr "Paramètres"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Enter an email address."
@@ -213,10 +229,6 @@ msgstr "Cet appareil"
 #: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj
 msgid "Remove"
 msgstr "Supprimer"
-
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
-msgid "Settings"
-msgstr "Paramètres"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Signed in as {email}"
@@ -1767,10 +1779,6 @@ msgstr "Téléchargez tout ce que {app-name} conserve à votre sujet, ou supprim
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Questions"
 msgstr "Questions"
-
-#: src/s_exp/jumble/page/privacy.clj
-msgid "Write to {contact}."
-msgstr "Écrivez à {contact}."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Ask your community's moderators."

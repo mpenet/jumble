@@ -68,6 +68,10 @@ msgstr "Få en ny lenke"
 msgid "This join link no longer works. Ask the community's moderators for the current one."
 msgstr "Denne invitasjonslenken virker ikke lenger. Be fellesskapets moderatorer om den gjeldende."
 
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
+msgid "Write to {contact}."
+msgstr "Skriv til {contact}."
+
 #: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr "Innloggingen er utløpt"
@@ -99,6 +103,18 @@ msgstr "Innloggingen mislyktes"
 #: src/s_exp/jumble/account/controller.clj
 msgid "Something went wrong while signing you in."
 msgstr "Noe gikk galt da du skulle logges inn."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Invitations are closed"
+msgstr "Invitasjoner er stengt"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your community's moderators do not let members invite people at the moment."
+msgstr "Moderatorene i fellesskapet ditt lar ikke medlemmer invitere noen akkurat nå."
+
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Settings"
+msgstr "Innstillinger"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Enter an email address."
@@ -213,10 +229,6 @@ msgstr "Denne enheten"
 #: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj
 msgid "Remove"
 msgstr "Fjern"
-
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
-msgid "Settings"
-msgstr "Innstillinger"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Signed in as {email}"
@@ -1767,10 +1779,6 @@ msgstr "Last ned alt {app-name} lagrer om deg, eller slett kontoen din, under {s
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Questions"
 msgstr "Spørsmål"
-
-#: src/s_exp/jumble/page/privacy.clj
-msgid "Write to {contact}."
-msgstr "Skriv til {contact}."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Ask your community's moderators."

@@ -280,9 +280,13 @@
   (let [bob (sign-in! "bob@example.com")
         page #(:body (request :get % bob))
         invite! #(request :post "/invite" bob :form {"email" %})]
-    (testing "none while moderators have not let members invite"
-      (is (= 404 (:status (request :get "/invite" bob))))
-      (is (= 404 (:status (invite! "neighbour@gmail.com"))))
+    (testing "closed, saying so, while moderators have not let members invite"
+      (let [{:keys [status body]} (request :get "/invite" bob)]
+        (is (= 403 status))
+        (is (str/includes? body "Invitations are closed"))
+        (is (str/includes? body "href=\"/settings\"")))
+      (is (= 403 (:status (invite! "neighbour@gmail.com"))))
+      (is (= [] (outbox)))
       (is (not (str/includes? (page "/settings") "href=\"/invite\""))))
     (invite/set-open! *db* true)
     (testing "then members' settings lead to it"

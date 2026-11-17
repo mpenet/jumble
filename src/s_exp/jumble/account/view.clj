@@ -177,8 +177,9 @@
                      [:a.button {:href (str "/login?join=" token)} (i18n/t "Sign in to join")]])])))
 
 (defn check-inbox
-  "What anyone asking for a link is told, member or not."
-  [request minutes]
+  "What anyone asking for a link is told, member or not, with the way to
+  try another address, `retry`."
+  [request minutes retry]
   (layout/page request
                {:title (i18n/t "Check your inbox")}
                [:section.message
@@ -188,12 +189,14 @@
                              "If that address may sign in here, a link to sign in is on its way. It works once, within {n} minutes."
                              minutes)]
                 [:div.message-actions
-                 [:a.button.secondary {:href "/login"} (i18n/t "Use another address")]]]))
+                 [:a.button.secondary {:href retry} (i18n/t "Use another address")]]]))
 
 (defn confirm-email-sign-in
   "Asks to confirm signing in with the link's token. A page, not an
-  immediate sign-in: mail scanners follow links, and would use them up."
-  [request email token]
+  immediate sign-in: mail scanners follow links, and would use them up.
+  The join link's `join-token` goes along, for a new link if this one is
+  spent."
+  [request email token join-token]
   (layout/page request
                {:title (i18n/t "Sign in")}
                [:section.message
@@ -202,5 +205,7 @@
                 [:p (i18n/t "Sign in as {email}?" {:email [:strong email]})]
                 [:form (merge {:method "post" :action "/login/email"} layout/once)
                  [:input {:type "hidden" :name "token" :value token}]
+                 (when join-token
+                   [:input {:type "hidden" :name "join" :value join-token}])
                  [:div.message-actions
                   [:button {:type "submit"} (i18n/t "Sign in")]]]]))

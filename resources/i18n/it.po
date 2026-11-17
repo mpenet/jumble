@@ -68,6 +68,10 @@ msgstr "Ricevi un nuovo link"
 msgid "This join link no longer works. Ask the community's moderators for the current one."
 msgstr "Questo link di invito non funziona più. Chiedi quello attuale ai moderatori della comunità."
 
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
+msgid "Write to {contact}."
+msgstr "Scrivi a {contact}."
+
 #: src/s_exp/jumble/account/controller.clj
 msgid "Sign-in expired"
 msgstr "Accesso scaduto"
@@ -99,6 +103,18 @@ msgstr "Accesso non riuscito"
 #: src/s_exp/jumble/account/controller.clj
 msgid "Something went wrong while signing you in."
 msgstr "Qualcosa è andato storto durante l'accesso."
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Invitations are closed"
+msgstr "Gli inviti sono chiusi"
+
+#: src/s_exp/jumble/account/controller.clj
+msgid "Your community's moderators do not let members invite people at the moment."
+msgstr "I moderatori della tua comunità al momento non permettono ai membri di invitare persone."
+
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
+msgid "Settings"
+msgstr "Impostazioni"
 
 #: src/s_exp/jumble/account/controller.clj
 msgid "Enter an email address."
@@ -213,10 +229,6 @@ msgstr "Questo dispositivo"
 #: src/s_exp/jumble/account/view.clj src/s_exp/jumble/listing/view.clj
 msgid "Remove"
 msgstr "Rimuovi"
-
-#: src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
-msgid "Settings"
-msgstr "Impostazioni"
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Signed in as {email}"
@@ -1767,10 +1779,6 @@ msgstr "Scarica tutto ciò che {app-name} conserva su di te, o elimina il tuo ac
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Questions"
 msgstr "Domande"
-
-#: src/s_exp/jumble/page/privacy.clj
-msgid "Write to {contact}."
-msgstr "Scrivi a {contact}."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Ask your community's moderators."

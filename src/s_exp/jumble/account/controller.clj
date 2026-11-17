@@ -24,7 +24,8 @@
             [s-exp.jumble.push.model :as push]
             [s-exp.jumble.web.response :as response]
             [s-exp.jumble.token :as token]
-            [s-exp.oda :as oda])
+            [s-exp.oda :as oda]
+            [ring.util.codec :as codec])
   (:import (java.net InetAddress)
            (java.time Instant LocalDate)))
 
@@ -33,17 +34,25 @@
 (def ^:private login-cookie "jumble_login")
 (def ^:private login-ttl (* 10 60 1000))
 
+(defn- retry-path
+  "Where to try signing in again: the join link's page when its
+  `join-token` came along, so as to join still; the sign-in page otherwise."
+  [join-token]
+  (if (seq join-token)
+    (str "/join/" (codec/url-encode join-token))
+    "/login"))
+
 (defn- sign-in-again
   []
   [:a.button {:href "/login"} (i18n/t "Sign in again")])
 
 (defn- unavailable
-  [request]
+  [request join-token]
   (layout/message request
                   503
                   (i18n/t "Sign-in unavailable")
                   (i18n/t "The sign-in service cannot be reached right now. Please try again shortly.")
-                  [:a.button {:href "/login"} (i18n/t "Try again")]))
+                  [:a.button {:href (retry-path join-token)} (i18n/t "Try again")]))
 
 (defn- email-domain
   "The domain of `email`, all that is logged of an address."
@@ -139,7 +148,7 @@
                       429
                       (i18n/t "Too many sign-ins")
                       (i18n/t "Too many sign-ins were started from here. Please try again in a few minutes.")
-                      [:a.button {:href "/login"} (i18n/t "Try again")])
+                      [:a.button {:href (retry-path (params/one params "join"))} (i18n/t "Try again")])
       (try
         (let [state (token/generate)
               ;; Built first: when the provider is unreachable this throws and
@@ -159,13 +168,13 @@
         (catch clojure.lang.ExceptionInfo e
           (if (ex/type? e ::ex/unavailable)
             (do (log/warn e "Sign-in unavailable")
-                (unavailable request))
+                (unavailable request (params/one params "join")))
             (throw e)))))))
 
 (defn- email-login
-  [{:keys [params query-string] :as request}]
-  (if (= "sent" query-string)
-    (response/html 200 (view/check-inbox request link-minutes))
+  [{:keys [params] :as request}]
+  (if (contains? params "sent")
+    (response/html 200 (view/check-inbox request link-minutes (retry-path (params/one params "join"))))
     (response/html 200 (view/email-sign-in request {:values {:return-to (auth/local-path (params/one params "return_to"))}}))))
 
 (defn login
@@ -284,26 +293,30 @@
                                              (* link-minutes 60 1000)
                                              links-per-client)))
                 (log/info "Sign-in link not sent, too many asked for by one client")
-                (let [outcome (account/request-email-sign-in! db
+                (let [carried (when (= :joining admission) join-token)
+                      language (account/language-of db email)
+                      outcome (account/request-email-sign-in! db
                                                               {:email email
                                                                :return-to target
-                                                               :join-token (when (= :joining admission) join-token)
+                                                               :join-token carried
                                                                :now (System/currentTimeMillis)
                                                                :ttl (* link-minutes 60 1000)
-                                                               :email-for (let [language (account/language-of db email)]
-                                                                            #(i18n/speaking language (email/sign-in-link settings email % link-minutes)))})]
+                                                               :email-for #(i18n/speaking language
+                                                                             (email/sign-in-link settings email % link-minutes carried))})]
                   (when (= :limited outcome)
                     (log/info "Sign-in link not sent, too many asked for:" (email-domain email))))))
             ;; Redirected, so reloading the page sends no other link.
-            (response/redirect "/login?sent"))))))
+            (response/redirect (str "/login?sent"
+                                    (when (seq join-token)
+                                      (str "&" (codec/form-encode {"join" join-token}))))))))))
 
 (defn- link-expired
-  [request]
+  [request join-token]
   (layout/message request
                   400
                   (i18n/t "Link expired")
                   (i18n/t "This sign-in link has expired or was already used.")
-                  [:a.button {:href "/login"} (i18n/t "Get a new link")]))
+                  [:a.button {:href (retry-path join-token)} (i18n/t "Get a new link")]))
 
 (defn confirm-link
   "The page a sign-in link opens, asking to confirm."
@@ -314,8 +327,8 @@
 
       :else
       (if-let [email (account/email-sign-in (:db ctx) t (System/currentTimeMillis))]
-        (response/html 200 (view/confirm-email-sign-in request email t))
-        (link-expired request)))))
+        (response/html 200 (view/confirm-email-sign-in request email t (params/one params "join")))
+        (link-expired request (params/one params "join"))))))
 
 (defn use-link
   "Signs in with a link's token, once, if its address is still allowed."
@@ -336,16 +349,27 @@
               (community-full request)))
           (do (log/info "Sign-in refused, not allowed:" (email-domain email))
               (not-allowed request)))
-        (link-expired request)))))
+        (link-expired request (params/one params "join"))))))
 
 (defn join-page
   "The join link's page, while it is the community's: an invitation, and
   the way in."
   [{:keys [ctx path-params] :as request}]
-  (let [t (:token path-params)]
-    (if (some? (current-join-token (:db ctx) t))
+  (let [t (:token path-params)
+        contact (get-in ctx [:settings :contact])]
+    (cond
+      (:user (auth/known-user request)) (response/redirect "/")
+
+      (some? (current-join-token (:db ctx) t))
       (response/html 200 (view/join request t (email-sign-in? request)))
-      (layout/not-found request (i18n/t "This join link no longer works. Ask the community's moderators for the current one.")))))
+
+      :else
+      (layout/message request
+                      410
+                      (i18n/t "Link expired")
+                      (list (i18n/t "This join link no longer works. Ask the community's moderators for the current one.")
+                            (when contact
+                              (list " " (i18n/t "Write to {contact}." {:contact [:a {:href (str "mailto:" contact)} contact]}))))))))
 
 (defn callback
   [{:keys [ctx params cookies] :as request}]
@@ -390,7 +414,7 @@
                                       (sign-in-again))
 
                       (::error/provider-unreachable ::error/discovery-failed ::error/keys-unavailable)
-                      (unavailable request)
+                      (unavailable request nil)
 
                       (layout/message request
                                       400
@@ -460,11 +484,23 @@
   [{:keys [ctx user] :as request} status form]
   (response/html status (view/invite request (assoc form :invitations (invite/sent (:db ctx) (:id user))))))
 
+(defn- invitations-closed
+  "What members are told while they may not invite: nothing to invite to
+  when anyone can sign in; else that the moderators closed invitations."
+  [{:keys [ctx] :as request}]
+  (if (= :anyone (get-in ctx [:settings :allowed-emails]))
+    (layout/not-found request)
+    (layout/message request
+                    403
+                    (i18n/t "Invitations are closed")
+                    (i18n/t "Your community's moderators do not let members invite people at the moment.")
+                    [:a.button {:href "/settings"} (i18n/t "Settings")])))
+
 (defn invitations
   "Where members invite people, with those they invited."
   [{:keys [query-string] :as request}]
   (if-not (inviting? request)
-    (layout/not-found request)
+    (invitations-closed request)
     (invite-page request 200 {:sent (= "sent" query-string)})))
 
 (defn send-invitation
@@ -473,7 +509,7 @@
   removed."
   [{:keys [ctx params user] :as request}]
   (if-not (inviting? request)
-    (layout/not-found request)
+    (invitations-closed request)
     (let [{:keys [db settings]} ctx
           typed (params/one params "email")
           address (some-> typed str/trim str/lower-case)]

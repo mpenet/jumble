@@ -292,8 +292,19 @@
       (let [{:keys [status body]} (request :get (str "/join/" token))]
         (is (= 200 status))
         (is (str/includes? body (str "name=\"join\" value=\"" token "\"")))))
-    (testing "a link that is not the community's, or no longer is, says so"
-      (is (= 404 (:status (request :get "/join/not-the-link")))))
+    (testing "a link that is not the community's, or no longer is, says so, with whom to ask"
+      (let [{:keys [status body]} (request :get "/join/not-the-link")]
+        (is (= 410 status))
+        (is (str/includes? body "Link expired")))
+      (is (str/includes? (:body (fixtures/request :get
+                                                  "/join/not-the-link"
+                                                  nil
+                                                  {:ctx {:settings {:sign-in "email" :contact "board@example.com"}}}))
+                         "mailto:board@example.com")))
+    (testing "a member already signed in is home already"
+      (let [response (fixtures/request :get (str "/join/" token) (fixtures/sign-in! "member@example.com") {:ctx {:settings {:sign-in "email"}}})]
+        (is (= 303 (:status response)))
+        (is (= "/" (get-in response [:headers "location"])))))
     (testing "with the link, an address no rule lets in is sent a link, and joins"
       (request :post "/login" :form {"email" "neighbour@gmail.com" "join" token})
       (is (= ["neighbour@gmail.com"] (map :recipient (outbox))))
@@ -301,6 +312,18 @@
         (is (= 303 (:status response)))
         (is (some? (session-cookie response))))
       (is (allowed? "neighbour@gmail.com") "from then on, without the link"))
+    (testing "every way to try again leads back to the join link"
+      (let [back (str "href=\"/join/" token "\"")
+            response (request :post "/login" :form {"email" "typo@gmial.com" "join" token})]
+        (is (str/includes? (:body (request :get (get-in response [:headers "location"]))) back)
+            "another address, after asking for a link")
+        (request :post "/login" :form {"email" "slow@gmail.com" "join" token})
+        (let [link (re-find #"/login/email\?token=\S+" (:body (last (outbox))))]
+          (is (str/includes? link (str "&join=" token)) "the emailed link carries it")
+          (is (str/includes? (:body (request :get (str/replace link #"token=[^&]+" "token=spent"))) back)
+              "a new link, after one expired")
+          (is (str/includes? (:body (request :post "/login/email" :form {"token" "spent" "join" token})) back)
+              "a new link, after one was used up"))))
     (testing "an address with a wildcard is refused, so the link never lets in a whole domain"
       (is (= 422 (:status (request :post "/login" :form {"email" "*@attacker.example" "join" token}))))
       (is (not-any? #{"*@attacker.example"} (map :recipient (outbox))))
