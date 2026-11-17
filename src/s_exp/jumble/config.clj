@@ -301,6 +301,15 @@
         (invalid "must be a whole number above 0" [:member-limit]))
       n)))
 
+(defn- check-invitations-per-day
+  "The most invitations members may send in all in a day: a number above 0,
+  or the text of one."
+  [v]
+  (let [n (whole-number v)]
+    (when-not (and n (pos? n))
+      (invalid "must be a whole number above 0" [:invitations-per-day]))
+    n))
+
 (def ^:private min-token-length 32)
 
 (defn- decode
@@ -437,6 +446,7 @@
                 (update :privacy check-privacy)
                 (update :contact check-contact)
                 (update :member-limit check-member-limit)
+                (update :invitations-per-day #(check-invitations-per-day (if (nil? %) 100 %)))
                 (update :metrics-token check-metrics-token)
                 (update :litestream-metrics-url
                         #(some-> (text % [:litestream-metrics-url])

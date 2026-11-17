@@ -65,6 +65,7 @@
                      :email "friend@gmail.com"
                      :now 8
                      :configured ["*@example.com"]
+                     :community-per-day 100
                      :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
     {:ann ann :bob bob :lamp lamp :desk desk :thread thread}))
 

@@ -5,13 +5,14 @@
   saved searches (see [[saved-searches/send-due!]]) and the weekly email of
   what is new (see [[weekly/send-due!]]); sends browser notifications (see
   [[push/deliver-due!]]); announces new posts on the chat channels (see
-  [[chat/deliver-webhook!]], [[chat/deliver-irc!]]); and deletes the photo
-  objects due (see
-  [[listing/delete-due-objects!]])."
+  [[chat/deliver-webhook!]], [[chat/deliver-irc!]]); deletes the photo
+  objects due (see [[listing/delete-due-objects!]]); and forgets old
+  invitations (see [[invite/forget-old!]])."
   (:require [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.invite :as invite]
             [s-exp.jumble.listing.freshness :as freshness]
             [s-exp.jumble.listing.model :as listing]
             [s-exp.jumble.listing.saved-searches :as saved-searches]
@@ -74,7 +75,8 @@
                                                        ["chat" #(chat/deliver-webhook! ds send-request settings now running)]
                                                        ["irc" #(chat/deliver-irc! ds say settings now running)]
                                                        ["storage" #(listing/delete-due-objects! ds blobs now)]
-                                                       ["deletions" #(data/finish-deletions! ds blobs now)]]
+                                                       ["deletions" #(data/finish-deletions! ds blobs now)]
+                                                       ["invitations" #(invite/forget-old! ds now)]]
                                              :while (running)]
                                        (run-step step f)))))
                                (long interval-ms)

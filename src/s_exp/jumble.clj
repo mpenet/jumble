@@ -26,7 +26,7 @@
   [{:req! {db-config :db http-config :http base-url :base-url auth-config :auth
            app-name :app-name currency :currency
            storage :storage mail-config :mail moderators :moderators}
-    :keys [https behind-proxy source-url notice chat-webhook-url irc logo logo-dark timezone language privacy contact member-limit metrics-token litestream-metrics-url moderator-notice hosted-by
+    :keys [https behind-proxy source-url notice chat-webhook-url irc logo logo-dark timezone language privacy contact member-limit invitations-per-day metrics-token litestream-metrics-url moderator-notice hosted-by
            listing-reminder-days]}]
   (let [{:keys! [method allowed-emails session-ttl-days] :keys [issuer client-id client-secret]} auth-config
         catalog (i18n/catalog (or language "en"))
@@ -54,6 +54,7 @@
                                                                   :privacy privacy
                                                                   :contact contact
                                                                   :member-limit member-limit
+                                                                  :invitations-per-day invitations-per-day
                                                                   :metrics-token metrics-token
                                                                   :litestream-metrics-url litestream-metrics-url
                                                                   :moderator-notice moderator-notice

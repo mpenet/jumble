@@ -331,6 +331,14 @@
     (is (= [:listing-reminder-days] (invalid-path (assoc valid :listing-reminder-days "soon"))))
     (is (= [:listing-reminder-days] (invalid-path (assoc valid :listing-reminder-days "4000"))))))
 
+(deftest invitations-per-day-test
+  (testing "members together send at most 100 invitations a day by default"
+    (is (= 100 (:invitations-per-day (config/normalize valid))))
+    (is (= 20 (:invitations-per-day (config/normalize (assoc valid :invitations-per-day " 20 "))))))
+  (testing "refused when not a number above 0"
+    (is (= [:invitations-per-day] (invalid-path (assoc valid :invitations-per-day "0"))))
+    (is (= [:invitations-per-day] (invalid-path (assoc valid :invitations-per-day "many"))))))
+
 (deftest setting-types-test
   (testing "a number where one is meant is taken as given, as from the settings file"
     (is (= 50 (:member-limit (config/normalize (assoc valid :member-limit 50)))))

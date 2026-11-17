@@ -109,6 +109,10 @@ msgid "You have sent {count} invitations in the last 24 hours: try again later."
 msgstr "Du har sendt {count} invitationer de sidste 24 timer: prøv igen senere."
 
 #: src/s_exp/jumble/account/controller.clj
+msgid "Members have sent as many invitations as they may in the last 24 hours: try again later."
+msgstr "Medlemmerne har sendt så mange invitationer, som de må, de sidste 24 timer: prøv igen senere."
+
+#: src/s_exp/jumble/account/controller.clj
 msgid "Your account was deleted"
 msgstr "Din konto er slettet"
 
@@ -145,6 +149,10 @@ msgstr "{inviter} har inviteret dig til {app-name}, hvor medlemmerne sælger, gi
 #: src/s_exp/jumble/account/email.clj
 msgid "Sign in with this address: {url}"
 msgstr "Log ind med denne e-mailadresse: {url}"
+
+#: src/s_exp/jumble/account/email.clj
+msgid "If you do not know {inviter}, you can ignore this email."
+msgstr "Hvis du ikke kender {inviter}, kan du ignorere denne e-mail."
 
 #: src/s_exp/jumble/account/membership.clj
 msgid "Not an email pattern: {pattern} (use *, name@domain, *@domain or *@*.domain)"
@@ -289,6 +297,10 @@ msgstr "E-mailadresse"
 #: src/s_exp/jumble/account/view.clj
 msgid "If the address can join, an invitation is on its way."
 msgstr "Hvis adressen kan blive medlem, er en invitation på vej."
+
+#: src/s_exp/jumble/account/view.clj
+msgid "The email gives your name, {name}."
+msgstr "E-mailen viser dit navn, {name}."
 
 #: src/s_exp/jumble/account/view.clj
 msgid "Send the invitation"

@@ -1,5 +1,5 @@
--- Invitations members sent, by email: to whom and when, for the limit on
--- how many a day and for each member to see theirs.
+-- Invitations members sent, by email: to whom and when, for the limits on
+-- how many a day and for each member to see theirs, kept 90 days.
 
 CREATE TABLE invitation (
   id INTEGER PRIMARY KEY,
@@ -9,3 +9,4 @@ CREATE TABLE invitation (
 ) STRICT;
 
 CREATE INDEX invitation_user_sent ON invitation (user_id, sent_at);
+CREATE INDEX invitation_sent ON invitation (sent_at);

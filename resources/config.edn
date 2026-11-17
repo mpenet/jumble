@@ -35,6 +35,9 @@
  ;; The most members (accounts not deleted) the community may have: past
  ;; it, nobody new can join. Moderators always can.
  :member-limit #env JUMBLE_MEMBER_LIMIT
+ ;; The most invitations members may send in all in a day, when moderators
+ ;; let them invite people (each sends at most 5).
+ :invitations-per-day #or [#env JUMBLE_INVITATIONS_PER_DAY "100"]
  ;; Days a listing goes without news (posting, editing, a status change)
  ;; before its owner is asked whether it is still available; unanswered 15
  ;; more days, it leaves the board. 0: never asked, nothing expires.

@@ -266,6 +266,7 @@
                        :email "neighbour@gmail.com"
                        :now 0
                        :configured ["*@example.com"]
+                       :community-per-day 100
                        :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
       (is (str/includes? (page) "invited by bob@example.com")))
     (testing "and closed again"
@@ -286,7 +287,8 @@
     (invite/set-open! *db* true)
     (testing "then members' settings lead to it"
       (is (str/includes? (page "/settings") "href=\"/invite\""))
-      (is (re-find #"<form [^>]*action=\"/invite\"" (page "/invite"))))
+      (is (re-find #"<form [^>]*action=\"/invite\"" (page "/invite")))
+      (is (str/includes? (page "/invite") "The email gives your name, bob@example.com.")))
     (testing "an address that is not one comes back with an explanation"
       (let [{:keys [status body]} (invite! "nope")]
         (is (= 422 status))
@@ -300,7 +302,8 @@
         (is (= "/invite?sent" (get-in response [:headers "location"]))))
       (let [[{:keys [recipient body]}] (outbox)]
         (is (= "neighbour@gmail.com" recipient))
-        (is (str/includes? body "bob@example.com invited you")))
+        (is (str/includes? body "bob@example.com invited you"))
+        (is (str/includes? body "If you do not know bob@example.com, you can ignore this email.")))
       (let [body (page "/invite?sent")]
         (is (str/includes? body "If the address can join, an invitation is on its way."))
         (is (str/includes? body "neighbour@gmail.com"))))
@@ -310,6 +313,14 @@
       (let [{:keys [status body]} (invite! "sixth@gmail.com")]
         (is (= 429 status))
         (is (str/includes? body "You have sent 5 invitations in the last 24 hours"))))
+    (testing "past what members may send in all, they are asked to wait"
+      (let [{:keys [status body]} (fixtures/request :post
+                                                    "/invite"
+                                                    (sign-in! "carl@example.com")
+                                                    {:ctx {:settings {:allowed-emails ["*@example.com"] :invitations-per-day 5}}
+                                                     :form {"email" "seventh@gmail.com"}})]
+        (is (= 429 status))
+        (is (str/includes? body "Members have sent as many invitations as they may"))))
     (testing "nothing where the configuration lets anyone in"
       (is (= 404 (:status (fixtures/request :get "/invite" bob {:ctx {:settings {:allowed-emails :anyone}}}))))
       (is (not (str/includes? (:body (fixtures/request :get "/settings" bob {:ctx {:settings {:allowed-emails :anyone}}}))

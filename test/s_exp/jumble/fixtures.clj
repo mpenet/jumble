@@ -46,6 +46,7 @@
    :allowed-emails :anyone
    :source-url "https://github.com/mpenet/jumble"
    :listing-reminder-days 30
+   :invitations-per-day 100
    :app-name "Jumble"
    :currency "CHF"
    :categories [{:id "home" :label "Furniture & home"} {:id "other" :label "Other"}]

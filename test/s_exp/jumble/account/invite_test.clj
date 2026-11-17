@@ -17,12 +17,13 @@
 (def ^:private configured ["*@example.com"])
 
 (defn- invite!
-  [member email now]
+  [member email now & {:keys [community-per-day] :or {community-per-day 100}}]
   (invite/invite! *db*
                   {:member-id member
                    :email email
                    :now now
                    :configured configured
+                   :community-per-day community-per-day
                    :email-for (fn [to] {:to to :subject "Invited" :text "Come"})}))
 
 (defn- outbox
@@ -56,6 +57,7 @@
       (fixtures/user! "bob")
       (jdbc/execute-one! *db* ["INSERT INTO removed_email (email, removed_at) VALUES ('gone@gmail.com', 0)"])
       (is (= :sent (invite! ann "bob@example.com" 3000)))
+      (is (= :sent (invite! ann "Bob+shop@example.com" 3500)) "another address of a member's mailbox")
       (is (= :sent (invite! ann "gone@gmail.com" 4000)))
       (is (= 2 (count (outbox))))
       (is (not ((account/allowed *db* configured) "gone@gmail.com"))))
@@ -63,7 +65,6 @@
       (is (thrown? Exception (invite! ann "*@gmail.com" 4500)))
       (is (not ((account/allowed *db* configured) "stranger@gmail.com"))))
     (testing "five a day each"
-      (is (= :sent (invite! ann "fifth@gmail.com" 5000)))
       (is (= :limited (invite! ann "sixth@gmail.com" 6000)))
       (is (= :sent (invite! (fixtures/user! "carl") "sixth@gmail.com" 6000)) "another member's are their own")
       (is (= :sent (invite! ann "sixth@gmail.com" (+ 1000 day))) "a day after the first"))))
@@ -82,3 +83,24 @@
              (invite/sent *db* ann))))
     (testing "not another's"
       (is (= [] (invite/sent *db* (fixtures/user! "carl")))))))
+
+(deftest community-limit-test
+  (let [[ann bob carl] (map fixtures/user! ["ann" "bob" "carl"])]
+    (testing "members together send at most so many a day"
+      (is (= :sent (invite! ann "one@gmail.com" 1000 :community-per-day 3)))
+      (is (= :sent (invite! bob "two@gmail.com" 2000 :community-per-day 3)))
+      (is (= :sent (invite! ann "three@gmail.com" 3000 :community-per-day 3)))
+      (is (= :community-limited (invite! carl "four@gmail.com" 4000 :community-per-day 3)))
+      (is (= 3 (count (outbox)))))
+    (testing "a day after the first, again"
+      (is (= :sent (invite! carl "four@gmail.com" (+ 1000 day) :community-per-day 3))))))
+
+(deftest forget-test
+  (let [ann (fixtures/user! "ann")]
+    (invite! ann "old@gmail.com" 1000)
+    (invite! ann "recent@gmail.com" (* 80 day))
+    (testing "invitations are forgotten 90 days after they were sent"
+      (invite/forget-old! *db* (+ 1000 (* 90 day)))
+      (is (= ["recent@gmail.com"] (map :email (invite/sent *db* ann)))))
+    (testing "whom they let in stays in"
+      (is ((account/allowed *db* configured) "old@gmail.com")))))

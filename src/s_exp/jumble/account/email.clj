@@ -33,4 +33,6 @@
                         {:inviter (mail/one-line inviter) :app-name app-name})
                 "\n\n"
                 (i18n/t "Sign in with this address: {url}" {:url (str base-url "/login")})
+                "\n\n"
+                (i18n/t "If you do not know {inviter}, you can ignore this email." {:inviter (mail/one-line inviter)})
                 "\n")}))

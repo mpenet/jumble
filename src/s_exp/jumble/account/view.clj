@@ -85,7 +85,7 @@
 (defn invite
   "Where members invite someone they know, by email, with whom they invited
   and who of them joined."
-  [{:keys [ctx] :as request} {:keys [values errors sent invitations]}]
+  [{:keys [ctx user] :as request} {:keys [values errors sent invitations]}]
   (layout/page request
                {:title (i18n/t "Invite someone you know")}
                [:div.board-header
@@ -99,6 +99,7 @@
                 (layout/field-error errors :email)
                 (when sent
                   [:p.field-note {:role "status"} (i18n/t "If the address can join, an invitation is on its way.")])
+                [:p.field-note (i18n/t "The email gives your name, {name}." {:name (:name user)})]
                 [:button {:type "submit"} (i18n/t "Send the invitation")]]
                (when (seq invitations)
                  [:section.members

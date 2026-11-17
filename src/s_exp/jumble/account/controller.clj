@@ -489,6 +489,7 @@
                                :email address
                                :now (System/currentTimeMillis)
                                :configured (:allowed-emails settings)
+                               :community-per-day (:invitations-per-day settings)
                                ;; Not a member yet: the community's language.
                                :email-for #(i18n/speaking nil (email/invitation settings (:name user) %))})
           ;; Redirected, so reloading the page sends no other invitation.
@@ -497,7 +498,11 @@
                                 429
                                 {:values {:email typed}
                                  :errors {:email (i18n/t "You have sent {count} invitations in the last 24 hours: try again later."
-                                                         {:count invite/per-day})}}))))))
+                                                         {:count invite/per-day})}})
+          :community-limited (invite-page request
+                                          429
+                                          {:values {:email typed}
+                                           :errors {:email (i18n/t "Members have sent as many invitations as they may in the last 24 hours: try again later.")}}))))))
 
 (defn export-data
   "Everything Jumble holds about the user, as a JSON file to download."
