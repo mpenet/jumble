@@ -208,10 +208,10 @@
                         [:h2 (i18n/t "Added here")]
                         (if (seq added)
                           [:ul.member-list
-                           (for [{:keys [pattern added-by added-at joined-by-link]} added]
+                           (for [{:keys [pattern added-by added-at way]} added]
                              [:li
                               [:code pattern]
-                              [:span.member-meta (if (= 1 joined-by-link)
+                              [:span.member-meta (if (= "link" way)
                                                    (i18n/t "joined with the join link, {date}" {:date (dates/date added-at)})
                                                    (i18n/t "added by {who}, {date}"
                                                            {:who (if (str/blank? added-by) (i18n/t "a former member") added-by)

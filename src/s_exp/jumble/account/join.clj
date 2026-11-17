@@ -57,8 +57,8 @@
   [db email now]
   (db/with-write-tx [tx db]
     (jdbc/execute-one! tx
-                       ["INSERT INTO allowed_email (pattern, added_by, added_at, joined_by_link)
-                            VALUES (?, NULL, ?, 1)
+                       ["INSERT INTO allowed_email (pattern, added_by, added_at, way)
+                            VALUES (?, NULL, ?, 'link')
                             ON CONFLICT (pattern) DO NOTHING"
                         (str/lower-case email)
                         now])))

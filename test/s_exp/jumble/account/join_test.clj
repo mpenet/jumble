@@ -46,10 +46,10 @@
   (testing "joining by the link lets the address in from then on, as one moderators added"
     (join/admit! *db* "Ann@Example.org" 1000)
     (is ((account/allowed *db* ["*@club.example"]) "ann@example.org"))
-    (is (= [{:pattern "ann@example.org" :joined-by-link 1}]
-           (map #(select-keys % [:pattern :joined-by-link])
+    (is (= [{:pattern "ann@example.org" :way "link"}]
+           (map #(select-keys % [:pattern :way])
                 (jdbc/execute! *db* ["SELECT * FROM allowed_email"] db/opts)))))
   (testing "an address already let in stays as it was"
     (account/allow! *db* {:patterns ["bob@example.org"] :moderator-id nil :now 1})
     (join/admit! *db* "bob@example.org" 2000)
-    (is (= 0 (:joined-by-link (jdbc/execute-one! *db* ["SELECT joined_by_link FROM allowed_email WHERE pattern = ?" "bob@example.org"] db/opts))))))
+    (is (= "moderator" (:way (jdbc/execute-one! *db* ["SELECT way FROM allowed_email WHERE pattern = ?" "bob@example.org"] db/opts))))))
