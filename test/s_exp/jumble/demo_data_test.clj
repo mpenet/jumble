@@ -1,6 +1,7 @@
 (ns s-exp.jumble.demo-data-test
   "The demo's members and listings (dev/demo/listings.edn): each listing is
-  one the app accepts, by one of the members, with photos it can take."
+  one the app accepts, by one of the members, with at least one photo it can
+  take."
   (:require [clojure.edn :as edn]
             [clojure.test :refer [deftest is testing]]
             [s-exp.jumble.fixtures :refer [call-with-db-path]]
@@ -34,7 +35,7 @@
                                              {:kind kind :title title :description description
                                               :price price :category category
                                               :pickup "city" :city city}))))
-        (is (<= (count photos) listing/max-photos))
+        (is (<= 1 (count photos) listing/max-photos) "a photo or a few")
         (is (every? #(and (:url %) (:source %)) photos) "each photo with its source")
         (is (every? #{"cc0" "pdm"} (map :license photos)) "each photo free to use")))
     (testing "titles are distinct per member"

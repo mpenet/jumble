@@ -139,10 +139,10 @@
    :photos [{:url "https://live.staticflickr.com/7034/26952584686_c27238779f_b.jpg" :source "https://www.flickr.com/photos/135396164@N05/26952584686" :license "cc0"}]}
   {:owner 5 :kind "sale" :title "Concert tickets, two seats" :price "80" :category "tickets" :city "Zurich" :status nil :age-days 2
    :description "Two seated tickets for Saturday 13 December, 19:30, row 12. I can't make it anymore; selling at face value."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Concert_crowd_%28Unsplash%29.jpg/1280px-Concert_crowd_%28Unsplash%29.jpg" :source "https://commons.wikimedia.org/wiki/File:Concert_crowd_(Unsplash).jpg" :license "cc0"}]}
   {:owner 6 :kind "sale" :title "Climbing gym card, 7 entries left" :price "110" :category "tickets" :city "Zurich" :status nil :age-days 6
    :description "Ten-entry card valid until June, 7 entries left. Moving to Basel."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Gorliz_sports_center_climbing_gym.jpg/1280px-Gorliz_sports_center_climbing_gym.jpg" :source "https://commons.wikimedia.org/wiki/File:Gorliz_sports_center_climbing_gym.jpg" :license "cc0"}]}
   {:owner 10 :kind "sale" :title "Stand mixer with steel bowl" :price "85" :category "home" :city "Uster" :status nil :age-days 4
    :description "Tilt-head mixer with a 4.5 litre bowl, whisk, beater and dough hook. Bakes a weekly loaf without complaint; I'm moving somewhere with a tiny kitchen."
    :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Sunbeam_Heritage_Mixmaster_Stand_Mixer.jpg/1280px-Sunbeam_Heritage_Mixmaster_Stand_Mixer.jpg" :source "https://commons.wikimedia.org/wiki/File:Sunbeam_Heritage_Mixmaster_Stand_Mixer.jpg" :license "cc0"}]}
@@ -217,7 +217,7 @@
    :photos [{:url "https://pd.w.org/2024/02/19765c68a8dbfbfc9.20608423-1536x2048.jpg" :source "https://wordpress.org/photos/photo/19765c68a8/" :license "cc0"}]}
   {:owner 8 :kind "sale" :title "Theatre tickets, two seats" :price "60" :category "tickets" :city "Zurich" :status nil :age-days 4
    :description "Two seats in the stalls for Friday's play at the Schauspielhaus. Can't go anymore; at face value."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Yvonne_Arnaud_auditorium_2026.jpg/1280px-Yvonne_Arnaud_auditorium_2026.jpg" :source "https://commons.wikimedia.org/wiki/File:Yvonne_Arnaud_auditorium_2026.jpg" :license "cc0"}]}
   {:owner 10 :kind "wanted" :title "Child's car seat, ages 1 to 4" :price nil :category "kids" :city "Uster" :status nil :age-days 2
    :description "For our son, who's growing out of his baby seat. Isofix would be great, but not a must."
    :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Car_seats_-_Arlington%2C_MA.jpg/1280px-Car_seats_-_Arlington%2C_MA.jpg" :source "https://commons.wikimedia.org/wiki/File:Car_seats_-_Arlington,_MA.jpg" :license "cc0"}]}
