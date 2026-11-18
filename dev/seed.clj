@@ -168,13 +168,10 @@
                            _ (when errors (throw (ex-info "Invalid seed listing" {:title title :errors errors})))
                            {:keys [photos]} (listing/prepare-photos (map #(placeholder title category %)
                                                                          (range (inc (mod i 3)))))]]
-                 (listing/create! ds
-                                  blobs
-                                  (:id (nth users (mod i (count users))))
-                                  listing
-                                  photos
-                                  ;; Spread over the last three weeks, newest last.
-                                  (- now (* (- (count listings) i) (quot (* 21 day) (count listings)))))))]
+                 (let [id (listing/create! ds blobs (:id (nth users (mod i (count users)))) listing photos now)]
+                   ;; Spread over the last three weeks, newest last.
+                   (listing/backdate! ds id (- now (* (- (count listings) i) (quot (* 21 day) (count listings)))))
+                   id)))]
       ;; Not news: a chat channel connected in development is not told.
       (chat/forget! ds listing-ids)
       (println "Seeded" (count users) "members and" (count listings) "listings.")

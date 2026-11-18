@@ -278,7 +278,9 @@
 (defn create!
   "Stores a new listing for `user-id` with its prepared `photos` and returns
   its id, or nil when the account is being deleted. Photos are uploaded
-  first; if the listing is then not recorded, they are deleted again."
+  first; if the listing is then not recorded, they are deleted again, from
+  [[upload-grace]] after `now`, which must be the time it is: a listing
+  meant as posted earlier is dated so with [[backdate!]]."
   [db blobs user-id {:keys [kind title description price-minor category pickup-place pickup-city]} photos now]
   (try
     (with-uploads
@@ -457,6 +459,13 @@
                       (f tx))]
     (some->> object-keys (delete-objects! db blobs))
     object-keys))
+
+(defn backdate!
+  "Dates listing `id` as posted, and last changed, at `at`: sample data,
+  made at the time it is (see [[create!]])."
+  [db id at]
+  (db/with-write-tx [tx db]
+    (jdbc/execute-one! tx ["UPDATE listing SET created_at = ?1, updated_at = ?1, fresh_at = ?1 WHERE id = ?2" at id])))
 
 (defn delete!
   "Removes listing `id` owned by `user-id`, with its photos and their stored

@@ -118,6 +118,21 @@
     (testing "unknown ids read as nil"
       (is (nil? (listing/by-id *db* 999))))))
 
+(deftest backdate-test
+  (let [blobs (blob/memory-store)
+        owner (user-id)
+        now (* 30 24 60 60 1000)
+        day (* 24 60 60 1000)
+        {:keys [photos]} (listing/prepare-photos [(fixture-bytes "rotated-gps.jpg")])
+        id (listing/create! *db* blobs owner (:listing (listing/validate settings valid-input)) photos now)]
+    (listing/backdate! *db* id (- now (* 3 day)))
+    (testing "a listing made now can be dated as posted days ago"
+      (is (= [(- now (* 3 day)) (- now (* 3 day))] ((juxt :created-at :updated-at) (listing/by-id *db* id)))))
+    (testing "its photos are not taken for uploads left behind"
+      (listing/delete-due-objects! *db* blobs now)
+      (let [[{:keys [object-key]}] (:photos (listing/by-id *db* id))]
+        (is (some? (blob/fetch blobs (listing/photo-key object-key "thumb"))))))))
+
 (deftest create-cleans-up-on-failure-test
   (let [blobs (blob/memory-store)
         {:keys [photos]} (listing/prepare-photos [(fixture-bytes "transparent.png")])

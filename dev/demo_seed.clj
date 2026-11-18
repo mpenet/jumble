@@ -102,7 +102,9 @@
   (some? (jdbc/execute-one! ds ["SELECT 1 FROM listing WHERE user_id = ? AND title = ?" user-id title])))
 
 (defn- add-listing!
-  "Creates listing `entry` for `user-id`, dated `age-days` before `now`."
+  "Creates listing `entry` for `user-id` at `now`, dated `age-days` before:
+  made at the time it is, so that its photos count as uploaded now (see
+  [[listing/create!]])."
   [ds blobs settings user-id {:keys [kind title price category city status age-days description photos]} now]
   (let [{:keys [listing errors]} (listing/validate settings
                                                    {:kind kind :title title :description description
@@ -112,7 +114,8 @@
         prepared (listing/prepare-photos (mapv (comp as-jpeg download :url) photos))
         _ (when (:errors prepared) (throw (ex-info "Unusable demo photo" {:title title :errors (:errors prepared)})))
         created-at (- now (* age-days day) (rand-int (quot day 2)))
-        id (listing/create! ds blobs user-id listing (:photos prepared) created-at)]
+        id (listing/create! ds blobs user-id listing (:photos prepared) now)]
+    (listing/backdate! ds id created-at)
     (when status
       (listing/set-status! ds id user-id status (+ created-at day)))
     id))
