@@ -220,17 +220,17 @@
    :photos []}
   {:owner 10 :kind "wanted" :title "Child's car seat, ages 1 to 4" :price nil :category "kids" :city "Uster" :status nil :age-days 2
    :description "For our son, who's growing out of his baby seat. Isofix would be great, but not a must."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Car_seats_-_Arlington%2C_MA.jpg/1280px-Car_seats_-_Arlington%2C_MA.jpg" :source "https://commons.wikimedia.org/wiki/File:Car_seats_-_Arlington,_MA.jpg" :license "cc0"}]}
   {:owner 11 :kind "wanted" :title "Folding bike for the commute" :price nil :category "sports" :city "Zurich" :status nil :age-days 5
    :description "Something that fits on the S-Bahn. Up to 300, gears welcome."
-   :photos []}
-  {:owner 12 :kind "wanted" :title "Round cake tins, 20 to 24 cm" :price nil :category "home" :city "Winterthur" :status nil :age-days 1
-   :description "For a birthday cake next weekend. Happy to borrow and return them clean."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Folding_Pigeon_5BBT_jeh.jpg/1280px-Folding_Pigeon_5BBT_jeh.jpg" :source "https://commons.wikimedia.org/wiki/File:Folding_Pigeon_5BBT_jeh.jpg" :license "cc0"}]}
+  {:owner 12 :kind "wanted" :title "Cake tins, any shape" :price nil :category "home" :city "Winterthur" :status nil :age-days 1
+   :description "For a birthday cake next weekend: round, 20 to 24 cm, would be ideal, but a loaf tin like this one works too. Happy to borrow and return them clean."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Broodvorm%2C_onbekend%2C_circa_1900-1950%2C_Bakkerijmuseum_Veurne%2C_11329.jpg/1280px-Broodvorm%2C_onbekend%2C_circa_1900-1950%2C_Bakkerijmuseum_Veurne%2C_11329.jpg" :source "https://commons.wikimedia.org/wiki/File:Broodvorm,_onbekend,_circa_1900-1950,_Bakkerijmuseum_Veurne,_11329.jpg" :license "cc0"}]}
   {:owner 13 :kind "wanted" :title "Small desk for a children's room" :price nil :category "home" :city "Baden" :status nil :age-days 7
    :description "About 100 cm wide, any colour. We can pick up in the area."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/School_desk_-_Kolomna_local_museum.jpg/1280px-School_desk_-_Kolomna_local_museum.jpg" :source "https://commons.wikimedia.org/wiki/File:School_desk_-_Kolomna_local_museum.jpg" :license "cc0"}]}
   {:owner 14 :kind "wanted" :title "Two tickets for the Saturday match" :price nil :category "tickets" :city "Zurich" :status nil :age-days 3
    :description "FCZ at home, any seats together. Will pay face value."
-   :photos []}
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Incheon_Soccer_Stadium_4.JPG/1280px-Incheon_Soccer_Stadium_4.JPG" :source "https://commons.wikimedia.org/wiki/File:Incheon_Soccer_Stadium_4.JPG" :license "cc0"}]}
  ]}
