@@ -28,5 +28,7 @@ else
 fi
 
 # JAVA_OPTS adds to the options Jumble needs, and can override the memory one.
+# Base64 intrinsics are off against Java4Shell (CVE-2026-114938,
+# https://calif.io/java4shell/), a bug in HotSpot's x86-64 one.
 exec litestream replicate -config /etc/litestream.yml \
-  -exec "java --enable-native-access=ALL-UNNAMED -XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError ${JAVA_OPTS:-} -jar /app/jumble.jar"
+  -exec "java --enable-native-access=ALL-UNNAMED -XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError -XX:-UseBASE64Intrinsics ${JAVA_OPTS:-} -jar /app/jumble.jar"
