@@ -11,6 +11,14 @@
   {:name "Luca Ferrari" :handle "luca.ferrari"}
   {:name "Camille Rochat" :handle "camille.rochat"}
   {:name "Yusuf Demir" :handle "yusuf.demir"}
+  {:name "Elena Popescu" :handle "elena.popescu"}
+  {:name "Daniel Schmid" :handle "daniel.schmid"}
+  {:name "Mia Huber" :handle "mia.huber"}
+  {:name "Kenji Sato" :handle "kenji.sato"}
+  {:name "Fatima Haddad" :handle "fatima.haddad"}
+  {:name "Lukas Weber" :handle "lukas.weber"}
+  {:name "Chiara Rossi" :handle "chiara.rossi"}
+  {:name "Samuel Okafor" :handle "samuel.okafor"}
  ]
  :listings [
   {:owner 0 :kind "sale" :title "Steel road bike, 56 cm" :price "380" :category "sports" :city "Zurich" :status nil :age-days 19
@@ -134,5 +142,95 @@
    :photos []}
   {:owner 6 :kind "sale" :title "Climbing gym card, 7 entries left" :price "110" :category "tickets" :city "Zurich" :status nil :age-days 6
    :description "Ten-entry card valid until June, 7 entries left. Moving to Basel."
+   :photos []}
+  {:owner 10 :kind "sale" :title "Stand mixer with steel bowl" :price "85" :category "home" :city "Uster" :status nil :age-days 4
+   :description "Tilt-head mixer with a 4.5 litre bowl, whisk, beater and dough hook. Bakes a weekly loaf without complaint; I'm moving somewhere with a tiny kitchen."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Sunbeam_Heritage_Mixmaster_Stand_Mixer.jpg/1280px-Sunbeam_Heritage_Mixmaster_Stand_Mixer.jpg" :source "https://commons.wikimedia.org/wiki/File:Sunbeam_Heritage_Mixmaster_Stand_Mixer.jpg" :license "cc0"}]}
+  {:owner 11 :kind "sale" :title "Vintage ETA hand mixer" :price "15" :category "home" :city "Bülach" :status nil :age-days 9
+   :description "Orange 1980s hand mixer with both pairs of beaters. Still loud, still strong."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/ETA_mixer_1986.jpg/1280px-ETA_mixer_1986.jpg" :source "https://commons.wikimedia.org/wiki/File:ETA_mixer_1986.jpg" :license "cc0"}]}
+  {:owner 12 :kind "sale" :title "Vintage pram" :price "120" :category "kids" :city "Baden" :status nil :age-days 16
+   :description "An old-style pram with big spoked wheels. The wheels turn and the hood folds, but I'd keep it for display or photo shoots rather than daily walks."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Old_pram_at_the_Mus%C3%A9e_Automobile_de_Vend%C3%A9e_pic-3.JPG/1280px-Old_pram_at_the_Mus%C3%A9e_Automobile_de_Vend%C3%A9e_pic-3.JPG" :source "https://commons.wikimedia.org/wiki/File:Old_pram_at_the_Mus%C3%A9e_Automobile_de_Vend%C3%A9e_pic-3.JPG" :license "cc0"}]}
+  {:owner 13 :kind "free" :title "Folding garden chair" :price nil :category "home" :city "Wädenswil" :status nil :age-days 3
+   :description "Slatted metal and wood, folds flat for the winter. A bit of rust on one leg. Free to whoever comes first."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Garden_chair%2C_designed_by_Richard_Riemerschmid%2C_Firma_Louis_Hermann%2C_Dresden%2C_Germany%2C_1910%2C_metal%2C_wood%2C_lacquered_-_Museum_f%C3%BCr_Angewandte_Kunst_K%C3%B6ln_-_Cologne%2C_Germany_-_DSC09600.jpg/1280px-Garden_chair%2C_designed_by_Richard_Riemerschmid%2C_Firma_Louis_Hermann%2C_Dresden%2C_Germany%2C_1910%2C_metal%2C_wood%2C_lacquered_-_Museum_f%C3%BCr_Angewandte_Kunst_K%C3%B6ln_-_Cologne%2C_Germany_-_DSC09600.jpg" :source "https://commons.wikimedia.org/wiki/File:Garden_chair,_designed_by_Richard_Riemerschmid,_Firma_Louis_Hermann,_Dresden,_Germany,_1910,_metal,_wood,_lacquered_-_Museum_f%C3%BCr_Angewandte_Kunst_K%C3%B6ln_-_Cologne,_Germany_-_DSC09600.jpg" :license "cc0"}]}
+  {:owner 14 :kind "sale" :title "Korg keyboard with stand" :price "450" :category "other" :city "Zurich" :status nil :age-days 11
+   :description "Weighted 88 keys, stand and sustain pedal included. Used in a rehearsal room, never gigged. Can show you all the sounds before you buy."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Korg_digital_piano.jpg/1280px-Korg_digital_piano.jpg" :source "https://commons.wikimedia.org/wiki/File:Korg_digital_piano.jpg" :license "cc0"}]}
+  {:owner 15 :kind "lend" :title "Pressure washer" :price nil :category "home" :city "Dübendorf" :status nil :age-days 13
+   :description "Takes the moss off a terrace in an afternoon. Lend it for a weekend; I'll show you the attachments."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/8/85/Pressure-washing.jpg" :source "https://commons.wikimedia.org/wiki/File:Pressure-washing.jpg" :license "cc0"}]}
+  {:owner 16 :kind "sale" :title "Garden pump sprayer, 5 l" :price "12" :category "home" :city "Winterthur" :status nil :age-days 6
+   :description "Pump it up and it sprays for ten minutes. Rinsed after every use; good for watering seedlings or washing bikes."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/HandPressureWasher.JPG/1280px-HandPressureWasher.JPG" :source "https://commons.wikimedia.org/wiki/File:HandPressureWasher.JPG" :license "cc0"}]}
+  {:owner 17 :kind "sale" :title "Espresso cups, set of six" :price "18" :category "home" :city "Zurich" :status nil :age-days 2
+   :description "Thick white porcelain cups that keep the coffee hot, with saucers. We switched to a filter machine."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Espresso_Coffee_01.jpg/1280px-Espresso_Coffee_01.jpg" :source "https://commons.wikimedia.org/wiki/File:Espresso_Coffee_01.jpg" :license "cc0"}]}
+  {:owner 10 :kind "sale" :title "Porcelain demitasse cups" :price "30" :category "home" :city "Zug" :status nil :age-days 18
+   :description "Four fine porcelain cups with saucers, painted flowers and a gold rim. From my aunt's cupboard; none chipped."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Demitasse_Cup_and_Saucer_MET_DP260300.jpg/1280px-Demitasse_Cup_and_Saucer_MET_DP260300.jpg" :source "https://commons.wikimedia.org/wiki/File:Demitasse_Cup_and_Saucer_MET_DP260300.jpg" :license "cc0"}]}
+  {:owner 11 :kind "sale" :title "Cast iron pan, 20 cm" :price "25" :category "home" :city "Winterthur" :status nil :age-days 7
+   :description "Well seasoned and ready to use, perfect for eggs or a small steak. Works on induction."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/A_small_cast_iron_pan.jpg/1280px-A_small_cast_iron_pan.jpg" :source "https://commons.wikimedia.org/wiki/File:A_small_cast_iron_pan.jpg" :license "cc0"}]}
+  {:owner 12 :kind "sale" :title "Ornate silver picture frame" :price "35" :category "home" :city "Zurich" :status nil :age-days 12
+   :description "Carved frame with a silver finish, about 40 by 50 cm inside. Glass and backing included."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Detail_of_a_picture_frame_in_monochrome.jpg/1280px-Detail_of_a_picture_frame_in_monochrome.jpg" :source "https://commons.wikimedia.org/wiki/File:Detail_of_a_picture_frame_in_monochrome.jpg" :license "cc0"}]}
+  {:owner 13 :kind "sale" :title "Hiking backpack, 50 l" :price "60" :category "sports" :city "Zurich" :status nil :age-days 8
+   :description "Adjustable back, hip belt with pockets, rain cover in the lid. Two summers in the Alps, no tears."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/a/a1/Plecak_Hiker_50_L_HiMountain.jpg" :source "https://commons.wikimedia.org/wiki/File:Plecak_Hiker_50_L_HiMountain.jpg" :license "cc0"}]}
+  {:owner 14 :kind "sale" :title "Wenger laptop backpack" :price "30" :category "other" :city "Zug" :status nil :age-days 5
+   :description "Fits a 15 inch laptop, padded straps, lots of pockets. Red, clean, all zips work."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Wenger_backpack.jpg/1280px-Wenger_backpack.jpg" :source "https://commons.wikimedia.org/wiki/File:Wenger_backpack.jpg" :license "cc0"}]}
+  {:owner 15 :kind "sale" :title "Two wooden squash rackets" :price "20" :category "sports" :city "Baden" :status nil :age-days 20
+   :description "Vintage rackets, strings intact. Nice on a wall, still playable for a laugh."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Nanoldsquash2.JPG/1280px-Nanoldsquash2.JPG" :source "https://commons.wikimedia.org/wiki/File:Nanoldsquash2.JPG" :license "cc0"}]}
+  {:owner 16 :kind "sale" :title "Table tennis bat" :price "10" :category "sports" :city "Uster" :status nil :age-days 4
+   :description "Good rubber on both sides, barely used. A box of balls comes with it."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Table_tennis_racket_%2851465161213%29.jpg/1280px-Table_tennis_racket_%2851465161213%29.jpg" :source "https://commons.wikimedia.org/wiki/File:Table_tennis_racket_(51465161213).jpg" :license "cc0"}]}
+  {:owner 17 :kind "sale" :title "Party speaker with lights" :price "70" :category "electronics" :city "Dübendorf" :status nil :age-days 10
+   :description "Loud enough for a garden party, battery lasts an evening, Bluetooth and aux in. The ring light can be turned off."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/A_loud_speaker.jpg/1280px-A_loud_speaker.jpg" :source "https://commons.wikimedia.org/wiki/File:A_loud_speaker.jpg" :license "cc0"}]}
+  {:owner 0 :kind "sale" :title "Glazed bookcase, solid wood" :price "240" :category "home" :city "Zurich" :status "reserved" :age-days 14
+   :description "Tall bookcase with glass doors on top and a cupboard below. Heavy: bring a friend and a van."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Bookcase_MET_ADA3165.jpg/1280px-Bookcase_MET_ADA3165.jpg" :source "https://commons.wikimedia.org/wiki/File:Bookcase_MET_ADA3165.jpg" :license "cc0"}]}
+  {:owner 1 :kind "sale" :title "Low bookcase cabinet" :price "90" :category "home" :city "Winterthur" :status nil :age-days 9
+   :description "Solid wood, two doors, about 1.2 m wide. Fits under a window; the top makes a good shelf for plants."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Bookcase-saam_1966.11.7.jpg/1280px-Bookcase-saam_1966.11.7.jpg" :source "https://commons.wikimedia.org/wiki/File:Bookcase-saam_1966.11.7.jpg" :license "cc0"}]}
+  {:owner 2 :kind "free" :title "Children's picture books" :price nil :category "kids" :city "Zurich" :status nil :age-days 1
+   :description "A shelf's worth of picture books, ages 3 to 6, English and German. Our kids have moved on to comics."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Children%27s_books_%28Unsplash%29.jpg/1280px-Children%27s_books_%28Unsplash%29.jpg" :source "https://commons.wikimedia.org/wiki/File:Children%27s_books_(Unsplash).jpg" :license "cc0"}]}
+  {:owner 3 :kind "sale" :title "Red canvas sneakers, EU 41" :price "15" :category "clothing" :city "Zurich" :status nil :age-days 6
+   :description "Classic high-tops, worn a few times. The laces are new."
+   :photos [{:url "https://live.staticflickr.com/7101/7181223091_76e8ea6c1e.jpg" :source "https://www.flickr.com/photos/43296902@N00/7181223091" :license "cc0"}]}
+  {:owner 4 :kind "sale" :title "Running shoes, EU 39" :price "40" :category "sports" :city "Zug" :status nil :age-days 3
+   :description "Light road shoes, under 100 km on them. They're half a size too small for me."
+   :photos [{:url "https://cdn.stocksnap.io/img-thumbs/960w/645GI8G1W4.jpg" :source "https://stocksnap.io/photo/running-shoes-645GI8G1W4" :license "cc0"}]}
+  {:owner 5 :kind "sale" :title "Pizza Pie Game (1974), complete" :price "25" :category "books-media" :city "Zurich" :status "reserved" :age-days 15
+   :description "Milton Bradley classic, all pieces and the spinner, box a bit worn at the corners."
+   :photos [{:url "https://live.staticflickr.com/1910/44646845085_f865549f41_b.jpg" :source "https://www.flickr.com/photos/148686664@N06/44646845085" :license "pdm"}]}
+  {:owner 6 :kind "free" :title "Card games, a bagful" :price nil :category "books-media" :city "Bülach" :status nil :age-days 5
+   :description "Uno, Skip-Bo and a few decks of plain cards. Everything counted and complete."
+   :photos [{:url "https://upload.wikimedia.org/wikipedia/commons/3/3c/People_playing_board_game_card_game_in_circle.jpg" :source "https://commons.wikimedia.org/w/index.php?curid=83305713" :license "cc0"}]}
+  {:owner 7 :kind "free" :title "Dieffenbachia cuttings" :price nil :category "home" :city "Wädenswil" :status nil :age-days 2
+   :description "Rooted cuttings in water, ready to pot. Bring a jar or I'll wrap them in paper. Keep away from pets."
+   :photos [{:url "https://pd.w.org/2024/02/19765c68a8dbfbfc9.20608423-1536x2048.jpg" :source "https://wordpress.org/photos/photo/19765c68a8/" :license "cc0"}]}
+  {:owner 8 :kind "sale" :title "Theatre tickets, two seats" :price "60" :category "tickets" :city "Zurich" :status nil :age-days 4
+   :description "Two seats in the stalls for Friday's play at the Schauspielhaus. Can't go anymore; at face value."
+   :photos []}
+  {:owner 10 :kind "wanted" :title "Child's car seat, ages 1 to 4" :price nil :category "kids" :city "Uster" :status nil :age-days 2
+   :description "For our son, who's growing out of his baby seat. Isofix would be great, but not a must."
+   :photos []}
+  {:owner 11 :kind "wanted" :title "Folding bike for the commute" :price nil :category "sports" :city "Zurich" :status nil :age-days 5
+   :description "Something that fits on the S-Bahn. Up to 300, gears welcome."
+   :photos []}
+  {:owner 12 :kind "wanted" :title "Round cake tins, 20 to 24 cm" :price nil :category "home" :city "Winterthur" :status nil :age-days 1
+   :description "For a birthday cake next weekend. Happy to borrow and return them clean."
+   :photos []}
+  {:owner 13 :kind "wanted" :title "Small desk for a children's room" :price nil :category "home" :city "Baden" :status nil :age-days 7
+   :description "About 100 cm wide, any colour. We can pick up in the area."
+   :photos []}
+  {:owner 14 :kind "wanted" :title "Two tickets for the Saturday match" :price nil :category "tickets" :city "Zurich" :status nil :age-days 3
+   :description "FCZ at home, any seats together. Will pay face value."
    :photos []}
  ]}
