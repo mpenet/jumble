@@ -9,6 +9,17 @@ To upgrade, deploy the new version (see [running it](doc/operations.md)):
 the database is migrated as it starts, from any earlier version. What needs
 doing besides is under **Upgrade notes**.
 
+## 2026.11.3 (2026-11-18)
+
+- Mitigates Java4Shell ([CVE-2026-114938](https://calif.io/java4shell/)),
+  a bug in the JVM's Base64 code on x86-64 processors with AVX-512: the
+  image runs Java with `-XX:-UseBASE64Intrinsics`. ARM64 is not affected.
+
+### Upgrade notes
+
+Upgrade as soon as you can if your server has an x86-64 processor. Nothing
+else changes. `JAVA_OPTS`, if set, still comes after this flag.
+
 ## 2026.11.2 (2026-11-17)
 
 - A join link: moderators make one on **Who may sign in**, working for good
