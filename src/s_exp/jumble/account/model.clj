@@ -1,6 +1,7 @@
 (ns s-exp.jumble.account.model
-  "Accounts, sessions and who may sign in: members, the allowlist moderators
-  keep, removed addresses, and the one-use links and attempts of sign-in."
+  "Accounts, sessions and who may sign in: members, the moderators and the
+  allowlist the owner keeps, removed addresses, and the one-use links and
+  attempts of sign-in."
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
             [s-exp.ex :as ex]
@@ -183,7 +184,7 @@
     (jdbc/execute-one! tx ["UPDATE user SET name = ? WHERE id = ?" name user-id])))
 
 (defn anyone-allowed?
-  "Whether moderators let anyone sign in, rather than the allowlist only."
+  "Whether the owner lets anyone sign in, rather than the allowlist only."
   [db]
   (= "on"
      (:value (jdbc/execute-one! db ["SELECT value FROM community_setting WHERE name = 'anyone-allowed'"] db/opts))))
@@ -197,16 +198,54 @@
                             ON CONFLICT (name) DO UPDATE SET value = excluded.value"
                         (if anyone "on" "off")])))
 
+(defn moderators
+  "The moderators the owner appointed: `{:email :added-by :added-at}`, by
+  address, with the name of who appointed each."
+  [db]
+  (jdbc/execute! db
+                 ["SELECT m.email, u.name AS added_by, m.added_at
+                      FROM moderator m LEFT JOIN user u ON u.id = m.added_by
+                      ORDER BY m.email"]
+                 db/opts))
+
+(defn moderator?
+  "Whether the owner appointed `email` a moderator."
+  [db email]
+  (some? (jdbc/execute-one! db ["SELECT 1 FROM moderator WHERE email = ?" (str/lower-case email)])))
+
+(defn appoint!
+  "Makes `email` (one address) a moderator, as owner `owner-id`; already one,
+  it stays as it was."
+  [db {:keys [email owner-id now]}]
+  (db/with-write-tx [tx db]
+    (jdbc/execute-one! tx
+                       ["INSERT INTO moderator (email, added_by, added_at) VALUES (?, ?, ?)
+                            ON CONFLICT (email) DO NOTHING"
+                        (str/lower-case email)
+                        owner-id
+                        now])))
+
+(defn withdraw-moderator!
+  [db email]
+  (db/with-write-tx [tx db]
+    (jdbc/execute-one! tx ["DELETE FROM moderator WHERE email = ?" (str/lower-case email)])))
+
+(defn staff
+  "The `owner`'s address and the moderators', sorted, the owner first."
+  [db owner]
+  (into [owner] (comp (map :email) (remove #{owner})) (moderators db)))
+
 (defn allowed-emails
   "Who may sign in, as a rule of [[membership/allows?]]: `:anyone` when
-  moderators let anyone in, else the `moderators`' addresses, always let in,
-  then the allowlist's patterns."
-  [db moderators]
+  the owner lets anyone in, else the [[staff]], always let in, then the
+  allowlist's patterns."
+  [db owner]
   (if (anyone-allowed? db)
     :anyone
-    (into (vec (sort moderators))
-          (comp (map :pattern) (remove (set moderators)))
-          (jdbc/execute! db ["SELECT pattern FROM allowed_email ORDER BY pattern"] db/opts))))
+    (let [staff (staff db owner)]
+      (into staff
+            (comp (map :pattern) (remove (set staff)))
+            (jdbc/execute! db ["SELECT pattern FROM allowed_email ORDER BY pattern"] db/opts)))))
 
 (defn mailbox
   "The mailbox `email` reaches, lowercase: `Alice+tag@example.org` and
@@ -224,8 +263,8 @@
   "Whether an email address may sign in, as a function of it: let in by
   [[allowed-emails]] and not removed (see [[removed?]]), read once, for
   checking many."
-  [db moderators]
-  (let [rule (allowed-emails db moderators)
+  [db owner]
+  (let [rule (allowed-emails db owner)
         removed (into #{} (map :email) (jdbc/execute! db ["SELECT email FROM removed_email"] db/opts))]
     #(and (membership/allows? rule %) (not (removed (mailbox %))))))
 

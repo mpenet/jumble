@@ -25,14 +25,14 @@
         (section (i18n/t "What is kept")
                  (i18n/t "Your name and email address, from signing in; what you post: listings, their photos and your messages; your favorites, saved searches and settings; and reports you make.")
                  (when listed
-                   (i18n/t "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link.")))
+                   (i18n/t "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by the owner, an invitation, or the community's join link.")))
         (section (i18n/t "Why")
                  (i18n/t "Only to run {app-name}: to show your listings, deliver your messages and send you emails: those you asked for, and a weekly summary of what is new, which you can turn off. Nothing is sold or shared for advertising, and there is no tracking and no analytics."
                          {:app-name app-name}))
         (section (i18n/t "Who sees what")
                  (i18n/t "Other members see your name, your listings and what you write to them. Messages are between you and the person you write to. Moderators see reports, and can remove listings.")
                  (when listed
-                   (i18n/t "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since.")))
+                   (i18n/t "The community's owner sees who may sign in, and who invited each address. You see whom you invited, and whether they have joined since.")))
         (section (i18n/t "Cookies")
                  (i18n/t "Only those {app-name} needs: one keeps you signed in, one remembers your light or dark theme, and one protects signing in. No tracking cookies."
                          {:app-name app-name}))

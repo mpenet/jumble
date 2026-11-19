@@ -11,20 +11,26 @@ doing besides is under **Upgrade notes**.
 
 ## Unreleased
 
-- Who may sign in is the moderators' to say, in Jumble: **Let anyone sign
-  in**, or the list of addresses and domains they keep, which stays while
-  anyone may. The configuration names the moderators, who can always sign
-  in; a new community lets them in alone.
+- An owner, named by the configuration (`JUMBLE_OWNER`), sets up the
+  community in Jumble: who may sign in, the moderators, the appearance and
+  the poster. Moderators, appointed by the owner on **Moderators**, handle
+  reports, remove listings and members, and keep the categories and pickup
+  places. The owner and moderators can always sign in.
+- Who may sign in is the owner's to say, in Jumble: **Let anyone sign in**,
+  or the list of addresses and domains kept there, which stays while anyone
+  may. A new community lets its owner in alone.
+- **Remove a member** is on the **Reports** page.
 - With Google, the organisation managing an account is checked whenever a
   domain on the list let its address in, without a setting; where anyone
   may sign in, any Google account can.
 
 ### Upgrade notes
 
-`JUMBLE_ALLOWED_EMAILS` and `JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN` are gone,
-and Jumble refuses to start with `:allowed-emails` in a settings file.
-`JUMBLE_MODERATORS` is required. After upgrading, only moderators can sign
-in until they choose who else may, under **Who may sign in**.
+`JUMBLE_MODERATORS`, `JUMBLE_ALLOWED_EMAILS` and
+`JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN` are gone, and Jumble refuses to start
+with `:moderators` or `:allowed-emails` in a settings file. `JUMBLE_OWNER`
+is required. After upgrading, only the owner can sign in until they choose
+who else may, under **Who may sign in**, and appoint the moderators.
 
 ## 2026.11.3 (2026-11-18)
 

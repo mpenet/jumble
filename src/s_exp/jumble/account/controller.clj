@@ -18,7 +18,6 @@
             [s-exp.jumble.error :as error]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.view.layout :as layout]
-            [s-exp.jumble.email.mail :as mail]
             [s-exp.jumble.oidc :as oidc]
             [s-exp.jumble.push.crypto :as crypto]
             [s-exp.jumble.push.model :as push]
@@ -223,10 +222,10 @@
 
 (defn- room
   "Account creation options for `email`, let in by `admission`: the
-  community's member limit, which never keeps its moderators out, and
-  whether it joins by the join link."
-  [settings email admission]
-  {:member-limit (when-not (contains? (:moderators settings) (str/lower-case email))
+  community's member limit, which never keeps its owner or moderators out,
+  and whether it joins by the join link."
+  [db settings email admission]
+  {:member-limit (when-not (some #{(str/lower-case email)} (account/staff db (:owner settings)))
                    (:member-limit settings))
    :joining (= :joining admission)})
 
@@ -250,7 +249,7 @@
   [{:keys [ctx] :as request} attempt code]
   (let [{:keys [db oidc settings]} ctx
         {:keys [require-hosted-domain]} settings
-        allowed-emails (account/allowed-emails db (:moderators settings))
+        allowed-emails (account/allowed-emails db (:owner settings))
         claims (oidc/verify-id-token oidc
                                      (oidc/exchange-code! oidc code (:code-verifier attempt))
                                      (:nonce attempt))
@@ -266,20 +265,9 @@
           (let [user (account/upsert-user! db
                                            claims
                                            (System/currentTimeMillis)
-                                           (room settings (:email claims) admission))]
+                                           (room db settings (:email claims) admission))]
             (log-joining admission (:email claims))
             (start-session request user (:return-to attempt)))))))
-
-(defn- typed-address
-  "The address typed in the `email` field of `params`, trimmed and
-  lowercased: `{:email address}`, or `{:error message}` when it is not one,
-  `missing` when none was typed."
-  [params missing]
-  (let [email (some-> (params/one params "email") str/trim str/lower-case)]
-    (cond
-      (empty? email) {:error missing}
-      (mail/plain-address? email) {:email email}
-      :else {:error (i18n/t "“{email}” is not an email address." {:email email})})))
 
 (defn request-link
   "Emails a sign-in link to an address allowed in. Everyone is told the
@@ -288,7 +276,7 @@
   (if-not (email-sign-in? request)
     (layout/not-found request)
     (let [{:keys [db settings sign-in-requests]} ctx
-          {:keys [email error]} (typed-address params (i18n/t "Enter your email address."))
+          {:keys [email error]} (params/typed-address params (i18n/t "Enter your email address."))
           target (auth/local-path (params/one params "return_to"))
           join-token (params/one params "join")]
       (if error
@@ -296,7 +284,7 @@
                        (view/email-sign-in request
                                            {:values {:email (params/one params "email") :return-to target :join join-token}
                                             :errors {:email error}}))
-        (do (when-let [admission (admission db ((account/allowed db (:moderators settings)) email) join-token email)]
+        (do (when-let [admission (admission db ((account/allowed db (:owner settings)) email) join-token email)]
               (if (and (:clients-known settings)
                        (not (client-allowed! sign-in-requests
                                              remote-addr
@@ -349,10 +337,10 @@
       (layout/not-found request)
       (if-let [{:keys [email return-to join-token]}
                (account/use-email-sign-in! db (params/one params "token") (System/currentTimeMillis))]
-        (if-let [admission (admission db ((account/allowed db (:moderators settings)) email) join-token email)]
+        (if-let [admission (admission db ((account/allowed db (:owner settings)) email) join-token email)]
           (ex/try+
             (finish-deletion! ctx "email" email)
-            (let [user (account/email-user! db email (System/currentTimeMillis) (room settings email admission))]
+            (let [user (account/email-user! db email (System/currentTimeMillis) (room db settings email admission))]
               (log-joining admission email)
               (start-session request user return-to))
             (catch ::error/community-full _
@@ -378,7 +366,7 @@
       (layout/message request
                       410
                       (i18n/t "Link expired")
-                      (list (i18n/t "This join link no longer works. Ask the community's moderators for the current one.")
+                      (list (i18n/t "This join link no longer works. Ask the community's owner for the current one.")
                             (when contact
                               (list " " (i18n/t "Write to {contact}." {:contact [:a {:href (str "mailto:" contact)} contact]}))))))))
 
@@ -504,7 +492,7 @@
     (layout/message request
                     403
                     (i18n/t "Invitations are closed")
-                    (i18n/t "Your community's moderators do not let members invite people at the moment.")
+                    (i18n/t "Your community's owner does not let members invite people at the moment.")
                     [:a.button {:href "/settings"} (i18n/t "Settings")])))
 
 (defn invitations
@@ -523,14 +511,14 @@
     (invitations-closed request)
     (let [{:keys [db settings]} ctx
           typed (params/one params "email")
-          {address :email error :error} (typed-address params (i18n/t "Enter an email address."))]
+          {address :email error :error} (params/typed-address params (i18n/t "Enter an email address."))]
       (if error
         (invite-page request 422 {:values {:email typed} :errors {:email error}})
         (case (invite/invite! db
                               {:member-id (:id user)
                                :email address
                                :now (System/currentTimeMillis)
-                               :moderators (:moderators settings)
+                               :owner (:owner settings)
                                :community-per-day (:invitations-per-day settings)
                                ;; Not a member yet: the community's language.
                                :email-for #(i18n/speaking nil (email/invitation settings (:name user) %))})

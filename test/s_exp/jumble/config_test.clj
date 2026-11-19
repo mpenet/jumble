@@ -14,7 +14,7 @@
     (is (= "http://localhost:8080" base-url))
     (is (= "oidc" (:method auth)))
     (is (false? (:require-hosted-domain auth)))
-    (is (= #{"alice@example.com"} (:moderators (config/load-config :dev nil))))
+    (is (= "alice@example.com" (:owner (config/load-config :dev nil))))
     (is (= "Jumble" app-name))
     (is (= "http://127.0.0.1:3900" (get-in (config/load-config :dev nil) [:storage :endpoint])))
     (is (= "CHF" currency))
@@ -45,7 +45,7 @@
                 e))]
       (is (re-find #"JUMBLE_BASE_URL" (ex-message e)))
       (is (re-find #"JUMBLE_SIGN_IN" (ex-message e)))
-      (is (re-find #"JUMBLE_MODERATORS" (ex-message e)) "who chooses who else may sign in"))))
+      (is (re-find #"JUMBLE_OWNER" (ex-message e)) "who chooses who else may sign in"))))
 
 (deftest prod-profile-requires-settings-test
   (testing "without environment variables, production refuses to start and says why"
@@ -55,7 +55,7 @@
               (catch clojure.lang.ExceptionInfo e
                 e))]
       (is (= ::error/missing-config (ex/ex-type e)))
-      (is (= #{[:base-url] [:auth :method] [:moderators]
+      (is (= #{[:base-url] [:auth :method] [:owner]
                [:storage :endpoint] [:storage :region] [:storage :bucket]
                [:storage :access-key] [:storage :secret-key] [:mail :host] [:mail :from]}
              (set (:missing (ex-data e))))))))
@@ -70,7 +70,7 @@
              :access-key "EXO1" :secret-key "s"}
    :auth {:method "oidc" :issuer "https://dex.example.com" :client-id "jumble" :client-secret "s"
           :session-ttl-days 7}
-   :moderators "dave@example.com"
+   :owner "dave@example.com"
    :mail {:host "smtp.gmail.com" :port 587 :starttls true :from "Jumble <jumble@example.com>"
           :username "jumble@example.com" :password "app-password"}})
 
@@ -158,11 +158,13 @@
   (testing "SMTP: no implicit TLS port, a host and not a URL"
     (is (= [:mail :port] (invalid-path (assoc-in valid [:mail :port] 465))))
     (is (= [:mail :host] (invalid-path (assoc-in valid [:mail :host] "smtp://smtp.example.org")))))
-  (testing "moderators can be a list in a settings file"
-    (is (= #{"dave@example.org"} (:moderators (config/normalize (assoc valid :moderators ["Dave@example.org"]))))))
-  (testing "moderators are addresses as people type them"
-    (doseq [bad ["<dave@example.org>" "dave%x@example.org" "dave@localhost"]]
-      (is (= [:moderators] (invalid-path (assoc valid :moderators bad))) bad)))
+  (testing "the owner is one address as people type it, case and spacing ignored"
+    (is (= "dave@example.org" (:owner (config/normalize (assoc valid :owner " Dave@Example.org ")))))
+    (doseq [bad ["<dave@example.org>" "dave%x@example.org" "dave@localhost" "dave@example.org,bob@example.org"]]
+      (is (= [:owner] (invalid-path (assoc valid :owner bad))) bad))
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Missing configuration" (config/normalize (assoc valid :owner " ")))))
+  (testing "moderators are appointed in the app: a settings file naming them is refused"
+    (is (= [:moderators] (invalid-path (assoc valid :moderators ["bob@example.org"])))))
   (testing "the source offered is upstream's unless set, and a web address"
     (is (= "https://github.com/mpenet/jumble" (:source-url (config/normalize valid))))
     (is (= "https://git.example.org/ours" (:source-url (config/normalize (assoc valid :source-url "https://git.example.org/ours")))))
@@ -197,13 +199,6 @@
                           (config/normalize (assoc valid :base-url "jumble.example.com"))))
     (is (map? (config/normalize (assoc valid :base-url "http://localhost:8080"))))
     (is (map? (config/normalize (assoc valid :base-url "http://127.0.0.1:8080")))))
-  (testing "moderators: comma separated addresses, case and spacing ignored, one at least"
-    (is (= #{"alice@example.com" "bob@example.com"}
-           (:moderators (config/normalize (assoc valid :moderators " Alice@Example.com,bob@example.com ")))))
-    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Missing configuration" (config/normalize (assoc valid :moderators ""))))
-    (is (= [:moderators] (invalid-path (assoc valid :moderators " , "))))
-    (is (= [:moderators] (invalid-path (assoc valid :moderators []))))
-    (is (= [:moderators] (invalid-path (assoc valid :moderators "alice")))))
   (testing "addresses are written as browsers send them: lowercase host, no default port"
     (is (= "https://jumble.example.com" (:base-url (config/normalize (assoc valid :base-url "HTTPS://Jumble.Example.com:443/")))))
     (is (= "https://jumble.example.com:8443" (:base-url (config/normalize (assoc valid :base-url "https://jumble.example.com:8443")))))

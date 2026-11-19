@@ -14,7 +14,7 @@
 
 (def ^:private day (* 24 60 60 1000))
 
-(def ^:private moderators #{"dave@example.com"})
+(def ^:private owner "dave@example.com")
 
 (defn- invite!
   [member email now & {:keys [community-per-day] :or {community-per-day 100}}]
@@ -22,7 +22,7 @@
                   {:member-id member
                    :email email
                    :now now
-                   :moderators moderators
+                   :owner owner
                    :community-per-day community-per-day
                    :email-for (fn [to] {:to to :subject "Invited" :text "Come"})}))
 
@@ -48,7 +48,7 @@
     (testing "an invitation lets the address in, as the member's, and emails it"
       (is (= :sent (invite! ann "Neighbour@Gmail.com" 1000)))
       (is (= [{:pattern "neighbour@gmail.com" :added-by ann :way "invitation"}] (allowlist)))
-      (is ((account/allowed *db* moderators) "neighbour@gmail.com"))
+      (is ((account/allowed *db* owner) "neighbour@gmail.com"))
       (is (= ["neighbour@gmail.com"] (outbox))))
     (testing "an address already let in is emailed, the allowlist left as it was"
       (is (= :sent (invite! ann "colleague@example.com" 2000)))
@@ -61,10 +61,10 @@
       (is (= :sent (invite! ann "Bob+shop@example.com" 3500)) "another address of a member's mailbox")
       (is (= :sent (invite! ann "gone@gmail.com" 4000)))
       (is (= 2 (count (outbox))))
-      (is (not ((account/allowed *db* moderators) "gone@gmail.com"))))
+      (is (not ((account/allowed *db* owner) "gone@gmail.com"))))
     (testing "only one address is invited: never a pattern letting in others"
       (is (thrown? Exception (invite! ann "*@gmail.com" 4500)))
-      (is (not ((account/allowed *db* moderators) "stranger@gmail.com"))))
+      (is (not ((account/allowed *db* owner) "stranger@gmail.com"))))
     (testing "five a day each"
       (is (= :limited (invite! ann "sixth@gmail.com" 6000)))
       (is (= :sent (invite! (fixtures/user! "carl") "sixth@gmail.com" 6000)) "another member's are their own")
@@ -104,4 +104,4 @@
       (invite/forget-old! *db* (+ 1000 (* 90 day)))
       (is (= ["recent@gmail.com"] (map :email (invite/sent *db* ann)))))
     (testing "whom they let in stays in"
-      (is ((account/allowed *db* moderators) "old@gmail.com")))))
+      (is ((account/allowed *db* owner) "old@gmail.com")))))

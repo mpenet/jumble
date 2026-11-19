@@ -11,9 +11,9 @@
   (if (str/blank? reason) "" (str "\n\n" (mail/quoted reason))))
 
 (defn alerts
-  "Emails to each of `moderators` about the report of listing `title`, each
-  in the language `language-of` gives for their address."
-  [{:keys [base-url app-name moderators]} {:keys [title reporter-name reason]} language-of]
+  "Emails to each of `moderators` (addresses) about the report of listing
+  `title`, each in the language `language-of` gives for their address."
+  [{:keys [base-url app-name]} moderators {:keys [title reporter-name reason]} language-of]
   (let [title (mail/one-line title)]
     (vec (for [moderator (sort moderators)]
            (i18n/speaking (language-of moderator)

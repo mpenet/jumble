@@ -25,7 +25,8 @@
    "029-chat-announcements.sql" "030-chat-channels.sql"
    "031-join-link.sql"
    "032-allowlist-way.sql"
-   "033-invitations.sql"])
+   "033-invitations.sql"
+   "034-moderators.sql"])
 
 (defn migrations
   []

@@ -50,7 +50,7 @@
    :currency "CHF"
    :categories [{:id "home" :label "Furniture & home"} {:id "other" :label "Other"}]
    :places [{:id "hall" :label "Main hall"}]
-   :moderators #{"dave@example.com"}
+   :owner "dave@example.com"
    :image-origin "https://blobs.test"})
 
 (defn use-choices!

@@ -1,6 +1,7 @@
 (ns s-exp.jumble.moderation.view
-  "Pages of moderation: reports, removing a listing, who may sign in and
-  removing a member, categories and places, the community's palette."
+  "Pages of moderation: reports, removing a listing or a member, categories
+  and places; and the owner's: who may sign in, the moderators, the
+  community's palette and poster."
   (:require [clojure.string :as str]
             [s-exp.jumble.view.dates :as dates]
             [s-exp.jumble.view.i18n :as i18n]
@@ -16,27 +17,45 @@
 (set! *warn-on-reflection* true)
 
 (defn- sections
-  []
-  [["/manage" (i18n/t "Reports")]
-   ["/manage/members" (i18n/t "Who may sign in")]
-   ["/manage/categories" (i18n/t "Categories")]
-   ["/manage/places" (i18n/t "Pickup places")]
-   ["/manage/appearance" (i18n/t "Appearance")]
-   ["/manage/poster" (i18n/t "Poster")]])
+  "The pages under Manage `request`'s user may use: the moderators', and
+  the owner's too."
+  [request]
+  (cond-> [["/manage" (i18n/t "Reports")]
+           ["/manage/categories" (i18n/t "Categories")]
+           ["/manage/places" (i18n/t "Pickup places")]]
+    (:owner request) (into [["/manage/members" (i18n/t "Who may sign in")]
+                            ["/manage/moderators" (i18n/t "Moderators")]
+                            ["/manage/appearance" (i18n/t "Appearance")]
+                            ["/manage/poster" (i18n/t "Poster")]])))
 
 (defn- moderation-nav
   "Links between the moderators' pages, `current` marked, and the notice
   for moderators if there is one."
   [request current]
   (list [:nav.moderation-nav {:aria-label (i18n/t "Manage")}
-         (for [[href label] (sections)]
+         (for [[href label] (sections request)]
            [:a (cond-> {:href href} (= href current) (assoc :aria-current "page")) label])]
         (when-let [text (layout/file-notice (get-in request [:ctx :settings :moderator-notice]))]
           [:aside.moderator-notice {:aria-label (i18n/t "Notice")} text])))
 
+(defn- remove-member-form
+  "The form asking which member to remove, by address."
+  [{:keys [values errors removed]}]
+  [:form.listing-form {:method "get" :action "/manage/members/remove" :novalidate true}
+   [:h2 (i18n/t "Remove a member")]
+   [:label {:for "email"} (i18n/t "Their email address")]
+   [:input (merge {:id "email" :name "email" :type "email" :required true :value (:email values)}
+                  (layout/invalid errors :email))]
+   (layout/field-error errors :email)
+   [:p.field-note (i18n/t "Their account and listings are deleted for good, and they can never sign in again.")]
+   (when removed [:p.field-note {:role "status"} (i18n/t "Removed.")])
+   [:button.danger {:type "submit"} (i18n/t "Remove…")]])
+
 (defn reports
-  "Reported listings for moderators, each with its reports and what can be done."
-  [request listings]
+  "Reported listings for moderators, each with its reports and what can be
+  done; and the form removing a member, with `form` (see
+  [[remove-member-form]])."
+  [request listings form]
   (layout/page request
                {:title (i18n/t "Reports")}
                [:div.board-header
@@ -69,7 +88,8 @@
                         [:form (merge {:method "post" :action (str "/manage/listings/" listing-id "/dismiss")} layout/once)
                          [:button.secondary {:type "submit" :aria-label (i18n/t "Dismiss the reports on {title}" {:title listing-title})}
                           (i18n/t "Dismiss")]]])])]
-                 [:div.empty [:p (i18n/t "No open reports.")]])))
+                 [:div.empty [:p (i18n/t "No open reports.")]])
+               (remove-member-form form)))
 
 (defn report-form
   "The report form on a page of its own, back with the problem in what was
@@ -113,19 +133,6 @@
   (if (zero? n)
     (i18n/t "No listings")
     (i18n/tn "{n} listing" "{n} listings" n)))
-
-(defn- remove-member-form
-  "The form asking which member to remove, by address."
-  [{:keys [values errors removed]}]
-  [:form.listing-form {:method "get" :action "/manage/members/remove" :novalidate true}
-   [:h2 (i18n/t "Remove a member")]
-   [:label {:for "email"} (i18n/t "Their email address")]
-   [:input (merge {:id "email" :name "email" :type "email" :required true :value (:email values)}
-                  (layout/invalid errors :email))]
-   (layout/field-error errors :email)
-   [:p.field-note (i18n/t "Their account and listings are deleted for good, and they can never sign in again.")]
-   (when removed [:p.field-note {:role "status"} (i18n/t "Removed.")])
-   [:button.danger {:type "submit"} (i18n/t "Remove…")]])
 
 (defn confirm-member-removal
   "Asks a moderator to confirm removing the member with address `email`."
@@ -226,10 +233,9 @@
                                 (i18n/t "Let anyone sign in"))]]])
 
 (defn members
-  "Who may sign in: anyone, or the moderators and the list, with the join
-  link, members' invitations, the patterns moderators added and a form to
-  add more; and a form to remove a member."
-  [{:keys [ctx] :as request} {:keys [anyone moderators added join invitations-open values errors saved] :as form}]
+  "Who may sign in, for the owner: anyone, or the list, with the join link,
+  members' invitations, the patterns added and a form to add more."
+  [{:keys [ctx] :as request} {:keys [anyone added join invitations-open values errors saved]}]
   (layout/page request
                {:title (i18n/t "Who may sign in")}
                [:div.board-header
@@ -241,18 +247,14 @@
                                     :domain [:code "*@example.org"]
                                     :subdomains [:code "*@*.example.org"]})])]
                (anyone-section anyone)
-               (if anyone
-                 (remove-member-form form)
+               (when-not anyone
                  (list (join-link-section (get-in ctx [:settings :base-url]) join)
                        (member-invitations-section invitations-open)
                        (when (= "oidc" (get-in ctx [:settings :sign-in]))
                          [:p.field-note.members (i18n/t "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with.")])
                        [:section.members
-                        [:h2 (i18n/t "Moderators")]
-                        [:p.lede (i18n/t "They can always sign in: they are moderators by the configuration.")]
-                        [:ul.member-list (for [moderator moderators] [:li [:code moderator]])]]
-                       [:section.members
                         [:h2 (i18n/t "Added here")]
+                        [:p.field-note (i18n/t "You and the {moderators} can always sign in, on the list or not." {:moderators [:a {:href "/manage/moderators"} (i18n/t "moderators")]})]
                         (if (seq added)
                           [:ul.member-list
                            (for [{:keys [pattern added-by added-at way]} added]
@@ -281,8 +283,38 @@
                          [:input {:type "checkbox" :name "invite" :checked (:invite values)}]
                          (i18n/t "Email an invitation to the addresses")]
                         (when saved [:p.field-note {:role "status"} (i18n/t "Added.")])
-                        [:button {:type "submit"} (i18n/t "Add")]]
-                       (remove-member-form form)))))
+                        [:button {:type "submit"} (i18n/t "Add")]]))))
+
+(defn moderators
+  "The moderators, for the owner: who they are, with who appointed each and
+  when, the way to withdraw each, and a form to appoint one."
+  [request {:keys [moderators values errors]}]
+  (layout/page request
+               {:title (i18n/t "Moderators")}
+               [:div.board-header
+                (moderation-nav request "/manage/moderators")
+                [:h1 (i18n/t "Moderators")]
+                [:p.lede (i18n/t "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+                                 {:owner [:code (get-in request [:ctx :settings :owner])]})]]
+               [:section.members
+                (if (seq moderators)
+                  [:ul.member-list
+                   (for [{:keys [email added-by added-at]} moderators]
+                     [:li
+                      [:code email]
+                      [:span.member-meta (i18n/t "added by {who}, {date}" {:who (former-member-or added-by) :date (dates/date added-at)})]
+                      [:form (merge {:method "post" :action "/manage/moderators/withdraw"} layout/once)
+                       [:input {:type "hidden" :name "email" :value email}]
+                       [:button.link-button {:type "submit" :aria-label (i18n/t "Withdraw {pattern}" {:pattern email})}
+                        (i18n/t "Withdraw")]]])]
+                  [:p.lede (i18n/t "Nobody yet.")])]
+               [:form.listing-form (merge {:method "post" :action "/manage/moderators" :novalidate true} layout/once)
+                [:label {:for "email"} (i18n/t "Appoint a moderator")]
+                [:input (merge {:id "email" :name "email" :type "email" :required true :value (:email values)}
+                               (layout/invalid errors :email))]
+                (layout/field-error errors :email)
+                [:p.field-note (i18n/t "By their email address; they need not have joined yet. Withdrawing one takes effect at once.")]
+                [:button {:type "submit"} (i18n/t "Appoint")]]))
 
 (defn- list-texts
   [which]

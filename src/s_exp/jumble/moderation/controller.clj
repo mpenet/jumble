@@ -1,7 +1,7 @@
 (ns s-exp.jumble.moderation.controller
-  "Moderation on the web: reports, removing or dismissing, who may sign in
-  and removing members, the lists of categories and places, and the
-  community's palette."
+  "Moderation on the web: reports, removing or dismissing, removing
+  members, the lists of categories and places; and the owner's: who may
+  sign in, the moderators, the community's palette and poster."
   (:require [clojure.string :as str]
             [s-exp.ex :as ex]
             [s-exp.jumble.account.data :as data]
@@ -32,6 +32,14 @@
   [handler]
   (auth/require-user (fn [request]
                        (if (:moderator request)
+                         (handler request)
+                         (layout/not-found request)))))
+
+(defn- owner-only
+  "Like [[moderators-only]], for the owner only."
+  [handler]
+  (auth/require-user (fn [request]
+                       (if (:owner request)
                          (handler request)
                          (layout/not-found request)))))
 
@@ -66,15 +74,22 @@
                                   {:listing-id id :reporter-id (:id user) :reason reason
                                    :now (System/currentTimeMillis)
                                    :alerts (email/alerts settings
+                                                         (account/staff db (:owner settings))
                                                          {:title title :reporter-name (:name user)
                                                           :reason reason}
                                                          #(account/language-of db %))})
             (response/redirect (str page "?reported"))
             (layout/not-found request)))))))
 
+(defn- reports-page
+  "The reports page answering with `status`, with `form` (see
+  [[view/reports]]) for the member removal typed."
+  [{:keys [ctx] :as request} status form]
+  (response/html status (view/reports request (moderation/open-reports (:db ctx)) form)))
+
 (defn reports
-  [{:keys [ctx] :as request}]
-  (response/html 200 (view/reports request (moderation/open-reports (:db ctx)))))
+  [{:keys [query-string] :as request}]
+  (reports-page request 200 {:removed (= "removed" query-string)}))
 
 (defn confirm-removal
   "Asks a moderator to confirm removing the listing in the path, with a
@@ -127,13 +142,12 @@
   "The members page answering with `status`, with `form` (see
   [[view/members]]) for what was typed."
   [{:keys [ctx] :as request} status form]
-  (let [{:keys [db settings]} ctx
+  (let [{:keys [db]} ctx
         anyone (account/anyone-allowed? db)]
     (response/html status
                    (view/members request
                                  (assoc form
                                         :anyone anyone
-                                        :moderators (sort (:moderators settings))
                                         :added (when-not anyone (account/added-emails db))
                                         :join (join/current db (System/currentTimeMillis))
                                         :invitations-open (invite/open? db))))))
@@ -172,8 +186,7 @@
   [{:keys [query-string] :as request}]
   (members-page request
                 200
-                {:saved (= "added" query-string)
-                 :removed (= "removed" query-string)}))
+                {:saved (= "added" query-string)}))
 
 (defn- parse-patterns
   "`{:patterns [...]}` from text typed one per line or comma separated, or
@@ -222,25 +235,28 @@
 
 (defn- removal
   "The member the address typed in `params` names, to remove: `{:email
-  :accounts}`, or `{:error message}` for no member or a moderator, who is
-  one by the configuration."
+  :accounts}`, or `{:error message}` for no member, the owner or a
+  moderator."
   [{:keys [ctx params]}]
   (let [{:keys [db settings]} ctx
         email (some-> (params/one params "email") str/trim str/lower-case)
-        accounts (when (seq email) (account/members-with-email db email))]
+        accounts (when (seq email) (account/members-with-email db email))
+        ;; By mailbox, as removal goes: Dave+x@ is dave@, a moderator.
+        mailboxes (into #{} (map account/mailbox) (cons email (map :email accounts)))
+        named (fn [address] (contains? mailboxes (account/mailbox address)))]
     (cond
-      ;; By mailbox, as removal goes: Dave+x@ is dave@, a moderator.
-      (some (fn [moderator] (some #(= (account/mailbox moderator) (account/mailbox %))
-                                  (cons email (map :email accounts))))
-            (:moderators settings))
-      {:error (i18n/t "{email} is a moderator, by the configuration: remove them there." {:email email})}
+      (named (:owner settings))
+      {:error (i18n/t "{email} is the owner, by the configuration." {:email email})}
+
+      (some named (map :email (account/moderators db)))
+      {:error (i18n/t "{email} is a moderator: the owner must withdraw them as a moderator first." {:email email})}
 
       (empty? accounts) {:error (i18n/t "No member has this address.")}
       :else {:email email :accounts accounts})))
 
 (defn- removal-refused
   [{:keys [params] :as request} error]
-  (members-page request 422 {:values {:email (params/one params "email")} :errors {:email error}}))
+  (reports-page request 422 {:values {:email (params/one params "email")} :errors {:email error}}))
 
 (defn confirm-member-removal
   "Asks a moderator to confirm removing a member, saying who and what goes."
@@ -265,7 +281,38 @@
                                (:blobs ctx)
                                {:email email :moderator-id (:id user)
                                 :now (System/currentTimeMillis)})
-          (response/redirect "/manage/members?removed")))))
+          (response/redirect "/manage?removed")))))
+
+(defn- moderators-page
+  "The moderators page answering with `status`, with `form` (see
+  [[view/moderators]]) for what was typed."
+  [{:keys [ctx] :as request} status form]
+  (response/html status (view/moderators request (assoc form :moderators (account/moderators (:db ctx))))))
+
+(defn moderators
+  [request]
+  (moderators-page request 200 {}))
+
+(defn appoint-moderator
+  "Makes the typed address a moderator; not a pattern, nor the owner's."
+  [{:keys [ctx params user] :as request}]
+  (let [{:keys [db settings]} ctx
+        typed (params/one params "email")
+        {:keys [email error]} (params/typed-address params (i18n/t "Enter an email address."))
+        error (or error
+                  (when (= email (:owner settings))
+                    (i18n/t "{email} is the owner, by the configuration." {:email email})))]
+    (if error
+      (moderators-page request 422 {:values {:email typed} :errors {:email error}})
+      (do (account/appoint! db {:email email :owner-id (:id user) :now (System/currentTimeMillis)})
+          (response/redirect "/manage/moderators")))))
+
+(defn withdraw-moderator
+  "No longer lets an address moderate, at once; whether it may still sign
+  in is the list's to say."
+  [{:keys [ctx params]}]
+  (account/withdraw-moderator! (:db ctx) (params/one params "email"))
+  (response/redirect "/manage/moderators"))
 
 (def ^:private lists
   "Which list of choices, by the path of its page."
@@ -382,18 +429,21 @@
   (merge (choices-routes)
          {[:post "/listings/{id}/report"] (auth/require-user #'report)
           [:get "/manage"] (moderators-only #'reports)
-          [:get "/manage/members"] (moderators-only #'members)
-          [:post "/manage/members"] (moderators-only #'add-members)
-          [:post "/manage/members/withdraw"] (moderators-only #'withdraw-pattern)
-          [:post "/manage/members/join-link"] (moderators-only #'create-join-link)
-          [:post "/manage/members/join-link/off"] (moderators-only #'turn-off-join-link)
-          [:post "/manage/members/invitations"] (moderators-only #'set-member-invitations)
-          [:post "/manage/members/anyone"] (moderators-only #'set-anyone-allowed)
+          [:get "/manage/members"] (owner-only #'members)
+          [:post "/manage/members"] (owner-only #'add-members)
+          [:post "/manage/members/withdraw"] (owner-only #'withdraw-pattern)
+          [:post "/manage/members/join-link"] (owner-only #'create-join-link)
+          [:post "/manage/members/join-link/off"] (owner-only #'turn-off-join-link)
+          [:post "/manage/members/invitations"] (owner-only #'set-member-invitations)
+          [:post "/manage/members/anyone"] (owner-only #'set-anyone-allowed)
           [:get "/manage/members/remove"] (moderators-only #'confirm-member-removal)
           [:post "/manage/members/remove"] (moderators-only #'remove-member)
+          [:get "/manage/moderators"] (owner-only #'moderators)
+          [:post "/manage/moderators"] (owner-only #'appoint-moderator)
+          [:post "/manage/moderators/withdraw"] (owner-only #'withdraw-moderator)
           [:get "/manage/listings/{id}/remove"] (moderators-only #'confirm-removal)
           [:post "/manage/listings/{id}/remove"] (moderators-only #'remove-listing)
           [:post "/manage/listings/{id}/dismiss"] (moderators-only #'dismiss)
-          [:get "/manage/appearance"] (moderators-only #'appearance)
-          [:get "/manage/poster"] (moderators-only #'poster)
-          [:post "/manage/appearance"] (moderators-only #'choose-palette)}))
+          [:get "/manage/appearance"] (owner-only #'appearance)
+          [:get "/manage/poster"] (owner-only #'poster)
+          [:post "/manage/appearance"] (owner-only #'choose-palette)}))

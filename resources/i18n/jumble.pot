@@ -44,10 +44,6 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "“{email}” is not an email address."
-msgstr ""
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "Enter your email address."
 msgstr ""
 
@@ -64,7 +60,7 @@ msgid "Get a new link"
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "This join link no longer works. Ask the community's moderators for the current one."
+msgid "This join link no longer works. Ask the community's owner for the current one."
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
@@ -108,14 +104,14 @@ msgid "Invitations are closed"
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Your community's moderators do not let members invite people at the moment."
+msgid "Your community's owner does not let members invite people at the moment."
 msgstr ""
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
 msgid "Settings"
 msgstr ""
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/moderation/controller.clj
 msgid "Enter an email address."
 msgstr ""
 
@@ -1258,7 +1254,11 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "{email} is a moderator, by the configuration: remove them there."
+msgid "{email} is the owner, by the configuration."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/controller.clj
@@ -1302,15 +1302,19 @@ msgid "Reports"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Who may sign in"
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Categories"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Pickup places"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1327,6 +1331,26 @@ msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1386,26 +1410,6 @@ msgid "{n} listing"
 msgid_plural "{n} listings"
 msgstr[0] ""
 msgstr[1] ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove a member"
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their email address"
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their account and listings are deleted for good, and they can never sign in again."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Removed."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove…"
-msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Remove {name}?"
@@ -1532,15 +1536,15 @@ msgid "Whoever joins by the link or an invitation signs in through your sign-in 
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators"
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "They can always sign in: they are moderators by the configuration."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "You and the {moderators} can always sign in, on the list or not."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "moderators"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1585,6 +1589,22 @@ msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Add"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint a moderator"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1744,7 +1764,7 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by the owner, an invitation, or the community's join link."
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
@@ -1764,7 +1784,7 @@ msgid "Other members see your name, your listings and what you write to them. Me
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgid "The community's owner sees who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
 msgstr ""
 
 #: src/s_exp/jumble/page/privacy.clj
@@ -1885,6 +1905,10 @@ msgstr ""
 
 #: src/s_exp/jumble/view/layout.clj
 msgid "Not found"
+msgstr ""
+
+#: src/s_exp/jumble/web/params.clj
+msgid "“{email}” is not an email address."
 msgstr ""
 
 #: src/s_exp/jumble/web/routes.clj

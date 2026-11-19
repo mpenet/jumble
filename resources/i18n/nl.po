@@ -45,10 +45,6 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Het maximale aantal leden is bereikt. Vraag de moderatoren om ruimte te maken."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "“{email}” is not an email address."
-msgstr "“{email}” is geen e-mailadres."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "Enter your email address."
 msgstr "Vul je e-mailadres in."
 
@@ -65,8 +61,8 @@ msgid "Get a new link"
 msgstr "Nieuwe link aanvragen"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Deze aanmeldlink werkt niet meer. Vraag de moderators van de gemeenschap om de huidige."
+msgid "This join link no longer works. Ask the community's owner for the current one."
+msgstr "Deze aanmeldlink werkt niet meer. Vraag de eigenaar van de gemeenschap om de huidige."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -109,14 +105,14 @@ msgid "Invitations are closed"
 msgstr "Uitnodigingen zijn gesloten"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Your community's moderators do not let members invite people at the moment."
-msgstr "De moderators van je gemeenschap laten leden op dit moment niemand uitnodigen."
+msgid "Your community's owner does not let members invite people at the moment."
+msgstr "De eigenaar van je gemeenschap laat leden op dit moment niemand uitnodigen."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
 msgid "Settings"
 msgstr "Instellingen"
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/moderation/controller.clj
 msgid "Enter an email address."
 msgstr "Vul een e-mailadres in."
 
@@ -1259,8 +1255,12 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "Om iedereen toe te laten, gebruik je hierboven ‘Iedereen laten inloggen’."
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "{email} is a moderator, by the configuration: remove them there."
-msgstr "{email} is moderator via de configuratie: verwijder het adres daar."
+msgid "{email} is the owner, by the configuration."
+msgstr "{email} is de eigenaar, via de configuratie."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
+msgstr "{email} is moderator: de eigenaar moet die eerst als moderator intrekken."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "No member has this address."
@@ -1303,16 +1303,20 @@ msgid "Reports"
 msgstr "Meldingen"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Who may sign in"
-msgstr "Wie mag inloggen"
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Categories"
 msgstr "Categorieën"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Pickup places"
 msgstr "Ophaalplekken"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Wie mag inloggen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators"
+msgstr "Moderators"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appearance"
@@ -1329,6 +1333,26 @@ msgstr "Beheer"
 #: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
 msgstr "Mededeling"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Een lid verwijderen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "E-mailadres van het lid"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Het account en de advertenties worden definitief verwijderd, en dit lid kan nooit meer inloggen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Verwijderd."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Verwijderen…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Listings members reported, the longest waiting first."
@@ -1387,26 +1411,6 @@ msgid "{n} listing"
 msgid_plural "{n} listings"
 msgstr[0] "{n} advertentie"
 msgstr[1] "{n} advertenties"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove a member"
-msgstr "Een lid verwijderen"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their email address"
-msgstr "E-mailadres van het lid"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their account and listings are deleted for good, and they can never sign in again."
-msgstr "Het account en de advertenties worden definitief verwijderd, en dit lid kan nooit meer inloggen."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Removed."
-msgstr "Verwijderd."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove…"
-msgstr "Verwijderen…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Remove {name}?"
@@ -1533,16 +1537,16 @@ msgid "Whoever joins by the link or an invitation signs in through your sign-in 
 msgstr "Wie lid wordt via de link of een uitnodiging, logt in via je inlogdienst: daarvoor is daar een account nodig, met het adres waarmee diegene lid wordt."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators"
-msgstr "Moderators"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "They can always sign in: they are moderators by the configuration."
-msgstr "Zij mogen altijd inloggen: ze zijn moderator via de configuratie."
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"
 msgstr "Hier toegevoegd"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "You and the {moderators} can always sign in, on the list or not."
+msgstr "Jij en de {moderators} kunnen altijd inloggen, op de lijst of niet."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "moderators"
+msgstr "moderators"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1587,6 +1591,22 @@ msgstr "Toegevoegd."
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Add"
 msgstr "Toevoegen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+msgstr "Moderators behandelen meldingen, verwijderen advertenties en leden, en houden de categorieën en ophaalplekken bij. Ze kunnen altijd inloggen. Jij, {owner}, bent de eigenaar, via de configuratie."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint a moderator"
+msgstr "Moderator aanstellen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
+msgstr "Via het e-mailadres; diegene hoeft nog geen lid te zijn. Intrekken werkt meteen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint"
+msgstr "Aanstellen"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "What listings are filed under, in the order members see them."
@@ -1745,8 +1765,8 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Je naam en e-mailadres, van het inloggen; wat je plaatst: advertenties, de foto's daarvan en je berichten; je favorieten, opgeslagen zoekopdrachten en instellingen; en meldingen die je doet."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
-msgstr "Als leden mensen mogen uitnodigen: de adressen die je uitnodigt, 90 dagen lang. Wie mag inloggen is een lijst die bij elk toegevoegd adres zegt hoe het erbij kwam: via een moderator, een uitnodiging of de aanmeldlink van de gemeenschap."
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by the owner, an invitation, or the community's join link."
+msgstr "Als leden mensen mogen uitnodigen: de adressen die je uitnodigt, 90 dagen lang. Wie mag inloggen is een lijst die bij elk toegevoegd adres zegt hoe het erbij kwam: via de eigenaar, een uitnodiging of de aanmeldlink van de gemeenschap."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
@@ -1765,8 +1785,8 @@ msgid "Other members see your name, your listings and what you write to them. Me
 msgstr "Andere leden zien je naam, je advertenties en wat je hun schrijft. Berichten blijven tussen jou en degene aan wie je schrijft. Moderatoren zien meldingen en kunnen advertenties verwijderen."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
-msgstr "Moderators zien wie mag inloggen, en wie elk adres heeft uitgenodigd. Jij ziet wie je hebt uitgenodigd, en of die inmiddels lid is."
+msgid "The community's owner sees who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "De eigenaar van de gemeenschap ziet wie mag inloggen, en wie elk adres heeft uitgenodigd. Jij ziet wie je hebt uitgenodigd, en of die inmiddels lid is."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1887,6 +1907,10 @@ msgstr "Er staat niets op dit adres."
 #: src/s_exp/jumble/view/layout.clj
 msgid "Not found"
 msgstr "Pagina niet gevonden"
+
+#: src/s_exp/jumble/web/params.clj
+msgid "“{email}” is not an email address."
+msgstr "“{email}” is geen e-mailadres."
 
 #: src/s_exp/jumble/web/routes.clj
 msgid "Signed out"

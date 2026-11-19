@@ -258,7 +258,7 @@
     (testing "the link is enough where the provider's organisation is otherwise required"
       (binding [*handler* (app *idp* {:require-hosted-domain true})]
         (is (= 303 (:status (join {:email "friend@gmail.com"}))))
-        (is ((account/allowed *db* #{}) "friend@gmail.com"))))
+        (is ((account/allowed *db* "dave@example.com") "friend@gmail.com"))))
     (testing "a member the moderators removed does not come back by it"
       (data/remove-member! *db* (blob/memory-store) {:email "neighbour@gmail.com" :moderator-id nil :now 0})
       (is (= 403 (:status (join {:email "neighbour@gmail.com"})))))
@@ -277,7 +277,7 @@
                         {:member-id ann
                          :email address
                          :now 0
-                         :moderators #{"dave@example.com"}
+                         :owner "dave@example.com"
                          :community-per-day 100
                          :email-for (fn [to] {:to to :subject "Invited" :text "Come"})}))
       (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))))

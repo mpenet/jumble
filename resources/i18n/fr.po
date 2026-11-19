@@ -45,10 +45,6 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Elle compte autant de membres qu’elle peut en avoir. Demandez à ses modérateurs de faire de la place."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "“{email}” is not an email address."
-msgstr "« {email} » n'est pas une adresse e-mail."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "Enter your email address."
 msgstr "Saisissez votre adresse e-mail."
 
@@ -65,8 +61,8 @@ msgid "Get a new link"
 msgstr "Recevoir un nouveau lien"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Ce lien pour rejoindre ne fonctionne plus. Demandez le lien actuel aux modérateurs de la communauté."
+msgid "This join link no longer works. Ask the community's owner for the current one."
+msgstr "Ce lien pour rejoindre ne fonctionne plus. Demandez le lien actuel à la personne propriétaire de la communauté."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -109,14 +105,14 @@ msgid "Invitations are closed"
 msgstr "Les invitations sont fermées"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Your community's moderators do not let members invite people at the moment."
-msgstr "Les modérateurs de votre communauté ne laissent pas les membres inviter des personnes pour le moment."
+msgid "Your community's owner does not let members invite people at the moment."
+msgstr "La personne propriétaire de votre communauté ne laisse pas les membres inviter des personnes pour le moment."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/moderation/controller.clj
 msgid "Enter an email address."
 msgstr "Saisissez une adresse e-mail."
 
@@ -1259,8 +1255,12 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "Pour ouvrir l'accès à tout le monde, utilisez « Laisser tout le monde se connecter », plus haut."
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "{email} is a moderator, by the configuration: remove them there."
-msgstr "{email} fait partie de la modération par la configuration : retirez l’adresse de la configuration."
+msgid "{email} is the owner, by the configuration."
+msgstr "{email} est propriétaire de la communauté, par la configuration."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
+msgstr "{email} fait partie de la modération : la personne propriétaire doit d'abord lui retirer ce rôle."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "No member has this address."
@@ -1303,16 +1303,20 @@ msgid "Reports"
 msgstr "Signalements"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Who may sign in"
-msgstr "Qui peut se connecter"
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Categories"
 msgstr "Catégories"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Pickup places"
 msgstr "Lieux de retrait"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Qui peut se connecter"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators"
+msgstr "Modérateurs"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appearance"
@@ -1329,6 +1333,26 @@ msgstr "Gérer"
 #: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
 msgstr "Avis"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Retirer un membre"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "Son adresse e-mail"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Son compte et ses annonces sont supprimés définitivement, et cette personne ne pourra plus jamais se connecter."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Retiré."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Retirer…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Listings members reported, the longest waiting first."
@@ -1387,26 +1411,6 @@ msgid "{n} listing"
 msgid_plural "{n} listings"
 msgstr[0] "{n} annonce"
 msgstr[1] "{n} annonces"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove a member"
-msgstr "Retirer un membre"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their email address"
-msgstr "Son adresse e-mail"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their account and listings are deleted for good, and they can never sign in again."
-msgstr "Son compte et ses annonces sont supprimés définitivement, et cette personne ne pourra plus jamais se connecter."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Removed."
-msgstr "Retiré."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove…"
-msgstr "Retirer…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Remove {name}?"
@@ -1533,16 +1537,16 @@ msgid "Whoever joins by the link or an invitation signs in through your sign-in 
 msgstr "Qui rejoint par le lien ou une invitation se connecte par votre service de connexion : il lui faut un compte chez ce service, avec l'adresse utilisée pour rejoindre."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators"
-msgstr "Modérateurs"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "They can always sign in: they are moderators by the configuration."
-msgstr "Ces personnes peuvent toujours se connecter : elles font partie de la modération par la configuration."
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"
 msgstr "Ajoutés ici"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "You and the {moderators} can always sign in, on the list or not."
+msgstr "Vous et les {moderators} pouvez toujours vous connecter, sur la liste ou non."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "moderators"
+msgstr "modérateurs"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1587,6 +1591,22 @@ msgstr "Ajouté."
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Add"
 msgstr "Ajouter"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+msgstr "Les modérateurs traitent les signalements, retirent des annonces et des membres, et tiennent les catégories et les lieux de retrait. Ils peuvent toujours se connecter. Vous, {owner}, êtes propriétaire, par la configuration."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint a moderator"
+msgstr "Nommer un modérateur"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
+msgstr "Par son adresse e-mail ; la personne n'a pas besoin d'avoir déjà rejoint. Un retrait prend effet immédiatement."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint"
+msgstr "Nommer"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "What listings are filed under, in the order members see them."
@@ -1745,8 +1765,8 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Votre nom et votre adresse e-mail, issus de la connexion ; ce que vous publiez : annonces, leurs photos et vos messages ; vos favoris, recherches enregistrées et paramètres ; et les signalements que vous faites."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
-msgstr "Quand les membres peuvent inviter des personnes, les adresses que vous invitez, pendant 90 jours. Les personnes autorisées à se connecter forment une liste, qui indique pour chaque adresse ajoutée comment elle est arrivée : par un modérateur, une invitation ou le lien pour rejoindre de la communauté."
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by the owner, an invitation, or the community's join link."
+msgstr "Quand les membres peuvent inviter des personnes, les adresses que vous invitez, pendant 90 jours. Les personnes autorisées à se connecter forment une liste, qui indique pour chaque adresse ajoutée comment elle est arrivée : par la personne propriétaire, une invitation ou le lien pour rejoindre de la communauté."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
@@ -1765,8 +1785,8 @@ msgid "Other members see your name, your listings and what you write to them. Me
 msgstr "Les autres membres voient votre nom, vos annonces et ce que vous leur écrivez. Les messages restent entre vous et la personne à qui vous écrivez. L'équipe de modération voit les signalements et peut retirer des annonces."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
-msgstr "Les modérateurs voient qui peut se connecter, et qui a invité chaque adresse. Vous voyez les personnes que vous avez invitées, et si elles ont rejoint la communauté depuis."
+msgid "The community's owner sees who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "La personne propriétaire de la communauté voit qui peut se connecter, et qui a invité chaque adresse. Vous voyez les personnes que vous avez invitées, et si elles ont rejoint la communauté depuis."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1887,6 +1907,10 @@ msgstr "Il n'y a rien à cette adresse."
 #: src/s_exp/jumble/view/layout.clj
 msgid "Not found"
 msgstr "Page introuvable"
+
+#: src/s_exp/jumble/web/params.clj
+msgid "“{email}” is not an email address."
+msgstr "« {email} » n'est pas une adresse e-mail."
 
 #: src/s_exp/jumble/web/routes.clj
 msgid "Signed out"

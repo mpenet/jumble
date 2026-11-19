@@ -177,7 +177,7 @@ next_steps() {
   cat <<EOF
 
 provision: done. Next:
-  1. Fill in $env_file: sign-in, who may sign in, moderators and SMTP
+  1. Fill in $env_file: sign-in, the owner and SMTP
      ($3).
   2. Check the storage keys: deploy/verify-keys.sh $env_file
   3. Deploy: INSTANCE=deploy/instances/$1 deploy/deploy.sh

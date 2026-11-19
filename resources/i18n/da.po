@@ -45,10 +45,6 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Der er ikke plads til flere medlemmer. Bed moderatorerne om at gøre plads."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "“{email}” is not an email address."
-msgstr "»{email}« er ikke en e-mailadresse."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "Enter your email address."
 msgstr "Skriv din e-mailadresse."
 
@@ -65,8 +61,8 @@ msgid "Get a new link"
 msgstr "Få et nyt link"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Dette tilmeldingslink virker ikke længere. Bed fællesskabets moderatorer om det aktuelle."
+msgid "This join link no longer works. Ask the community's owner for the current one."
+msgstr "Dette tilmeldingslink virker ikke længere. Bed fællesskabets ejer om det aktuelle."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -109,14 +105,14 @@ msgid "Invitations are closed"
 msgstr "Invitationer er lukket"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Your community's moderators do not let members invite people at the moment."
-msgstr "Dit fællesskabs moderatorer lader ikke medlemmer invitere nogen lige nu."
+msgid "Your community's owner does not let members invite people at the moment."
+msgstr "Dit fællesskabs ejer lader ikke medlemmer invitere nogen lige nu."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
 msgid "Settings"
 msgstr "Indstillinger"
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/moderation/controller.clj
 msgid "Enter an email address."
 msgstr "Skriv en e-mailadresse."
 
@@ -1259,8 +1255,12 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "For at lukke alle ind, brug »Lad alle logge ind« ovenfor."
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "{email} is a moderator, by the configuration: remove them there."
-msgstr "{email} er moderator via konfigurationen: fjern vedkommende dér."
+msgid "{email} is the owner, by the configuration."
+msgstr "{email} er ejer via konfigurationen."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
+msgstr "{email} er moderator: ejeren skal først tilbagekalde vedkommende som moderator."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "No member has this address."
@@ -1303,16 +1303,20 @@ msgid "Reports"
 msgstr "Anmeldelser"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Who may sign in"
-msgstr "Hvem kan logge ind"
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Categories"
 msgstr "Kategorier"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Pickup places"
 msgstr "Afhentningssteder"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Hvem kan logge ind"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators"
+msgstr "Moderatorer"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appearance"
@@ -1329,6 +1333,26 @@ msgstr "Administrer"
 #: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
 msgstr "Meddelelse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Fjern et medlem"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "Medlemmets e-mailadresse"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Kontoen og annoncerne slettes for altid, og vedkommende kan aldrig logge ind igen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Fjernet."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Fjern…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Listings members reported, the longest waiting first."
@@ -1387,26 +1411,6 @@ msgid "{n} listing"
 msgid_plural "{n} listings"
 msgstr[0] "{n} annonce"
 msgstr[1] "{n} annoncer"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove a member"
-msgstr "Fjern et medlem"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their email address"
-msgstr "Medlemmets e-mailadresse"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their account and listings are deleted for good, and they can never sign in again."
-msgstr "Kontoen og annoncerne slettes for altid, og vedkommende kan aldrig logge ind igen."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Removed."
-msgstr "Fjernet."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove…"
-msgstr "Fjern…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Remove {name}?"
@@ -1533,16 +1537,16 @@ msgid "Whoever joins by the link or an invitation signs in through your sign-in 
 msgstr "Den, der bliver medlem via linket eller en invitation, logger ind via jeres login-tjeneste: vedkommende skal have en konto der, med den adresse, de bliver medlem med."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators"
-msgstr "Moderatorer"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "They can always sign in: they are moderators by the configuration."
-msgstr "De kan altid logge ind: de er moderatorer via konfigurationen."
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"
 msgstr "Tilføjet her"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "You and the {moderators} can always sign in, on the list or not."
+msgstr "Du og {moderators} kan altid logge ind, på listen eller ej."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "moderators"
+msgstr "moderatorerne"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1587,6 +1591,22 @@ msgstr "Tilføjet."
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Add"
 msgstr "Tilføj"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+msgstr "Moderatorer behandler anmeldelser, fjerner opslag og medlemmer og holder kategorier og afhentningssteder ved lige. De kan altid logge ind. Du, {owner}, er ejer via konfigurationen."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint a moderator"
+msgstr "Udnævn en moderator"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
+msgstr "Via e-mailadressen; vedkommende behøver ikke at være medlem endnu. Tilbagekaldelse virker med det samme."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint"
+msgstr "Udnævn"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "What listings are filed under, in the order members see them."
@@ -1745,8 +1765,8 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Dit navn og din e-mailadresse fra login; det, du opretter: annoncer, deres billeder og dine beskeder; dine favoritter, gemte søgninger og indstillinger; og de anmeldelser, du laver."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
-msgstr "Når medlemmer må invitere folk: de adresser, du inviterer, i 90 dage. Hvem der må logge ind, er en liste, der for hver tilføjet adresse siger, hvordan den kom med: via en moderator, en invitation eller fællesskabets tilmeldingslink."
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by the owner, an invitation, or the community's join link."
+msgstr "Når medlemmer må invitere folk: de adresser, du inviterer, i 90 dage. Hvem der må logge ind, er en liste, der for hver tilføjet adresse siger, hvordan den kom med: via ejeren, en invitation eller fællesskabets tilmeldingslink."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
@@ -1765,8 +1785,8 @@ msgid "Other members see your name, your listings and what you write to them. Me
 msgstr "Andre medlemmer ser dit navn, dine annoncer og det, du skriver til dem. Beskeder er mellem dig og den, du skriver til. Moderatorer ser anmeldelser og kan fjerne annoncer."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
-msgstr "Moderatorerne ser, hvem der må logge ind, og hvem der inviterede hver adresse. Du ser, hvem du har inviteret, og om de er blevet medlem siden."
+msgid "The community's owner sees who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Fællesskabets ejer ser, hvem der må logge ind, og hvem der inviterede hver adresse. Du ser, hvem du har inviteret, og om de er blevet medlem siden."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1887,6 +1907,10 @@ msgstr "Der er intet på denne adresse."
 #: src/s_exp/jumble/view/layout.clj
 msgid "Not found"
 msgstr "Siden blev ikke fundet"
+
+#: src/s_exp/jumble/web/params.clj
+msgid "“{email}” is not an email address."
+msgstr "»{email}« er ikke en e-mailadresse."
 
 #: src/s_exp/jumble/web/routes.clj
 msgid "Signed out"

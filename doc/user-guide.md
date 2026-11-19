@@ -2,7 +2,7 @@
 
 Jumble is your community's marketplace: a place to sell, give away and lend
 things to each other, and to ask for what you are looking for. This guide covers everything members can do, then
-what moderators do.
+what moderators and the owner do.
 
 ## Signing in
 
@@ -170,13 +170,13 @@ nothing new sends nothing. Turn it off in **Settings**.
 
 ## Inviting someone
 
-When your community's moderators allow it, **Settings** → **Invite someone
+When your community's owner allows it, **Settings** → **Invite someone
 you know** takes the address of someone you would like to see here: they
 get an email saying you invited them, with your name, and can join with
 that address. You can invite five people a day, and the community a
 limited number in all. The page lists whom you invited in the last 90
-days, and who of them has joined since. Your moderators see the addresses
-your invitations let in.
+days, and who of them has joined since. Your community's owner sees the
+addresses your invitations let in.
 
 ## Reporting a listing
 
@@ -191,8 +191,9 @@ follows your system's choice until you pick one.
 
 ## For moderators
 
-Moderators are named in Jumble's configuration by email; there is no
-moderator setting in the app itself.
+The owner, named in Jumble's configuration, appoints the moderators in the
+app (see [for the owner](#for-the-owner)). Moderators deal with what
+members post, and with members.
 
 **Removing any listing.** On someone else's listing, moderators see
 **Remove listing (moderation)**. After confirming, the listing and its
@@ -207,8 +208,9 @@ with who reported it, when and why. For each one:
 - **Remove listing**: as above, the reason going to the owner.
 - **Dismiss**: keeps the listing and closes the reports.
 
-The moderators' pages link to each other at the top: **Reports**, **Who may
-sign in**, **Categories**, **Pickup places**, **Appearance** and **Poster**.
+The moderators' pages link to each other at the top: **Reports**,
+**Categories** and **Pickup places**; the owner's add **Who may sign in**,
+**Moderators**, **Appearance** and **Poster**.
 
 **Categories and pickup places.** Members file listings under a category,
 and choose a pickup place or type a city. On their pages, moderators
@@ -220,11 +222,62 @@ category; with no pickup places, members always type a city. A new
 Jumble starts with a set of general categories, in its language, and no
 places.
 
-**Who may sign in.** A new community lets in its moderators alone, who can
-always sign in. **Let anyone sign in** opens it to everyone; **Limit
-sign-in to the list** closes it again, to the list, which is kept
-meanwhile. Unless anyone can sign in, **Who may sign in** lists the
-moderators, and the addresses and patterns moderators added. Add an address (`alice@gmail.com`), a domain
+**Remove a member**.
+
+**Join link.** Unless anyone can sign in, **Who may sign in** also offers a
+join link: whoever opens it can join with any address, by email or the
+sign-in provider, without being on the list (where the provider's
+organisation is otherwise required, with Google, the link is enough). Their address is then added, marked as joined with the join
+link, and can be withdrawn like any other.
+There is one link at a time, working until the date chosen or for good.
+Anyone holding it can join, so share it where you would invite people in
+person; **Renew** makes a new one and stops the earlier one at once, and
+**Turn off the join link** stops it altogether. A removed member cannot
+come back through it. Whoever opens a link no longer working is told so.
+With a sign-in provider rather than email, whoever joins by the link or an
+invitation needs an account there, with the address they join with: a
+provider that only knows your members turns them away.
+
+**Members' invitations.** Unless anyone can sign in, **Let members invite
+people** lets every member invite someone by email, five a day each and
+at most `JUMBLE_INVITATIONS_PER_DAY` (100 by default) a day in all, from
+their settings. Each address invited is added to the list, marked as
+invited by that member, and can be withdrawn like any other; it stays if
+the member leaves. A member is told the same whatever the address, so
+inviting reveals nothing of who is a member or was removed: members and
+removed addresses get no email. **Stop members inviting people** ends it;
+those already invited stay on the list.
+
+**Remove a member** takes their email address and, after asking, deletes
+their account for good, with their listings and photos, as when they
+delete it themselves; their messages stay, from a former member. They can
+never sign in again, whatever lets their address in. The form is on the
+**Reports** page. The owner cannot be removed, nor a moderator until the
+owner withdraws them.
+
+Every removal is kept as a record, with who removed what and why, whether
+it was reported or not. A later report on a listing whose reports were
+dismissed starts again.
+
+Moderators cannot read conversations.
+
+## For the owner
+
+The owner is named in Jumble's configuration (`JUMBLE_OWNER`): one
+address, changed there to hand the community over. The owner can do all a
+moderator does, and alone sets up the community: who may sign in, the
+moderators, its appearance and its poster.
+
+**Moderators.** **Moderators** lists them, with who appointed each and
+when. Appoint one by email address, whether or not they have joined yet;
+**Withdraw** takes effect at once: they no longer moderate, and can still
+sign in only if the list lets them. Moderators can always sign in.
+
+**Who may sign in.** A new community lets in its owner alone; the owner
+and moderators can always sign in. **Let anyone sign in** opens it to
+everyone; **Limit sign-in to the list** closes it again, to the list,
+which is kept meanwhile. Unless anyone can sign in, **Who may sign in**
+lists the addresses and patterns added. Add an address (`alice@gmail.com`), a domain
 (`*@partner.org`) or its subdomains (`*@*.partner.org`), one per line; tick
 **Email an invitation** to let the addresses know. **Withdraw** takes
 effect at once: people only it let in are signed out at their next click,
@@ -256,12 +309,6 @@ inviting reveals nothing of who is a member or was removed: members and
 removed addresses get no email. **Stop members inviting people** ends it;
 those already invited stay on the list.
 
-**Remove a member** takes their email address and, after asking, deletes
-their account for good, with their listings and photos, as when they
-delete it themselves; their messages stay, from a former member. They can
-never sign in again, whatever lets their address in. Moderators are set in
-the configuration and are removed there.
-
 **Poster.** A page to print for a noticeboard, by the coffee machine or the
 lift: the community's name or logo, what it is for, and a QR code that
 opens it, its address written out below. **Print** prints the poster alone;
@@ -276,9 +323,3 @@ Catppuccin, Gruvbox, Nord, Rosé Pine, Solarized, Dracula, One, GitHub,
 Everforest, Kanagawa), each shown light and dark. **Save** applies it at once. Each palette
 has a light and a dark side; members see the one they chose, or their
 device's.
-
-Every removal is kept as a record, with who removed what and why, whether
-it was reported or not. A later report on a listing whose reports were
-dismissed starts again.
-
-Moderators cannot read conversations.

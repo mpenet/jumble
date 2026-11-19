@@ -72,8 +72,8 @@ DNS and still gets a certificate; `DOMAIN` sets your own instead, its DNS
 record pointing at the server. Run again, the script creates what is
 missing and leaves the rest.
 
-Then fill in the rest of `jumble.env` (how members sign in, who may, the
-moderators and SMTP), check the keys with `deploy/verify-keys.sh
+Then fill in the rest of `jumble.env` (how members sign in, the owner and
+SMTP), check the keys with `deploy/verify-keys.sh
 deploy/instances/community/jumble.env`, and deploy:
 
 ```sh
@@ -89,7 +89,7 @@ To make it look lived in, [`dev/demo_seed.clj`](../dev/demo_seed.clj) adds
 the members and listings of [`dev/demo/listings.edn`](../dev/demo/listings.edn),
 with real photos (public domain or CC0, from Openverse). The members are
 email accounts at a domain of yours, which the community must let in
-(moderators can add `*@<domain>`), with message and weekly emails off; their
+(the owner can add `*@<domain>`; the seed lets anyone in), with message and weekly emails off; their
 mailboxes need not exist, but give the domain a catch-all that drops mail,
 or reminders to them bounce. On the server, from a copy of `dev/`:
 
@@ -111,7 +111,7 @@ HOST=jumble-admin@<server> DOMAIN=<domain> deploy/demo/install.sh
 ```
 
 A timer then runs [`dev/demo_reset.clj`](../dev/demo_reset.clj) at 04:00:
-it deletes every account but the demo members' and the moderators', with
+it deletes every account but the demo members', the owner's and the moderators', with
 what they left on the others' side, and seeds again what is missing. It
 refuses to run where the demo seed has not marked the community as a demo
 for that domain. The

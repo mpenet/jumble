@@ -65,7 +65,7 @@
                     {:member-id ann
                      :email "friend@gmail.com"
                      :now 8
-                     :moderators #{"dave@example.com"}
+                     :owner "dave@example.com"
                      :community-per-day 100
                      :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
     {:ann ann :bob bob :lamp lamp :desk desk :thread thread}))
@@ -117,7 +117,7 @@
       (is (= [{:name "" :email "" :iss "deleted"}]
              (q "SELECT name, email, iss FROM user WHERE id = ?" ann))))
     (testing "whom they invited may still join"
-      (is ((account/allowed *db* #{}) "friend@gmail.com")))
+      (is ((account/allowed *db* "dave@example.com") "friend@gmail.com")))
     (testing "their reports stay, anonymous"
       (is (= 1 (count (q "SELECT * FROM report WHERE listing_id = ?" desk)))))
     (testing "the other side can no longer reply"
@@ -129,7 +129,7 @@
   (fixtures/allow-only! ["*@example.com"])
   (let [blobs (blob/memory-store)
         joiner (:id (account/email-user! *db* "neighbour@gmail.com" 0 {:joining true}))
-        allowed? #((account/allowed *db* #{}) %)]
+        allowed? #((account/allowed *db* "dave@example.com") %)]
     (account/allow! *db* {:patterns ["guest@gmail.com"] :moderator-id nil :now 0})
     (data/delete-account! *db* blobs joiner 10)
     (data/delete-account! *db* blobs (:id (account/email-user! *db* "guest@gmail.com" 0)) 10)

@@ -77,7 +77,7 @@
                                       (- now week)
                                       batch-size]
                                      db/opts))]
-    (let [allowed (account/allowed db (:moderators settings))
+    (let [allowed (account/allowed db (:owner settings))
           until (- now listing/settle-time)]
       (outbox/enqueue-each!
        due

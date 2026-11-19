@@ -242,7 +242,7 @@ the server's copy with yours.
   the `FORWARD` chain).
 - Both buckets private; each key limited to its bucket; the backup bucket
   versioned and its key unable to erase versions (`verify-keys.sh` passes).
-- Sign-in limited to your community: the moderators' list, an internal consent
+- Sign-in limited to your community: the owner's list, an internal consent
   screen, or a provider that only knows your members; a join link, if
   any, only where it was meant to go, renewed when it went further. Whoever
   holds the link can make Jumble email sign-in links to any address, as

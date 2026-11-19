@@ -38,16 +38,15 @@
 
 (defn invite!
   "Invites `email` (valid) from member `member-id`: lets it in, as the
-  member's invitation, unless the `moderators` or the allowlist do already
-  (see [[account/allowed]]), and queues the email `(email-for address)`.
+  member's invitation, unless [[account/allowed]] does already (with the
+  community's `owner`), and queues the email `(email-for address)`.
   Returns `:sent`; `:limited` past [[per-day]] from the member in the last
-  day, or
-  `:community-limited` past `community-per-day` from all members. An
+  day, or `:community-limited` past `community-per-day` from all members. An
   address of a member's mailbox or a removed one is neither emailed nor let
   in, with the same result: whoever invites learns nothing of either.
   Throws ex-info of type ::error/invalid-pattern for a pattern, which would
   let in others."
-  [db {:keys! [member-id email now moderators community-per-day email-for]}]
+  [db {:keys! [member-id email now owner community-per-day email-for]}]
   (let [email (str/lower-case (membership/address! email))]
     (db/with-write-tx [tx db]
       (cond
@@ -71,7 +70,7 @@
                                 now])
             (when-not (or (account/removed? tx email)
                           (seq (account/members-with-email tx email)))
-              (when-not ((account/allowed tx moderators) email)
+              (when-not ((account/allowed tx owner) email)
                 (account/allow-address! tx {:email email :way "invitation" :added-by member-id :now now}))
               (outbox/enqueue! tx (email-for email) now))
             :sent)))))

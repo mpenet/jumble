@@ -2,8 +2,8 @@
 # Makes a deployed Jumble a demo reset every night: installs dev/demo_reset.clj,
 # the seed and its listings, and the systemd timer running them, on HOST.
 #
-# Members at DOMAIN are the demo's (see dev/demo_seed.clj); the moderators
-# stay too. Everyone else is deleted nightly. The notice telling visitors so
+# Members at DOMAIN are the demo's (see dev/demo_seed.clj); the owner and
+# moderators stay too. Everyone else is deleted nightly. The notice telling visitors so
 # is installed as notice.md in the data volume, for JUMBLE_NOTICE_FILE=/data/notice.md.
 #
 #   HOST=jumble-admin@jumble-demo DOMAIN=jumbl.ing deploy/demo/install.sh

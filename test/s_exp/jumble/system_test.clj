@@ -28,7 +28,7 @@
    :base-url "http://localhost"
    :currency "CHF"
    :app-name "Jumble"
-   :moderators #{"dave@example.com"}
+   :owner "dave@example.com"
    :storage {:endpoint "http://127.0.0.1:1" :region "r" :bucket "b" :access-key "a" :secret-key "s"}
    ;; Discovery is lazy: nothing listens here and the system still starts.
    :auth {:issuer "http://127.0.0.1:1/dex" :client-id "jumble" :client-secret "s"
@@ -66,10 +66,10 @@
           (is (contains? (set (keys (component/dependencies (:delivery system)))) :irc)))))))
 
 (deftest delivery-settings-test
-  (testing "emails go to those allowed in, by the rule the application signs them in with: its moderators"
+  (testing "emails go to those allowed in, by the rule the application signs them in with: its owner's"
     (let [system (jumble/system (config "unused.db"))]
-      (is (= #{"dave@example.com"} (get-in system [:delivery :settings :moderators])))
-      (is (= (get-in system [:server :settings :moderators]) (get-in system [:delivery :settings :moderators]))))))
+      (is (= "dave@example.com" (get-in system [:delivery :settings :owner])))
+      (is (= (get-in system [:server :settings :owner]) (get-in system [:delivery :settings :owner]))))))
 
 (deftest system-test
   (call-with-db-path (fn [path]
@@ -95,8 +95,8 @@
                                (is (= "CHF"
                                       (:setting/value (jdbc/execute-one! (get-in system [:db :datasource])
                                                                          ["SELECT value FROM setting WHERE key = 'currency'"])))))
-                             (testing "the application knows its moderators"
-                               (is (= #{"dave@example.com"} (get-in system [:server :settings :moderators]))))
+                             (testing "the application knows its owner"
+                               (is (= "dave@example.com" (get-in system [:server :settings :owner]))))
                              (testing "message emails are sent from the background"
                                (is (some? (get-in system [:delivery :executor]))))
                              (testing "migrations ran on start"

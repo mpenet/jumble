@@ -73,10 +73,9 @@
  ;; Who hosts the instance, named in the footer with a link.
  :hosted-by {:name #env JUMBLE_HOSTED_BY
              :url #env JUMBLE_HOSTED_BY_URL}
- ;; Comma separated email addresses of the people who handle reported
- ;; listings; they can remove any listing, can always sign in, and choose
- ;; who else may. One at least.
- :moderators #or [#env JUMBLE_MODERATORS #profile {:dev "alice@example.com" :default ""}]
+ ;; The email address of the community's owner, who can always sign in,
+ ;; chooses who else may, and appoints the moderators in the app.
+ :owner #or [#env JUMBLE_OWNER #profile {:dev "alice@example.com" :default ""}]
  ;; ISO 4217. Fixed per deployment: the first value is recorded in the
  ;; database and startup refuses a different one later.
  :currency #or [#env JUMBLE_CURRENCY "CHF"]
@@ -99,8 +98,8 @@
         :from #or [#env JUMBLE_MAIL_FROM #profile {:dev "Jumble <jumble@example.com>"}]}
  ;; Sign-in through an OpenID Connect provider (for example Google, issuer
  ;; https://accounts.google.com); the docker compose Dex in development.
- ;; Who may sign in, beyond the moderators, is the moderators' to say, in the
- ;; app.
+ ;; Who may sign in, beyond the owner and moderators, is the owner's to say,
+ ;; in the app.
  :auth {;; oidc (an OpenID Connect provider) or email (links sent by email).
         :method #or [#env JUMBLE_SIGN_IN #profile {:dev "oidc"}]
         :issuer #or [#env JUMBLE_OIDC_ISSUER #profile {:dev "http://127.0.0.1:5556/dex"}]

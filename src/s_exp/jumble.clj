@@ -25,7 +25,7 @@
 (defn system
   [{:req! {db-config :db http-config :http base-url :base-url auth-config :auth
            app-name :app-name currency :currency
-           storage :storage mail-config :mail moderators :moderators}
+           storage :storage mail-config :mail owner :owner}
     :keys [https behind-proxy source-url notice chat-webhook-url irc logo logo-dark timezone language privacy contact member-limit invitations-per-day metrics-token litestream-metrics-url moderator-notice hosted-by
            listing-reminder-days]}]
   (let [{:keys! [method session-ttl-days] :keys [issuer client-id client-secret]} auth-config
@@ -45,7 +45,7 @@
                                                                   :require-hosted-domain (boolean (:require-hosted-domain auth-config))
                                                                   :app-name app-name
                                                                   :currency currency
-                                                                  :moderators moderators
+                                                                  :owner owner
                                                                   :timezone timezone
                                                                   :catalog catalog
                                                                   :logo logo
@@ -74,7 +74,7 @@
      :delivery (component/using (delivery/component {:mailer (mail/smtp-mailer mail-config)
                                                      :blobs blobs
                                                      :settings {:base-url base-url :app-name app-name :catalog catalog
-                                                                :moderators moderators
+                                                                :owner owner
                                                                 :listing-reminder-days listing-reminder-days
                                                                 :currency currency
                                                                 :chat-webhook-url chat-webhook-url

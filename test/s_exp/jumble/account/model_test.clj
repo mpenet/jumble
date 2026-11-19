@@ -177,7 +177,8 @@
     (account/email-user! *db* "Ann@Example.org" t0 {:joining true})
     (account/upsert-user! *db* (assoc identity-claims :sub "u2" :email "Bea@Example.org") t0 {:joining true})
     (is (= [{:pattern "ann@example.org" :way "link"} {:pattern "bea@example.org" :way "link"}] (allowlist)))
-    (is ((account/allowed *db* ["*@club.example"]) "ann@example.org")))
+    (account/set-anyone-allowed! *db* false)
+    (is ((account/allowed *db* "dave@example.com") "ann@example.org")))
   (testing "no account, no address let in: both or neither"
     (is (= ::error/community-full
            (refused #(account/email-user! *db* "cy@example.org" t0 {:member-limit 2 :joining true}))))

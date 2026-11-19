@@ -17,7 +17,7 @@
 (set! *warn-on-reflection* true)
 
 (def ^:private required
-  [[:base-url] [:auth :method] [:moderators]
+  [[:base-url] [:auth :method] [:owner]
    [:storage :endpoint] [:storage :region] [:storage :bucket] [:storage :access-key] [:storage :secret-key]
    [:mail :host] [:mail :from]])
 
@@ -33,7 +33,7 @@
   "The environment variable setting each required value."
   {[:base-url] "JUMBLE_BASE_URL"
    [:auth :method] "JUMBLE_SIGN_IN"
-   [:moderators] "JUMBLE_MODERATORS"
+   [:owner] "JUMBLE_OWNER"
    [:auth :issuer] "JUMBLE_OIDC_ISSUER"
    [:auth :client-id] "JUMBLE_OIDC_CLIENT_ID"
    [:auth :client-secret] "JUMBLE_OIDC_CLIENT_SECRET"
@@ -207,19 +207,14 @@
   [issuer]
   (= "https://accounts.google.com" (str/replace (str issuer) #"/+$" "")))
 
-(defn- check-moderators
-  "Email addresses of the people who handle reports, comma separated or as
-  a list, as a lowercase set."
+(defn- check-owner
+  "The email address of the community's owner, lowercase: who chooses who
+  may sign in and appoints the moderators."
   [s]
-  (let [moderators (into #{}
-                         (comp (map (comp str/lower-case str/trim)) (remove str/blank?))
-                         (if (sequential? s) s (str/split (or s "") #",")))]
-    (when-not (every? mail/plain-address? moderators)
-      (invalid "must be comma separated email addresses" [:moderators]))
-    ;; They alone can let anyone else in.
-    (when (empty? moderators)
-      (invalid "must name one moderator at least" [:moderators]))
-    moderators))
+  (let [owner (str/lower-case (str/trim s))]
+    (when-not (mail/plain-address? owner)
+      (invalid "must be one email address" [:owner]))
+    owner))
 
 (defn- check-logo
   "The logo file at `path`, read and checked (see [[branding/read-logo]])."
@@ -412,11 +407,11 @@
   `:invalid` one."
   [config]
   (check-required config required)
-  ;; Moderators manage them in the app; a settings file listing them would
-  ;; otherwise be silently ignored.
-  (doseq [path [[:categories] [:places] [:auth :allowed-emails]]
+  ;; Managed in the app; a settings file listing them would otherwise be
+  ;; silently ignored.
+  (doseq [path [[:categories] [:places] [:auth :allowed-emails] [:moderators]]
           :when (some? (get-in config path))]
-    (invalid "is managed by moderators in the app: remove it from the settings file" path))
+    (invalid "is managed in the app: remove it from the settings file" path))
   (let [oidc (= "oidc" (check-method (get-in config [:auth :method])))
         allow-insecure (:allow-insecure-urls config)]
     (when oidc
@@ -427,7 +422,7 @@
                 (update :currency check-currency)
                 (update-in [:storage :endpoint] check-endpoint)
                 (update-in [:storage :endpoint] check-secure-url [:storage :endpoint] allow-insecure)
-                (update :moderators check-moderators)
+                (update :owner check-owner)
                 (update :timezone check-timezone)
                 (update :language check-language)
                 (update-in [:http :port] check-port [:http :port])

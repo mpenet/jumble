@@ -37,7 +37,7 @@ deploy:
 
 ```sh
 SSH_KEY=<key name> deploy/provision.sh exoscale community
-# fill in sign-in, who may sign in, the moderators and SMTP:
+# fill in sign-in, the owner and SMTP:
 $EDITOR deploy/instances/community/jumble.env
 deploy/verify-keys.sh deploy/instances/community/jumble.env
 INSTANCE=deploy/instances/community deploy/deploy.sh
@@ -66,8 +66,7 @@ Scaleway, Hetzner, Backblaze B2, MinIO…):
    `deploy.env` naming the server (`HOST=<user>@<address>`, as
    `bootstrap.sh` says) with `BUILD=1`, and `jumble.env` from
    [`deploy/jumble.env.example`](../deploy/jumble.env.example), filled in:
-   the address, the storage, sign-in and who may sign in, the moderators,
-   SMTP. See [configuration](configuration.md), and
+   the address, the storage, sign-in, the owner, SMTP. See [configuration](configuration.md), and
    [sign-in](deployment-reference.md#2-sign-in) and
    [email](deployment-reference.md#3-email).
 4. **Check the keys**: `deploy/verify-keys.sh deploy/instances/community/jumble.env`
@@ -90,7 +89,7 @@ and how to do them by hand.
 On first start the database is created (or restored from the backup bucket,
 if it has one). Open Jumble's address, sign in, and check:
 
-- the moderators see **Manage** in the header;
+- the owner sees **Manage** in the header;
 - a test listing with a photo shows its photo;
 - a message to someone, left unread for five minutes, arrives by email.
 

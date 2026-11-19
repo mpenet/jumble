@@ -28,7 +28,7 @@
     (account/set-anyone-allowed! *db* false)
     (let [body (:body (request :get "/privacy" nil))]
       (is (str/includes? body "the addresses you invite, for 90 days"))
-      (is (str/includes? body "Moderators see who may sign in"))
+      (is (str/includes? body "The community's owner sees who may sign in"))
       (is (str/includes? body "takes your address off the list")))
     (account/set-anyone-allowed! *db* true))
   (testing "new posts announced in a chat channel, when they are, say so"

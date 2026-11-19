@@ -2,9 +2,10 @@
 
 Jumble reads its settings from environment variables, or from an optional
 file. It checks everything at startup and refuses to start, saying which
-setting is wrong, rather than run half configured. Categories and pickup
-places are not settings: moderators manage them in the app (see the
-[user guide](user-guide.md#for-moderators)).
+setting is wrong, rather than run half configured. Who may sign in, the
+moderators, categories and pickup places are not settings: the owner and
+moderators manage them in the app (see the
+[user guide](user-guide.md#for-the-owner)).
 
 ## Environment variables
 
@@ -26,7 +27,7 @@ generated password, say) is a `$`.
 | `JUMBLE_CURRENCY` | | `CHF` | ISO 4217 code of the prices, e.g. `EUR`, `USD`, `GBP`. Recorded in the database on first start; Jumble then refuses to start with another one, as stored prices would change meaning. |
 | `JUMBLE_TIMEZONE` | | `UTC` | The time zone dates and times are shown in, such as `Europe/Zurich` or `America/New_York`. |
 | `JUMBLE_LANGUAGE` | | `en` | The community's language, of pages and emails: `en`, `fr`, `de`, `it`, `es`, `pt` (European Portuguese), `sv`, `da`, `nb` (Norwegian Bokmål), `fi` or `nl`. Members may choose another in their settings; this one is theirs until they do, and that of invitations. None of the translations has had a native speaker's review yet; corrections are welcome (see [translations](development.md#translations)). Category and place names are data: moderators name them in the community's language. |
-| `JUMBLE_MODERATORS` | yes | | Email addresses of the people who handle reports and choose who may sign in, comma separated. They can always sign in. |
+| `JUMBLE_OWNER` | yes | | The email address of the community's owner, who can always sign in, chooses who else may, and appoints the moderators in the app. One address; to hand the community over, change it and restart. |
 | `JUMBLE_CONFIG_FILE` | | none | Path of the [settings file](#settings-file). |
 | `JUMBLE_HOST`, `JUMBLE_PORT` | | `127.0.0.1`, `8080` | Where the app listens over plain HTTP, the port from 1 to 65535; with HTTPS on, this port answers Let's Encrypt and redirects to https. The container image sets `0.0.0.0` and `8080`; `deploy/podman/https.conf` sets 80. Its health check follows `JUMBLE_PORT`. |
 | `JUMBLE_HTTPS_PORT` | | none | HTTPS served by Jumble on this port, TCP (HTTP/2) and UDP (HTTP/3), with a certificate for `JUMBLE_BASE_URL`'s host, which must then be https. Off without it. `deploy/podman/https.conf` sets 443: HTTP/3 is offered on the port the app listens on, which must be the one people reach. |
@@ -82,8 +83,8 @@ others, or capped.
 | Variable | Default | |
 |---|---|---|
 | `JUMBLE_LISTING_REMINDER_DAYS` | `60` | Days a listing goes without news (posting, editing, a status change) before its owner is emailed to ask whether it is still available; unanswered for 15 more days, it leaves the board, until its owner puts it back. `0`: owners are never asked and listings never expire. Listings to lend are never asked about. |
-| `JUMBLE_MEMBER_LIMIT` | none | The most members the community may have, counting every account not deleted. Past it, someone new who is allowed to sign in is told the community is full; members already there are not affected, and the moderators (`JUMBLE_MODERATORS`) can always join. Deleting accounts makes room. |
-| `JUMBLE_INVITATIONS_PER_DAY` | `100` | The most invitations members may send in all in 24 hours, when the moderators let them invite people (each member sends at most 5). Past it, members are asked to try again later. |
+| `JUMBLE_MEMBER_LIMIT` | none | The most members the community may have, counting every account not deleted. Past it, someone new who is allowed to sign in is told the community is full; members already there are not affected, and the owner and moderators can always join. Deleting accounts makes room. |
+| `JUMBLE_INVITATIONS_PER_DAY` | `100` | The most invitations members may send in all in 24 hours, when the owner lets them invite people (each member sends at most 5). Past it, members are asked to try again later. |
 | `JUMBLE_BEHIND_PROXY` | `false` | Behind a reverse proxy of your own: each client's address is the last in the `X-Forwarded-For` header the proxy adds, so only the proxy may reach Jumble. Set by `MODE=own-proxy` deploys (see [with a proxy of your own](deployment-reference.md#with-a-proxy-of-your-own)); not with `JUMBLE_HTTPS_PORT`. |
 | `JUMBLE_METRICS_TOKEN` | none | Turns on `GET /metrics` for requests carrying `Authorization: Bearer <token>`, in Prometheus' text format: members and listings, the outbox and background work, requests, the JVM, activity, and Litestream's own (see [metrics](operations.md#metrics)). At least 32 characters (`openssl rand -hex 32`). Without it, `/metrics` is not found. |
 | `JUMBLE_LITESTREAM_METRICS_URL` | set by the image | Where Litestream serves its metrics inside the container, for `/metrics` to add them. The image sets it; leave it unless you run Jumble outside it. |
@@ -168,7 +169,7 @@ For a community on Google Workspace:
 
 1. In the Google Cloud console of the Workspace, configure the OAuth
    consent screen as **Internal**: only the Workspace's accounts can then
-   sign in, on all its domains, and moderators can let anyone in. With
+   sign in, on all its domains, and the owner can let anyone in. With
    **External**, any Google account can authenticate: let in a domain
    (`*@example.org`) and guests by their address instead.
 2. Create an OAuth client of type **Web application** with the redirect URI
@@ -188,7 +189,7 @@ with the `hd` claim, its domain; with Google as the issuer, Jumble requires
 it to be the address's own domain when a domain pattern let the address in.
 An address listed by itself (a guest's `someone@gmail.com`, say) needs no
 `hd`: it was named, not inferred from its domain; nor does anyone, where
-moderators let anyone in.
+the owner lets anyone in.
 
 #### Other providers
 
@@ -198,10 +199,11 @@ that serves `/.well-known/openid-configuration`), client id and secret.
 
 ### Who may sign in
 
-Moderators decide, in Jumble itself, for both ways of signing in (see the
-[user guide](user-guide.md#for-moderators)); the configuration only names
-the moderators (`JUMBLE_MODERATORS`), who can always sign in. A new
-community lets in its moderators alone, until they let in anyone, or a list:
+The owner decides, in Jumble itself, for both ways of signing in (see the
+[user guide](user-guide.md#for-the-owner)); the configuration only names
+the owner (`JUMBLE_OWNER`). The owner and the moderators the owner appoints
+can always sign in. A new community lets in its owner alone, until the
+owner lets in anyone, or a list:
 
 | Entry | Example |
 |---|---|
@@ -209,11 +211,11 @@ community lets in its moderators alone, until they let in anyone, or a list:
 | A domain's subdomains | `*@*.example.org` (add `*@example.org` for the domain itself) |
 | A single address | `bob@gmail.com` |
 
-Case is ignored, and an address needs to match one. Moderators can also
+Case is ignored, and an address needs to match one. The owner can also
 make a join link that lets in whoever opens it, and let members invite
-people by email. Whoever no longer matches, after a moderator withdraws an
-entry or limits sign-in to the list again, is signed out at their next
-click.
+people by email. Whoever no longer matches, after the owner withdraws an
+entry or a moderator, or limits sign-in to the list again, is signed out
+at their next click.
 
 Letting anyone in means anyone: with email sign-in, anyone with an email address;
 with a provider, anyone that provider signs in. That suits a provider that
@@ -224,9 +226,9 @@ account could join.
 ## Email providers
 
 Jumble sends plain text email: sign-in links (with email sign-in),
-invitations sent by moderators, notifications of unread messages, the news
+invitations sent by the owner or members, notifications of unread messages, the news
 of saved searches, the weekly email of what is new, questions to owners of
-listings without news, alerts to moderators about reports, and notices to
+listings without news, alerts to the owner and moderators about reports, and notices to
 owners whose listing was removed. Each goes in its recipient's language.
 
 - **Gmail or Google Workspace**: host `smtp.gmail.com`, port 587, the

@@ -52,7 +52,7 @@ with an SSH key registered with Exoscale (see
    ```sh
    JUMBLE_APP_NAME=Our market
    JUMBLE_SIGN_IN=email
-   JUMBLE_MODERATORS=you@example.org
+   JUMBLE_OWNER=you@example.org
    JUMBLE_SMTP_HOST=smtp.your-email-service.com
    JUMBLE_SMTP_USERNAME=…
    JUMBLE_SMTP_PASSWORD=…
@@ -71,9 +71,9 @@ with an SSH key registered with Exoscale (see
    ```
 
 5. **Open the address and sign in** with your address: you are its first
-   moderator, and at first the only one who can sign in. Under **Manage** →
+   owner, and at first the only one who can sign in. Under **Manage** →
    **Who may sign in**, let the others in: a domain, addresses, a join link,
-   or anyone. Post a listing with a photo, and check that a message left
+   or anyone; under **Moderators**, appoint who helps with reports. Post a listing with a photo, and check that a message left
    unread for five minutes arrives by email.
 
 6. **Watch it**: an uptime monitor on `https://market.example.org/healthz`,

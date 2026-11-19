@@ -1,6 +1,8 @@
 (ns s-exp.jumble.web.params
   "Reading values out of request text: path ids and form fields."
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [s-exp.jumble.email.mail :as mail]
+            [s-exp.jumble.view.i18n :as i18n]))
 
 (set! *warn-on-reflection* true)
 
@@ -28,3 +30,14 @@
         (str/replace #"\r\n?" "\n")
         (str/replace #"[\p{Cc}&&[^\t\n]]" "")
         str/trim)))
+
+(defn typed-address
+  "The address typed in the `email` field of `params`, trimmed and
+  lowercased: `{:email address}`, or `{:error message}` when it is not one,
+  `missing` when none was typed."
+  [params missing]
+  (let [email (some-> (one params "email") str/trim str/lower-case)]
+    (cond
+      (empty? email) {:error missing}
+      (mail/plain-address? email) {:email email}
+      :else {:error (i18n/t "“{email}” is not an email address." {:email email})})))

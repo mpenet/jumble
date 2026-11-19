@@ -1,7 +1,8 @@
 (ns demo-reset
   "Resets a demo Jumble, nightly: deletes the accounts of visitors, everyone
-  but the demo members (`*@<domain>`) and the moderators, with what they
-  left on the others' side, then seeds again what the demo members lost.
+  but the demo members (`*@<domain>`), the owner and the moderators, with
+  what they left on the others' side, then seeds again what the demo
+  members lost.
 
   Run against a deployment's own database and storage, with its settings
   in the environment and -Djumble.demo=true:
@@ -10,6 +11,7 @@
       dev/demo/listings.edn jumbl.ing"
   (:require [clojure.string :as str]
             [demo-seed]
+            [s-exp.jumble.account.model :as account]
             [next.jdbc :as jdbc]
             [s-exp.jumble.account.data :as data]
             [s-exp.jumble.config :as config]
@@ -21,9 +23,10 @@
 
 (defn clear-visitors!
   "Deletes the accounts of everyone but the demo members, at `domain`, and
-  the `moderators` (addresses), as [[data/delete-account!]] does; then the
-  conversations and reports any deleted account had a part in, which
-  deleting an account keeps for the others. Returns how many accounts were
+  the `moderators` (addresses, the owner's too), as
+  [[data/delete-account!]] does; then the conversations and reports any
+  deleted account had a part in, which deleting an account keeps for the
+  others. Returns how many accounts were
   deleted. Throws, deleting nothing, unless the demo seed marked this
   community as a demo at `domain` (see [[demo-seed/mark-demo!]])."
   [db blobs {:keys [domain moderators now]}]
@@ -65,11 +68,11 @@
     (binding [*out* *err*]
       (println "Refusing to reset without -Djumble.demo=true: this deletes accounts."))
     (System/exit 1))
-  (let [{:keys [db storage moderators]} (config/load-config)
+  (let [{:keys [db storage owner]} (config/load-config)
         ds (db/datasource (:path db))]
     (migrate/migrate! ds (migrate/migrations))
     (println (clear-visitors! ds
                               (blob/s3-store storage)
-                              {:domain domain :moderators moderators :now (System/currentTimeMillis)})
+                              {:domain domain :moderators (account/staff ds owner) :now (System/currentTimeMillis)})
              "visitors' accounts deleted.")
     (demo-seed/-main data-path domain)))

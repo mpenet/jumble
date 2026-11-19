@@ -41,23 +41,23 @@
        (with-open [ds (db/datasource path)]
          (migrate/migrate! ds (migrate/migrations))
          (is (not (account/anyone-allowed? ds)))
-         (is (= ["dave@example.com"] (account/allowed-emails ds #{"dave@example.com"})))))))
+         (is (= ["dave@example.com"] (account/allowed-emails ds "dave@example.com")))))))
   (testing "the moderators, then the patterns added in the app"
     (account/allow! *db* {:patterns ["guest@gmail.com" "*@partner.org"] :moderator-id nil :now 0})
     (is (= ["dave@example.com" "*@example.com" "*@partner.org" "guest@gmail.com"]
-           (account/allowed-emails *db* #{"dave@example.com"})))
+           (account/allowed-emails *db* "dave@example.com")))
     (account/allow! *db* {:patterns ["guest@gmail.com" "dave@example.com"] :moderator-id nil :now 1})
     (is (= ["dave@example.com" "*@example.com" "*@partner.org" "guest@gmail.com"]
-           (account/allowed-emails *db* #{"dave@example.com"}))
+           (account/allowed-emails *db* "dave@example.com"))
         "adding again changes nothing, a moderator added is listed once")
     (account/disallow! *db* "guest@gmail.com")
     (account/disallow! *db* "dave@example.com")
-    (is (= ["dave@example.com" "*@example.com" "*@partner.org"] (account/allowed-emails *db* #{"dave@example.com"}))))
+    (is (= ["dave@example.com" "*@example.com" "*@partner.org"] (account/allowed-emails *db* "dave@example.com"))))
   (testing "letting anyone in keeps the list for when it is limited again"
     (account/set-anyone-allowed! *db* true)
-    (is (= :anyone (account/allowed-emails *db* #{"dave@example.com"})))
+    (is (= :anyone (account/allowed-emails *db* "dave@example.com")))
     (account/set-anyone-allowed! *db* false)
-    (is (= ["dave@example.com" "*@example.com" "*@partner.org"] (account/allowed-emails *db* #{"dave@example.com"})))))
+    (is (= ["dave@example.com" "*@example.com" "*@partner.org"] (account/allowed-emails *db* "dave@example.com")))))
 
 (deftest members-page-test
   (let [bob (sign-in! "bob@example.com")
@@ -67,10 +67,10 @@
       (is (= 404 (:status (request :post "/manage/members" bob :form {"patterns" "eve@evil.example"}))))
       (is (= 404 (:status (request :post "/manage/members/withdraw" bob :form {"pattern" "*@example.com"}))))
       (is (str/includes? (:body (request :get "/manage" dave)) "href=\"/manage/members\"")))
-    (testing "the page shows who may sign in: the moderators and the list"
+    (testing "the page shows who may sign in: the list, besides the owner and moderators"
       (let [{:keys [status body]} (request :get "/manage/members" dave)]
         (is (= 200 status))
-        (is (str/includes? body "<code>dave@example.com</code>"))
+        (is (str/includes? body "href=\"/manage/moderators\""))
         (is (str/includes? body "*@example.com"))
         (is (re-find #"<form [^>]*method=\"post\" action=\"/manage/members\"" body))))
     (testing "adding addresses and patterns, inviting the addresses"
@@ -168,9 +168,9 @@
     (testing "moderators only"
       (is (= 404 (:status (request :get "/manage/members/remove?email=dave@example.com" bob))))
       (is (= 404 (:status (request :post "/manage/members/remove" bob :form {"email" "dave@example.com"})))))
-    (testing "the members page has a form to remove someone, by email"
+    (testing "the reports page has a form to remove someone, by email"
       (is (re-find #"<form [^>]*method=\"get\" action=\"/manage/members/remove\""
-                   (:body (request :get "/manage/members" dave)))))
+                   (:body (request :get "/manage" dave)))))
     (testing "removing asks first, saying who and what goes"
       (let [{:keys [status body]} (request :get "/manage/members/remove?email=+Bob@Example.com+" dave)]
         (is (= 200 status))
@@ -189,27 +189,27 @@
         (is (= 422 status))
         (is (str/includes? body "No member has this address")))
       (is (= 422 (:status (request :get "/manage/members/remove?email=not-an-address" dave)))))
-    (testing "not a moderator, who is one by the configuration"
+    (testing "not the owner, who is one by the configuration"
       (let [{:keys [status body]} (request :get "/manage/members/remove?email=dave@example.com" dave)]
         (is (= 422 status))
-        (is (str/includes? body "moderator")))
+        (is (str/includes? body "is the owner, by the configuration")))
       (is (= 422 (:status (request :post "/manage/members/remove" dave :form {"email" "dave@example.com"}))))
       (testing "nor by another address of their mailbox, which removal would take"
         (is (= 422 (:status (request :post "/manage/members/remove" dave :form {"email" "Dave+x@example.com"}))))
         (is (not (account/removed? *db* "dave@example.com")))
-        (is (= 200 (:status (request :get "/manage/members" dave))) "still signed in, still a moderator")))
+        (is (= 200 (:status (request :get "/manage/members" dave))) "still signed in, still the owner")))
     (testing "confirming deletes their account and listings"
       (let [response (request :post "/manage/members/remove" dave :form {"email" "bob@example.com"})]
         (is (= 303 (:status response)))
-        (is (= "/manage/members?removed" (get-in response [:headers "location"]))))
+        (is (= "/manage?removed" (get-in response [:headers "location"]))))
       (is (= "deleted" (:iss (user-row bob-id))))
       (is (nil? (listing/by-id *db* lamp)))
       (is (= 302 (:status (request :get "/listings" bob))) "signed out"))
     (testing "and they never sign in again, whatever lets their address in"
       (is (account/removed? *db* "Bob@example.com"))
-      (is (not ((account/allowed *db* #{"dave@example.com"}) "bob@example.com")))
+      (is (not ((account/allowed *db* "dave@example.com") "bob@example.com")))
       (account/set-anyone-allowed! *db* true)
-      (is (not ((account/allowed *db* #{"dave@example.com"}) "bob@example.com"))))))
+      (is (not ((account/allowed *db* "dave@example.com") "bob@example.com"))))))
 
 (deftest removal-covers-the-mailbox-test
   (account/set-anyone-allowed! *db* true)
@@ -219,7 +219,7 @@
     (testing "a +tag variant of a removed address is the same mailbox: removed too"
       (doseq [email ["carol@example.com" "carol+1@example.com" "Carol+Tag@Example.com"]]
         (is (account/removed? *db* email) email)
-        (is (not ((account/allowed *db* #{}) email)) email)))
+        (is (not ((account/allowed *db* "dave@example.com") email)) email)))
     (testing "its accounts go with it"
       (is (= "deleted" (:iss (user-row carol-old))))
       (is (= 302 (:status (request :get "/listings" old)))))
@@ -228,7 +228,7 @@
       (is (account/removed? *db* "dan@example.com")))
     (testing "other mailboxes are not affected"
       (is (not (account/removed? *db* "caroline@example.com")))
-      (is ((account/allowed *db* #{}) "caroline@example.com")))))
+      (is ((account/allowed *db* "dave@example.com") "caroline@example.com")))))
 
 (deftest join-link-page-test
   (let [bob (sign-in! "bob@example.com")
@@ -313,7 +313,7 @@
                       {:member-id (fixtures/user-id "bob@example.com")
                        :email "neighbour@gmail.com"
                        :now 0
-                       :moderators #{"dave@example.com"}
+                       :owner "dave@example.com"
                        :community-per-day 100
                        :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
       (is (str/includes? (page) "invited by bob@example.com")))
@@ -348,7 +348,7 @@
         (is (str/includes? body "is not an email address"))))
     (testing "nor is a pattern, which would let in a whole domain"
       (is (= 422 (:status (invite! "*@gmail.com"))))
-      (is (not ((account/allowed *db* #{"dave@example.com"}) "stranger@gmail.com"))))
+      (is (not ((account/allowed *db* "dave@example.com") "stranger@gmail.com"))))
     (testing "inviting emails the address, from the member, and lists it"
       (let [response (invite! "Neighbour@Gmail.com")]
         (is (= 303 (:status response)))

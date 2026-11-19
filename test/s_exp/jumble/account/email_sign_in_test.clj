@@ -283,7 +283,7 @@
 (deftest join-link-test
   (let [dave (fixtures/user! "dave")
         token (join/create! *db* {:moderator-id dave :expires-in nil :now 0})
-        allowed? #((account/allowed *db* ["*@example.com" "guest@gmail.com"]) %)]
+        allowed? #((account/allowed *db* "dave@example.com") %)]
     (testing "the join link's page asks for an address, carrying the link"
       (let [{:keys [status body]} (request :get (str "/join/" token))]
         (is (= 200 status))

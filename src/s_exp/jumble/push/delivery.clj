@@ -144,6 +144,6 @@
   [db send settings now running]
   (if-let [pending (seq (due db now))]
     (let [keys (push/keys! db)
-          allowed (account/allowed db (:moderators settings))]
+          allowed (account/allowed db (:owner settings))]
       (outbox/deliver-each pending running #(deliver! db send settings allowed keys % now) #(select-keys % [:id])))
     0))

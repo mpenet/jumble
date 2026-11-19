@@ -66,7 +66,8 @@
 
 (defn require-user
   "Wraps `handler` so it only runs for a signed-in user, assoc'd as `:user`,
-  with `:moderator` true for the configured moderators.
+  with `:owner` true for the community's owner, and `:moderator` for the
+  owner and the moderators the owner appointed.
   Anonymous page loads are redirected to login; anything else gets 401, as a
   redirect would be followed by fetch and return the login page as data.
   The handler speaks the member's language (see [[i18n/speaking]]).
@@ -81,14 +82,16 @@
           t (session-token request)
           resumed (account/resume-session! db t (System/currentTimeMillis) session-ttl)
           member (when resumed
-                   (or (membership/allows? (account/allowed-emails db (:moderators settings))
+                   (or (membership/allows? (account/allowed-emails db (:owner settings))
                                            (get-in resumed [:user :email]))
                        (do (account/delete-session! db t) false)))]
       (if-let [{:keys [user renewed]} (when member resumed)]
         (cond-> (i18n/speaking (:language user)
-                  (handler (let [moderator (contains? (:moderators settings) (:email user))]
+                  (handler (let [owner (= (:owner settings) (str/lower-case (:email user)))
+                                 moderator (or owner (account/moderator? db (:email user)))]
                              (cond-> (assoc request
                                             :user user
+                                            :owner owner
                                             :moderator moderator
                                           ;; For the header; read when the page is rendered, after
                                           ;; the handler has, say, marked a thread read.

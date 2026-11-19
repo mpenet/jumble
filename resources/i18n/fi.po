@@ -45,10 +45,6 @@ msgid "It has as many members as it can have. Ask its moderators to make room."
 msgstr "Siinä on jo niin monta jäsentä kuin mahtuu. Pyydä moderaattoreita tekemään tilaa."
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "“{email}” is not an email address."
-msgstr "”{email}” ei ole sähköpostiosoite."
-
-#: src/s_exp/jumble/account/controller.clj
 msgid "Enter your email address."
 msgstr "Anna sähköpostiosoitteesi."
 
@@ -65,8 +61,8 @@ msgid "Get a new link"
 msgstr "Tilaa uusi linkki"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "This join link no longer works. Ask the community's moderators for the current one."
-msgstr "Tämä liittymislinkki ei enää toimi. Pyydä nykyinen linkki yhteisön moderaattoreilta."
+msgid "This join link no longer works. Ask the community's owner for the current one."
+msgstr "Tämä liittymislinkki ei enää toimi. Pyydä nykyinen linkki yhteisön omistajalta."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/page/privacy.clj
 msgid "Write to {contact}."
@@ -109,14 +105,14 @@ msgid "Invitations are closed"
 msgstr "Kutsut on suljettu"
 
 #: src/s_exp/jumble/account/controller.clj
-msgid "Your community's moderators do not let members invite people at the moment."
-msgstr "Yhteisösi moderaattorit eivät tällä hetkellä anna jäsenten kutsua ketään."
+msgid "Your community's owner does not let members invite people at the moment."
+msgstr "Yhteisösi omistaja ei tällä hetkellä anna jäsenten kutsua ketään."
 
 #: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/account/view.clj src/s_exp/jumble/page/privacy.clj src/s_exp/jumble/view/layout.clj
 msgid "Settings"
 msgstr "Asetukset"
 
-#: src/s_exp/jumble/account/controller.clj
+#: src/s_exp/jumble/account/controller.clj src/s_exp/jumble/moderation/controller.clj
 msgid "Enter an email address."
 msgstr "Kirjoita sähköpostiosoite."
 
@@ -1259,8 +1255,12 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "Jos haluat päästää kaikki sisään, käytä yllä olevaa painiketta ”Anna kaikkien kirjautua”."
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "{email} is a moderator, by the configuration: remove them there."
-msgstr "{email} on moderaattori määritysten perusteella: poista hänet sieltä."
+msgid "{email} is the owner, by the configuration."
+msgstr "{email} on omistaja määritysten perusteella."
+
+#: src/s_exp/jumble/moderation/controller.clj
+msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
+msgstr "{email} on moderaattori: omistajan on ensin poistettava hänet moderaattoreista."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "No member has this address."
@@ -1303,16 +1303,20 @@ msgid "Reports"
 msgstr "Raportit"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Who may sign in"
-msgstr "Kuka voi kirjautua"
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Categories"
 msgstr "Kategoriat"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Pickup places"
 msgstr "Noutopaikat"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Who may sign in"
+msgstr "Kuka voi kirjautua"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators"
+msgstr "Moderaattorit"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appearance"
@@ -1329,6 +1333,26 @@ msgstr "Hallinta"
 #: src/s_exp/jumble/moderation/view.clj src/s_exp/jumble/view/layout.clj
 msgid "Notice"
 msgstr "Tiedote"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove a member"
+msgstr "Poista jäsen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their email address"
+msgstr "Jäsenen sähköpostiosoite"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Their account and listings are deleted for good, and they can never sign in again."
+msgstr "Jäsenen tili ja ilmoitukset poistetaan pysyvästi, eikä hän voi enää koskaan kirjautua."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Removed."
+msgstr "Poistettu."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Remove…"
+msgstr "Poista…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Listings members reported, the longest waiting first."
@@ -1387,26 +1411,6 @@ msgid "{n} listing"
 msgid_plural "{n} listings"
 msgstr[0] "{n} ilmoitus"
 msgstr[1] "{n} ilmoitusta"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove a member"
-msgstr "Poista jäsen"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their email address"
-msgstr "Jäsenen sähköpostiosoite"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Their account and listings are deleted for good, and they can never sign in again."
-msgstr "Jäsenen tili ja ilmoitukset poistetaan pysyvästi, eikä hän voi enää koskaan kirjautua."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Removed."
-msgstr "Poistettu."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Remove…"
-msgstr "Poista…"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Remove {name}?"
@@ -1533,16 +1537,16 @@ msgid "Whoever joins by the link or an invitation signs in through your sign-in 
 msgstr "Linkin tai kutsun kautta liittyvä kirjautuu kirjautumispalvelunne kautta: hän tarvitsee sinne tilin sillä osoitteella, jolla liittyy."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators"
-msgstr "Moderaattorit"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "They can always sign in: they are moderators by the configuration."
-msgstr "He voivat aina kirjautua: he ovat moderaattoreita määritysten perusteella."
-
-#: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"
 msgstr "Lisätty täällä"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "You and the {moderators} can always sign in, on the list or not."
+msgstr "Sinä ja {moderators} voitte aina kirjautua, olitte listalla tai ette."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "moderators"
+msgstr "moderaattorit"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1587,6 +1591,22 @@ msgstr "Lisätty."
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Add"
 msgstr "Lisää"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+msgstr "Moderaattorit käsittelevät ilmoitukset, poistavat ilmoituksia ja jäseniä sekä ylläpitävät kategorioita ja noutopaikkoja. He voivat aina kirjautua. Sinä, {owner}, olet omistaja määritysten perusteella."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint a moderator"
+msgstr "Nimeä moderaattori"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
+msgstr "Sähköpostiosoitteella; hänen ei tarvitse olla vielä liittynyt. Poisto tulee voimaan heti."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Appoint"
+msgstr "Nimeä"
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "What listings are filed under, in the order members see them."
@@ -1745,8 +1765,8 @@ msgid "Your name and email address, from signing in; what you post: listings, th
 msgstr "Nimesi ja sähköpostiosoitteesi kirjautumisesta; julkaisemasi sisältö: ilmoitukset, niiden kuvat ja viestisi; suosikkisi, tallennetut hakusi ja asetuksesi; sekä tekemäsi raportit."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by a moderator, an invitation, or the community's join link."
-msgstr "Kun jäsenet saavat kutsua ihmisiä: kutsumasi osoitteet, 90 päivän ajan. Kirjautumaan pääsevät ovat lista, joka kertoo jokaisesta lisätystä osoitteesta, miten se tuli mukaan: moderaattorin, kutsun tai yhteisön liittymislinkin kautta."
+msgid "When members may invite people, the addresses you invite, for 90 days. Who may sign in is a list, which says for each address added how it came in: by the owner, an invitation, or the community's join link."
+msgstr "Kun jäsenet saavat kutsua ihmisiä: kutsumasi osoitteet, 90 päivän ajan. Kirjautumaan pääsevät ovat lista, joka kertoo jokaisesta lisätystä osoitteesta, miten se tuli mukaan: omistajan, kutsun tai yhteisön liittymislinkin kautta."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Why"
@@ -1765,8 +1785,8 @@ msgid "Other members see your name, your listings and what you write to them. Me
 msgstr "Muut jäsenet näkevät nimesi, ilmoituksesi ja sen, mitä kirjoitat heille. Viestit ovat vain sinun ja vastaanottajan välisiä. Moderaattorit näkevät raportit ja voivat poistaa ilmoituksia."
 
 #: src/s_exp/jumble/page/privacy.clj
-msgid "Moderators see who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
-msgstr "Moderaattorit näkevät, kuka pääsee kirjautumaan ja kuka kutsui kunkin osoitteen. Sinä näet, keitä kutsuit ja ovatko he liittyneet sen jälkeen."
+msgid "The community's owner sees who may sign in, and who invited each address. You see whom you invited, and whether they have joined since."
+msgstr "Yhteisön omistaja näkee, kuka pääsee kirjautumaan ja kuka kutsui kunkin osoitteen. Sinä näet, keitä kutsuit ja ovatko he liittyneet sen jälkeen."
 
 #: src/s_exp/jumble/page/privacy.clj
 msgid "Cookies"
@@ -1887,6 +1907,10 @@ msgstr "Tässä osoitteessa ei ole mitään."
 #: src/s_exp/jumble/view/layout.clj
 msgid "Not found"
 msgstr "Sivua ei löydy"
+
+#: src/s_exp/jumble/web/params.clj
+msgid "“{email}” is not an email address."
+msgstr "”{email}” ei ole sähköpostiosoite."
 
 #: src/s_exp/jumble/web/routes.clj
 msgid "Signed out"
