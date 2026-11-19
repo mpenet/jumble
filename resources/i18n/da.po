@@ -1255,16 +1255,16 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "For at lukke alle ind, brug »Lad alle logge ind« ovenfor."
 
 #: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Intet medlem har denne adresse."
+
+#: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is the owner, by the configuration."
 msgstr "{email} er ejer via konfigurationen."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
 msgstr "{email} er moderator: ejeren skal først tilbagekalde vedkommende som moderator."
-
-#: src/s_exp/jumble/moderation/controller.clj
-msgid "No member has this address."
-msgstr "Intet medlem har denne adresse."
 
 #: src/s_exp/jumble/moderation/email.clj
 msgid "Listing reported: {title}"
@@ -1541,12 +1541,8 @@ msgid "Added here"
 msgstr "Tilføjet her"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "You and the {moderators} can always sign in, on the list or not."
-msgstr "Du og {moderators} kan altid logge ind, på listen eller ej."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "moderators"
-msgstr "moderatorerne"
+msgid "You can always sign in, on the list or not."
+msgstr "Du kan altid logge ind, på listen eller ej."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1593,16 +1589,16 @@ msgid "Add"
 msgstr "Tilføj"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
-msgstr "Moderatorer behandler anmeldelser, fjerner opslag og medlemmer og holder kategorier og afhentningssteder ved lige. De kan altid logge ind. Du, {owner}, er ejer via konfigurationen."
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. You, {owner}, are the owner, by the configuration."
+msgstr "Moderatorer behandler anmeldelser, fjerner opslag og medlemmer og holder kategorier og afhentningssteder ved lige. Du, {owner}, er ejer via konfigurationen."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint a moderator"
 msgstr "Udnævn en moderator"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
-msgstr "Via e-mailadressen; vedkommende behøver ikke at være medlem endnu. Tilbagekaldelse virker med det samme."
+msgid "A member, by their email address. Withdrawing one takes effect at once."
+msgstr "Et medlem, via e-mailadressen. Tilbagekaldelse virker med det samme."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint"

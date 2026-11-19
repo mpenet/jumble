@@ -13,7 +13,6 @@
     (is (string? (:path db)))
     (is (= "http://localhost:8080" base-url))
     (is (= "oidc" (:method auth)))
-    (is (false? (:require-hosted-domain auth)))
     (is (= "alice@example.com" (:owner (config/load-config :dev nil))))
     (is (= "Jumble" app-name))
     (is (= "http://127.0.0.1:3900" (get-in (config/load-config :dev nil) [:storage :endpoint])))
@@ -109,14 +108,8 @@
     (is (= [:mail :password] (invalid-path (assoc-in valid [:mail :password] nil))))
     (is (nil? (invalid-path (update valid :mail assoc :username "" :password "")))
         "blank environment variables mean no login"))
-  (testing "with Google, the organisation managing an account is checked too; with others, not"
-    (let [hosted-domain #(get-in (config/normalize (assoc-in valid [:auth :issuer] %)) [:auth :require-hosted-domain])]
-      (is (true? (hosted-domain "https://accounts.google.com")))
-      (is (true? (hosted-domain "https://accounts.google.com/")))
-      (is (false? (hosted-domain "https://dex.example.com")))
-      (is (nil? (get-in (config/normalize (update valid :auth #(-> % (assoc :method "email") (dissoc :issuer))))
-                        [:auth :require-hosted-domain]))
-          "nor signing in by email")))
+  (testing "whether the organisation managing an account is checked is the issuer's to say: a file setting it is refused"
+    (is (= [:auth :require-hosted-domain] (invalid-path (assoc-in valid [:auth :require-hosted-domain] true)))))
   (testing "sign-in is by OIDC or by email, one of them"
     (is (= [:auth :method] (invalid-path (assoc-in valid [:auth :method] "both")))))
   (testing "signing in by email needs no OIDC provider"
@@ -162,7 +155,8 @@
     (is (= "dave@example.org" (:owner (config/normalize (assoc valid :owner " Dave@Example.org ")))))
     (doseq [bad ["<dave@example.org>" "dave%x@example.org" "dave@localhost" "dave@example.org,bob@example.org"]]
       (is (= [:owner] (invalid-path (assoc valid :owner bad))) bad))
-    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Missing configuration" (config/normalize (assoc valid :owner " ")))))
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Missing configuration" (config/normalize (assoc valid :owner " "))))
+    (is (= [:owner] (invalid-path (assoc valid :owner ["dave@example.org"]))) "not a list, as moderators once were"))
   (testing "moderators are appointed in the app: a settings file naming them is refused"
     (is (= [:moderators] (invalid-path (assoc valid :moderators ["bob@example.org"])))))
   (testing "the source offered is upstream's unless set, and a web address"

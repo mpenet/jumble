@@ -1255,16 +1255,16 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "Um alle hereinzulassen, nutze oben „Alle anmelden lassen“."
 
 #: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Kein Mitglied hat diese Adresse."
+
+#: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is the owner, by the configuration."
 msgstr "{email} ist laut Konfiguration Eigentümer der Community."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
 msgstr "{email} moderiert: Der Eigentümer muss die Person zuerst als Moderator zurückziehen."
-
-#: src/s_exp/jumble/moderation/controller.clj
-msgid "No member has this address."
-msgstr "Kein Mitglied hat diese Adresse."
 
 #: src/s_exp/jumble/moderation/email.clj
 msgid "Listing reported: {title}"
@@ -1541,12 +1541,8 @@ msgid "Added here"
 msgstr "Hier hinzugefügt"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "You and the {moderators} can always sign in, on the list or not."
-msgstr "Du und die {moderators} könnt euch immer anmelden, ob auf der Liste oder nicht."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "moderators"
-msgstr "Moderatoren"
+msgid "You can always sign in, on the list or not."
+msgstr "Du kannst dich immer anmelden, ob auf der Liste oder nicht."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1593,16 +1589,16 @@ msgid "Add"
 msgstr "Hinzufügen"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
-msgstr "Moderatoren bearbeiten Meldungen, entfernen Anzeigen und Mitglieder und pflegen die Kategorien und Abholorte. Sie können sich immer anmelden. Du, {owner}, bist laut Konfiguration Eigentümer."
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. You, {owner}, are the owner, by the configuration."
+msgstr "Moderatoren bearbeiten Meldungen, entfernen Anzeigen und Mitglieder und pflegen die Kategorien und Abholorte. Du, {owner}, bist laut Konfiguration Eigentümer."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint a moderator"
 msgstr "Moderator ernennen"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
-msgstr "Per E-Mail-Adresse; die Person muss noch nicht beigetreten sein. Zurückziehen wirkt sofort."
+msgid "A member, by their email address. Withdrawing one takes effect at once."
+msgstr "Ein Mitglied, per E-Mail-Adresse. Zurückziehen wirkt sofort."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint"

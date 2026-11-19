@@ -83,7 +83,7 @@ others, or capped.
 | Variable | Default | |
 |---|---|---|
 | `JUMBLE_LISTING_REMINDER_DAYS` | `60` | Days a listing goes without news (posting, editing, a status change) before its owner is emailed to ask whether it is still available; unanswered for 15 more days, it leaves the board, until its owner puts it back. `0`: owners are never asked and listings never expire. Listings to lend are never asked about. |
-| `JUMBLE_MEMBER_LIMIT` | none | The most members the community may have, counting every account not deleted. Past it, someone new who is allowed to sign in is told the community is full; members already there are not affected, and the owner and moderators can always join. Deleting accounts makes room. |
+| `JUMBLE_MEMBER_LIMIT` | none | The most members the community may have, counting every account not deleted. Past it, someone new who is allowed to sign in is told the community is full; members already there are not affected, and the owner can always join. Deleting accounts makes room. |
 | `JUMBLE_INVITATIONS_PER_DAY` | `100` | The most invitations members may send in all in 24 hours, when the owner lets them invite people (each member sends at most 5). Past it, members are asked to try again later. |
 | `JUMBLE_BEHIND_PROXY` | `false` | Behind a reverse proxy of your own: each client's address is the last in the `X-Forwarded-For` header the proxy adds, so only the proxy may reach Jumble. Set by `MODE=own-proxy` deploys (see [with a proxy of your own](deployment-reference.md#with-a-proxy-of-your-own)); not with `JUMBLE_HTTPS_PORT`. |
 | `JUMBLE_METRICS_TOKEN` | none | Turns on `GET /metrics` for requests carrying `Authorization: Bearer <token>`, in Prometheus' text format: members and listings, the outbox and background work, requests, the JVM, activity, and Litestream's own (see [metrics](operations.md#metrics)). At least 32 characters (`openssl rand -hex 32`). Without it, `/metrics` is not found. |
@@ -201,9 +201,8 @@ that serves `/.well-known/openid-configuration`), client id and secret.
 
 The owner decides, in Jumble itself, for both ways of signing in (see the
 [user guide](user-guide.md#for-the-owner)); the configuration only names
-the owner (`JUMBLE_OWNER`). The owner and the moderators the owner appoints
-can always sign in. A new community lets in its owner alone, until the
-owner lets in anyone, or a list:
+the owner (`JUMBLE_OWNER`), who can always sign in. A new community lets
+in its owner alone, until the owner lets in anyone, or a list:
 
 | Entry | Example |
 |---|---|
@@ -214,8 +213,8 @@ owner lets in anyone, or a list:
 Case is ignored, and an address needs to match one. The owner can also
 make a join link that lets in whoever opens it, and let members invite
 people by email. Whoever no longer matches, after the owner withdraws an
-entry or a moderator, or limits sign-in to the list again, is signed out
-at their next click.
+entry or limits sign-in to the list again, is signed out at their next
+click, moderators too.
 
 Letting anyone in means anyone: with email sign-in, anyone with an email address;
 with a provider, anyone that provider signs in. That suits a provider that

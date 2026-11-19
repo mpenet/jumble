@@ -64,12 +64,13 @@
   address in and, when `require-hosted-domain`, the organisation managing
   the account (the provider's hd claim) is the address's own domain. Only
   an address let in by its domain needs the organisation: one named by
-  itself (a guest a moderator added, say) was not inferred from a domain,
-  and where anyone may sign in nothing was."
-  [allowed-emails require-hosted-domain {:keys [email hosted-domain]}]
+  itself (a guest the owner added, say, or the `owner`) was not inferred
+  from a domain, and where anyone may sign in nothing was."
+  [allowed-emails require-hosted-domain owner {:keys [email hosted-domain]}]
   (and (membership/allows? allowed-emails email)
        (or (not require-hosted-domain)
            (= :anyone allowed-emails)
+           (= owner (str/lower-case email))
            (membership/only-by-address? allowed-emails email)
            (and (string? hosted-domain) (= (str/lower-case hosted-domain) (email-domain email))))))
 
@@ -222,10 +223,10 @@
 
 (defn- room
   "Account creation options for `email`, let in by `admission`: the
-  community's member limit, which never keeps its owner or moderators out,
-  and whether it joins by the join link."
-  [db settings email admission]
-  {:member-limit (when-not (some #{(str/lower-case email)} (account/staff db (:owner settings)))
+  community's member limit, which never keeps its owner out, and whether
+  it joins by the join link."
+  [settings email admission]
+  {:member-limit (when-not (= (:owner settings) (str/lower-case email))
                    (:member-limit settings))
    :joining (= :joining admission)})
 
@@ -248,14 +249,14 @@
   returns the response explaining why not."
   [{:keys [ctx] :as request} attempt code]
   (let [{:keys [db oidc settings]} ctx
-        {:keys [require-hosted-domain]} settings
         allowed-emails (account/allowed-emails db (:owner settings))
         claims (oidc/verify-id-token oidc
                                      (oidc/exchange-code! oidc code (:code-verifier attempt))
                                      (:nonce attempt))
         admission (admission db
-                             (and (allowed? allowed-emails require-hosted-domain claims)
-                                  (not (account/removed? db (:email claims))))
+                             (and (allowed? allowed-emails (:require-hosted-domain oidc) (:owner settings) claims)
+                                  (or (= (:owner settings) (str/lower-case (:email claims)))
+                                      (not (account/removed? db (:email claims)))))
                              (:join-token attempt)
                              (:email claims))]
     (if-not admission
@@ -265,7 +266,7 @@
           (let [user (account/upsert-user! db
                                            claims
                                            (System/currentTimeMillis)
-                                           (room db settings (:email claims) admission))]
+                                           (room settings (:email claims) admission))]
             (log-joining admission (:email claims))
             (start-session request user (:return-to attempt)))))))
 
@@ -340,7 +341,7 @@
         (if-let [admission (admission db ((account/allowed db (:owner settings)) email) join-token email)]
           (ex/try+
             (finish-deletion! ctx "email" email)
-            (let [user (account/email-user! db email (System/currentTimeMillis) (room db settings email admission))]
+            (let [user (account/email-user! db email (System/currentTimeMillis) (room settings email admission))]
               (log-joining admission email)
               (start-session request user return-to))
             (catch ::error/community-full _

@@ -152,7 +152,7 @@
                  [:input {:type "hidden" :name "email" :value email}]
                  [:div.message-actions
                   [:button.danger {:type "submit"} (i18n/t "Remove for good")]
-                  [:a.button.secondary {:href "/manage/members"} (i18n/t "Keep them")]]]]))
+                  [:a.button.secondary {:href "/manage"} (i18n/t "Keep them")]]]]))
 
 (defn- former-member-or
   "`name`, or \"a former member\" when their account is gone."
@@ -254,7 +254,7 @@
                          [:p.field-note.members (i18n/t "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with.")])
                        [:section.members
                         [:h2 (i18n/t "Added here")]
-                        [:p.field-note (i18n/t "You and the {moderators} can always sign in, on the list or not." {:moderators [:a {:href "/manage/moderators"} (i18n/t "moderators")]})]
+                        [:p.field-note (i18n/t "You can always sign in, on the list or not.")]
                         (if (seq added)
                           [:ul.member-list
                            (for [{:keys [pattern added-by added-at way]} added]
@@ -286,25 +286,25 @@
                         [:button {:type "submit"} (i18n/t "Add")]]))))
 
 (defn moderators
-  "The moderators, for the owner: who they are, with who appointed each and
-  when, the way to withdraw each, and a form to appoint one."
+  "The moderators, for the owner: who they are, the way to withdraw each,
+  and a form to appoint a member."
   [request {:keys [moderators values errors]}]
   (layout/page request
                {:title (i18n/t "Moderators")}
                [:div.board-header
                 (moderation-nav request "/manage/moderators")
                 [:h1 (i18n/t "Moderators")]
-                [:p.lede (i18n/t "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+                [:p.lede (i18n/t "Moderators handle reports, remove listings and members, and keep the categories and pickup places. You, {owner}, are the owner, by the configuration."
                                  {:owner [:code (get-in request [:ctx :settings :owner])]})]]
                [:section.members
                 (if (seq moderators)
                   [:ul.member-list
-                   (for [{:keys [email added-by added-at]} moderators]
+                   (for [{:keys [id name email]} moderators]
                      [:li
                       [:code email]
-                      [:span.member-meta (i18n/t "added by {who}, {date}" {:who (former-member-or added-by) :date (dates/date added-at)})]
+                      [:span.member-meta name]
                       [:form (merge {:method "post" :action "/manage/moderators/withdraw"} layout/once)
-                       [:input {:type "hidden" :name "email" :value email}]
+                       [:input {:type "hidden" :name "id" :value id}]
                        [:button.link-button {:type "submit" :aria-label (i18n/t "Withdraw {pattern}" {:pattern email})}
                         (i18n/t "Withdraw")]]])]
                   [:p.lede (i18n/t "Nobody yet.")])]
@@ -313,7 +313,7 @@
                 [:input (merge {:id "email" :name "email" :type "email" :required true :value (:email values)}
                                (layout/invalid errors :email))]
                 (layout/field-error errors :email)
-                [:p.field-note (i18n/t "By their email address; they need not have joined yet. Withdrawing one takes effect at once.")]
+                [:p.field-note (i18n/t "A member, by their email address. Withdrawing one takes effect at once.")]
                 [:button {:type "submit"} (i18n/t "Appoint")]]))
 
 (defn- list-texts

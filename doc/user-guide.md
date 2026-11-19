@@ -268,13 +268,14 @@ address, changed there to hand the community over. The owner can do all a
 moderator does, and alone sets up the community: who may sign in, the
 moderators, its appearance and its poster.
 
-**Moderators.** **Moderators** lists them, with who appointed each and
-when. Appoint one by email address, whether or not they have joined yet;
-**Withdraw** takes effect at once: they no longer moderate, and can still
-sign in only if the list lets them. Moderators can always sign in.
+**Moderators.** **Moderators** lists them. Appoint a member by their email
+address (every account of that mailbox becomes a moderator); **Withdraw**
+takes effect at once, and they are a member like the others again.
+Moderators sign in as members do, by the list: limit it without them, and
+they are signed out.
 
-**Who may sign in.** A new community lets in its owner alone; the owner
-and moderators can always sign in. **Let anyone sign in** opens it to
+**Who may sign in.** A new community lets in its owner alone, who can
+always sign in. **Let anyone sign in** opens it to
 everyone; **Limit sign-in to the list** closes it again, to the list,
 which is kept meanwhile. Unless anyone can sign in, **Who may sign in**
 lists the addresses and patterns added. Add an address (`alice@gmail.com`), a domain

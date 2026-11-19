@@ -88,7 +88,7 @@
       (if-let [{:keys [user renewed]} (when member resumed)]
         (cond-> (i18n/speaking (:language user)
                   (handler (let [owner (= (:owner settings) (str/lower-case (:email user)))
-                                 moderator (or owner (account/moderator? db (:email user)))]
+                                 moderator (or owner (:moderator user))]
                              (cond-> (assoc request
                                             :user user
                                             :owner owner

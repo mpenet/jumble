@@ -1254,15 +1254,15 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is the owner, by the configuration."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/controller.clj
-msgid "No member has this address."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/email.clj
@@ -1540,11 +1540,7 @@ msgid "Added here"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "You and the {moderators} can always sign in, on the list or not."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "moderators"
+msgid "You can always sign in, on the list or not."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1592,7 +1588,7 @@ msgid "Add"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. You, {owner}, are the owner, by the configuration."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1600,7 +1596,7 @@ msgid "Appoint a moderator"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
+msgid "A member, by their email address. Withdrawing one takes effect at once."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj

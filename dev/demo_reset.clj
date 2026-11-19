@@ -11,9 +11,9 @@
       dev/demo/listings.edn jumbl.ing"
   (:require [clojure.string :as str]
             [demo-seed]
-            [s-exp.jumble.account.model :as account]
             [next.jdbc :as jdbc]
             [s-exp.jumble.account.data :as data]
+            [s-exp.jumble.account.model :as account]
             [s-exp.jumble.config :as config]
             [s-exp.jumble.store.blob :as blob]
             [s-exp.jumble.store.db :as db]
@@ -73,6 +73,6 @@
     (migrate/migrate! ds (migrate/migrations))
     (println (clear-visitors! ds
                               (blob/s3-store storage)
-                              {:domain domain :moderators (account/staff ds owner) :now (System/currentTimeMillis)})
+                              {:domain domain :moderators (set (account/staff ds owner)) :now (System/currentTimeMillis)})
              "visitors' accounts deleted.")
     (demo-seed/-main data-path domain)))

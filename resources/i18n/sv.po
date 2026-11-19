@@ -1255,16 +1255,16 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "För att släppa in alla, använd ”Låt alla logga in” ovan."
 
 #: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Ingen medlem har den här adressen."
+
+#: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is the owner, by the configuration."
 msgstr "{email} är ägare enligt konfigurationen."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
 msgstr "{email} är moderator: ägaren måste först dra tillbaka personen som moderator."
-
-#: src/s_exp/jumble/moderation/controller.clj
-msgid "No member has this address."
-msgstr "Ingen medlem har den här adressen."
 
 #: src/s_exp/jumble/moderation/email.clj
 msgid "Listing reported: {title}"
@@ -1541,12 +1541,8 @@ msgid "Added here"
 msgstr "Tillagda här"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "You and the {moderators} can always sign in, on the list or not."
-msgstr "Du och {moderators} kan alltid logga in, på listan eller inte."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "moderators"
-msgstr "moderatorerna"
+msgid "You can always sign in, on the list or not."
+msgstr "Du kan alltid logga in, på listan eller inte."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1593,16 +1589,16 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
-msgstr "Moderatorer hanterar anmälningar, tar bort annonser och medlemmar och sköter kategorierna och upphämtningsplatserna. De kan alltid logga in. Du, {owner}, är ägare enligt konfigurationen."
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. You, {owner}, are the owner, by the configuration."
+msgstr "Moderatorer hanterar anmälningar, tar bort annonser och medlemmar och sköter kategorierna och upphämtningsplatserna. Du, {owner}, är ägare enligt konfigurationen."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint a moderator"
 msgstr "Utse en moderator"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
-msgstr "Med e-postadressen; personen behöver inte ha gått med än. Att dra tillbaka gäller direkt."
+msgid "A member, by their email address. Withdrawing one takes effect at once."
+msgstr "En medlem, med e-postadressen. Att dra tillbaka gäller direkt."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint"

@@ -23,15 +23,19 @@
 (def ^:dynamic *handler* nil)
 
 (defn- app
-  [idp settings]
-  (fixtures/handler {:oidc (oidc/provider {:issuer (:issuer idp)
-                                           :client-id idp/client-id
-                                           :client-secret idp/client-secret
-                                           :redirect-uri (str base-url "/auth/callback")})
-                     :settings (merge {:base-url base-url
-                                       :session-ttl ttl
-                                       :sign-in "oidc"}
-                                      settings)}))
+  "The application signing in with `idp`, requiring the organisation of
+  addresses a domain let in when `require-hosted-domain`, as with Google."
+  ([idp settings] (app idp settings false))
+  ([idp settings require-hosted-domain]
+   (fixtures/handler {:oidc (oidc/provider {:issuer (:issuer idp)
+                                            :client-id idp/client-id
+                                            :client-secret idp/client-secret
+                                            :redirect-uri (str base-url "/auth/callback")
+                                            :require-hosted-domain require-hosted-domain})
+                      :settings (merge {:base-url base-url
+                                        :session-ttl ttl
+                                        :sign-in "oidc"}
+                                       settings)})))
 
 (use-fixtures :each
   db-fixture
@@ -148,7 +152,7 @@
     (is (= 403 (:status (sign-in nil {:email_verified false})))))
   (is (= 0 (user-count)))
   (testing "with hosted domains required, only accounts the email's own organisation manages get in"
-    (binding [*handler* (app *idp* {:require-hosted-domain true})]
+    (binding [*handler* (app *idp* {} true)]
       (is (= 403 (:status (sign-in nil {}))) "a personal account registered with a work address")
       (is (= 403 (:status (sign-in nil {:hd "other.example.org"}))))
       (is (= 0 (user-count)))
@@ -157,15 +161,23 @@
     (account/set-anyone-allowed! *db* true)
     (binding [*handler* (app *idp* {})]
       (is (= 303 (:status (sign-in nil {:email "bob@other.example.org"})))))
-    (binding [*handler* (app *idp* {:require-hosted-domain true})]
+    (binding [*handler* (app *idp* {} true)]
       (is (= 303 (:status (sign-in nil {:email "someone@gmail.com"}))) "a personal account"))
     (account/set-anyone-allowed! *db* false))
   (testing "with hosted domains required, addresses let in one by one need no organisation"
     (account/allow! *db* {:patterns ["guest@gmail.com" "bob@example.com"] :moderator-id nil :now 0})
-    (binding [*handler* (app *idp* {:require-hosted-domain true})]
+    (binding [*handler* (app *idp* {} true)]
       (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))) "a personal account added by its address")
       (is (= 403 (:status (sign-in nil {:email "bob@example.com"})))
-          "a work address also let in by its domain still needs the organisation")))
+          "a work address also let in by its domain still needs the organisation")
+      (is (= 303 (:status (sign-in nil {:email "dave@example.com"})))
+          "the owner, though, whose address a domain lets in too: never locked out")))
+  (testing "nor is the owner kept out by a removal from before they were the owner"
+    (jdbc/execute-one! *db* ["INSERT INTO removed_email (email, removed_at) VALUES ('dave@example.com', 0)"])
+    (binding [*handler* (app *idp* {})]
+      (is (= 303 (:status (sign-in nil {:email "dave@example.com"})))))
+    (is ((account/allowed *db* "dave@example.com") "Dave@example.com"))
+    (is (not ((account/allowed *db* "dave@example.com") "dave+x@example.com")) "another address of the mailbox stays removed"))
   (testing "single addresses can be let in besides a domain"
     (account/allow! *db* {:patterns ["bob@other.example.org"] :moderator-id nil :now 0})
     (binding [*handler* (app *idp* {})]
@@ -256,7 +268,7 @@
       (is (= 403 (:status (join {:email "*@attacker.example"}))))
       (is (= 403 (:status (sign-in nil {:email "anyone@attacker.example"})))))
     (testing "the link is enough where the provider's organisation is otherwise required"
-      (binding [*handler* (app *idp* {:require-hosted-domain true})]
+      (binding [*handler* (app *idp* {} true)]
         (is (= 303 (:status (join {:email "friend@gmail.com"}))))
         (is ((account/allowed *db* "dave@example.com") "friend@gmail.com"))))
     (testing "a member the moderators removed does not come back by it"
@@ -281,5 +293,5 @@
                          :community-per-day 100
                          :email-for (fn [to] {:to to :subject "Invited" :text "Come"})}))
       (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))))
-      (binding [*handler* (app *idp* {:require-hosted-domain true})]
+      (binding [*handler* (app *idp* {} true)]
         (is (= 303 (:status (sign-in nil {:email "other@gmail.com"}))))))))

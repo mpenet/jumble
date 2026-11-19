@@ -39,6 +39,12 @@
     (catch clojure.lang.ExceptionInfo e
       (ex/ex-type e))))
 
+(deftest google-test
+  (testing "Google tells the organisation managing each account apart, by the hd claim: other providers know only their members"
+    (is (oidc/google? "https://accounts.google.com"))
+    (is (oidc/google? "https://accounts.google.com/"))
+    (is (not (oidc/google? "https://dex.example.com")))))
+
 (deftest pkce-test
   (testing "S256 challenge matches RFC 7636 appendix B"
     (is (= "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"

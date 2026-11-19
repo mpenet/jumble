@@ -67,10 +67,10 @@
       (is (= 404 (:status (request :post "/manage/members" bob :form {"patterns" "eve@evil.example"}))))
       (is (= 404 (:status (request :post "/manage/members/withdraw" bob :form {"pattern" "*@example.com"}))))
       (is (str/includes? (:body (request :get "/manage" dave)) "href=\"/manage/members\"")))
-    (testing "the page shows who may sign in: the list, besides the owner and moderators"
+    (testing "the page shows who may sign in: the list, besides the owner"
       (let [{:keys [status body]} (request :get "/manage/members" dave)]
         (is (= 200 status))
-        (is (str/includes? body "href=\"/manage/moderators\""))
+        (is (str/includes? body "You can always sign in"))
         (is (str/includes? body "*@example.com"))
         (is (re-find #"<form [^>]*method=\"post\" action=\"/manage/members\"" body))))
     (testing "adding addresses and patterns, inviting the addresses"

@@ -27,14 +27,26 @@
   ;; Asymmetric only: accepting HS* would let anyone holding the public key forge tokens.
   #{JWSAlgorithm/RS256 JWSAlgorithm/ES256})
 
+(defn google?
+  "Whether `issuer` is Google's. Google accounts can be registered with any
+  verified address, work ones included, and outlive leaving the
+  organisation: an address let in by its domain must also be managed by the
+  organisation of that domain, which Google tells by the hd claim. Other
+  providers know only their own members."
+  [issuer]
+  (= "https://accounts.google.com" (str/replace (str issuer) #"/+$" "")))
+
 (defn provider
-  "Relying party for `issuer`. Discovery happens on first use and is cached
-  once it succeeds, so the application starts while the provider is down."
-  [{:keys! [issuer client-id client-secret redirect-uri]}]
+  "Relying party for `issuer`, requiring the organisation of addresses a
+  domain let in when `require-hosted-domain` (see [[google?]]). Discovery
+  happens on first use and is cached once it succeeds, so the application
+  starts while the provider is down."
+  [{:keys! [issuer client-id client-secret redirect-uri] :keys [require-hosted-domain]}]
   {:issuer issuer
    :client-id client-id
    :client-secret client-secret
    :redirect-uri redirect-uri
+   :require-hosted-domain (boolean require-hosted-domain)
    :http (http/client {:connect-timeout 5000 :timeout 10000})
    :discovered (atom nil)})
 

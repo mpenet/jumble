@@ -1255,16 +1255,16 @@ msgid "To let anyone in, use Let anyone sign in, above."
 msgstr "Jos haluat päästää kaikki sisään, käytä yllä olevaa painiketta ”Anna kaikkien kirjautua”."
 
 #: src/s_exp/jumble/moderation/controller.clj
+msgid "No member has this address."
+msgstr "Millään jäsenellä ei ole tätä osoitetta."
+
+#: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is the owner, by the configuration."
 msgstr "{email} on omistaja määritysten perusteella."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator: the owner must withdraw them as a moderator first."
 msgstr "{email} on moderaattori: omistajan on ensin poistettava hänet moderaattoreista."
-
-#: src/s_exp/jumble/moderation/controller.clj
-msgid "No member has this address."
-msgstr "Millään jäsenellä ei ole tätä osoitetta."
 
 #: src/s_exp/jumble/moderation/email.clj
 msgid "Listing reported: {title}"
@@ -1541,12 +1541,8 @@ msgid "Added here"
 msgstr "Lisätty täällä"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "You and the {moderators} can always sign in, on the list or not."
-msgstr "Sinä ja {moderators} voitte aina kirjautua, olitte listalla tai ette."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "moderators"
-msgstr "moderaattorit"
+msgid "You can always sign in, on the list or not."
+msgstr "Voit aina kirjautua, olit listalla tai et."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "joined with the join link, {date}"
@@ -1593,16 +1589,16 @@ msgid "Add"
 msgstr "Lisää"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. They can always sign in. You, {owner}, are the owner, by the configuration."
-msgstr "Moderaattorit käsittelevät ilmoitukset, poistavat ilmoituksia ja jäseniä sekä ylläpitävät kategorioita ja noutopaikkoja. He voivat aina kirjautua. Sinä, {owner}, olet omistaja määritysten perusteella."
+msgid "Moderators handle reports, remove listings and members, and keep the categories and pickup places. You, {owner}, are the owner, by the configuration."
+msgstr "Moderaattorit käsittelevät ilmoitukset, poistavat ilmoituksia ja jäseniä sekä ylläpitävät kategorioita ja noutopaikkoja. Sinä, {owner}, olet omistaja määritysten perusteella."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint a moderator"
 msgstr "Nimeä moderaattori"
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "By their email address; they need not have joined yet. Withdrawing one takes effect at once."
-msgstr "Sähköpostiosoitteella; hänen ei tarvitse olla vielä liittynyt. Poisto tulee voimaan heti."
+msgid "A member, by their email address. Withdrawing one takes effect at once."
+msgstr "Jäsen, sähköpostiosoitteella. Poisto tulee voimaan heti."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Appoint"

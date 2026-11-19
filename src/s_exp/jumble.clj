@@ -42,7 +42,6 @@
                                                                   ;; behind a proxy, the proxy says it.
                                                                   :behind-proxy behind-proxy
                                                                   :clients-known (or (some? https) behind-proxy)
-                                                                  :require-hosted-domain (boolean (:require-hosted-domain auth-config))
                                                                   :app-name app-name
                                                                   :currency currency
                                                                   :owner owner
@@ -69,7 +68,8 @@
                                                                (oidc/provider {:issuer issuer
                                                                                :client-id client-id
                                                                                :client-secret client-secret
-                                                                               :redirect-uri (str base-url "/auth/callback")}))))
+                                                                               :redirect-uri (str base-url "/auth/callback")
+                                                                               :require-hosted-domain (oidc/google? issuer)}))))
                               [:db])
      :delivery (component/using (delivery/component {:mailer (mail/smtp-mailer mail-config)
                                                      :blobs blobs

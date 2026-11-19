@@ -7,7 +7,8 @@
             [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.account.model :as account]
             [s-exp.jumble.email.outbox :as outbox]
-            [s-exp.jumble.store.db :as db]))
+            [s-exp.jumble.store.db :as db]
+            [s-exp.jumble.store.switch :as switch]))
 
 (set! *warn-on-reflection* true)
 
@@ -25,16 +26,11 @@
 (defn open?
   "Whether moderators let members invite people."
   [db]
-  (= "on"
-     (:value (jdbc/execute-one! db ["SELECT value FROM community_setting WHERE name = 'member-invitations'"] db/opts))))
+  (switch/on? db "member-invitations"))
 
 (defn set-open!
   [db open]
-  (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx
-                       ["INSERT INTO community_setting (name, value) VALUES ('member-invitations', ?)
-                            ON CONFLICT (name) DO UPDATE SET value = excluded.value"
-                        (if open "on" "off")])))
+  (switch/turn! db "member-invitations" open))
 
 (defn invite!
   "Invites `email` (valid) from member `member-id`: lets it in, as the

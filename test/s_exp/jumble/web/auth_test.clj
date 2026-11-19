@@ -32,8 +32,8 @@
                                    {:iss "i" :sub "s" :email "a@example.com" :name "A"}
                                    (System/currentTimeMillis))
         t (account/create-session! *db* (:id user) (System/currentTimeMillis) ttl)]
-    (testing "a live session cookie resolves to its user"
-      (is (= {:status 200 :body (assoc user :language nil)} (echo (request :get "/listings" :cookie t)))))
+    (testing "a live session cookie resolves to its user, not a moderator"
+      (is (= {:status 200 :body (assoc user :language nil :moderator false)} (echo (request :get "/listings" :cookie t)))))
     (testing "anonymous page loads go to login, remembering where they were headed"
       (is (= {:status 302 :headers {"location" "/login?return_to=%2Flistings%3Fq%3Dlamp"} :body ""}
              (echo (request :get "/listings" :query-string "q=lamp")))))

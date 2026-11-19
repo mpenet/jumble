@@ -1,5 +1,5 @@
 (ns s-exp.jumble.account.model
-  "Accounts, sessions and who may sign in: members, the moderators and the
+  "Accounts, sessions and who may sign in: members and moderators, the
   allowlist the owner keeps, removed addresses, and the one-use links and
   attempts of sign-in."
   (:require [clojure.string :as str]
@@ -7,6 +7,7 @@
             [s-exp.ex :as ex]
             [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.store.db :as db]
+            [s-exp.jumble.store.switch :as switch]
             [s-exp.jumble.error :as error]
             [s-exp.jumble.view.i18n :as i18n]
             [s-exp.jumble.email.outbox :as outbox]
@@ -186,66 +187,42 @@
 (defn anyone-allowed?
   "Whether the owner lets anyone sign in, rather than the allowlist only."
   [db]
-  (= "on"
-     (:value (jdbc/execute-one! db ["SELECT value FROM community_setting WHERE name = 'anyone-allowed'"] db/opts))))
+  (switch/on? db "anyone-allowed"))
 
 (defn set-anyone-allowed!
   "Lets anyone sign in, or only the allowlist again, which is kept meanwhile."
   [db anyone]
-  (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx
-                       ["INSERT INTO community_setting (name, value) VALUES ('anyone-allowed', ?)
-                            ON CONFLICT (name) DO UPDATE SET value = excluded.value"
-                        (if anyone "on" "off")])))
+  (switch/turn! db "anyone-allowed" anyone))
 
 (defn moderators
-  "The moderators the owner appointed: `{:email :added-by :added-at}`, by
-  address, with the name of who appointed each."
+  "The members the owner made moderators: `{:id :name :email}`, by address."
   [db]
   (jdbc/execute! db
-                 ["SELECT m.email, u.name AS added_by, m.added_at
-                      FROM moderator m LEFT JOIN user u ON u.id = m.added_by
-                      ORDER BY m.email"]
+                 ["SELECT id, name, email FROM user WHERE moderator = 1 AND deleted_at IS NULL ORDER BY email"]
                  db/opts))
 
-(defn moderator?
-  "Whether the owner appointed `email` a moderator."
-  [db email]
-  (some? (jdbc/execute-one! db ["SELECT 1 FROM moderator WHERE email = ?" (str/lower-case email)])))
-
-(defn appoint!
-  "Makes `email` (one address) a moderator, as owner `owner-id`; already one,
-  it stays as it was."
-  [db {:keys [email owner-id now]}]
+(defn set-moderator!
+  "Makes member `user-id` a moderator, or no longer."
+  [db user-id moderator]
   (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx
-                       ["INSERT INTO moderator (email, added_by, added_at) VALUES (?, ?, ?)
-                            ON CONFLICT (email) DO NOTHING"
-                        (str/lower-case email)
-                        owner-id
-                        now])))
-
-(defn withdraw-moderator!
-  [db email]
-  (db/with-write-tx [tx db]
-    (jdbc/execute-one! tx ["DELETE FROM moderator WHERE email = ?" (str/lower-case email)])))
+    (jdbc/execute-one! tx ["UPDATE user SET moderator = ? WHERE id = ?" (if moderator 1 0) user-id])))
 
 (defn staff
-  "The `owner`'s address and the moderators', sorted, the owner first."
+  "The `owner`'s address and the moderators', the owner first: whom reports
+  alert."
   [db owner]
   (into [owner] (comp (map :email) (remove #{owner})) (moderators db)))
 
 (defn allowed-emails
   "Who may sign in, as a rule of [[membership/allows?]]: `:anyone` when
-  the owner lets anyone in, else the [[staff]], always let in, then the
+  the owner lets anyone in, else the `owner`, always let in, then the
   allowlist's patterns."
   [db owner]
   (if (anyone-allowed? db)
     :anyone
-    (let [staff (staff db owner)]
-      (into staff
-            (comp (map :pattern) (remove (set staff)))
-            (jdbc/execute! db ["SELECT pattern FROM allowed_email ORDER BY pattern"] db/opts)))))
+    (into [owner]
+          (comp (map :pattern) (remove #{owner}))
+          (jdbc/execute! db ["SELECT pattern FROM allowed_email ORDER BY pattern"] db/opts))))
 
 (defn mailbox
   "The mailbox `email` reaches, lowercase: `Alice+tag@example.org` and
@@ -260,13 +237,14 @@
   (some? (jdbc/execute-one! db ["SELECT 1 FROM removed_email WHERE email = ?" (mailbox email)])))
 
 (defn allowed
-  "Whether an email address may sign in, as a function of it: let in by
-  [[allowed-emails]] and not removed (see [[removed?]]), read once, for
-  checking many."
+  "Whether an email address may sign in, as a function of it: the `owner`'s
+  always, others let in by [[allowed-emails]] and not removed (see
+  [[removed?]]), read once, for checking many."
   [db owner]
   (let [rule (allowed-emails db owner)
         removed (into #{} (map :email) (jdbc/execute! db ["SELECT email FROM removed_email"] db/opts))]
-    #(and (membership/allows? rule %) (not (removed (mailbox %))))))
+    #(or (= owner (str/lower-case %))
+         (and (membership/allows? rule %) (not (removed (mailbox %)))))))
 
 (defn- like-escaped
   "`s` matching itself in a LIKE pattern escaped with `\\`."
@@ -275,17 +253,18 @@
 
 (defn members-with-email
   "The accounts of the mailbox of `email` (see [[mailbox]]), `{:id :name
-  :email :listings}` with how many listings each has: one, or one per
-  address of the mailbox and way of signing in it was used with."
+  :email :listings :moderator}` with how many listings each has: one, or
+  one per address of the mailbox and way of signing in it was used with."
   [db email]
   (when-let [[_ local domain] (re-matches #"([^@]+)@(.+)" (mailbox email))]
-    (jdbc/execute! db
-                   ["SELECT u.id, u.name, u.email, (SELECT count(*) FROM listing l WHERE l.user_id = u.id) AS listings
-                        FROM user u WHERE (u.email = ? OR u.email LIKE ? ESCAPE '\\') AND u.deleted_at IS NULL
-                        ORDER BY u.id"
-                    (str local "@" domain)
-                    (str (like-escaped local) "+%@" (like-escaped domain))]
-                   db/opts)))
+    (mapv #(update % :moderator = 1)
+          (jdbc/execute! db
+                         ["SELECT u.id, u.name, u.email, u.moderator, (SELECT count(*) FROM listing l WHERE l.user_id = u.id) AS listings
+                              FROM user u WHERE (u.email = ? OR u.email LIKE ? ESCAPE '\\') AND u.deleted_at IS NULL
+                              ORDER BY u.id"
+                          (str local "@" domain)
+                          (str (like-escaped local) "+%@" (like-escaped domain))]
+                         db/opts))))
 
 (defn added-emails
   "The allowlist's patterns: with who added each, when, and the way it came
@@ -348,15 +327,15 @@
                        db/opts)))
 
 (defn resume-session!
-  "For the live session `t`, returns `{:user {:id :email :name} :renewed bool}`,
-  else nil. Pushes the session's expiry back to `ttl` from `now` when it was
+  "For the live session `t`, returns `{:user {:id :email :name :language
+  :moderator} :renewed bool}`, else nil. Pushes the session's expiry back to `ttl` from `now` when it was
   last renewed over a day ago, or half `ttl`; `:renewed` tells whether it did."
   [db t now ttl]
   (when (seq t)
     (let [hash (token/digest t)]
       (when-let [{:keys [expires-at] :as row}
                  (jdbc/execute-one! db
-                                    ["SELECT u.id, u.email, u.name, u.language, s.expires_at
+                                    ["SELECT u.id, u.email, u.name, u.language, u.moderator, s.expires_at
                                          FROM session s JOIN user u ON u.id = s.user_id
                                          WHERE s.token_hash = ? AND s.expires_at > ? AND s.created_at > ? AND u.deleted_at IS NULL"
                                      hash
@@ -370,7 +349,7 @@
                                  ["UPDATE session SET expires_at = ? WHERE token_hash = ?"
                                   (+ now ttl)
                                   hash])))
-          {:user (dissoc row :expires-at)
+          {:user (-> row (dissoc :expires-at) (update :moderator = 1))
            :renewed renew})))))
 
 (defn delete-session!

@@ -79,8 +79,8 @@
              (:n (jdbc/execute-one! *db*
                                     ["SELECT count(*) AS n FROM session WHERE token_hash = ?"
                                      (token/digest token)])))))
-    (testing "a live session resolves to its user, with the language they chose (none yet)"
-      (is (= (assoc user :language nil) (:user (account/resume-session! *db* token (+ t0 day) ttl)))))
+    (testing "a live session resolves to its user, with the language they chose (none yet), not a moderator"
+      (is (= (assoc user :language nil :moderator false) (:user (account/resume-session! *db* token (+ t0 day) ttl)))))
     (testing "unknown, malformed and missing tokens resolve to nothing"
       (is (nil? (account/resume-session! *db* (token/generate) t0 ttl)))
       (is (nil? (account/resume-session! *db* "" t0 ttl)))

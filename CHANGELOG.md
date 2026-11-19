@@ -15,7 +15,7 @@ doing besides is under **Upgrade notes**.
   community in Jumble: who may sign in, the moderators, the appearance and
   the poster. Moderators, appointed by the owner on **Moderators**, handle
   reports, remove listings and members, and keep the categories and pickup
-  places. The owner and moderators can always sign in.
+  places. The owner can always sign in.
 - Who may sign in is the owner's to say, in Jumble: **Let anyone sign in**,
   or the list of addresses and domains kept there, which stays while anyone
   may. A new community lets its owner in alone.

@@ -199,20 +199,12 @@
     (invalid "must be oidc or email" [:auth :method]))
   method)
 
-(defn- require-hosted-domain
-  "Google accounts can be registered with any verified address, work ones
-  included, and outlive leaving the organisation: with Google, an address
-  let in by its domain must also be managed by the organisation of that
-  domain (the hd claim). Other providers know only their own members."
-  [issuer]
-  (= "https://accounts.google.com" (str/replace (str issuer) #"/+$" "")))
-
 (defn- check-owner
   "The email address of the community's owner, lowercase: who chooses who
   may sign in and appoints the moderators."
   [s]
-  (let [owner (str/lower-case (str/trim s))]
-    (when-not (mail/plain-address? owner)
+  (let [owner (when (string? s) (str/lower-case (str/trim s)))]
+    (when-not (and owner (mail/plain-address? owner))
       (invalid "must be one email address" [:owner]))
     owner))
 
@@ -412,6 +404,8 @@
   (doseq [path [[:categories] [:places] [:auth :allowed-emails] [:moderators]]
           :when (some? (get-in config path))]
     (invalid "is managed in the app: remove it from the settings file" path))
+  (when (some? (get-in config [:auth :require-hosted-domain]))
+    (invalid "follows from the issuer: remove it from the settings file" [:auth :require-hosted-domain]))
   (let [oidc (= "oidc" (check-method (get-in config [:auth :method])))
         allow-insecure (:allow-insecure-urls config)]
     (when oidc
@@ -453,8 +447,7 @@
                           c))
                 (update :mail check-mail allow-insecure))
       oidc
-      (-> (update-in [:auth :issuer] check-secure-url [:auth :issuer] allow-insecure)
-          (as-> c (assoc-in c [:auth :require-hosted-domain] (require-hosted-domain (get-in c [:auth :issuer]))))))))
+      (update-in [:auth :issuer] check-secure-url [:auth :issuer] allow-insecure))))
 
 (defn load-config
   "Bundled config for `profile` with the deployment file at `path` (edn,

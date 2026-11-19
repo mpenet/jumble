@@ -239,16 +239,16 @@
   moderator."
   [{:keys [ctx params]}]
   (let [{:keys [db settings]} ctx
-        email (some-> (params/one params "email") str/trim str/lower-case)
-        accounts (when (seq email) (account/members-with-email db email))
-        ;; By mailbox, as removal goes: Dave+x@ is dave@, a moderator.
-        mailboxes (into #{} (map account/mailbox) (cons email (map :email accounts)))
-        named (fn [address] (contains? mailboxes (account/mailbox address)))]
+        email (some-> (params/one params "email") str/trim str/lower-case not-empty)
+        accounts (when email (account/members-with-email db email))]
     (cond
-      (named (:owner settings))
+      (nil? email) {:error (i18n/t "No member has this address.")}
+
+      ;; By mailbox, as removal goes: Dave+x@ is dave@, the owner.
+      (some #(= (account/mailbox (:owner settings)) (account/mailbox %)) (cons email (map :email accounts)))
       {:error (i18n/t "{email} is the owner, by the configuration." {:email email})}
 
-      (some named (map :email (account/moderators db)))
+      (some :moderator accounts)
       {:error (i18n/t "{email} is a moderator: the owner must withdraw them as a moderator first." {:email email})}
 
       (empty? accounts) {:error (i18n/t "No member has this address.")}
@@ -294,24 +294,28 @@
   (moderators-page request 200 {}))
 
 (defn appoint-moderator
-  "Makes the typed address a moderator; not a pattern, nor the owner's."
-  [{:keys [ctx params user] :as request}]
+  "Makes the member with the typed address a moderator: each account of
+  its mailbox, as removal goes. Not the owner, who is more."
+  [{:keys [ctx params] :as request}]
   (let [{:keys [db settings]} ctx
         typed (params/one params "email")
         {:keys [email error]} (params/typed-address params (i18n/t "Enter an email address."))
-        error (or error
-                  (when (= email (:owner settings))
-                    (i18n/t "{email} is the owner, by the configuration." {:email email})))]
+        accounts (when email (account/members-with-email db email))
+        error (cond
+                error error
+                (= email (:owner settings)) (i18n/t "{email} is the owner, by the configuration." {:email email})
+                (empty? accounts) (i18n/t "No member has this address."))]
     (if error
       (moderators-page request 422 {:values {:email typed} :errors {:email error}})
-      (do (account/appoint! db {:email email :owner-id (:id user) :now (System/currentTimeMillis)})
+      (do (doseq [{:keys [id]} accounts]
+            (account/set-moderator! db id true))
           (response/redirect "/manage/moderators")))))
 
 (defn withdraw-moderator
-  "No longer lets an address moderate, at once; whether it may still sign
-  in is the list's to say."
+  "Makes a moderator a member like the others again, at once."
   [{:keys [ctx params]}]
-  (account/withdraw-moderator! (:db ctx) (params/one params "email"))
+  (when-let [id (params/id (params/one params "id"))]
+    (account/set-moderator! (:db ctx) id false))
   (response/redirect "/manage/moderators"))
 
 (def ^:private lists
