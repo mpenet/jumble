@@ -15,8 +15,8 @@ clojure -M:dev:run         # http://localhost:8080
 The development services:
 
 - **Dex** at http://127.0.0.1:5556/dex, with two users, both with password
-  `password`: `alice@example.com` (allowed, and a moderator in development) and
-  `mallory@other.example.org` (refused: not in the allowed emails).
+  `password`: `alice@example.com` (a moderator in development, so always let
+  in) and `mallory@other.example.org` (refused: not on the allowlist).
 - **Garage** at http://127.0.0.1:3900, an S3-compatible store with a
   `jumble` bucket for photos and `jumble-backup` for backup checks.
 - **Mailpit**, catching every email Jumble sends, at http://localhost:8025.
@@ -25,8 +25,9 @@ The development services:
   tests and for trying HTTPS as production serves it.
 
 `clojure -M:dev:seed` adds sample members and listings through the same
-model functions the app uses, plus two conversations for alice if she has
-signed in once; `--reset` removes all listings first. It refuses to run
+model functions the app uses, lets `*@example.com` sign in, and adds two
+conversations for alice if she has signed in once; `--reset` removes all
+listings first. It refuses to run
 outside the development profile.
 
 To try email sign-in instead, start with `JUMBLE_SIGN_IN=email`; the links

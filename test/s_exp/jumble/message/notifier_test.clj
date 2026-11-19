@@ -8,7 +8,6 @@
             [s-exp.jumble.store.blob :as blob]
             [s-exp.jumble.store.db :as db]
             [s-exp.jumble.listing.model :as listing]
-            [s-exp.jumble.store.migrate :as migrate]
             [s-exp.jumble.fixtures :as fixtures :refer [*db* call-with-db-path db-fixture listing! user!]]
             [s-exp.jumble.message.model :as message]
             [s-exp.jumble.message.notification :as notification]
@@ -206,8 +205,7 @@
     (call-with-db-path
      (fn [path]
        (binding [*db* (db/datasource path {:write-lock-timeout-ms 50})]
-         (migrate/migrate! *db* (migrate/migrations))
-         (fixtures/use-choices! *db*)
+         (fixtures/prepare! *db*)
          (conversation)
          (let [emails (atom [])
                sent #(swap! emails conj %)
@@ -233,10 +231,10 @@
 (deftest removed-recipient-test
   (let [_ (conversation)
         emails (atom [])
-        mailer #(swap! emails conj %)
-        bob-only (assoc fixtures/settings :allowed-emails ["bob@example.com"])]
+        mailer #(swap! emails conj %)]
+    (fixtures/allow-only! ["bob@example.com"])
     (testing "someone no longer allowed in is not emailed about their messages"
-      (is (= 0 (notifier/deliver-due! *db* mailer bob-only (at 5) (constantly true))))
+      (is (= 0 (deliver! mailer 5)))
       (is (empty? @emails))
       (is (= 0 (pending))))))
 

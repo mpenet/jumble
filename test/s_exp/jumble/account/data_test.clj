@@ -34,9 +34,10 @@
 
 (defn- scene
   "Ann, who posted a lamp with a photo, favorited Bob's desk, wrote to Bob
-  about it, reported it, invited a friend; Bob, who answered. Returns the
-  ids."
+  about it, reported it, invited a friend; Bob, who answered; sign-in
+  limited to *@example.com. Returns the ids."
   [blobs]
+  (fixtures/allow-only! ["*@example.com"])
   (let [ann (fixtures/user! "ann")
         bob (fixtures/user! "bob")
         lamp (listing/create! *db*
@@ -64,7 +65,7 @@
                     {:member-id ann
                      :email "friend@gmail.com"
                      :now 8
-                     :configured ["*@example.com"]
+                     :moderators #{"dave@example.com"}
                      :community-per-day 100
                      :email-for (fn [to] {:to to :subject "Invited" :text "Come"})})
     {:ann ann :bob bob :lamp lamp :desk desk :thread thread}))
@@ -116,7 +117,7 @@
       (is (= [{:name "" :email "" :iss "deleted"}]
              (q "SELECT name, email, iss FROM user WHERE id = ?" ann))))
     (testing "whom they invited may still join"
-      (is ((account/allowed *db* ["*@example.com"]) "friend@gmail.com")))
+      (is ((account/allowed *db* #{}) "friend@gmail.com")))
     (testing "their reports stay, anonymous"
       (is (= 1 (count (q "SELECT * FROM report WHERE listing_id = ?" desk)))))
     (testing "the other side can no longer reply"
@@ -125,9 +126,10 @@
       (is (not= ann (:id (account/upsert-user! *db* {:iss "i" :sub "ann" :email "ann@example.com" :name "ann"} 50)))))))
 
 (deftest deleted-joiner-test
+  (fixtures/allow-only! ["*@example.com"])
   (let [blobs (blob/memory-store)
         joiner (:id (account/email-user! *db* "neighbour@gmail.com" 0 {:joining true}))
-        allowed? #((account/allowed *db* ["*@example.com"]) %)]
+        allowed? #((account/allowed *db* #{}) %)]
     (account/allow! *db* {:patterns ["guest@gmail.com"] :moderator-id nil :now 0})
     (data/delete-account! *db* blobs joiner 10)
     (data/delete-account! *db* blobs (:id (account/email-user! *db* "guest@gmail.com" 0)) 10)

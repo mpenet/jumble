@@ -1,6 +1,6 @@
 # Local OpenID provider for development, matching the :dev profile in
 # resources/config.edn. Both users sign in with the password "password";
-# mallory is not in the allowed emails and must be refused.
+# mallory is not on the allowlist and must be refused.
 issuer: http://127.0.0.1:5556/dex
 
 storage:

@@ -9,6 +9,23 @@ To upgrade, deploy the new version (see [running it](doc/operations.md)):
 the database is migrated as it starts, from any earlier version. What needs
 doing besides is under **Upgrade notes**.
 
+## Unreleased
+
+- Who may sign in is the moderators' to say, in Jumble: **Let anyone sign
+  in**, or the list of addresses and domains they keep, which stays while
+  anyone may. The configuration names the moderators, who can always sign
+  in; a new community lets them in alone.
+- With Google, the organisation managing an account is checked whenever a
+  domain on the list let its address in, without a setting; where anyone
+  may sign in, any Google account can.
+
+### Upgrade notes
+
+`JUMBLE_ALLOWED_EMAILS` and `JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN` are gone,
+and Jumble refuses to start with `:allowed-emails` in a settings file.
+`JUMBLE_MODERATORS` is required. After upgrading, only moderators can sign
+in until they choose who else may, under **Who may sign in**.
+
 ## 2026.11.3 (2026-11-18)
 
 - Mitigates Java4Shell ([CVE-2026-114938](https://calif.io/java4shell/)),

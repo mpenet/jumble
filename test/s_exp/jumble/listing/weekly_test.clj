@@ -115,7 +115,8 @@
     (post! bob "Lamp" day)
     (jdbc/execute! *db* ["UPDATE user SET deleted_at = 1 WHERE id = ?" cleo])
     (testing "an account being deleted, or no longer let in, gets none"
-      (weekly/send-due! *db* (assoc fixtures/settings :allowed-emails ["bob@example.com" "cleo@example.com"]) week)
+      (fixtures/allow-only! ["bob@example.com" "cleo@example.com"])
+      (send! week)
       (is (= [] (outbox))))
     (is (some? ann))))
 

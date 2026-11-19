@@ -210,11 +210,20 @@
                                 (i18n/t "Stop members inviting people")
                                 (i18n/t "Let members invite people"))]]])
 
+(defn- anyone-form
+  "Lets anyone sign in, or only the list again."
+  [anyone]
+  [:form (merge {:method "post" :action "/manage/members/anyone"} layout/once)
+   [:input {:type "hidden" :name "anyone" :value (if anyone "off" "on")}]
+   [:button {:type "submit"} (if anyone
+                               (i18n/t "Limit sign-in to the list")
+                               (i18n/t "Let anyone sign in"))]])
+
 (defn members
-  "Who may sign in: the join link, members' invitations, the configured
-  patterns, those moderators added, and a form to add more; and a form to
-  remove a member."
-  [{:keys [ctx] :as request} {:keys [configured added join invitations-open values errors saved] :as form}]
+  "Who may sign in: anyone, or the moderators and the list, with the join
+  link, members' invitations, the patterns moderators added and a form to
+  add more; and a form to remove a member."
+  [{:keys [ctx] :as request} {:keys [anyone moderators added join invitations-open values errors saved] :as form}]
   (layout/page request
                {:title (i18n/t "Who may sign in")}
                [:div.board-header
@@ -224,17 +233,23 @@
                                  {:person [:code "bob@example.org"]
                                   :domain [:code "*@example.org"]
                                   :subdomains [:code "*@*.example.org"]})]]
-               (if (= :anyone configured)
+               (if anyone
                  (list [:div.empty
-                        [:p (i18n/t "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here.")]]
+                        [:p (i18n/t "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile.")]
+                        (anyone-form anyone)]
                        (remove-member-form form))
-                 (list (join-link-section (get-in ctx [:settings :base-url]) join)
+                 (list [:section.members
+                        [:h2 (i18n/t "Open to anyone")]
+                        [:p.lede (i18n/t "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again.")]
+                        (anyone-form anyone)]
+                       (join-link-section (get-in ctx [:settings :base-url]) join)
                        (member-invitations-section invitations-open)
                        (when (= "oidc" (get-in ctx [:settings :sign-in]))
                          [:p.field-note.members (i18n/t "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with.")])
                        [:section.members
-                        [:h2 (i18n/t "From the configuration")]
-                        [:ul.member-list (for [pattern configured] [:li [:code pattern]])]]
+                        [:h2 (i18n/t "Moderators")]
+                        [:p.lede (i18n/t "They can always sign in: they are moderators by the configuration.")]
+                        [:ul.member-list (for [moderator moderators] [:li [:code moderator]])]]
                        [:section.members
                         [:h2 (i18n/t "Added here")]
                         (if (seq added)

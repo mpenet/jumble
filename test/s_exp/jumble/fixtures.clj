@@ -43,7 +43,6 @@
   {:base-url "http://localhost:8080"
    :session-ttl session-ttl
    :sign-in "oidc"
-   :allowed-emails :anyone
    :source-url "https://github.com/mpenet/jumble"
    :listing-reminder-days 30
    :invitations-per-day 100
@@ -63,17 +62,30 @@
     (doseq [[i {:keys [id label]}] (map-indexed vector entries)]
       (next.jdbc/execute! ds [(str "INSERT INTO " table " (id, label, position) VALUES (?, ?, ?)") id label i]))))
 
+(defn prepare!
+  "Migrates `ds`, a fresh database, with the categories and places of
+  [[settings]], letting anyone sign in."
+  [ds]
+  (migrate/migrate! ds (migrate/migrations))
+  (use-choices! ds)
+  (account/set-anyone-allowed! ds true))
+
 (defn db-fixture
-  "clojure.test fixture binding [[*db*]] to a fresh, migrated database, with
-  the categories and places of [[settings]]."
+  "clojure.test fixture binding [[*db*]] to a fresh database, as [[prepare!]]
+  leaves it."
   [t]
   (call-with-db-path
    (fn [path]
      (with-open [ds (db/datasource path)]
-       (migrate/migrate! ds (migrate/migrations))
-       (use-choices! ds)
+       (prepare! ds)
        (binding [*db* ds]
          (t))))))
+
+(defn allow-only!
+  "Lets only the moderators and `patterns` sign in, in [[*db*]]."
+  [patterns]
+  (account/set-anyone-allowed! *db* false)
+  (account/allow! *db* {:patterns patterns :moderator-id nil :now 0}))
 
 (defn user-id
   "Id of the user with `email` in [[*db*]]."

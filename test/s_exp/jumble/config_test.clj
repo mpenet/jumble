@@ -13,7 +13,6 @@
     (is (string? (:path db)))
     (is (= "http://localhost:8080" base-url))
     (is (= "oidc" (:method auth)))
-    (is (= ["*@example.com"] (:allowed-emails auth)))
     (is (false? (:require-hosted-domain auth)))
     (is (= #{"alice@example.com"} (:moderators (config/load-config :dev nil))))
     (is (= "Jumble" app-name))
@@ -28,13 +27,13 @@
   (let [f (doto (java.io.File/createTempFile "jumble-config" ".edn") (.deleteOnExit))]
     (spit f (pr-str {:app-name "Bazaar"
                      :currency "EUR"
-                     :auth {:allowed-emails "*@corp.example"}}))
+                     :auth {:session-ttl-days 3}}))
     (let [config (config/load-config :dev (str f))]
       (testing "file values win"
         (is (= "Bazaar" (:app-name config)))
         (is (= "EUR" (:currency config))))
       (testing "nested maps merge: untouched keys keep their defaults"
-        (is (= ["*@corp.example"] (get-in config [:auth :allowed-emails])))
+        (is (= 3 (get-in config [:auth :session-ttl-days])))
         (is (= "jumble" (get-in config [:auth :client-id])))))))
 
 (deftest missing-settings-name-variables-test
@@ -45,7 +44,8 @@
               (catch clojure.lang.ExceptionInfo e
                 e))]
       (is (re-find #"JUMBLE_BASE_URL" (ex-message e)))
-      (is (re-find #"JUMBLE_SIGN_IN" (ex-message e))))))
+      (is (re-find #"JUMBLE_SIGN_IN" (ex-message e)))
+      (is (re-find #"JUMBLE_MODERATORS" (ex-message e)) "who chooses who else may sign in"))))
 
 (deftest prod-profile-requires-settings-test
   (testing "without environment variables, production refuses to start and says why"
@@ -55,7 +55,7 @@
               (catch clojure.lang.ExceptionInfo e
                 e))]
       (is (= ::error/missing-config (ex/ex-type e)))
-      (is (= #{[:base-url] [:auth :method] [:auth :allowed-emails]
+      (is (= #{[:base-url] [:auth :method] [:moderators]
                [:storage :endpoint] [:storage :region] [:storage :bucket]
                [:storage :access-key] [:storage :secret-key] [:mail :host] [:mail :from]}
              (set (:missing (ex-data e))))))))
@@ -69,8 +69,8 @@
    :storage {:endpoint "https://objects.example.com" :region "eu-west-1" :bucket "jumble"
              :access-key "EXO1" :secret-key "s"}
    :auth {:method "oidc" :issuer "https://dex.example.com" :client-id "jumble" :client-secret "s"
-          :allowed-emails "*@example.com" :session-ttl-days 7}
-   :moderators ""
+          :session-ttl-days 7}
+   :moderators "dave@example.com"
    :mail {:host "smtp.gmail.com" :port 587 :starttls true :from "Jumble <jumble@example.com>"
           :username "jumble@example.com" :password "app-password"}})
 
@@ -109,19 +109,18 @@
     (is (= [:mail :password] (invalid-path (assoc-in valid [:mail :password] nil))))
     (is (nil? (invalid-path (update valid :mail assoc :username "" :password "")))
         "blank environment variables mean no login"))
-  (testing "with Google and an allowlist, the organisation managing the account is checked too"
-    (let [google (assoc-in valid [:auth :issuer] "https://accounts.google.com")]
-      (is (= [:auth :require-hosted-domain] (invalid-path google)))
-      (is (= [:auth :require-hosted-domain] (invalid-path (assoc-in google [:auth :issuer] "https://accounts.google.com/"))))
-      (is (nil? (invalid-path (assoc-in google [:auth :require-hosted-domain] true))))
-      (is (nil? (invalid-path (assoc-in google [:auth :allowed-emails] "*"))))))
+  (testing "with Google, the organisation managing an account is checked too; with others, not"
+    (let [hosted-domain #(get-in (config/normalize (assoc-in valid [:auth :issuer] %)) [:auth :require-hosted-domain])]
+      (is (true? (hosted-domain "https://accounts.google.com")))
+      (is (true? (hosted-domain "https://accounts.google.com/")))
+      (is (false? (hosted-domain "https://dex.example.com")))
+      (is (nil? (get-in (config/normalize (update valid :auth #(-> % (assoc :method "email") (dissoc :issuer))))
+                        [:auth :require-hosted-domain]))
+          "nor signing in by email")))
   (testing "sign-in is by OIDC or by email, one of them"
     (is (= [:auth :method] (invalid-path (assoc-in valid [:auth :method] "both")))))
   (testing "signing in by email needs no OIDC provider"
     (is (nil? (invalid-path (update valid :auth #(-> % (assoc :method "email") (dissoc :issuer :client-secret)))))))
-  (testing "malformed email patterns are refused"
-    (is (= [:auth :allowed-emails] (invalid-path (assoc-in valid [:auth :allowed-emails] "*@*"))))
-    (is (= [:auth :allowed-emails] (invalid-path (assoc-in valid [:auth :allowed-emails] " , ")))))
   (testing "a logo must be a readable SVG or PNG; none is fine"
     (is (= [:logo] (invalid-path (assoc valid :logo "/nonexistent/logo.svg"))))
     (is (= [:logo-dark] (invalid-path (assoc valid :logo-dark "/nonexistent/logo.svg"))))
@@ -130,9 +129,10 @@
     (is (= [:timezone] (invalid-path (assoc valid :timezone "Mars/Olympus"))))
     (is (= (java.time.ZoneId/of "Europe/Zurich") (:timezone (config/normalize (assoc valid :timezone "Europe/Zurich")))))
     (is (= (java.time.ZoneId/of "UTC") (:timezone (config/normalize valid)))))
-  (testing "categories and places are not settings: a file setting them is refused"
+  (testing "categories, places and who may sign in are not settings: a file setting them is refused"
     (is (= [:categories] (invalid-path (assoc valid :categories [{:id "a" :label "A"}]))))
-    (is (= [:places] (invalid-path (assoc valid :places [])))))
+    (is (= [:places] (invalid-path (assoc valid :places []))))
+    (is (= [:auth :allowed-emails] (invalid-path (assoc-in valid [:auth :allowed-emails] ["*@example.com"])))))
   (testing "a privacy text file must be readable Markdown of reasonable size; none is fine"
     (is (= [:privacy] (invalid-path (assoc valid :privacy "/nonexistent/privacy.md"))))
     (is (nil? (:privacy (config/normalize (assoc valid :privacy "")))))
@@ -172,17 +172,6 @@
     (is (= [:app-name] (invalid-path (assoc valid :app-name "Market\nBcc: x@example.org"))))))
 
 (deftest normalize-test
-  (testing "allowed emails: patterns, comma separated or as a list"
-    (is (= ["*@example.com" "bob@gmail.com"]
-           (get-in (config/normalize (assoc-in valid [:auth :allowed-emails] " *@Example.com,bob@gmail.com "))
-                   [:auth :allowed-emails])))
-    (is (= ["*@example.com"]
-           (get-in (config/normalize (assoc-in valid [:auth :allowed-emails] ["*@example.com"]))
-                   [:auth :allowed-emails]))))
-  (testing "* lets anyone in"
-    (is (= :anyone
-           (get-in (config/normalize (assoc-in valid [:auth :allowed-emails] "*"))
-                   [:auth :allowed-emails]))))
   (testing "OIDC settings are required when signing in with OIDC"
     (is (= [[:auth :issuer]]
            (:missing (ex-data (try
@@ -208,10 +197,12 @@
                           (config/normalize (assoc valid :base-url "jumble.example.com"))))
     (is (map? (config/normalize (assoc valid :base-url "http://localhost:8080"))))
     (is (map? (config/normalize (assoc valid :base-url "http://127.0.0.1:8080")))))
-  (testing "moderators: comma separated addresses, case and spacing ignored, none by default"
+  (testing "moderators: comma separated addresses, case and spacing ignored, one at least"
     (is (= #{"alice@example.com" "bob@example.com"}
            (:moderators (config/normalize (assoc valid :moderators " Alice@Example.com,bob@example.com ")))))
-    (is (= #{} (:moderators (config/normalize valid))))
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Missing configuration" (config/normalize (assoc valid :moderators ""))))
+    (is (= [:moderators] (invalid-path (assoc valid :moderators " , "))))
+    (is (= [:moderators] (invalid-path (assoc valid :moderators []))))
     (is (= [:moderators] (invalid-path (assoc valid :moderators "alice")))))
   (testing "addresses are written as browsers send them: lowercase host, no default port"
     (is (= "https://jumble.example.com" (:base-url (config/normalize (assoc valid :base-url "HTTPS://Jumble.Example.com:443/")))))

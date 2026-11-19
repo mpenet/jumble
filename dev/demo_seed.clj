@@ -143,6 +143,8 @@
         now (System/currentTimeMillis)
         _ (migrate/migrate! ds (migrate/migrations))
         _ (mark-demo! ds domain)
+        ;; Visitors sign in to try it.
+        _ (account/set-anyone-allowed! ds true)
         settings (merge {:currency currency} (choices/all ds))
         users (mapv #(member! ds domain % now) members)
         added (reduce (fn [n {:keys [owner title] :as entry}]

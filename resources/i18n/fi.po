@@ -1255,8 +1255,8 @@ msgid "Reply to {name}…"
 msgstr "Vastaa: {name}…"
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "To let anyone in, use * in the configuration."
-msgstr "Jos haluat päästää kenet tahansa sisään, käytä määrityksissä merkkiä *."
+msgid "To let anyone in, use Let anyone sign in, above."
+msgstr "Jos haluat päästää kaikki sisään, käytä yllä olevaa painiketta ”Anna kaikkien kirjautua”."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator, by the configuration: remove them there."
@@ -1505,20 +1505,40 @@ msgid "Let members invite people"
 msgstr "Anna jäsenten kutsua ihmisiä"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Limit sign-in to the list"
+msgstr "Rajaa kirjautuminen listaan"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in"
+msgstr "Anna kaikkien kirjautua"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Osoitteet ja mallit: {person} yhdelle henkilölle, {domain} verkkotunnukselle, {subdomains} sen aliverkkotunnuksille."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
-msgstr "Kuka tahansa voi kirjautua: määritykset päästävät kaikki sisään. Rajaa pääsyä siellä, niin voit hallita täällä, kuka voi kirjautua."
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Kuka tahansa voi kirjautua. Rajaa kirjautuminen listaan valitaksesi, kuka voi; lista säilytetään sillä välin."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Avoin kaikille"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Anna kenen tahansa kirjautua olematta listalla. Lista säilytetään siihen asti, kun rajaat kirjautumisen taas siihen."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."
 msgstr "Linkin tai kutsun kautta liittyvä kirjautuu kirjautumispalvelunne kautta: hän tarvitsee sinne tilin sillä osoitteella, jolla liittyy."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "From the configuration"
-msgstr "Määrityksistä"
+msgid "Moderators"
+msgstr "Moderaattorit"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "They can always sign in: they are moderators by the configuration."
+msgstr "He voivat aina kirjautua: he ovat moderaattoreita määritysten perusteella."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"

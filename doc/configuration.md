@@ -26,7 +26,7 @@ generated password, say) is a `$`.
 | `JUMBLE_CURRENCY` | | `CHF` | ISO 4217 code of the prices, e.g. `EUR`, `USD`, `GBP`. Recorded in the database on first start; Jumble then refuses to start with another one, as stored prices would change meaning. |
 | `JUMBLE_TIMEZONE` | | `UTC` | The time zone dates and times are shown in, such as `Europe/Zurich` or `America/New_York`. |
 | `JUMBLE_LANGUAGE` | | `en` | The community's language, of pages and emails: `en`, `fr`, `de`, `it`, `es`, `pt` (European Portuguese), `sv`, `da`, `nb` (Norwegian Bokmål), `fi` or `nl`. Members may choose another in their settings; this one is theirs until they do, and that of invitations. None of the translations has had a native speaker's review yet; corrections are welcome (see [translations](development.md#translations)). Category and place names are data: moderators name them in the community's language. |
-| `JUMBLE_MODERATORS` | | none | Email addresses of the people who handle reports, comma separated. |
+| `JUMBLE_MODERATORS` | yes | | Email addresses of the people who handle reports and choose who may sign in, comma separated. They can always sign in. |
 | `JUMBLE_CONFIG_FILE` | | none | Path of the [settings file](#settings-file). |
 | `JUMBLE_HOST`, `JUMBLE_PORT` | | `127.0.0.1`, `8080` | Where the app listens over plain HTTP, the port from 1 to 65535; with HTTPS on, this port answers Let's Encrypt and redirects to https. The container image sets `0.0.0.0` and `8080`; `deploy/podman/https.conf` sets 80. Its health check follows `JUMBLE_PORT`. |
 | `JUMBLE_HTTPS_PORT` | | none | HTTPS served by Jumble on this port, TCP (HTTP/2) and UDP (HTTP/3), with a certificate for `JUMBLE_BASE_URL`'s host, which must then be https. Off without it. `deploy/podman/https.conf` sets 443: HTTP/3 is offered on the port the app listens on, which must be the one people reach. |
@@ -40,11 +40,9 @@ generated password, say) is a `$`.
 | Variable | Required | Default | |
 |---|---|---|---|
 | `JUMBLE_SIGN_IN` | yes | | How members sign in: `oidc`, with an OpenID Connect provider, or `email`, with a link sent by email. One per instance. See [signing in](#signing-in). |
-| `JUMBLE_ALLOWED_EMAILS` | yes | | Who may sign in: `*`, or email patterns, comma separated. See [who may sign in](#who-may-sign-in). |
 | `JUMBLE_OIDC_ISSUER` | with `oidc` | | The OpenID Connect issuer URL, e.g. `https://accounts.google.com`. Must be https. |
 | `JUMBLE_OIDC_CLIENT_ID` | | `jumble` | The client registered with the provider. |
 | `JUMBLE_OIDC_CLIENT_SECRET` | with `oidc` | | Its secret. |
-| `JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN` | with Google | `false` | `true`: the account must also be managed by the organisation of its address (see [Google](#google-workspace)). |
 
 ### Photo storage
 
@@ -106,14 +104,12 @@ others, or capped.
 
 `JUMBLE_CONFIG_FILE` names an [edn](https://github.com/edn-format/edn) file
 merged over the built-in settings: maps are merged key by key, lists are
-replaced as a whole. It holds what has no environment variable, and long
-lists that read better one per line:
+replaced as a whole. It holds what has no environment variable:
 
 ```clojure
 {;; How long a sign-in lasts without a visit, in days, from 1 to 30 (at
  ;; most 30 days in all, however often renewed).
- :auth {:session-ttl-days 7
-        :allowed-emails ["*@example.org" "alice@gmail.com"]}}
+ :auth {:session-ttl-days 7}}
 ```
 
 - Any setting can be set here, as in the built-in
@@ -172,7 +168,9 @@ For a community on Google Workspace:
 
 1. In the Google Cloud console of the Workspace, configure the OAuth
    consent screen as **Internal**: only the Workspace's accounts can then
-   sign in.
+   sign in, on all its domains, and moderators can let anyone in. With
+   **External**, any Google account can authenticate: let in a domain
+   (`*@example.org`) and guests by their address instead.
 2. Create an OAuth client of type **Web application** with the redirect URI
    above.
 3. Configure:
@@ -182,55 +180,42 @@ For a community on Google Workspace:
    JUMBLE_OIDC_ISSUER=https://accounts.google.com
    JUMBLE_OIDC_CLIENT_ID=<client id>
    JUMBLE_OIDC_CLIENT_SECRET=<client secret>
-   JUMBLE_ALLOWED_EMAILS=*@example.org
-   JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN=true
    ```
 
-Why the last line: anyone can create a personal Google account with a work
-address, verify it, and keep it after leaving. Google marks accounts a
-Workspace manages with the `hd` claim, its domain; Jumble then requires it to
-be the address's own domain when a domain pattern let the address in. An
-address listed by itself (a guest's `someone@gmail.com`, say) needs no `hd`:
-it was named, not inferred from its domain. With Google and anything but
-`*`, Jumble refuses to start without the setting.
+Anyone can create a personal Google account with a work address, verify
+it, and keep it after leaving. Google marks accounts a Workspace manages
+with the `hd` claim, its domain; with Google as the issuer, Jumble requires
+it to be the address's own domain when a domain pattern let the address in.
+An address listed by itself (a guest's `someone@gmail.com`, say) needs no
+`hd`: it was named, not inferred from its domain; nor does anyone, where
+moderators let anyone in.
 
 #### Other providers
 
 Keycloak, Okta, Dex and the like work the same way: create a client for a
 web application with the redirect URI above, then set the issuer (the URL
 that serves `/.well-known/openid-configuration`), client id and secret.
-Leave `JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN` unset: only Google sends the claim
-it checks.
 
 ### Who may sign in
 
-`JUMBLE_ALLOWED_EMAILS` applies to both ways of signing in. Patterns are
-comma separated, case is ignored, and an address needs to match one:
+Moderators decide, in Jumble itself, for both ways of signing in (see the
+[user guide](user-guide.md#for-moderators)); the configuration only names
+the moderators (`JUMBLE_MODERATORS`), who can always sign in. A new
+community lets in its moderators alone, until they let in anyone, or a list:
 
-| Openness | Example |
+| Entry | Example |
 |---|---|
-| Fully open | `*` |
 | A domain | `*@example.org` |
 | A domain's subdomains | `*@*.example.org` (add `*@example.org` for the domain itself) |
-| Single addresses | `alice@example.org, bob@gmail.com` |
-| Mixed | `*@example.org, guest@gmail.com` |
+| A single address | `bob@gmail.com` |
 
-`*` is the only wildcard, and only in those places. A long list of
-addresses can go in the [settings file](#settings-file) instead:
+Case is ignored, and an address needs to match one. Moderators can also
+make a join link that lets in whoever opens it, and let members invite
+people by email. Whoever no longer matches, after a moderator withdraws an
+entry or limits sign-in to the list again, is signed out at their next
+click.
 
-```clojure
-{:auth {:allowed-emails ["*@example.org" "alice@gmail.com" "bob@proton.me"]}}
-```
-
-Changes take effect when Jumble restarts. Moderators can also let more
-people in from Jumble itself, without a restart (see the
-[user guide](user-guide.md#for-moderators)): what they add widens the
-configured patterns, never narrows them. They can also make a join link
-that lets in whoever opens it, and let members invite people by email.
-Whoever no longer matches, after a moderator removes an entry or the
-configuration changes, is signed out at their next click.
-
-Fully open means anyone: with email sign-in, anyone with an email address;
+Letting anyone in means anyone: with email sign-in, anyone with an email address;
 with a provider, anyone that provider signs in. That suits a provider that
 only knows your members (a Keycloak realm you invite people to). It does not
 suit Google without an internal consent screen, where anyone with a Google

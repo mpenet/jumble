@@ -63,12 +63,14 @@
 (defn- allowed?
   "Whether the identity in `claims` may sign in: `allowed-emails` lets its
   address in and, when `require-hosted-domain`, the organisation managing
-  the account (the provider's hd claim) is the address's own domain. An
-  address let in by itself alone (a guest a moderator added, say) needs no
-  organisation: it was named, not inferred from a domain."
+  the account (the provider's hd claim) is the address's own domain. Only
+  an address let in by its domain needs the organisation: one named by
+  itself (a guest a moderator added, say) was not inferred from a domain,
+  and where anyone may sign in nothing was."
   [allowed-emails require-hosted-domain {:keys [email hosted-domain]}]
   (and (membership/allows? allowed-emails email)
        (or (not require-hosted-domain)
+           (= :anyone allowed-emails)
            (membership/only-by-address? allowed-emails email)
            (and (string? hosted-domain) (= (str/lower-case hosted-domain) (email-domain email))))))
 
@@ -248,7 +250,7 @@
   [{:keys [ctx] :as request} attempt code]
   (let [{:keys [db oidc settings]} ctx
         {:keys [require-hosted-domain]} settings
-        allowed-emails (account/allowed-emails db (:allowed-emails settings))
+        allowed-emails (account/allowed-emails db (:moderators settings))
         claims (oidc/verify-id-token oidc
                                      (oidc/exchange-code! oidc code (:code-verifier attempt))
                                      (:nonce attempt))
@@ -294,7 +296,7 @@
                        (view/email-sign-in request
                                            {:values {:email (params/one params "email") :return-to target :join join-token}
                                             :errors {:email error}}))
-        (do (when-let [admission (admission db ((account/allowed db (:allowed-emails settings)) email) join-token email)]
+        (do (when-let [admission (admission db ((account/allowed db (:moderators settings)) email) join-token email)]
               (if (and (:clients-known settings)
                        (not (client-allowed! sign-in-requests
                                              remote-addr
@@ -347,7 +349,7 @@
       (layout/not-found request)
       (if-let [{:keys [email return-to join-token]}
                (account/use-email-sign-in! db (params/one params "token") (System/currentTimeMillis))]
-        (if-let [admission (admission db ((account/allowed db (:allowed-emails settings)) email) join-token email)]
+        (if-let [admission (admission db ((account/allowed db (:moderators settings)) email) join-token email)]
           (ex/try+
             (finish-deletion! ctx "email" email)
             (let [user (account/email-user! db email (System/currentTimeMillis) (room settings email admission))]
@@ -446,7 +448,7 @@
   "Whether members may invite people: sign-in is limited to some, and
   moderators let them."
   [{:keys [ctx]}]
-  (and (not= :anyone (get-in ctx [:settings :allowed-emails]))
+  (and (not (account/anyone-allowed? (:db ctx)))
        (invite/open? (:db ctx))))
 
 (defn settings
@@ -497,7 +499,7 @@
   "What members are told while they may not invite: nothing to invite to
   when anyone can sign in; else that the moderators closed invitations."
   [{:keys [ctx] :as request}]
-  (if (= :anyone (get-in ctx [:settings :allowed-emails]))
+  (if (account/anyone-allowed? (:db ctx))
     (layout/not-found request)
     (layout/message request
                     403
@@ -528,7 +530,7 @@
                               {:member-id (:id user)
                                :email address
                                :now (System/currentTimeMillis)
-                               :configured (:allowed-emails settings)
+                               :moderators (:moderators settings)
                                :community-per-day (:invitations-per-day settings)
                                ;; Not a member yet: the community's language.
                                :email-for #(i18n/speaking nil (email/invitation settings (:name user) %))})

@@ -32,7 +32,7 @@
    :storage {:endpoint "http://127.0.0.1:1" :region "r" :bucket "b" :access-key "a" :secret-key "s"}
    ;; Discovery is lazy: nothing listens here and the system still starts.
    :auth {:issuer "http://127.0.0.1:1/dex" :client-id "jumble" :client-secret "s"
-          :method "oidc" :allowed-emails ["*@example.com"] :session-ttl-days 7}
+          :method "oidc" :session-ttl-days 7}
    :mail {:host "127.0.0.1" :port 1 :starttls false :from "jumble@example.com"}})
 
 (deftest incomplete-config-test
@@ -66,10 +66,10 @@
           (is (contains? (set (keys (component/dependencies (:delivery system)))) :irc)))))))
 
 (deftest delivery-settings-test
-  (testing "emails go to those allowed in, by the rule the application signs them in with"
+  (testing "emails go to those allowed in, by the rule the application signs them in with: its moderators"
     (let [system (jumble/system (config "unused.db"))]
-      (is (= ["*@example.com"] (get-in system [:delivery :settings :allowed-emails])))
-      (is (= (get-in system [:server :settings :allowed-emails]) (get-in system [:delivery :settings :allowed-emails]))))))
+      (is (= #{"dave@example.com"} (get-in system [:delivery :settings :moderators])))
+      (is (= (get-in system [:server :settings :moderators]) (get-in system [:delivery :settings :moderators]))))))
 
 (deftest system-test
   (call-with-db-path (fn [path]

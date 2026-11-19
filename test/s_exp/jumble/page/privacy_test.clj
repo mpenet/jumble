@@ -2,7 +2,8 @@
   "The privacy page."
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is testing use-fixtures]]
-            [s-exp.jumble.fixtures :as fixtures :refer [db-fixture request sign-in!]]))
+            [s-exp.jumble.account.model :as account]
+            [s-exp.jumble.fixtures :as fixtures :refer [*db* db-fixture request sign-in!]]))
 
 (set! *warn-on-reflection* true)
 
@@ -24,10 +25,12 @@
                        "<a href=\"mailto:privacy@club.org\">privacy@club.org</a>")))
   (testing "where sign-in is limited to a list, it says what invitations and the join link keep"
     (is (not (str/includes? (:body (request :get "/privacy" nil)) "addresses you invite")))
-    (let [body (:body (request :get "/privacy" nil :ctx {:settings {:allowed-emails ["*@example.com"]}}))]
+    (account/set-anyone-allowed! *db* false)
+    (let [body (:body (request :get "/privacy" nil))]
       (is (str/includes? body "the addresses you invite, for 90 days"))
       (is (str/includes? body "Moderators see who may sign in"))
-      (is (str/includes? body "takes your address off the list"))))
+      (is (str/includes? body "takes your address off the list")))
+    (account/set-anyone-allowed! *db* true))
   (testing "new posts announced in a chat channel, when they are, say so"
     (is (not (str/includes? (:body (request :get "/privacy" nil)) "chat channel")))
     (let [body (:body (request :get "/privacy" nil :ctx {:settings {:chat-announced true}}))]

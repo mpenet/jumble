@@ -5,7 +5,6 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [s-exp.ex :as ex]
-            [s-exp.jumble.account.membership :as membership]
             [s-exp.jumble.page.branding :as branding]
             [s-exp.jumble.error :as error]
             [s-exp.jumble.view.i18n :as i18n]
@@ -18,7 +17,7 @@
 (set! *warn-on-reflection* true)
 
 (def ^:private required
-  [[:base-url] [:auth :method] [:auth :allowed-emails]
+  [[:base-url] [:auth :method] [:moderators]
    [:storage :endpoint] [:storage :region] [:storage :bucket] [:storage :access-key] [:storage :secret-key]
    [:mail :host] [:mail :from]])
 
@@ -34,7 +33,7 @@
   "The environment variable setting each required value."
   {[:base-url] "JUMBLE_BASE_URL"
    [:auth :method] "JUMBLE_SIGN_IN"
-   [:auth :allowed-emails] "JUMBLE_ALLOWED_EMAILS"
+   [:moderators] "JUMBLE_MODERATORS"
    [:auth :issuer] "JUMBLE_OIDC_ISSUER"
    [:auth :client-id] "JUMBLE_OIDC_CLIENT_ID"
    [:auth :client-secret] "JUMBLE_OIDC_CLIENT_SECRET"
@@ -200,33 +199,26 @@
     (invalid "must be oidc or email" [:auth :method]))
   method)
 
-(defn- check-allowed-emails
-  [patterns]
-  (ex/try+
-    (membership/parse patterns)
-    (catch ::error/invalid-pattern _
-      (invalid (ex-message &ex) [:auth :allowed-emails]))))
-
-(defn- check-hosted-domain
+(defn- require-hosted-domain
   "Google accounts can be registered with any verified address, work ones
-  included, and outlive leaving the organisation: with Google and an
-  allowlist, the managing organisation must be checked too."
-  [{:keys [issuer allowed-emails require-hosted-domain] :as auth}]
-  (when (and (= "https://accounts.google.com" (str/replace (str issuer) #"/+$" ""))
-             (not= :anyone allowed-emails)
-             (not require-hosted-domain))
-    (invalid "must be true with Google, unless anyone may sign in" [:auth :require-hosted-domain]))
-  auth)
+  included, and outlive leaving the organisation: with Google, an address
+  let in by its domain must also be managed by the organisation of that
+  domain (the hd claim). Other providers know only their own members."
+  [issuer]
+  (= "https://accounts.google.com" (str/replace (str issuer) #"/+$" "")))
 
 (defn- check-moderators
   "Email addresses of the people who handle reports, comma separated or as
-  a list, as a lowercase set (empty when blank)."
+  a list, as a lowercase set."
   [s]
   (let [moderators (into #{}
                          (comp (map (comp str/lower-case str/trim)) (remove str/blank?))
                          (if (sequential? s) s (str/split (or s "") #",")))]
     (when-not (every? mail/plain-address? moderators)
       (invalid "must be comma separated email addresses" [:moderators]))
+    ;; They alone can let anyone else in.
+    (when (empty? moderators)
+      (invalid "must name one moderator at least" [:moderators]))
     moderators))
 
 (defn- check-logo
@@ -422,9 +414,9 @@
   (check-required config required)
   ;; Moderators manage them in the app; a settings file listing them would
   ;; otherwise be silently ignored.
-  (doseq [k [:categories :places]
-          :when (contains? config k)]
-    (invalid "is managed by moderators in the app: remove it from the settings file" [k]))
+  (doseq [path [[:categories] [:places] [:auth :allowed-emails]]
+          :when (some? (get-in config path))]
+    (invalid "is managed by moderators in the app: remove it from the settings file" path))
   (let [oidc (= "oidc" (check-method (get-in config [:auth :method])))
         allow-insecure (:allow-insecure-urls config)]
     (when oidc
@@ -435,7 +427,6 @@
                 (update :currency check-currency)
                 (update-in [:storage :endpoint] check-endpoint)
                 (update-in [:storage :endpoint] check-secure-url [:storage :endpoint] allow-insecure)
-                (update-in [:auth :allowed-emails] check-allowed-emails)
                 (update :moderators check-moderators)
                 (update :timezone check-timezone)
                 (update :language check-language)
@@ -468,7 +459,7 @@
                 (update :mail check-mail allow-insecure))
       oidc
       (-> (update-in [:auth :issuer] check-secure-url [:auth :issuer] allow-insecure)
-          (update :auth check-hosted-domain)))))
+          (as-> c (assoc-in c [:auth :require-hosted-domain] (require-hosted-domain (get-in c [:auth :issuer]))))))))
 
 (defn load-config
   "Bundled config for `profile` with the deployment file at `path` (edn,

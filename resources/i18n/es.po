@@ -1255,8 +1255,8 @@ msgid "Reply to {name}…"
 msgstr "Responder a {name}…"
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "To let anyone in, use * in the configuration."
-msgstr "Para dejar entrar a cualquiera, usa * en la configuración."
+msgid "To let anyone in, use Let anyone sign in, above."
+msgstr "Para dejar entrar a cualquiera, usa «Permitir que cualquiera inicie sesión», más arriba."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator, by the configuration: remove them there."
@@ -1505,20 +1505,40 @@ msgid "Let members invite people"
 msgstr "Permitir que los miembros inviten a personas"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Limit sign-in to the list"
+msgstr "Limitar el inicio de sesión a la lista"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in"
+msgstr "Permitir que cualquiera inicie sesión"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Direcciones y patrones: {person} para una persona, {domain} para un dominio, {subdomains} para sus subdominios."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
-msgstr "Cualquiera puede iniciar sesión: la configuración deja entrar a todo el mundo. Restríngela allí para gestionar aquí quién puede iniciar sesión."
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Cualquiera puede iniciar sesión. Limita el inicio de sesión a la lista para elegir quién puede; mientras tanto, la lista se conserva."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Abierto a cualquiera"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Permite que cualquiera inicie sesión, sin estar en la lista. La lista se conserva para cuando vuelvas a limitar el inicio de sesión a ella."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."
 msgstr "Quien se une por el enlace o una invitación inicia sesión con tu proveedor de inicio de sesión: necesita una cuenta en él, con la dirección con la que se une."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "From the configuration"
-msgstr "De la configuración"
+msgid "Moderators"
+msgstr "Moderadores"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "They can always sign in: they are moderators by the configuration."
+msgstr "Siempre pueden iniciar sesión: son moderadores por la configuración."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"

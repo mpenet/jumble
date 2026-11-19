@@ -128,12 +128,13 @@
   [[view/members]]) for what was typed."
   [{:keys [ctx] :as request} status form]
   (let [{:keys [db settings]} ctx
-        configured (:allowed-emails settings)]
+        anyone (account/anyone-allowed? db)]
     (response/html status
                    (view/members request
                                  (assoc form
-                                        :configured configured
-                                        :added (when-not (= :anyone configured) (account/added-emails db))
+                                        :anyone anyone
+                                        :moderators (sort (:moderators settings))
+                                        :added (when-not anyone (account/added-emails db))
                                         :join (join/current db (System/currentTimeMillis))
                                         :invitations-open (invite/open? db))))))
 
@@ -160,6 +161,13 @@
   (invite/set-open! (:db ctx) (= "on" (params/one params "open")))
   (response/redirect "/manage/members"))
 
+(defn set-anyone-allowed
+  "Lets anyone sign in, or only the allowlist again: those it does not let
+  in are signed out at their next request."
+  [{:keys [ctx params]}]
+  (account/set-anyone-allowed! (:db ctx) (= "on" (params/one params "anyone")))
+  (response/redirect "/manage/members"))
+
 (defn members
   [{:keys [query-string] :as request}]
   (members-page request
@@ -174,7 +182,7 @@
   (ex/try+
     (let [patterns (membership/parse (str/split (or text "") #"[,\s]+"))]
       (if (= :anyone patterns)
-        {:error (i18n/t "To let anyone in, use * in the configuration.")}
+        {:error (i18n/t "To let anyone in, use Let anyone sign in, above.")}
         {:patterns patterns}))
     (catch ::error/invalid-pattern _
       {:error (ex-message &ex)})))
@@ -183,11 +191,10 @@
   "Lets the typed patterns sign in, inviting the plain addresses when asked."
   [{:keys [ctx params user] :as request}]
   (let [{:keys [db settings]} ctx
-        configured (:allowed-emails settings)
         invite (= "on" (params/one params "invite"))
         {:keys [patterns error]} (parse-patterns (params/one params "patterns"))]
     (cond
-      (= :anyone configured) (response/redirect "/manage/members")
+      (account/anyone-allowed? db) (response/redirect "/manage/members")
 
       error
       (members-page request
@@ -343,9 +350,9 @@
   "The poster, in the community's language or the one asked for; its code
   opens the join link when moderators ask for it and one works."
   [{:keys [ctx params] :as request}]
-  (let [{:keys [base-url allowed-emails]} (:settings ctx)
+  (let [{:keys [base-url]} (:settings ctx)
         language (i18n/languages (params/one params "language"))
-        join (when-not (= :anyone allowed-emails) (join/current (:db ctx) (System/currentTimeMillis)))
+        join (when-not (account/anyone-allowed? (:db ctx)) (join/current (:db ctx) (System/currentTimeMillis)))
         joining (boolean (and join (= "join" (params/one params "code"))))]
     (i18n/speaking language
       (response/html 200
@@ -381,6 +388,7 @@
           [:post "/manage/members/join-link"] (moderators-only #'create-join-link)
           [:post "/manage/members/join-link/off"] (moderators-only #'turn-off-join-link)
           [:post "/manage/members/invitations"] (moderators-only #'set-member-invitations)
+          [:post "/manage/members/anyone"] (moderators-only #'set-anyone-allowed)
           [:get "/manage/members/remove"] (moderators-only #'confirm-member-removal)
           [:post "/manage/members/remove"] (moderators-only #'remove-member)
           [:get "/manage/listings/{id}/remove"] (moderators-only #'confirm-removal)

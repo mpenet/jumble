@@ -220,9 +220,11 @@ category; with no pickup places, members always type a city. A new
 Jumble starts with a set of general categories, in its language, and no
 places.
 
-**Who may sign in.** Unless anyone can sign in, **Who may sign in** lists
-the addresses and patterns from the configuration, and
-those moderators added. Add an address (`alice@gmail.com`), a domain
+**Who may sign in.** A new community lets in its moderators alone, who can
+always sign in. **Let anyone sign in** opens it to everyone; **Limit
+sign-in to the list** closes it again, to the list, which is kept
+meanwhile. Unless anyone can sign in, **Who may sign in** lists the
+moderators, and the addresses and patterns moderators added. Add an address (`alice@gmail.com`), a domain
 (`*@partner.org`) or its subdomains (`*@*.partner.org`), one per line; tick
 **Email an invitation** to let the addresses know. **Withdraw** takes
 effect at once: people only it let in are signed out at their next click,
@@ -233,8 +235,7 @@ it. To keep someone out, **Remove a member**.
 **Join link.** Unless anyone can sign in, **Who may sign in** also offers a
 join link: whoever opens it can join with any address, by email or the
 sign-in provider, without being on the list (where the provider's
-organisation is required, `JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN`, the link
-is enough). Their address is then added, marked as joined with the join
+organisation is otherwise required, with Google, the link is enough). Their address is then added, marked as joined with the join
 link, and can be withdrawn like any other.
 There is one link at a time, working until the date chosen or for good.
 Anyone holding it can join, so share it where you would invite people in

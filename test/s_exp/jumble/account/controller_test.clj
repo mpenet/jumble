@@ -30,13 +30,13 @@
                                            :redirect-uri (str base-url "/auth/callback")})
                      :settings (merge {:base-url base-url
                                        :session-ttl ttl
-                                       :sign-in "oidc"
-                                       :allowed-emails ["*@example.com"]}
+                                       :sign-in "oidc"}
                                       settings)}))
 
 (use-fixtures :each
   db-fixture
   (fn [t]
+    (fixtures/allow-only! ["*@example.com"])
     (let [p (idp/start!)]
       (try
         (binding [*idp* p *handler* (app p nil)]
@@ -153,18 +153,22 @@
       (is (= 403 (:status (sign-in nil {:hd "other.example.org"}))))
       (is (= 0 (user-count)))
       (is (= 303 (:status (sign-in nil {:hd "example.com"}))))))
-  (testing "without an allowlist any verified address is accepted"
-    (binding [*handler* (app *idp* {:allowed-emails :anyone})]
-      (is (= 303 (:status (sign-in nil {:email "bob@other.example.org"}))))))
+  (testing "where anyone may sign in, any verified address is accepted, with no organisation needed"
+    (account/set-anyone-allowed! *db* true)
+    (binding [*handler* (app *idp* {})]
+      (is (= 303 (:status (sign-in nil {:email "bob@other.example.org"})))))
+    (binding [*handler* (app *idp* {:require-hosted-domain true})]
+      (is (= 303 (:status (sign-in nil {:email "someone@gmail.com"}))) "a personal account"))
+    (account/set-anyone-allowed! *db* false))
   (testing "with hosted domains required, addresses let in one by one need no organisation"
-    (binding [*handler* (app *idp*
-                             {:require-hosted-domain true
-                              :allowed-emails ["*@example.com" "guest@gmail.com" "bob@example.com"]})]
+    (account/allow! *db* {:patterns ["guest@gmail.com" "bob@example.com"] :moderator-id nil :now 0})
+    (binding [*handler* (app *idp* {:require-hosted-domain true})]
       (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))) "a personal account added by its address")
       (is (= 403 (:status (sign-in nil {:email "bob@example.com"})))
           "a work address also let in by its domain still needs the organisation")))
   (testing "single addresses can be let in besides a domain"
-    (binding [*handler* (app *idp* {:allowed-emails ["*@example.com" "bob@other.example.org"]})]
+    (account/allow! *db* {:patterns ["bob@other.example.org"] :moderator-id nil :now 0})
+    (binding [*handler* (app *idp* {})]
       (is (= 303 (:status (sign-in nil {:email "bob@other.example.org"}))))
       (is (= 403 (:status (sign-in nil {:email "eve@other.example.org"})))))))
 
@@ -254,7 +258,7 @@
     (testing "the link is enough where the provider's organisation is otherwise required"
       (binding [*handler* (app *idp* {:require-hosted-domain true})]
         (is (= 303 (:status (join {:email "friend@gmail.com"}))))
-        (is ((account/allowed *db* ["*@example.com"]) "friend@gmail.com"))))
+        (is ((account/allowed *db* #{}) "friend@gmail.com"))))
     (testing "a member the moderators removed does not come back by it"
       (data/remove-member! *db* (blob/memory-store) {:email "neighbour@gmail.com" :moderator-id nil :now 0})
       (is (= 403 (:status (join {:email "neighbour@gmail.com"})))))
@@ -273,7 +277,7 @@
                         {:member-id ann
                          :email address
                          :now 0
-                         :configured ["*@example.com"]
+                         :moderators #{"dave@example.com"}
                          :community-per-day 100
                          :email-for (fn [to] {:to to :subject "Invited" :text "Come"})}))
       (is (= 303 (:status (sign-in nil {:email "guest@gmail.com"}))))

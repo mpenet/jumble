@@ -1,6 +1,6 @@
 (ns s-exp.jumble.account.model
   "Accounts, sessions and who may sign in: members, the allowlist moderators
-  widen, removed addresses, and the one-use links and attempts of sign-in."
+  keep, removed addresses, and the one-use links and attempts of sign-in."
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
             [s-exp.ex :as ex]
@@ -182,14 +182,30 @@
   (db/with-write-tx [tx db]
     (jdbc/execute-one! tx ["UPDATE user SET name = ? WHERE id = ?" name user-id])))
 
+(defn anyone-allowed?
+  "Whether moderators let anyone sign in, rather than the allowlist only."
+  [db]
+  (= "on"
+     (:value (jdbc/execute-one! db ["SELECT value FROM community_setting WHERE name = 'anyone-allowed'"] db/opts))))
+
+(defn set-anyone-allowed!
+  "Lets anyone sign in, or only the allowlist again, which is kept meanwhile."
+  [db anyone]
+  (db/with-write-tx [tx db]
+    (jdbc/execute-one! tx
+                       ["INSERT INTO community_setting (name, value) VALUES ('anyone-allowed', ?)
+                            ON CONFLICT (name) DO UPDATE SET value = excluded.value"
+                        (if anyone "on" "off")])))
+
 (defn allowed-emails
-  "Who may sign in: the `configured` rule (from [[membership/parse]]) widened
-  by the patterns moderators added, configured ones first."
-  [db configured]
-  (if (= :anyone configured)
+  "Who may sign in, as a rule of [[membership/allows?]]: `:anyone` when
+  moderators let anyone in, else the `moderators`' addresses, always let in,
+  then the allowlist's patterns."
+  [db moderators]
+  (if (anyone-allowed? db)
     :anyone
-    (into (vec configured)
-          (comp (map :pattern) (remove (set configured)))
+    (into (vec (sort moderators))
+          (comp (map :pattern) (remove (set moderators)))
           (jdbc/execute! db ["SELECT pattern FROM allowed_email ORDER BY pattern"] db/opts))))
 
 (defn mailbox
@@ -205,12 +221,11 @@
   (some? (jdbc/execute-one! db ["SELECT 1 FROM removed_email WHERE email = ?" (mailbox email)])))
 
 (defn allowed
-  "Whether an email address may sign in, as a function of it: the
-  configured rule widened by the patterns moderators added (see
-  [[allowed-emails]]), and not removed (see [[removed?]]), read once, for
+  "Whether an email address may sign in, as a function of it: let in by
+  [[allowed-emails]] and not removed (see [[removed?]]), read once, for
   checking many."
-  [db configured]
-  (let [rule (allowed-emails db configured)
+  [db moderators]
+  (let [rule (allowed-emails db moderators)
         removed (into #{} (map :email) (jdbc/execute! db ["SELECT email FROM removed_email"] db/opts))]
     #(and (membership/allows? rule %) (not (removed (mailbox %))))))
 
@@ -234,8 +249,8 @@
                    db/opts)))
 
 (defn added-emails
-  "The allowlist's patterns, beyond the configured ones: with who added
-  each, when, and the way it came in (see 032-allowlist-way.sql)."
+  "The allowlist's patterns: with who added each, when, and the way it came
+  in (see 032-allowlist-way.sql)."
   [db]
   (jdbc/execute! db
                  ["SELECT a.pattern, u.name AS added_by, a.added_at, a.way

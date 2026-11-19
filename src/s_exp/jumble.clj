@@ -28,7 +28,7 @@
            storage :storage mail-config :mail moderators :moderators}
     :keys [https behind-proxy source-url notice chat-webhook-url irc logo logo-dark timezone language privacy contact member-limit invitations-per-day metrics-token litestream-metrics-url moderator-notice hosted-by
            listing-reminder-days]}]
-  (let [{:keys! [method allowed-emails session-ttl-days] :keys [issuer client-id client-secret]} auth-config
+  (let [{:keys! [method session-ttl-days] :keys [issuer client-id client-secret]} auth-config
         catalog (i18n/catalog (or language "en"))
         blobs (blob/s3-store storage)]
     (component/system-map
@@ -38,7 +38,6 @@
                                                        :settings {:base-url base-url
                                                                   :session-ttl (* session-ttl-days day)
                                                                   :sign-in method
-                                                                  :allowed-emails allowed-emails
                                                                   ;; Serving HTTPS itself, Jumble sees each client's address;
                                                                   ;; behind a proxy, the proxy says it.
                                                                   :behind-proxy behind-proxy
@@ -75,7 +74,7 @@
      :delivery (component/using (delivery/component {:mailer (mail/smtp-mailer mail-config)
                                                      :blobs blobs
                                                      :settings {:base-url base-url :app-name app-name :catalog catalog
-                                                                :allowed-emails allowed-emails
+                                                                :moderators moderators
                                                                 :listing-reminder-days listing-reminder-days
                                                                 :currency currency
                                                                 :chat-webhook-url chat-webhook-url

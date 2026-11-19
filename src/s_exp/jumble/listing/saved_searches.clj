@@ -155,7 +155,7 @@
                                       (- now day)]
                                      db/opts))]
     (let [categories (:categories (choices/all db))
-          allowed (account/allowed db (:allowed-emails settings))
+          allowed (account/allowed db (:moderators settings))
           until (- now listing/settle-time)]
       (outbox/enqueue-each!
        due

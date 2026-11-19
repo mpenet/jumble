@@ -158,15 +158,15 @@
       (is (= 105 (count (outbox)))))))
 
 (deftest removed-owner-test
-  (let [lamp (post! (fixtures/user! "ann") "Lamp" 0)
-        bob-only (assoc fixtures/settings :allowed-emails ["bob@example.com"])]
+  (let [lamp (post! (fixtures/user! "ann") "Lamp" 0)]
+    (fixtures/allow-only! ["bob@example.com"])
     (testing "an owner no longer allowed in is not asked"
-      (freshness/sweep! *db* bob-only (* 30 day))
+      (freshness/sweep! *db* fixtures/settings (* 30 day))
       (is (= [] (outbox))))
     (testing "and the listing leaves the board as one left unanswered"
-      (freshness/sweep! *db* bob-only (* 44 day))
+      (freshness/sweep! *db* fixtures/settings (* 44 day))
       (is (= "active" (status-of lamp)))
-      (freshness/sweep! *db* bob-only (* 45 day))
+      (freshness/sweep! *db* fixtures/settings (* 45 day))
       (is (= "expired" (status-of lamp))))))
 
 (deftest owner-being-deleted-test

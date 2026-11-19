@@ -218,10 +218,7 @@
     (testing "nor to someone no longer let in"
       (jdbc/execute! *db* ["UPDATE session SET expires_at = ? WHERE user_id = ?" Long/MAX_VALUE ann])
       (thread! ann bob 30)
-      (is (zero? (delivery/deliver-due! *db*
-                                        (sender requests 201)
-                                        (assoc fixtures/settings :allowed-emails ["bob@example.com"])
-                                        40
-                                        (constantly true))))
+      (fixtures/allow-only! ["bob@example.com"])
+      (is (zero? (deliver! (sender requests 201) 40)))
       (is (empty? @requests))
       (is (empty? (deliveries))))))

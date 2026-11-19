@@ -14,14 +14,14 @@
 
 (set! *warn-on-reflection* true)
 
-(use-fixtures :each db-fixture)
+(use-fixtures :each db-fixture (fn [t] (fixtures/allow-only! ["*@example.com" "guest@gmail.com"]) (t)))
 
 (def ^:private minute (* 60 1000))
 
 (def ^:private ttl (* 15 minute))
 
 (def ^:private email-mode
-  {:settings {:sign-in "email" :allowed-emails ["*@example.com" "guest@gmail.com"]}})
+  {:settings {:sign-in "email"}})
 
 (defn- request
   [method uri & {:as opts}]
@@ -155,12 +155,8 @@
   (request :post "/login" :form {"email" "guest@gmail.com"})
   (let [token (link-token "guest@gmail.com")]
     (testing "an address no longer allowed when the link is used is refused"
-      (is (= 403
-             (:status (fixtures/request :post
-                                        "/login/email"
-                                        nil
-                                        :form {"token" token}
-                                        :ctx {:settings {:sign-in "email" :allowed-emails ["*@example.com"]}}))))
+      (account/disallow! *db* "guest@gmail.com")
+      (is (= 403 (:status (request :post "/login/email" :form {"token" token}))))
       (is (empty? (user-emails))))
     (testing "expired links are refused"
       (db/with-write-tx [tx *db*]

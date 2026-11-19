@@ -74,7 +74,8 @@
  :hosted-by {:name #env JUMBLE_HOSTED_BY
              :url #env JUMBLE_HOSTED_BY_URL}
  ;; Comma separated email addresses of the people who handle reported
- ;; listings; they can remove any listing.
+ ;; listings; they can remove any listing, can always sign in, and choose
+ ;; who else may. One at least.
  :moderators #or [#env JUMBLE_MODERATORS #profile {:dev "alice@example.com" :default ""}]
  ;; ISO 4217. Fixed per deployment: the first value is recorded in the
  ;; database and startup refuses a different one later.
@@ -98,17 +99,11 @@
         :from #or [#env JUMBLE_MAIL_FROM #profile {:dev "Jumble <jumble@example.com>"}]}
  ;; Sign-in through an OpenID Connect provider (for example Google, issuer
  ;; https://accounts.google.com); the docker compose Dex in development.
+ ;; Who may sign in, beyond the moderators, is the moderators' to say, in the
+ ;; app.
  :auth {;; oidc (an OpenID Connect provider) or email (links sent by email).
         :method #or [#env JUMBLE_SIGN_IN #profile {:dev "oidc"}]
-        ;; Who may sign in: * for anyone, or comma separated patterns, each an
-        ;; address (bob@example.org), a domain (*@example.org) or its
-        ;; subdomains (*@*.example.org). A list in a settings file works too.
-        :allowed-emails #or [#env JUMBLE_ALLOWED_EMAILS #profile {:dev "*@example.com"}]
         :issuer #or [#env JUMBLE_OIDC_ISSUER #profile {:dev "http://127.0.0.1:5556/dex"}]
         :client-id #or [#env JUMBLE_OIDC_CLIENT_ID "jumble"]
         :client-secret #or [#env JUMBLE_OIDC_CLIENT_SECRET #profile {:dev "jumble-dev-secret"}]
-        ;; Also require the provider's hd claim to be the email's domain: the
-        ;; account is managed by the organisation of that address. Required
-        ;; with Google and patterns.
-        :require-hosted-domain #boolean #or [#env JUMBLE_OIDC_REQUIRE_HOSTED_DOMAIN "false"]
         :session-ttl-days 7}}

@@ -81,7 +81,7 @@
           t (session-token request)
           resumed (account/resume-session! db t (System/currentTimeMillis) session-ttl)
           member (when resumed
-                   (or (membership/allows? (account/allowed-emails db (:allowed-emails settings))
+                   (or (membership/allows? (account/allowed-emails db (:moderators settings))
                                            (get-in resumed [:user :email]))
                        (do (account/delete-session! db t) false)))]
       (if-let [{:keys [user renewed]} (when member resumed)]

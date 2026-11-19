@@ -58,15 +58,12 @@
   (testing "an invitation, to someone not a member yet, is in the community's language"
     (let [dave (sign-in! "dave@example.com")]
       (speaks! "dave@example.com" "fr")
-      (request :post
-               "/manage/members"
-               dave
-               :form {"patterns" "zoe@gmail.com" "invite" "on"}
-               :ctx {:settings {:allowed-emails ["*@example.com"]}})
+      (fixtures/allow-only! ["*@example.com"])
+      (request :post "/manage/members" dave :form {"patterns" "zoe@gmail.com" "invite" "on"})
       (is (= "You are invited to Jumble" (subject-to "zoe@gmail.com"))))))
 
 (def ^:private email-mode
-  {:settings {:sign-in "email" :allowed-emails ["*@example.com"]}})
+  {:settings {:sign-in "email"}})
 
 (deftest sign-in-link-test
   (sign-in! "alice@example.com")

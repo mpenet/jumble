@@ -1255,8 +1255,8 @@ msgid "Reply to {name}…"
 msgstr "Antwoord aan {name}…"
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "To let anyone in, use * in the configuration."
-msgstr "Gebruik * in de configuratie om iedereen toe te laten."
+msgid "To let anyone in, use Let anyone sign in, above."
+msgstr "Om iedereen toe te laten, gebruik je hierboven ‘Iedereen laten inloggen’."
 
 #: src/s_exp/jumble/moderation/controller.clj
 msgid "{email} is a moderator, by the configuration: remove them there."
@@ -1505,20 +1505,40 @@ msgid "Let members invite people"
 msgstr "Leden mensen laten uitnodigen"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Limit sign-in to the list"
+msgstr "Inloggen beperken tot de lijst"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in"
+msgstr "Iedereen laten inloggen"
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adressen en patronen: {person} voor één persoon, {domain} voor een domein, {subdomains} voor de subdomeinen daarvan."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
-msgstr "Iedereen kan inloggen: de configuratie laat iedereen toe. Beperk dat daar om hier te beheren wie mag inloggen."
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Iedereen mag inloggen. Beperk inloggen tot de lijst om te kiezen wie mag; de lijst blijft intussen bewaard."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Open voor iedereen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Laat iedereen inloggen, zonder op de lijst te staan. De lijst blijft bewaard voor als je inloggen weer tot de lijst beperkt."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."
 msgstr "Wie lid wordt via de link of een uitnodiging, logt in via je inlogdienst: daarvoor is daar een account nodig, met het adres waarmee diegene lid wordt."
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "From the configuration"
-msgstr "Uit de configuratie"
+msgid "Moderators"
+msgstr "Moderators"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "They can always sign in: they are moderators by the configuration."
+msgstr "Zij mogen altijd inloggen: ze zijn moderator via de configuratie."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Added here"

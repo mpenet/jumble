@@ -14,7 +14,7 @@
 
 (defn- ctx
   [base-url]
-  {:db *db* :settings {:base-url base-url :session-ttl ttl :allowed-emails :anyone}})
+  {:db *db* :settings {:base-url base-url :session-ttl ttl}})
 
 (def echo (auth/require-user (fn [request] {:status 200 :body (:user request)})))
 

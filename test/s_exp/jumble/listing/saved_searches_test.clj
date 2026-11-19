@@ -105,12 +105,12 @@
 
 (deftest removed-member-test
   (let [ann (fixtures/user! "ann")
-        bob (fixtures/user! "bob")
-        bob-only (assoc fixtures/settings :allowed-emails ["bob@example.com"])]
+        bob (fixtures/user! "bob")]
     (saved/save! *db* ann {:q "bike" :kind nil :category nil} 0)
     (post! bob "Red bike" 1)
+    (fixtures/allow-only! ["bob@example.com"])
     (testing "someone no longer allowed in gets no digest"
-      (saved/send-due! *db* bob-only day)
+      (saved/send-due! *db* fixtures/settings day)
       (is (= [] (outbox))))
     (testing "and is not due again, so does not hold up the others"
       (is (pos? (:searches_checked_at (jdbc/execute-one! *db*

@@ -81,7 +81,7 @@
         (is (= "en" (lang-of (request :get "/listings" token :ctx french))))))))
 
 (def ^:private email-mode
-  {:settings {:sign-in "email" :allowed-emails ["*@example.com"]}})
+  {:settings {:sign-in "email"}})
 
 (defn- email-user!
   "Signs `email` in as email sign-in does; returns a session token."

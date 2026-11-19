@@ -1254,7 +1254,7 @@ msgid "Reply to {name}…"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/controller.clj
-msgid "To let anyone in, use * in the configuration."
+msgid "To let anyone in, use Let anyone sign in, above."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/controller.clj
@@ -1504,11 +1504,27 @@ msgid "Let members invite people"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Limit sign-in to the list"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in: the configuration lets everyone in. Restrict it there to manage who may sign in here."
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
@@ -1516,7 +1532,11 @@ msgid "Whoever joins by the link or an invitation signs in through your sign-in 
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
-msgid "From the configuration"
+msgid "Moderators"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "They can always sign in: they are moderators by the configuration."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj

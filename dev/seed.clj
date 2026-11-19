@@ -145,6 +145,8 @@
         now (System/currentTimeMillis)]
     (migrate/migrate! ds (migrate/migrations))
     (db/pin-settings! ds {"currency" currency})
+    ;; The seeded members, and the Dex users at example.com.
+    (account/allow! ds {:patterns ["*@example.com"] :moderator-id nil :now now})
     (when (some #{"--reset"} args)
       (remove-listings! ds blobs))
     (when (empty? (choices/choosable (:places (choices/all ds))))

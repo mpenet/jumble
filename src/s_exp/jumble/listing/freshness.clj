@@ -129,7 +129,7 @@
   (let [due (when (pos? listing-reminder-days) (due-reminders db now listing-reminder-days))]
     (when (and (pos? listing-reminder-days) (or (seq due) (expiring? db now)))
       (db/with-write-tx [tx db]
-        (let [allowed (account/allowed tx (:allowed-emails settings))]
+        (let [allowed (account/allowed tx (:moderators settings))]
           (doseq [{:keys [id email] :as found} due
                   ;; Unless its owner answered in the meantime.
                   :when (jdbc/execute-one! tx

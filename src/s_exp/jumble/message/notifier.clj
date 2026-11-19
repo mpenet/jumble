@@ -44,7 +44,7 @@
   `running` returns true; one failing leaves the others unaffected. Emails
   are sent outside of any transaction. Returns how many went out."
   [db mailer settings now running]
-  (let [allowed (account/allowed db (:allowed-emails settings))]
+  (let [allowed (account/allowed db (:moderators settings))]
     (outbox/deliver-each (notification/due db now batch-size)
                          running
                          #(deliver! db mailer settings allowed % now)
