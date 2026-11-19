@@ -1505,6 +1505,18 @@ msgid "Let members invite people"
 msgstr "Leden mensen laten uitnodigen"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Open voor iedereen"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Iedereen mag inloggen. Beperk inloggen tot de lijst om te kiezen wie mag; de lijst blijft intussen bewaard."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Laat iedereen inloggen, zonder op de lijst te staan. De lijst blijft bewaard voor als je inloggen weer tot de lijst beperkt."
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Limit sign-in to the list"
 msgstr "Inloggen beperken tot de lijst"
 
@@ -1515,18 +1527,6 @@ msgstr "Iedereen laten inloggen"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adressen en patronen: {person} voor één persoon, {domain} voor een domein, {subdomains} voor de subdomeinen daarvan."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
-msgstr "Iedereen mag inloggen. Beperk inloggen tot de lijst om te kiezen wie mag; de lijst blijft intussen bewaard."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Open to anyone"
-msgstr "Open voor iedereen"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
-msgstr "Laat iedereen inloggen, zonder op de lijst te staan. De lijst blijft bewaard voor als je inloggen weer tot de lijst beperkt."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."

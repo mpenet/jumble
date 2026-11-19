@@ -122,6 +122,9 @@
       (let [body (page)]
         (is (str/includes? body "Anyone can sign in"))
         (is (str/includes? body "Limit sign-in to the list"))
+        (is (str/includes? body "<h2>Open to anyone</h2>") "laid out as the page's other sections")
+        (is (not (str/includes? body "class=\"empty\"")))
+        (is (not (str/includes? body "*@*.example.org")) "no patterns to explain")
         (is (not (str/includes? body "action=\"/manage/members\""))))
       (is (= 200 (:status (request :get "/listings" (sign-in! "stranger@gmail.com"))))))
     (testing "limited again, the list is as it was, and the stranger is signed out"

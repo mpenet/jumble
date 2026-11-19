@@ -1505,6 +1505,18 @@ msgid "Let members invite people"
 msgstr "Laisser les membres inviter des personnes"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Ouvert à tout le monde"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Tout le monde peut se connecter. Limitez la connexion à la liste pour choisir qui le peut ; la liste est conservée en attendant."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Laissez tout le monde se connecter, sans être sur la liste. La liste est conservée pour le jour où vous limiterez de nouveau la connexion à celle-ci."
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Limit sign-in to the list"
 msgstr "Limiter la connexion à la liste"
 
@@ -1515,18 +1527,6 @@ msgstr "Laisser tout le monde se connecter"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adresses et motifs : {person} pour une personne, {domain} pour un domaine, {subdomains} pour ses sous-domaines."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
-msgstr "Tout le monde peut se connecter. Limitez la connexion à la liste pour choisir qui le peut ; la liste est conservée en attendant."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Open to anyone"
-msgstr "Ouvert à tout le monde"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
-msgstr "Laissez tout le monde se connecter, sans être sur la liste. La liste est conservée pour le jour où vous limiterez de nouveau la connexion à celle-ci."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."

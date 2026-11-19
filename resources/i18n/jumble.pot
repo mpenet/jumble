@@ -1504,6 +1504,18 @@ msgid "Let members invite people"
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr ""
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Limit sign-in to the list"
 msgstr ""
 
@@ -1513,18 +1525,6 @@ msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Open to anyone"
-msgstr ""
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
 msgstr ""
 
 #: src/s_exp/jumble/moderation/view.clj

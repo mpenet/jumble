@@ -1505,6 +1505,18 @@ msgid "Let members invite people"
 msgstr "Mitglieder Leute einladen lassen"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Offen für alle"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Alle können sich anmelden. Beschränke die Anmeldung auf die Liste, um zu wählen, wer darf; die Liste bleibt so lange erhalten."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Lass alle sich anmelden, ohne auf der Liste zu stehen. Die Liste bleibt erhalten, bis du die Anmeldung wieder auf sie beschränkst."
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Limit sign-in to the list"
 msgstr "Anmeldung auf die Liste beschränken"
 
@@ -1515,18 +1527,6 @@ msgstr "Alle anmelden lassen"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adressen und Muster: {person} für eine Person, {domain} für eine Domain, {subdomains} für ihre Subdomains."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
-msgstr "Alle können sich anmelden. Beschränke die Anmeldung auf die Liste, um zu wählen, wer darf; die Liste bleibt so lange erhalten."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Open to anyone"
-msgstr "Offen für alle"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
-msgstr "Lass alle sich anmelden, ohne auf der Liste zu stehen. Die Liste bleibt erhalten, bis du die Anmeldung wieder auf sie beschränkst."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."

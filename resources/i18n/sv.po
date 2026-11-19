@@ -1505,6 +1505,18 @@ msgid "Let members invite people"
 msgstr "Låt medlemmar bjuda in folk"
 
 #: src/s_exp/jumble/moderation/view.clj
+msgid "Open to anyone"
+msgstr "Öppet för alla"
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
+msgstr "Alla får logga in. Begränsa inloggning till listan för att välja vilka som får; listan sparas under tiden."
+
+#: src/s_exp/jumble/moderation/view.clj
+msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
+msgstr "Låt alla logga in utan att stå på listan. Listan sparas tills du åter begränsar inloggning till den."
+
+#: src/s_exp/jumble/moderation/view.clj
 msgid "Limit sign-in to the list"
 msgstr "Begränsa inloggning till listan"
 
@@ -1515,18 +1527,6 @@ msgstr "Låt alla logga in"
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
 msgstr "Adresser och mönster: {person} för en person, {domain} för en domän, {subdomains} för dess underdomäner."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile."
-msgstr "Alla får logga in. Begränsa inloggning till listan för att välja vilka som får; listan sparas under tiden."
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Open to anyone"
-msgstr "Öppet för alla"
-
-#: src/s_exp/jumble/moderation/view.clj
-msgid "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."
-msgstr "Låt alla logga in utan att stå på listan. Listan sparas tills du åter begränsar inloggning till den."
 
 #: src/s_exp/jumble/moderation/view.clj
 msgid "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with."

@@ -210,14 +210,20 @@
                                 (i18n/t "Stop members inviting people")
                                 (i18n/t "Let members invite people"))]]])
 
-(defn- anyone-form
-  "Lets anyone sign in, or only the list again."
+(defn- anyone-section
+  "Whether anyone may sign in, and the way to change it: anyone, or only
+  the list again."
   [anyone]
-  [:form (merge {:method "post" :action "/manage/members/anyone"} layout/once)
-   [:input {:type "hidden" :name "anyone" :value (if anyone "off" "on")}]
-   [:button {:type "submit"} (if anyone
-                               (i18n/t "Limit sign-in to the list")
-                               (i18n/t "Let anyone sign in"))]])
+  [:section.members
+   [:h2 (i18n/t "Open to anyone")]
+   [:p.lede (if anyone
+              (i18n/t "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile.")
+              (i18n/t "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again."))]
+   [:form (merge {:method "post" :action "/manage/members/anyone"} layout/once)
+    [:input {:type "hidden" :name "anyone" :value (if anyone "off" "on")}]
+    [:button {:type "submit"} (if anyone
+                                (i18n/t "Limit sign-in to the list")
+                                (i18n/t "Let anyone sign in"))]]])
 
 (defn members
   "Who may sign in: anyone, or the moderators and the list, with the join
@@ -229,20 +235,15 @@
                [:div.board-header
                 (moderation-nav request "/manage/members")
                 [:h1 (i18n/t "Who may sign in")]
-                [:p.lede (i18n/t "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
-                                 {:person [:code "bob@example.org"]
-                                  :domain [:code "*@example.org"]
-                                  :subdomains [:code "*@*.example.org"]})]]
+                (when-not anyone
+                  [:p.lede (i18n/t "Addresses and patterns: {person} for one person, {domain} for a domain, {subdomains} for its subdomains."
+                                   {:person [:code "bob@example.org"]
+                                    :domain [:code "*@example.org"]
+                                    :subdomains [:code "*@*.example.org"]})])]
+               (anyone-section anyone)
                (if anyone
-                 (list [:div.empty
-                        [:p (i18n/t "Anyone can sign in. Limit sign-in to the list to choose who may; the list is kept meanwhile.")]
-                        (anyone-form anyone)]
-                       (remove-member-form form))
-                 (list [:section.members
-                        [:h2 (i18n/t "Open to anyone")]
-                        [:p.lede (i18n/t "Let anyone sign in, without being on the list. The list is kept for when you limit sign-in to it again.")]
-                        (anyone-form anyone)]
-                       (join-link-section (get-in ctx [:settings :base-url]) join)
+                 (remove-member-form form)
+                 (list (join-link-section (get-in ctx [:settings :base-url]) join)
                        (member-invitations-section invitations-open)
                        (when (= "oidc" (get-in ctx [:settings :sign-in]))
                          [:p.field-note.members (i18n/t "Whoever joins by the link or an invitation signs in through your sign-in provider: they need an account at your sign-in provider, with the address they join with.")])
